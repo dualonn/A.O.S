@@ -1,54 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>A building that keeps up to maxTroops troops alive around it.</summary>
 public class TroopSpawner : MonoBehaviour
 {
-    // Start is called before the first frame update
-
+    [Tooltip("Troop prefabs this building can spawn. Currently always spawns the first.")]
     public List<GameObject> troops = new List<GameObject>();
+
+    [Tooltip("Troops spawned by this building that are still alive.")]
     public List<GameObject> thisTroops = new List<GameObject>();
+
+    [Tooltip("Random delay range (seconds) before each spawn.")]
     public float minR;
     public float maxR;
-    public float radius;
-    public float spawnX;
-    public float spawnY;
-    public int maxTroops;
 
-    [SerializeField]
-    private Vector3 spawnPos;
+    [Tooltip("Troops spawn within this distance of the building.")]
+    public float radius;
+    public int maxTroops;
 
     void Start()
     {
-        StartCoroutine("spawn");
+        StartCoroutine(Spawn());
     }
 
-    public IEnumerator spawn()
+    private IEnumerator Spawn()
     {
         while (true)
         {
-            if (thisTroops.Count < maxTroops)
+            thisTroops.RemoveAll(t => t == null);
+
+            if (thisTroops.Count < maxTroops && troops.Count > 0)
             {
                 yield return new WaitForSeconds(Random.Range(minR, maxR));
-                spawnX = Random.Range(-radius, radius);
-                spawnY = Random.Range(-radius, radius);
-                spawnPos = new Vector3(spawnX, spawnY, 0);
-                thisTroops.Add(
-                    Instantiate(troops[0], transform.position + spawnPos, Quaternion.identity)
-                );
+                var offset = new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius), 0);
+                thisTroops.Add(Instantiate(troops[0], transform.position + offset, Quaternion.identity));
             }
-            yield return new WaitForSeconds(0.001f);
-            for (int i = 0; i < thisTroops.Count; i++)
+            else
             {
-                if (thisTroops[i] == null)
-                {
-                    thisTroops.Remove(thisTroops[i]);
-                }
+                yield return null;
             }
         }
     }
-
-    // Update is called once per frame
-    void Update() { }
 }

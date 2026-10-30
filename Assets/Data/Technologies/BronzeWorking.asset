@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: BronzeWorking
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: BronzeWorking
+  displayName: Bronze Working
+  description: Learn to smelt bronze. Needed to reach the Bronze Age.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
+    buildings:
+    - building: {fileID: 11400000, guid: e69220c9ffb340c438e2971f6189fef1, type: 2}
+      count: 1
+    population: 8
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 100
+  researchTime: 60
+  unitModifiers: []
+  productionModifiers: []

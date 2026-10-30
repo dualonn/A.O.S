@@ -1,265 +1,152 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Troop : MonoBehaviour
+/// <summary>
+/// A player unit. Fights enemies near it, can be given move orders, and returns to its
+/// rally point (where it spawned or was last sent) when there is nothing to fight.
+/// Click a troop, then click the ground to send it there.
+/// </summary>
+public class Troop : Unit
 {
-    public List<Transform> potetialTargets = new List<Transform>();
-    public Transform currentTarget;
-    public float distanceToTarget;
-    public float speed;
-    public bool mouseOver;
-    public Animator pAnim;
-    public bool moveOveride = false;
-    public Vector3 moveToPosGlobal;
-    public float initX;
-    public Vector3 rotation;
-    public float attackSpeed;
-    public int attackPower;
-    private bool isAttacking;
-    public List<targeting> targetSystem = new List<targeting>();
+    public enum TargetPriority
+    {
+        First, // the enemy furthest along the path
+        Last, // the enemy least far along the path
+        Closest
+    }
+
+    public TargetPriority targetPriority = TargetPriority.First;
+
+    [Tooltip("Index into UIManagement.images, used when the definition has no icon.")]
     public int ID;
-    public int maxHealth;
-    public int health;
-    public Slider healthSlider;
 
-    [System.Serializable]
-    public class targeting
+    [Tooltip("Move orders are walked at moveSpeed times this.")]
+    public float moveOrderSpeedMultiplier = 1.5f;
+
+    /// <summary>The troop waiting for a destination click, if any.</summary>
+    public static Troop Selected { get; private set; }
+
+    public override Team Team => Team.Player;
+    public bool IsHovered { get; private set; }
+
+    private Vector3 rallyPoint;
+    private bool hasMoveOrder;
+
+    protected override void Awake()
     {
-        public string name;
-        public bool enabled;
+        base.Awake();
+        rallyPoint = transform.position;
     }
 
-    void Start()
+    protected override void Update()
     {
-        StartCoroutine("target");
-        StartCoroutine("playerInterction");
-        StartCoroutine("checkDeath");
-        initX = transform.position.x;
-        targeting first = new targeting();
-        first.name = "First";
-        targeting last = new targeting();
-        last.name = "Last";
-        if (Random.Range(0, 2) == 1)
-        {
-            first.enabled = true;
-            last.enabled = false;
-        }
-        else
-        {
-            first.enabled = false;
-            last.enabled = true;
-        }
-        targetSystem.Add(first);
-        targetSystem.Add(last);
-        health = maxHealth;
+        HandleInput();
+        base.Update();
     }
 
-    IEnumerator playerInterction()
+    private void HandleInput()
     {
-        while (true)
+        if (!IsAlive)
         {
-            if (mouseOver)
-            {
-                GameObject.Find("Canvas").GetComponent<UIManagement>().mouseOverTroop = true;
-                GameObject.Find("Canvas").GetComponent<UIManagement>().troopID = ID;
-                GameObject.Find("Canvas").GetComponent<UIManagement>().healthText.text =
-                    health.ToString() + "/" + maxHealth.ToString();
-                GameObject.Find("Canvas").GetComponent<UIManagement>().speedText.text = (
-                    speed * 100
-                ).ToString();
-                GameObject.Find("Canvas").GetComponent<UIManagement>().attackPowerText.text =
-                    attackPower.ToString();
-                if (Input.GetMouseButtonDown(0))
-                {
-                    yield return new WaitForSeconds(0.1f);
-                    yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
-                    Vector3 mousePos = Input.mousePosition;
-                    mousePos.z = 10.0f;
-                    Vector3 moveToPos = Camera.main.ScreenToWorldPoint(mousePos);
-                    moveToPosGlobal = moveToPos;
-                    while (transform.position != moveToPos)
-                    {
-                        print(moveToPos.x - transform.position.x);
-                        moveOveride = true;
-                        pAnim.SetBool("IsMoving", true);
-                        transform.position = Vector3.MoveTowards(
-                            transform.position,
-                            moveToPos,
-                            speed * 1.5f
-                        );
-                        yield return new WaitForSeconds(0.01f);
-                    }
-                    moveOveride = false;
-                }
-            }
-            else
-            {
-                GameObject.Find("Canvas").GetComponent<UIManagement>().mouseOverTroop = false;
-                GameObject.Find("Canvas").GetComponent<UIManagement>().healthText.text = "";
-                GameObject.Find("Canvas").GetComponent<UIManagement>().speedText.text = "";
-                GameObject.Find("Canvas").GetComponent<UIManagement>().attackPowerText.text = "";
-            }
-            yield return new WaitForSeconds(0.001f);
+            return;
         }
-    }
 
-    IEnumerator target()
-    {
-        while (true)
+        if (Input.GetMouseButtonDown(0))
         {
-            if (potetialTargets.Count > 0)
+            if (IsHovered)
             {
-                if (targetSystem[0].enabled)
-                {
-                    currentTarget = potetialTargets[0];
-                }
-                else
-                {
-                    currentTarget = potetialTargets[potetialTargets.Count - 1];
-                }
+                Selected = this;
             }
-            else if (currentTarget != null && currentTarget.GetComponent<Enemy>().health < 1)
+            else if (Selected == this)
             {
-                currentTarget = null;
-            }
-            else
-            {
-                currentTarget = null;
-            }
-
-            if (currentTarget != null)
-            {
-                distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
-                pAnim.SetBool("IsMoving", true);
-            }
-            else
-            {
-                distanceToTarget = 0;
-                if (!moveOveride)
-                {
-                    pAnim.SetBool("IsMoving", false);
-                }
-            }
-
-            if (distanceToTarget > 2f)
-            {
-                transform.position = Vector3.MoveTowards(
-                    transform.position,
-                    currentTarget.position,
-                    speed
-                );
-                pAnim.SetBool("IsMoving", true);
-                if (!isAttacking)
-                {
-                    StartCoroutine("attack");
-                }
-            }
-            else if (!moveOveride)
-            {
-                pAnim.SetBool("IsMoving", false);
-            }
-
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
-
-    IEnumerator attack()
-    {
-        while (
-            currentTarget != null
-            && currentTarget.GetComponent<Enemy>().health > 0
-            && !pAnim.GetBool("Death")
-        )
-        {
-            isAttacking = true;
-            pAnim.SetTrigger("Attack");
-            currentTarget.GetComponent<Enemy>().health -= attackPower;
-            yield return new WaitForSeconds(attackSpeed);
-        }
-        isAttacking = false;
-    }
-
-    IEnumerator checkDeath()
-    {
-        while (true)
-        {
-            if (health < 1)
-            {
-                pAnim.SetBool("Death", true);
-                yield return new WaitForSeconds(3);
-                Destroy(gameObject);
-            }
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (currentTarget != null)
-        {
-            if ((currentTarget.position - transform.position).normalized.x < 0)
-            {
-                transform.eulerAngles = new Vector3(0, 180, 0);
-            }
-            else
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
+                OrderMoveTo(MouseWorldPosition());
+                Selected = null;
             }
         }
-        else if (moveOveride)
-        {
-            if ((moveToPosGlobal - transform.position).normalized.x < 0)
-            {
-                transform.eulerAngles = new Vector3(0, 180, 0);
-            }
-            else
-            {
-                transform.eulerAngles = new Vector3(0, 0, 0);
-            }
-        }
-        else
-        {
-            transform.eulerAngles = new Vector3(0, 0, 0);
-        }
+
+        // Debug: send every troop to a random spot.
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            StartCoroutine("scatter");
+            OrderMoveTo(new Vector3(Random.Range(-14f, 13f), Random.Range(-9f, 8f), 0));
         }
-        healthSlider.value = health;
     }
 
-    IEnumerator scatter()
+    public void OrderMoveTo(Vector3 destination)
     {
-        moveToPosGlobal = new Vector3(Random.Range(-14f, 13f), Random.Range(-9f, 8f), 0);
-        while (transform.position != moveToPosGlobal)
+        destination.z = transform.position.z;
+        rallyPoint = destination;
+        hasMoveOrder = true;
+    }
+
+    // While walking to a move order, ignore enemies.
+    protected override bool ShouldEngage() => !hasMoveOrder;
+
+    protected override void Idle()
+    {
+        float speed = hasMoveOrder ? moveSpeed * moveOrderSpeedMultiplier : moveSpeed;
+        if (MoveTowards(rallyPoint, speed))
         {
-            moveOveride = true;
-            pAnim.SetBool("IsMoving", true);
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                moveToPosGlobal,
-                speed * 1.5f
-            );
-            yield return new WaitForSeconds(0.01f);
+            hasMoveOrder = false;
         }
-        pAnim.SetBool("IsMoving", false);
-        moveOveride = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    protected override Unit SelectTarget(List<Unit> candidates)
     {
-        print(other.gameObject.name);
-        if (other.gameObject.CompareTag("enemy"))
+        if (targetPriority == TargetPriority.Closest)
         {
-            potetialTargets.Add(other.gameObject.transform);
+            return base.SelectTarget(candidates);
+        }
+
+        Unit best = null;
+        float bestProgress = 0;
+        foreach (var unit in candidates)
+        {
+            float progress = unit is Enemy enemy ? enemy.PathProgress : 0;
+            bool better =
+                targetPriority == TargetPriority.First ? progress > bestProgress : progress < bestProgress;
+            if (best == null || better)
+            {
+                best = unit;
+                bestProgress = progress;
+            }
+        }
+        return best;
+    }
+
+    public override void SetHovered(bool hovered)
+    {
+        IsHovered = hovered;
+        if (UIManagement.Instance == null)
+        {
+            return;
+        }
+        if (hovered)
+        {
+            UIManagement.Instance.ShowTroop(this);
+        }
+        else
+        {
+            UIManagement.Instance.HideTroop(this);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    protected override void Die()
     {
-        potetialTargets.Remove(other.gameObject.transform);
+        if (Selected == this)
+        {
+            Selected = null;
+        }
+        SetHovered(false);
+        base.Die();
+    }
+
+    private static Vector3 MouseWorldPosition()
+    {
+        Camera cam = Camera.main;
+        Vector3 mouse = Input.mousePosition;
+        mouse.z = -cam.transform.position.z;
+        Vector3 world = cam.ScreenToWorldPoint(mouse);
+        world.z = 0;
+        return world;
     }
 }

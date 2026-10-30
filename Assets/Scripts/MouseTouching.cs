@@ -1,21 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>Sits on a unit's hover hitbox and tells the unit when the mouse is over it.</summary>
 public class MouseTouching : MonoBehaviour
 {
-    void Start() { }
+    private Unit unit;
 
-    // Update is called once per frame
-    void Update() { }
-
-    void OnMouseOver()
+    void Awake()
     {
-        transform.parent.gameObject.GetComponent<Troop>().mouseOver = true;
+        unit = GetComponentInParent<Unit>();
+    }
+
+    void OnMouseEnter()
+    {
+        if (unit != null)
+        {
+            unit.SetHovered(true);
+        }
     }
 
     void OnMouseExit()
     {
-        transform.parent.gameObject.GetComponent<Troop>().mouseOver = false;
+        if (unit != null)
+        {
+            unit.SetHovered(false);
+        }
     }
 }

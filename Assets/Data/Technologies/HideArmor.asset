@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: HideArmor
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: HideArmor
+  displayName: Hide Armor
+  description: +25% melee health.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings:
+    - building: {fileID: 11400000, guid: 1541f213eb13ed74789de6010715aeb1, type: 2}
+      count: 1
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 80
+  researchTime: 40
+  unitModifiers:
+  - troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+    healthMultiplier: 1.25
+    attackMultiplier: 1
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+  productionModifiers: []

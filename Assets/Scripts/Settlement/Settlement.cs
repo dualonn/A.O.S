@@ -1,0 +1,736 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using UnityEngine;
+
+/// <summary>
+/// The free mode settlement simulation. Starts the first time the player enters free mode,
+/// then runs whenever the game is open, in every scene (it survives scene loads).
+/// Scenes only display it and send it commands; all rules live here.
+/// </summary>
+public class Settlement : MonoBehaviour
+{
+    public static Settlement Instance { get; private set; }
+
+    public GameDatabase Database { get; private set; }
+    public SettlementState State { get; private set; }
+    public WaveDirector Waves { get; private set; }
+
+    /// <summary>Something structural changed (building placed/finished/removed, research done, new age).</summary>
+    public event Action Changed;
+
+    /// <summary>Player-facing messages ("Hut finished", "Raiders stole 30 Wood"...).</summary>
+    public event Action<string> Message;
+
+    public Age CurrentAge => Database.GetAge(State.ageIndex);
+    public Age NextAge => Database.GetAge(State.ageIndex + 1);
+    public int Population => Mathf.FloorToInt(State.population);
+    public int Housing { get; private set; }
+    public int WorkersNeeded { get; private set; }
+
+    /// <summary>0 to 1. Buildings run slower when there aren't enough people to work them.</summary>
+    public float WorkerEfficiency => WorkersNeeded == 0 ? 1f : Mathf.Min(1f, State.population / WorkersNeeded);
+
+    /// <summary>How advanced the player is. Drives wave strength.</summary>
+    public int ThreatLevel => State.ageIndex * 5 + State.researched.Count;
+
+    private const float AutosaveInterval = 30f;
+    private float autosaveTimer;
+    private float populationTimer;
+
+    private static string SavePath => Path.Combine(Application.persistentDataPath, "settlement.json");
+    public static bool HasSave => File.Exists(SavePath);
+
+    // ---------- Lifetime ----------
+
+    /// <summary>Once free mode has been started, keep it running from game launch.</summary>
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void ResumeIfStarted()
+    {
+        if (HasSave)
+        {
+            EnsureStarted();
+        }
+    }
+
+    /// <summary>Start (or return) the settlement. Called when the player enters free mode.</summary>
+    public static Settlement EnsureStarted()
+    {
+        if (Instance != null)
+        {
+            return Instance;
+        }
+        var database = GameDatabase.Load();
+        if (database == null)
+        {
+            Debug.LogError($"Settlement: no GameDatabase found at Resources/{GameDatabase.ResourcePath}.");
+            return null;
+        }
+        var go = new GameObject("Settlement");
+        DontDestroyOnLoad(go);
+        var settlement = go.AddComponent<Settlement>();
+        settlement.Initialise(database);
+        return settlement;
+    }
+
+    private void Initialise(GameDatabase database)
+    {
+        Instance = this;
+        Database = database;
+        State = LoadState() ?? NewState();
+        RecalculateDerived();
+        Waves = gameObject.AddComponent<WaveDirector>();
+        Waves.Initialise(this);
+    }
+
+    private SettlementState NewState()
+    {
+        var state = new SettlementState
+        {
+            population = Database.startingPopulation,
+            secondsUntilWave = Database.firstWaveDelay
+        };
+        foreach (var start in Database.startingResources)
+        {
+            if (start.resource != null)
+            {
+                state.resources.Add(new ResourceStock { id = start.resource.id, amount = start.amount });
+            }
+        }
+        return state;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Save();
+            Instance = null;
+        }
+    }
+
+    private void OnApplicationQuit() => Save();
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused)
+        {
+            Save();
+        }
+    }
+
+    // ---------- Simulation ----------
+
+    private void Update()
+    {
+        Tick(Time.deltaTime);
+
+        autosaveTimer += Time.deltaTime;
+        if (autosaveTimer >= AutosaveInterval)
+        {
+            autosaveTimer = 0;
+            Save();
+        }
+    }
+
+    public void Tick(float dt)
+    {
+        TickConstruction(dt);
+        RecalculateDerived();
+        TickProduction(dt);
+        TickPopulation(dt);
+        TickResearch(dt);
+    }
+
+    private void TickConstruction(float dt)
+    {
+        foreach (var building in State.buildings)
+        {
+            if (building.IsBuilt)
+            {
+                continue;
+            }
+            var def = Database.GetBuilding(building.definitionId);
+            building.buildProgress += def != null && def.buildTime > 0 ? dt / def.buildTime : 1f;
+            if (building.IsBuilt)
+            {
+                building.buildProgress = 1f;
+                Notify($"{Name(def)} finished building.");
+                Changed?.Invoke();
+            }
+        }
+    }
+
+    private void TickProduction(float dt)
+    {
+        float efficiency = WorkerEfficiency;
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def == null || !IsWorking(building, def))
+            {
+                continue;
+            }
+            float healthFactor = building.health / def.maxHealth;
+            foreach (var rate in def.production)
+            {
+                if (rate.resource != null)
+                {
+                    float multiplier = ProductionMultiplier(rate.resource);
+                    AddResource(rate.resource, rate.perSecond * dt * efficiency * healthFactor * multiplier);
+                }
+            }
+        }
+    }
+
+    private void TickPopulation(float dt)
+    {
+        var food = Database.food;
+        if (food == null)
+        {
+            return;
+        }
+
+        float upkeep = State.population * Database.foodPerPersonPerSecond * dt;
+        float available = GetAmount(food);
+        bool starving = available < upkeep;
+        AddResource(food, -Mathf.Min(upkeep, available));
+
+        if (starving)
+        {
+            // Without food people slowly leave.
+            populationTimer += dt;
+            if (populationTimer >= Database.secondsPerNewPerson && State.population >= 1)
+            {
+                populationTimer = 0;
+                State.population -= 1;
+                Notify("Your people are starving. Someone has left.");
+            }
+        }
+        else if (State.population < Housing)
+        {
+            populationTimer += dt;
+            if (populationTimer >= Database.secondsPerNewPerson)
+            {
+                populationTimer = 0;
+                State.population = Mathf.Min(Housing, State.population + 1);
+            }
+        }
+        else
+        {
+            populationTimer = 0;
+        }
+    }
+
+    private void TickResearch(float dt)
+    {
+        if (string.IsNullOrEmpty(State.researchingId))
+        {
+            return;
+        }
+        var tech = Database.GetTechnology(State.researchingId);
+        if (tech == null)
+        {
+            State.researchingId = null;
+            return;
+        }
+        State.researchProgress += tech.researchTime > 0 ? dt / tech.researchTime : 1f;
+        if (State.researchProgress >= 1f)
+        {
+            State.researched.Add(tech.id);
+            State.researchingId = null;
+            State.researchProgress = 0;
+            Notify($"Research complete: {tech.displayName}.");
+            Changed?.Invoke();
+        }
+    }
+
+    private void RecalculateDerived()
+    {
+        int housing = 0;
+        int workers = 0;
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def == null || !IsWorking(building, def))
+            {
+                continue;
+            }
+            housing += def.housing;
+            workers += def.workers;
+        }
+        Housing = housing;
+        WorkersNeeded = workers;
+    }
+
+    /// <summary>Finished and not ruined.</summary>
+    public bool IsWorking(BuildingState building, BuildingDefinition def) =>
+        building.IsBuilt && building.health > 0 && def != null;
+
+    // ---------- Resources ----------
+
+    public float GetAmount(ResourceType resource)
+    {
+        var stock = State.resources.Find(s => s.id == resource.id);
+        return stock != null ? stock.amount : 0;
+    }
+
+    public void AddResource(ResourceType resource, float amount)
+    {
+        var stock = State.resources.Find(s => s.id == resource.id);
+        if (stock == null)
+        {
+            stock = new ResourceStock { id = resource.id };
+            State.resources.Add(stock);
+        }
+        stock.amount = Mathf.Max(0, stock.amount + amount);
+    }
+
+    public bool CanAfford(List<ResourceAmount> cost)
+    {
+        foreach (var item in cost)
+        {
+            if (item.resource != null && GetAmount(item.resource) < item.amount)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void Spend(List<ResourceAmount> cost)
+    {
+        foreach (var item in cost)
+        {
+            if (item.resource != null)
+            {
+                AddResource(item.resource, -item.amount);
+            }
+        }
+    }
+
+    // ---------- Requirements ----------
+
+    public bool HasResearched(Technology tech) => tech != null && State.researched.Contains(tech.id);
+
+    public int CountBuilt(BuildingDefinition def) =>
+        State.buildings.FindAll(b => b.definitionId == def.id && b.IsBuilt).Count;
+
+    public int CountAll(BuildingDefinition def) => State.buildings.FindAll(b => b.definitionId == def.id).Count;
+
+    /// <summary>True if every condition and the cost are met. Otherwise 'missing' lists what isn't.</summary>
+    public bool Meets(Requirements req, out string missing)
+    {
+        var problems = new StringBuilder();
+        if (req != null)
+        {
+            if (req.minimumAge != null && req.minimumAge.order > State.ageIndex)
+            {
+                problems.AppendLine($"Reach the {req.minimumAge.displayName}");
+            }
+            foreach (var tech in req.technologies)
+            {
+                if (tech != null && !HasResearched(tech))
+                {
+                    problems.AppendLine($"Research {tech.displayName}");
+                }
+            }
+            foreach (var need in req.buildings)
+            {
+                if (need.building != null && CountBuilt(need.building) < need.count)
+                {
+                    problems.AppendLine($"Build {need.count} {need.building.displayName} ({CountBuilt(need.building)}/{need.count})");
+                }
+            }
+            if (Population < req.population)
+            {
+                problems.AppendLine($"Population {req.population} ({Population}/{req.population})");
+            }
+            foreach (var item in req.cost)
+            {
+                if (item.resource != null && GetAmount(item.resource) < item.amount)
+                {
+                    problems.AppendLine(
+                        $"{item.amount} {item.resource.displayName} ({Mathf.FloorToInt(GetAmount(item.resource))}/{item.amount})"
+                    );
+                }
+            }
+        }
+        missing = problems.ToString().TrimEnd();
+        return missing.Length == 0;
+    }
+
+    // ---------- Buildings ----------
+
+    public bool IsAreaFree(BuildingDefinition def, Vector2Int cell, int ignoreInstanceId = 0)
+    {
+        var area = new RectInt(cell, def.size);
+        var grid = new RectInt(Vector2Int.zero, Database.gridSize);
+        if (area.xMin < grid.xMin || area.yMin < grid.yMin || area.xMax > grid.xMax || area.yMax > grid.yMax)
+        {
+            return false;
+        }
+        foreach (var other in State.buildings)
+        {
+            if (other.instanceId == ignoreInstanceId)
+            {
+                continue;
+            }
+            var otherDef = Database.GetBuilding(other.definitionId);
+            if (otherDef != null && area.Overlaps(new RectInt(other.cell, otherDef.size)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool CanBuild(BuildingDefinition def, out string missing)
+    {
+        if (def.maxCount > 0 && CountAll(def) >= def.maxCount)
+        {
+            missing = $"You can only have {def.maxCount} {def.displayName}";
+            return false;
+        }
+        return Meets(def.requirements, out missing);
+    }
+
+    public bool TryPlaceBuilding(BuildingDefinition def, Vector2Int cell, out BuildingState placed, out string reason)
+    {
+        placed = null;
+        if (!CanBuild(def, out reason))
+        {
+            return false;
+        }
+        if (!IsAreaFree(def, cell))
+        {
+            reason = "That spot is blocked";
+            return false;
+        }
+        Spend(def.requirements.cost);
+        placed = new BuildingState
+        {
+            instanceId = State.nextBuildingId++,
+            definitionId = def.id,
+            cell = cell,
+            health = def.maxHealth,
+            buildProgress = def.buildTime > 0 ? 0 : 1
+        };
+        State.buildings.Add(placed);
+        Changed?.Invoke();
+        return true;
+    }
+
+    public void Demolish(BuildingState building)
+    {
+        if (State.buildings.Remove(building))
+        {
+            Changed?.Invoke();
+        }
+    }
+
+    public List<ResourceAmount> RepairCost(BuildingState building)
+    {
+        var cost = new List<ResourceAmount>();
+        var def = Database.GetBuilding(building.definitionId);
+        if (def == null)
+        {
+            return cost;
+        }
+        float damage = 1f - building.health / def.maxHealth;
+        foreach (var item in def.requirements.cost)
+        {
+            int amount = Mathf.CeilToInt(item.amount * Database.repairCostShare * damage);
+            if (amount > 0)
+            {
+                cost.Add(new ResourceAmount { resource = item.resource, amount = amount });
+            }
+        }
+        return cost;
+    }
+
+    public bool TryRepair(BuildingState building, out string reason)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        var cost = RepairCost(building);
+        if (!CanAfford(cost))
+        {
+            reason = "Not enough resources to repair";
+            return false;
+        }
+        Spend(cost);
+        building.health = def.maxHealth;
+        reason = null;
+        Changed?.Invoke();
+        return true;
+    }
+
+    // ---------- Research ----------
+
+    public bool CanResearch(Technology tech, out string missing)
+    {
+        if (HasResearched(tech))
+        {
+            missing = "Already researched";
+            return false;
+        }
+        if (!string.IsNullOrEmpty(State.researchingId))
+        {
+            missing = "Already researching something";
+            return false;
+        }
+        return Meets(tech.requirements, out missing);
+    }
+
+    public bool TryStartResearch(Technology tech, out string reason)
+    {
+        if (!CanResearch(tech, out reason))
+        {
+            return false;
+        }
+        Spend(tech.requirements.cost);
+        State.researchingId = tech.id;
+        State.researchProgress = 0;
+        Changed?.Invoke();
+        return true;
+    }
+
+    // ---------- Ages ----------
+
+    public bool CanAdvanceAge(out string missing)
+    {
+        if (NextAge == null)
+        {
+            missing = "This is the latest age";
+            return false;
+        }
+        return Meets(NextAge.advanceRequirements, out missing);
+    }
+
+    public bool TryAdvanceAge(out string reason)
+    {
+        if (!CanAdvanceAge(out reason))
+        {
+            return false;
+        }
+        Spend(NextAge.advanceRequirements.cost);
+        State.ageIndex++;
+        Notify($"Your civilisation has entered the {CurrentAge.displayName}!");
+        Changed?.Invoke();
+        return true;
+    }
+
+    // ---------- Upgrades ----------
+
+    public float ProductionMultiplier(ResourceType resource)
+    {
+        float multiplier = 1f;
+        foreach (var id in State.researched)
+        {
+            var tech = Database.GetTechnology(id);
+            if (tech == null)
+            {
+                continue;
+            }
+            foreach (var mod in tech.productionModifiers)
+            {
+                if (mod.resource == null || mod.resource == resource)
+                {
+                    multiplier *= mod.multiplier;
+                }
+            }
+        }
+        return multiplier;
+    }
+
+    /// <summary>Combined effect of all researched tech on one unit type.</summary>
+    public UnitStatModifier GetUnitModifier(UnitDefinition unit)
+    {
+        var total = new UnitStatModifier();
+        foreach (var id in State.researched)
+        {
+            var tech = Database.GetTechnology(id);
+            if (tech == null)
+            {
+                continue;
+            }
+            foreach (var mod in tech.unitModifiers)
+            {
+                if (mod.Affects(unit))
+                {
+                    total.healthMultiplier *= mod.healthMultiplier;
+                    total.attackMultiplier *= mod.attackMultiplier;
+                    total.speedMultiplier *= mod.speedMultiplier;
+                    total.cooldownMultiplier *= mod.cooldownMultiplier;
+                }
+            }
+        }
+        return total;
+    }
+
+    // ---------- Defence and raids ----------
+
+    /// <summary>Rough fighting strength of a unit type. A Stone Age Clubman is about 1.</summary>
+    public static float UnitPower(UnitDefinition unit, UnitStatModifier modifier = null)
+    {
+        if (unit == null)
+        {
+            return 0;
+        }
+        float health = unit.maxHealth * (modifier?.healthMultiplier ?? 1f);
+        float attack = unit.attackPower * (modifier?.attackMultiplier ?? 1f);
+        float cooldown = Mathf.Max(0.1f, unit.attackCooldown * (modifier?.cooldownMultiplier ?? 1f));
+        return health / 100f * (attack / 10f) / cooldown;
+    }
+
+    /// <summary>Settlement defence used when a wave is resolved without being watched.</summary>
+    public float DefensePower
+    {
+        get
+        {
+            float total = 0;
+            foreach (var building in State.buildings)
+            {
+                var def = Database.GetBuilding(building.definitionId);
+                if (def == null || !IsWorking(building, def))
+                {
+                    continue;
+                }
+                float healthFactor = building.health / def.maxHealth;
+                total += def.defensePower * healthFactor;
+                if (def.trainsUnit != null)
+                {
+                    total += def.maxUnits * UnitPower(def.trainsUnit, GetUnitModifier(def.trainsUnit));
+                }
+            }
+            return total;
+        }
+    }
+
+    /// <summary>
+    /// Raiders broke through. severity 0..1 scales how much is stolen and smashed
+    /// (1 = the whole wave got through).
+    /// </summary>
+    public void ApplyRaid(float severity)
+    {
+        severity = Mathf.Clamp01(severity);
+        if (severity <= 0)
+        {
+            return;
+        }
+
+        var report = new StringBuilder("Raiders broke through!");
+
+        float lossShare = severity * Database.maxResourceLossShare;
+        foreach (var stock in State.resources)
+        {
+            float lost = stock.amount * lossShare;
+            stock.amount -= lost;
+            var resource = Database.GetResource(stock.id);
+            if (lost >= 1 && resource != null)
+            {
+                report.Append($" -{Mathf.FloorToInt(lost)} {resource.displayName}.");
+            }
+        }
+
+        var standing = State.buildings.FindAll(b => b.IsBuilt && b.health > 0);
+        float totalHealth = 0;
+        foreach (var b in standing)
+        {
+            totalHealth += Database.GetBuilding(b.definitionId)?.maxHealth ?? 0;
+        }
+        float damageLeft = totalHealth * severity * Database.maxBuildingDamageShare;
+        int ruined = 0;
+        int guard = 100;
+        while (damageLeft > 0.5f && standing.Count > 0 && guard-- > 0)
+        {
+            var target = standing[UnityEngine.Random.Range(0, standing.Count)];
+            var def = Database.GetBuilding(target.definitionId);
+            float hit = Mathf.Min(damageLeft, target.health, def.maxHealth * 0.5f);
+            target.health -= hit;
+            damageLeft -= hit;
+            if (target.health <= 0.5f)
+            {
+                target.health = 0;
+                standing.Remove(target);
+                ruined++;
+            }
+        }
+        if (ruined > 0)
+        {
+            report.Append($" {ruined} building(s) ruined and need repair.");
+        }
+
+        Notify(report.ToString());
+        Changed?.Invoke();
+    }
+
+    // ---------- Save / load ----------
+
+    public void Save()
+    {
+        if (State == null)
+        {
+            return;
+        }
+        try
+        {
+            File.WriteAllText(SavePath, JsonUtility.ToJson(State, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Settlement: failed to save: {e.Message}");
+        }
+    }
+
+    private static SettlementState LoadState()
+    {
+        if (!HasSave)
+        {
+            return null;
+        }
+        try
+        {
+            return JsonUtility.FromJson<SettlementState>(File.ReadAllText(SavePath));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Settlement: save file unreadable, starting fresh: {e.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>Delete the save. The settlement starts fresh next time free mode is entered.</summary>
+    public static void DeleteSave()
+    {
+        if (Instance != null)
+        {
+            var go = Instance.gameObject;
+            Instance.State = null; // so OnDestroy doesn't re-save
+            Instance = null;
+            if (Application.isPlaying)
+            {
+                Destroy(go);
+            }
+            else
+            {
+                DestroyImmediate(go);
+            }
+        }
+        if (HasSave)
+        {
+            File.Delete(SavePath);
+        }
+    }
+
+    // ---------- Helpers ----------
+
+    private void Notify(string message)
+    {
+        Debug.Log($"[Settlement] {message}");
+        Message?.Invoke(message);
+    }
+
+    private static string Name(BuildingDefinition def) => def != null ? def.displayName : "Building";
+}

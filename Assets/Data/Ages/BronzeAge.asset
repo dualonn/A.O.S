@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: BronzeAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Bronze Age
+  order: 1
+  description: Metal working changes everything.
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d388d99fbc34e7149b63fa16783aa2cb, type: 2}
+    buildings:
+    - building: {fileID: 11400000, guid: a01eb155babc08847b5b74db3b2051ba, type: 2}
+      count: 2
+    population: 10
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 150
+  playerUnits: []
+  enemyUnits: []

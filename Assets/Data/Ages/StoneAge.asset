@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: StoneAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Stone Age
+  order: 0
+  description: Where every civilisation begins.
+  playerUnits:
+  - {fileID: 11400000, guid: a0aef520dc1fb324ab64c1aada202de8, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: b603c6fe562ddf243ad55cf285319863, type: 2}

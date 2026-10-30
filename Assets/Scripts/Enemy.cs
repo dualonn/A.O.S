@@ -1,181 +1,70 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Enemy : MonoBehaviour
+/// <summary>
+/// An enemy unit. Walks the waypoint path, stops to fight player troops it meets,
+/// then carries on from where it left the path.
+/// </summary>
+public class Enemy : Unit
 {
-    public List<Vector3> path;
-    public float speed;
-    private bool isActive;
-    public Animator eAnim;
-    public float health;
-    public Slider healthSlider;
-    public List<Transform> troops = new List<Transform>();
-    public Transform currentTarget;
-    public float distanceToTarget;
-    public bool moveOveride;
+    /// <summary>Raised when an enemy reaches the end of the path (hook lives/damage here later).</summary>
+    public static event Action<Enemy> ReachedEnd;
 
-    [SerializeField]
-    private bool isAttacking = false;
-    public float attackSpeed;
-    public int attackPower;
+    [Tooltip("Optional. Defaults to the scene object named \"Path\".")]
+    public WayPoints path;
 
-    void Start()
+    public override Team Team => Team.Enemy;
+
+    /// <summary>How far along the path this enemy is. Higher is closer to the end.</summary>
+    public float PathProgress
     {
-        path = GameObject.Find("Path").GetComponent<WayPoints>().positions;
-        StartCoroutine("followPath");
-        StartCoroutine("checkDeath");
-        StartCoroutine("target");
-    }
-
-    IEnumerator target()
-    {
-        while (true)
+        get
         {
-            if (troops.Count > 0)
+            if (waypoints == null || waypointIndex >= waypoints.Count)
             {
-                print("troops list has at least one item");
-                currentTarget = troops[0];
+                return float.MaxValue;
             }
-            else if (currentTarget != null && currentTarget.GetComponent<Troop>().health < 1)
-            {
-                currentTarget = null;
-                moveOveride = false;
-            }
-            else
-            {
-                currentTarget = null;
-            }
-
-            if (currentTarget != null)
-            {
-                distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
-                eAnim.SetBool("IsMoving", true);
-            }
-            else
-            {
-                distanceToTarget = 0;
-            }
-
-            if (distanceToTarget > 2f)
-            {
-                moveOveride = true;
-                transform.position = Vector3.MoveTowards(
-                    transform.position,
-                    currentTarget.position,
-                    speed
-                );
-                eAnim.SetBool("IsMoving", true);
-            }
-
-            if (!isAttacking && distanceToTarget < 2f && currentTarget != null)
-            {
-                StartCoroutine("attack");
-                print("start attack");
-                isAttacking = true;
-            }
-
-            yield return new WaitForSeconds(0.01f);
+            float toNext = Vector2.Distance(transform.position, waypoints[waypointIndex]);
+            return waypointIndex * 1000f - toNext;
         }
     }
 
-    IEnumerator attack()
+    private List<Vector3> waypoints;
+    private int waypointIndex;
+
+    private void Start()
     {
-        print("attacked" + " " + currentTarget);
-        if (currentTarget.gameObject.GetComponent<Troop>().health > 0)
+        if (path == null)
         {
-            currentTarget.gameObject.GetComponent<Troop>().health -= attackPower;
-            eAnim.SetTrigger("Attack");
-            yield return new WaitForSeconds(attackSpeed);
+            var pathObject = GameObject.Find("Path");
+            if (pathObject != null)
+            {
+                path = pathObject.GetComponent<WayPoints>();
+            }
         }
-        isAttacking = false;
+        waypoints = path != null ? path.positions : new List<Vector3>();
+        if (waypoints.Count == 0)
+        {
+            Debug.LogWarning($"{name}: no waypoints found, enemy will stand still.", this);
+        }
     }
 
-    IEnumerator checkDeath()
+    protected override void Idle()
     {
-        while (true)
+        if (waypoints == null || waypoints.Count == 0)
         {
-            if (health < 1)
+            SetMoving(false);
+            return;
+        }
+
+        if (MoveTowards(waypoints[waypointIndex], moveSpeed))
+        {
+            waypointIndex++;
+            if (waypointIndex >= waypoints.Count)
             {
-                path = new List<Vector3>();
-                eAnim.SetBool("Death", true);
-                yield return new WaitForSeconds(3);
+                ReachedEnd?.Invoke(this);
                 Destroy(gameObject);
-            }
-            yield return new WaitForSeconds(0.01f);
-        }
-    }
-
-    IEnumerator followPath()
-    {
-        isActive = true;
-
-        for (int i = 0; i < path.Count; i++)
-        {
-            while (transform.position != path[i])
-            {
-                if (!moveOveride)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position, path[i], speed);
-                }
-                yield return new WaitForSeconds(0.01f);
-                eAnim.SetBool("IsMoving", true);
-                if (!moveOveride)
-                {
-                    if ((path[i] - transform.position).normalized.x < 0)
-                    {
-                        transform.eulerAngles = new Vector3(0, 180, 0);
-                    }
-                    else
-                    {
-                        transform.eulerAngles = new Vector3(0, 0, 0);
-                    }
-                }
-            }
-        }
-
-        isActive = false;
-
-        Destroy(gameObject);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("troop"))
-        {
-            troops.Add(other.gameObject.transform);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.transform == currentTarget)
-        {
-            troops.Remove(troops[0]);
-            currentTarget = null;
-            moveOveride = false;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        print(troops.Count);
-        healthSlider.value = health;
-        if ((currentTarget.position - transform.position).normalized.x < 0)
-        {
-            transform.eulerAngles = new Vector3(0, 180, 0);
-        }
-        else
-        {
-            transform.eulerAngles = new Vector3(0, 0, 0);
-        }
-        for (int i = 0; i < troops.Count; i++)
-        {
-            if (troops[i] == null)
-            {
-                troops.Remove(troops[i]);
             }
         }
     }

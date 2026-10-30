@@ -1,0 +1,72 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// Lists every age, resource, building and technology in the game, plus free mode tuning.
+/// Lives at Resources/GameDatabase so the settlement can load it from any scene.
+/// </summary>
+[CreateAssetMenu(fileName = "GameDatabase", menuName = "Age of Stickman/Game Database")]
+public class GameDatabase : ScriptableObject
+{
+    public const string ResourcePath = "GameDatabase";
+
+    [Tooltip("In order: first age first.")]
+    public List<Age> ages = new List<Age>();
+    public List<ResourceType> resources = new List<ResourceType>();
+    public List<BuildingDefinition> buildings = new List<BuildingDefinition>();
+    public List<Technology> technologies = new List<Technology>();
+
+    [Header("Free mode: start")]
+    public List<ResourceAmount> startingResources = new List<ResourceAmount>();
+    public int startingPopulation = 3;
+
+    [Tooltip("Grid size of the settlement, in cells.")]
+    public Vector2Int gridSize = new Vector2Int(30, 20);
+
+    [Header("Free mode: population")]
+    public ResourceType food;
+    public float foodPerPersonPerSecond = 0.02f;
+
+    [Tooltip("Seconds for one new person to arrive while there is food and housing.")]
+    public float secondsPerNewPerson = 8f;
+
+    [Header("Free mode: waves")]
+    public float firstWaveDelay = 180f;
+    public Vector2 waveIntervalRange = new Vector2(150f, 240f);
+
+    [Tooltip("Wave strength = base + threat * perThreat.")]
+    public float waveBaseStrength = 2f;
+    public float waveStrengthPerThreat = 1f;
+
+    [Header("Free mode: raids (enemies breaking through)")]
+    [Tooltip("Share of each stockpile stolen by a full breakthrough.")]
+    [Range(0, 1)]
+    public float maxResourceLossShare = 0.3f;
+
+    [Tooltip("Total building damage dealt by a full breakthrough, as a share of all building health.")]
+    [Range(0, 1)]
+    public float maxBuildingDamageShare = 0.4f;
+
+    [Tooltip("Repairing a ruined building costs this share of its build cost.")]
+    [Range(0, 1)]
+    public float repairCostShare = 0.5f;
+
+    public Age GetAge(int index) => index >= 0 && index < ages.Count ? ages[index] : null;
+
+    public ResourceType GetResource(string id) => resources.Find(r => r != null && r.id == id);
+
+    public BuildingDefinition GetBuilding(string id) => buildings.Find(b => b != null && b.id == id);
+
+    public Technology GetTechnology(string id) => technologies.Find(t => t != null && t.id == id);
+
+    private static GameDatabase cached;
+
+    public static GameDatabase Load()
+    {
+        if (cached == null)
+        {
+            cached = Resources.Load<GameDatabase>(ResourcePath);
+        }
+        return cached;
+    }
+}
