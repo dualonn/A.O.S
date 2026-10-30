@@ -16,6 +16,9 @@ public class UnitStatModifier
     [Tooltip("Below 1 attacks faster.")]
     public float cooldownMultiplier = 1f;
 
+    [Tooltip("Multiplies attack range (useful for ranged units).")]
+    public float rangeMultiplier = 1f;
+
     public bool Affects(UnitDefinition unit) =>
         troopClass == null || (unit != null && unit.troopClass == troopClass);
 }
@@ -49,7 +52,10 @@ public class Technology : GameData
     [Tooltip("Seconds to research.")]
     public float researchTime = 30f;
 
-    [Header("Effects")]
+    [Header("Effects (research applies globally, as small bonuses)")]
     public List<UnitStatModifier> unitModifiers = new List<UnitStatModifier>();
     public List<ProductionModifier> productionModifiers = new List<ProductionModifier>();
+
+    [Tooltip("Multiplies every building's health (1.08 = +8%).")]
+    public float buildingHealthMultiplier = 1f;
 }

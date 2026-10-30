@@ -15,8 +15,18 @@ MonoBehaviour:
   id: Hut
   displayName: Hut
   description: Houses your people.
-  icon: {fileID: 21300000, guid: 0a14c2f197ccc5947957aa04ff697b57, type: 3}
+  icon: {fileID: 21300000, guid: 4b30b08e856075a4b940f92a5437285d, type: 3}
   prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 4b30b08e856075a4b940f92a5437285d, type: 3}
+    fps: 1
+  - frames:
+    - {fileID: 21300000, guid: 592f3eb1179e8244d93eb11eba3d6fb8, type: 3}
+    fps: 1
+  - frames:
+    - {fileID: 21300000, guid: 19b049a9d5b514748a92ec29e2d6dbe0, type: 3}
+    fps: 1
   size: {x: 2, y: 2}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -51,6 +61,10 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
   - name: Wattle Walls
     description: Woven walls daubed with mud.
     requirements:
@@ -76,6 +90,22 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 05b52b464aef59544a9e2194253128d9, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 30
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 30
+  rankUpTime: 20
   isTownCenter: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
@@ -92,3 +122,11 @@ MonoBehaviour:
   defensePower: 0
   trainsUnit: {fileID: 0}
   maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

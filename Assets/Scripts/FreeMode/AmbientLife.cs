@@ -116,8 +116,8 @@ public class AmbientLife : MonoBehaviour
     public Vector3 RandomSpotNear(BuildingView building)
     {
         Vector3 door = DoorOf(building);
-        Vector3 min = Grid.CellToWorld(Vector2Int.zero) + Vector3.one * 0.3f;
-        Vector3 max = Grid.CellToWorld(Grid.Size) - Vector3.one * 0.3f;
+        Vector3 min = (Vector3)Grid.MapRect.min + Vector3.one * 0.3f;
+        Vector3 max = (Vector3)Grid.MapRect.max - Vector3.one * 0.3f;
         for (int attempt = 0; attempt < 8; attempt++)
         {
             Vector2 offset = Random.insideUnitCircle * 4f;

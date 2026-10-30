@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BronzeRaider
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Bronze Raider
+  icon: {fileID: 21300000, guid: 519d64d099ad9e64ebb72a798bd4d55b, type: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 6755782341799889235, guid: f86c60ca531d1bd4f8b8dade9d3aab96, type: 3}
+  cost: 0
+  populationCost: 1
+  maxHealth: 160
+  moveSpeed: 0.9
+  attackPower: 22
+  attackCooldown: 1.1
+  attackRange: 0.75
+  hitDelay: 0.3
+  detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 9

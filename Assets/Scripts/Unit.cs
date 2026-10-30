@@ -172,7 +172,39 @@ public abstract class Unit : MonoBehaviour
     private int baseAttack;
     private float baseSpeed;
     private float baseCooldown;
+    private float baseRange;
     private UnitStatModifier appliedBuildingMod;
+
+    /// <summary>Ranged units shoot projectiles; damage lands when they arrive.</summary>
+    public bool IsRanged => definition != null && definition.projectile != null;
+
+    /// <summary>Where projectiles leave from (about chest height).</summary>
+    public Vector3 LaunchPoint => transform.position + Vector3.up * 0.5f;
+
+    /// <summary>Fire this unit's projectile at a point; 'onArrive' runs when it lands.</summary>
+    protected void Shoot(Vector3 at, System.Action onArrive) =>
+        Projectile.FireAt(definition.projectile, LaunchPoint, at, definition.projectileSpeed, onArrive);
+
+    /// <summary>The nearest living unit of another team within 'range' of 'position', or null.</summary>
+    public static Unit FindNearestEnemy(Team ofTeam, Vector3 position, float range)
+    {
+        Unit best = null;
+        float bestDistance = range * range;
+        foreach (var u in All)
+        {
+            if (u == null || !u.IsAlive || u.Team == ofTeam)
+            {
+                continue;
+            }
+            float d = ((Vector2)(u.transform.position - position)).sqrMagnitude;
+            if (d <= bestDistance)
+            {
+                bestDistance = d;
+                best = u;
+            }
+        }
+        return best;
+    }
 
     /// <summary>
     /// Apply upgrades from the building that trained this unit. Safe to call every frame;
@@ -199,7 +231,9 @@ public abstract class Unit : MonoBehaviour
             baseAttack = attackPower;
             baseSpeed = moveSpeed;
             baseCooldown = attackCooldown;
+            baseRange = attackRange;
         }
+        attackRange = baseRange * mod.rangeMultiplier;
         float healthShare = health / (float)Mathf.Max(1, maxHealth);
         maxHealth = Mathf.RoundToInt(baseMaxHealth * mod.healthMultiplier);
         health = Mathf.Max(1, Mathf.RoundToInt(maxHealth * healthShare));
@@ -225,6 +259,7 @@ public abstract class Unit : MonoBehaviour
         attackPower = Mathf.RoundToInt(attackPower * mod.attackMultiplier);
         moveSpeed *= mod.speedMultiplier;
         attackCooldown *= mod.cooldownMultiplier;
+        attackRange *= mod.rangeMultiplier;
     }
 
     /// <summary>Pick which enemy in range to fight. Default: the closest.</summary>
@@ -373,9 +408,18 @@ public abstract class Unit : MonoBehaviour
             return;
         }
         var target = swingTarget;
-        // Missed if the target died or stepped well out of reach during the wind-up.
-        if (target != null && target.IsAlive &&
-            Vector2.Distance(transform.position, target.transform.position) <= attackRange * 1.25f + 0.2f)
+        if (target == null || !target.IsAlive)
+        {
+            return;
+        }
+        if (IsRanged)
+        {
+            // Loose an arrow: it does the damage when it lands.
+            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this);
+            return;
+        }
+        // Melee: missed if the target stepped well out of reach during the wind-up.
+        if (Vector2.Distance(transform.position, target.transform.position) <= attackRange * 1.25f + 0.2f)
         {
             target.TakeDamage(attackPower, this);
         }

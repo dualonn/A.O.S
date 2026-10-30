@@ -21,9 +21,18 @@ public class GameDatabase : ScriptableObject
     public int startingPopulation = 3;
 
     [Header("Free mode: map")]
-    [Tooltip("Size of the generated map, in tiles. The whole map is buildable.")]
+    [Tooltip("Size of the starting map, in tiles. It grows as the player explores.")]
     [UnityEngine.Serialization.FormerlySerializedAs("gridSize")]
-    public Vector2Int mapSize = new Vector2Int(160, 110);
+    public Vector2Int mapSize = new Vector2Int(160, 112);
+
+    [Tooltip("The map never grows beyond this many tiles.")]
+    public Vector2Int mapMaxSize = new Vector2Int(640, 448);
+
+    [Tooltip("The map grows in square chunks of this many tiles.")]
+    public int chunkSize = 16;
+
+    [Tooltip("Grow the map when the view gets this close (tiles) to its edge.")]
+    public int growWhenWithin = 12;
 
     public List<DepositType> deposits = new List<DepositType>();
 

@@ -69,6 +69,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
         Settlement.Changed += SyncViews;
         Settlement.Message += ShowMessage;
+        Settlement.MapGrown += OnMapGrown;
         Settlement.Waves.LiveBattlefield = this;
         SyncViews();
     }
@@ -81,6 +82,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
         Settlement.Changed -= SyncViews;
         Settlement.Message -= ShowMessage;
+        Settlement.MapGrown -= OnMapGrown;
         if (ReferenceEquals(Settlement.Waves.LiveBattlefield, this))
         {
             Settlement.Waves.LiveBattlefield = null;
@@ -106,9 +108,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             cameraController = cam.gameObject.AddComponent<CameraController>();
         }
         Rect map = grid.MapRect;
-        cameraController.bounds = map;
-        float fitWhole = Mathf.Max(map.height * 0.5f, map.width * 0.5f / Mathf.Max(0.5f, cam.aspect)) + 4f;
-        cameraController.maxZoom = fitWhole;
+        UpdateCameraLimits();
+        float fitWhole = cameraController.maxZoom;
 
         if (Settlement.IsFounded)
         {
@@ -120,6 +121,145 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             cam.transform.position = new Vector3(map.center.x, map.center.y, cam.transform.position.z);
             cam.orthographicSize = fitWhole;
         }
+    }
+
+    /// <summary>Keep the camera over the explored map and let it zoom out to see all of it.</summary>
+    private void UpdateCameraLimits()
+    {
+        var cam = Camera.main;
+        var cameraController = cam != null ? cam.GetComponent<CameraController>() : null;
+        if (cameraController == null)
+        {
+            return;
+        }
+        Rect map = grid.MapRect;
+        cameraController.bounds = map;
+        float fitWhole = Mathf.Max(map.height * 0.5f, map.width * 0.5f / Mathf.Max(0.5f, cam.aspect)) + 4f;
+        cameraController.maxZoom = Mathf.Clamp(fitWhole, 60f, 1200f);
+    }
+
+    // ---------- Map markers (thumbnails shown when zoomed out) ----------
+
+    private SpriteRenderer settlementMarker;
+    private SpriteRenderer raidMarker;
+
+    private SpriteRenderer MakeMarker(string objectName, Sprite sprite)
+    {
+        var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
+        sr.transform.SetParent(transform, false);
+        sr.sprite = sprite;
+        sr.sortingOrder = 30;
+        sr.enabled = false;
+        return sr;
+    }
+
+    /// <summary>Settlement and raid thumbnails that keep a fixed on-screen size on the zoomed-out maps.</summary>
+    private void UpdateMarkers()
+    {
+        var cam = Camera.main;
+        if (cam == null)
+        {
+            return;
+        }
+        if (settlementMarker == null)
+        {
+            var campfire = Settlement.Database.buildings.Find(b => b.isTownCenter);
+            var art = ArtLibrary.Load();
+            settlementMarker = MakeMarker("SettlementMarker", campfire != null ? campfire.icon : null);
+            raidMarker = MakeMarker("RaidMarker", art != null ? art.enemyIcon : null);
+        }
+        bool zoomedOut = grid.CurrentDetail != SettlementGrid.Detail.Tiles;
+        float screenSize = cam.orthographicSize * 0.12f; // about 6% of the screen height
+
+        settlementMarker.enabled = zoomedOut && Settlement.IsFounded && settlementMarker.sprite != null;
+        if (settlementMarker.enabled)
+        {
+            Vector3 p = TownCenterPosition;
+            settlementMarker.transform.position = new Vector3(p.x, p.y, -1);
+            float h = settlementMarker.sprite.bounds.size.y;
+            settlementMarker.transform.localScale = Vector3.one * screenSize / Mathf.Max(0.01f, h);
+        }
+
+        liveEnemies.RemoveAll(e => e == null);
+        raidMarker.enabled = zoomedOut && waveInProgress && liveEnemies.Count > 0 && raidMarker.sprite != null;
+        if (raidMarker.enabled)
+        {
+            Vector3 sum = Vector3.zero;
+            foreach (var e in liveEnemies)
+            {
+                sum += e.transform.position;
+            }
+            Vector3 p = sum / liveEnemies.Count;
+            raidMarker.transform.position = new Vector3(p.x, p.y, -1);
+            float h = raidMarker.sprite.bounds.size.y;
+            raidMarker.transform.localScale = Vector3.one * screenSize / Mathf.Max(0.01f, h);
+        }
+    }
+
+    private void OnMapGrown(List<RectInt> newAreas)
+    {
+        grid.OnMapGrown(newAreas);
+        UpdateCameraLimits();
+    }
+
+    private float nextGrowCheck;
+
+    private const int MaxZonesPerCheck = 2;
+
+    /// <summary>
+    /// The map is endless up to its size limit, growing in zones: unexplored zones near
+    /// what you're looking at (and touching explored land) get generated, a few at a time.
+    /// </summary>
+    private void GrowMapTowardView()
+    {
+        if (Time.unscaledTime < nextGrowCheck)
+        {
+            return;
+        }
+        nextGrowCheck = Time.unscaledTime + 0.12f;
+        var cam = Camera.main;
+        // Only explore at normal zoom; zoomed out, the view always reaches unexplored land.
+        if (cam == null || cam.orthographicSize > grid.overviewZoom)
+        {
+            return;
+        }
+        var map = Settlement.Map;
+        float halfH = cam.orthographicSize, halfW = halfH * cam.aspect;
+        float near = Settlement.Database.growWhenWithin * grid.cellSize;
+        Vector3 c = cam.transform.position;
+        Vector2Int min = map.ZoneOf(Mathf.FloorToInt(c.x - halfW - near), Mathf.FloorToInt(c.y - halfH - near));
+        Vector2Int max = map.ZoneOf(Mathf.FloorToInt(c.x + halfW + near), Mathf.FloorToInt(c.y + halfH + near));
+
+        var candidates = new List<Vector2Int>();
+        for (int zy = min.y; zy <= max.y; zy++)
+        {
+            for (int zx = min.x; zx <= max.x; zx++)
+            {
+                if (!map.ZoneInLimit(zx, zy) || map.IsZoneRevealed(zx, zy))
+                {
+                    continue;
+                }
+                // Exploration spreads outward from known land.
+                if (map.IsZoneRevealed(zx - 1, zy) || map.IsZoneRevealed(zx + 1, zy) ||
+                    map.IsZoneRevealed(zx, zy - 1) || map.IsZoneRevealed(zx, zy + 1))
+                {
+                    candidates.Add(new Vector2Int(zx, zy));
+                }
+            }
+        }
+        if (candidates.Count == 0)
+        {
+            return;
+        }
+        // Nearest to the view centre first, a few per check so there's never a hitch.
+        Vector2 centreZone = new Vector2(c.x, c.y) / map.ChunkSize;
+        candidates.Sort((a, b) => (a + Vector2.one * 0.5f - centreZone).sqrMagnitude
+            .CompareTo((b + Vector2.one * 0.5f - centreZone).sqrMagnitude));
+        if (candidates.Count > MaxZonesPerCheck)
+        {
+            candidates.RemoveRange(MaxZonesPerCheck, candidates.Count - MaxZonesPerCheck);
+        }
+        Settlement.ExploreZones(candidates);
     }
 
     /// <summary>Move and zoom the camera onto a point (e.g. right after founding).</summary>
@@ -171,6 +311,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
 
         TrackLiveWave();
+        GrowMapTowardView();
+        UpdateMarkers();
     }
 
     // ---------- Buildings ----------
@@ -181,8 +323,32 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         foreach (var state in Settlement.State.buildings)
         {
             alive.Add(state.instanceId);
-            if (views.ContainsKey(state.instanceId))
+            if (views.TryGetValue(state.instanceId, out var existing))
             {
+                if (existing.Definition.id == state.definitionId)
+                {
+                    continue;
+                }
+                // Ranked up into a different building: rebuild its view in place.
+                bool wasSelected = Selected == existing;
+                if (wasSelected)
+                {
+                    Select(null);
+                }
+                Destroy(existing.gameObject);
+                views.Remove(state.instanceId);
+                var rankedDef = Settlement.Database.GetBuilding(state.definitionId);
+                if (rankedDef != null)
+                {
+                    var ranked = new GameObject().AddComponent<BuildingView>();
+                    ranked.transform.SetParent(grid.transform, true);
+                    ranked.Init(this, state, rankedDef);
+                    views.Add(state.instanceId, ranked);
+                    if (wasSelected)
+                    {
+                        Select(ranked);
+                    }
+                }
                 continue;
             }
             var def = Settlement.Database.GetBuilding(state.definitionId);
@@ -297,7 +463,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         return go;
     }
 
-    private Vector3 SettlementCenter => grid.AreaCenter(Vector2Int.zero, grid.Size);
+    private Vector3 SettlementCenter => grid.MapRect.center;
 
     /// <summary>The ground Defend troops hold: the area around all your buildings, plus a margin.</summary>
     public Rect TownZone

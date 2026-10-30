@@ -26,3 +26,5 @@ MonoBehaviour:
   attackRange: 0.55
   hitDelay: 0.3
   detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 9

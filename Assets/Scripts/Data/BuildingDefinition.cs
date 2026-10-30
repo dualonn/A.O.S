@@ -33,6 +33,20 @@ public class BuildingUpgrade
 
     [Tooltip("Applied to troops this building trains (e.g. speed).")]
     public UnitStatModifier trainedUnits = new UnitStatModifier();
+
+    public float extraTowerRange;
+    public int extraTowerDamage;
+
+    [Tooltip("Raises a tower's operator (when the upgrade makes the tower taller).")]
+    public float operatorLift;
+}
+
+/// <summary>How a building looks at one upgrade level: a looping set of frames.</summary>
+[Serializable]
+public class BuildingLook
+{
+    public List<Sprite> frames = new List<Sprite>();
+    public float fps = 6f;
 }
 
 /// <summary>A building type that can be placed on the free mode grid.</summary>
@@ -50,6 +64,9 @@ public class BuildingDefinition : GameData
     [Tooltip("Visual shown in the free mode scene.")]
     public GameObject prefab;
 
+    [Tooltip("Animated looks by upgrade level (index 0 = not upgraded). Uses the last one for higher levels.")]
+    public List<BuildingLook> looks = new List<BuildingLook>();
+
     [Tooltip("Footprint in grid cells.")]
     public Vector2Int size = Vector2Int.one;
 
@@ -61,6 +78,15 @@ public class BuildingDefinition : GameData
 
     [Header("Upgrades (unique to this building)")]
     public List<BuildingUpgrade> upgrades = new List<BuildingUpgrade>();
+
+    [Header("Rank up (after the last upgrade)")]
+    [Tooltip("The next age's version of this building (same footprint). Once fully upgraded and that age is reached, " +
+             "the building can be rebuilt in place as it, for less than building one fresh.")]
+    public BuildingDefinition rankUpTo;
+
+    public Requirements rankUpRequirements = new Requirements();
+
+    public float rankUpTime = 30f;
 
     [Tooltip("The settlement's founding building (Campfire). Nothing else can be built until one exists.")]
     public bool isTownCenter;
@@ -109,4 +135,21 @@ public class BuildingDefinition : GameData
     public UnitDefinition trainsUnit;
 
     public int maxUnits;
+
+    [Header("Tower (shoots raiders by itself)")]
+    [Tooltip("0 = not a tower.")]
+    public float towerRange;
+    public int towerDamage = 10;
+    public float towerCooldown = 1.5f;
+    public Sprite towerProjectile;
+
+    [Tooltip("The unit seen operating the tower (until the Renaissance, ranged buildings are crewed).")]
+    public Sprite operatorIdle;
+    public List<Sprite> operatorShoot = new List<Sprite>();
+
+    [Tooltip("Shoot frame on which the projectile is released.")]
+    public int operatorReleaseFrame = 2;
+
+    [Tooltip("The top of the parapet the operator stands behind, in cells from the building's bottom-left corner.")]
+    public Vector2 operatorOffset = new Vector2(1f, 1.3f);
 }

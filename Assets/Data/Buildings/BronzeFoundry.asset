@@ -15,8 +15,27 @@ MonoBehaviour:
   id: BronzeFoundry
   displayName: Bronze Foundry
   description: Smelts bronze.
-  icon: {fileID: 21300000, guid: cd68227c60b7e9f48939d080c53fb788, type: 3}
+  icon: {fileID: 21300000, guid: 991288107b48d384893338b81d7faf84, type: 3}
   prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 991288107b48d384893338b81d7faf84, type: 3}
+    - {fileID: 21300000, guid: 74b05578fc187b44aa4903aa312dd6c5, type: 3}
+    - {fileID: 21300000, guid: 25d79510b367d964890d367e1ef16036, type: 3}
+    - {fileID: 21300000, guid: 6d74c227e6fdcf74e946033b2854b751, type: 3}
+    fps: 7
+  - frames:
+    - {fileID: 21300000, guid: e0ea6aa2c3e078d448098b466e213344, type: 3}
+    - {fileID: 21300000, guid: 3f8fe3486d19d9a4c8116b48d9232fc6, type: 3}
+    - {fileID: 21300000, guid: e963bdb9e752ac3428e03ef5b7caf580, type: 3}
+    - {fileID: 21300000, guid: 9781d1ea9241e884e9a1236abfbeb9e6, type: 3}
+    fps: 7
+  - frames:
+    - {fileID: 21300000, guid: 7800928a4ad0e254ca7d2498340cc006, type: 3}
+    - {fileID: 21300000, guid: 38fd6d55b1065344a8393befc75695a3, type: 3}
+    - {fileID: 21300000, guid: 35d59f3830dd4ef44bdb109ae79d8bdd, type: 3}
+    - {fileID: 21300000, guid: 346ebcf667b22fa4f9a67d8230cc6d66, type: 3}
+    fps: 7
   size: {x: 3, y: 3}
   age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
   requirements:
@@ -55,6 +74,10 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
   - name: Bellows
     description: Hotter fires, faster smelting.
     requirements:
@@ -80,6 +103,18 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
   isTownCenter: 0
   requiredDeposit: {fileID: 11400000, guid: 7649324227f818f4b9c96ca6b1f9a2e8, type: 2}
   catchmentRadius: 3
@@ -98,3 +133,11 @@ MonoBehaviour:
   defensePower: 0
   trainsUnit: {fileID: 0}
   maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

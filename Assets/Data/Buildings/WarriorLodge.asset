@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: WarriorLodge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: WarriorLodge
+  displayName: Warrior Lodge
+  description: Trains Bronze Spearmen.
+  icon: {fileID: 21300000, guid: f9ac36fc545e01745a0ea321bdb41804, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f9ac36fc545e01745a0ea321bdb41804, type: 3}
+    - {fileID: 21300000, guid: 42a957443bef64e48afd2becf280cd02, type: 3}
+    - {fileID: 21300000, guid: c02fc5127e8a0584681d2cc4ec8377dc, type: 3}
+    - {fileID: 21300000, guid: e16a4f58b70eac4469955fb355f7aebc, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 5c19a9689ebbad74e9b9390cd1150557, type: 3}
+    - {fileID: 21300000, guid: 9493407d8e852da41980d1336a0a62b4, type: 3}
+    - {fileID: 21300000, guid: 5921fc14f450ecf44897dfaff9958477, type: 3}
+    - {fileID: 21300000, guid: ce21b718428fd2442ad3487d36451ab7, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 76d811ecdde31d843b9a753a75349cd5, type: 3}
+    - {fileID: 21300000, guid: e2b89589f2b943c418df1fda74385459, type: 3}
+    - {fileID: 21300000, guid: b4bebcccdbec6ea41bb89bf15f0f21d0, type: 3}
+    - {fileID: 21300000, guid: a6519d537556e80438add5a9a0bc9771, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: e0f87f48b5107bf4c9d955d53fdc6f4f, type: 3}
+    - {fileID: 21300000, guid: 41510115194ffb94eb296fd830da9f05, type: 3}
+    - {fileID: 21300000, guid: 38b2571371a9e0f4db9802106c1b5a08, type: 3}
+    - {fileID: 21300000, guid: 741fa56a8593eaf4f9348f8784db77a8, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 30
+  upgrades:
+  - name: Shield Wall Drills
+    description: 'Spearmen train to hold the line: +20% health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 30
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Bronze Spearheads
+    description: 'Sharper, heavier spearheads: +20% attack.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 50
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Great Hall
+    description: Room for one more spearman.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 80
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 80
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 260
+  housing: 0
+  workers: 3
+  production: []
+  defensePower: 2
+  trainsUnit: {fileID: 11400000, guid: 5b23e323322de3f4fbb64b9fa95f40a9, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

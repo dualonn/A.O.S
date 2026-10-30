@@ -3,179 +3,177 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Builds a free mode map from a seed: grassland with lakes, rivers and hills, then
-/// deposit patches (forest, berries, stone, ore...). The same seed always gives the same map.
+/// Builds the free mode map from a seed, one chunk at a time. Every tile depends only on its
+/// position and the seed, so chunks generated later line up seamlessly with earlier ones:
+/// grassland, lakes, hills, meandering rivers and deposit patches all continue across chunks.
 /// </summary>
 public static class MapGenerator
 {
-    public static MapData Generate(int seed, GameDatabase db)
+    /// <summary>Per-map generation constants, fixed when the map is created.</summary>
+    public class Settings
     {
-        int w = db.mapSize.x;
-        int h = db.mapSize.y;
+        public float hx, hy, mx, my, rx, ry;
+        public float heightMin, heightMax, moistMin, moistMax;
+        public float waterLine, hillLine;
+        public float riverWidth;
+        public float terrainScale;
+        public float[] depositX, depositY;
+    }
+
+    private const float RiverScale = 0.011f;
+
+    /// <summary>The starting area: the configured map size, centred in the size limit, on chunk lines.</summary>
+    public static RectInt InitialArea(GameDatabase db)
+    {
+        int c = Mathf.Max(4, db.chunkSize);
+        int w = Mathf.CeilToInt(db.mapSize.x / (float)c) * c;
+        int h = Mathf.CeilToInt(db.mapSize.y / (float)c) * c;
+        Vector2Int limit = Limit(db);
+        int x = Mathf.FloorToInt((limit.x - w) / 2f / c) * c;
+        int y = Mathf.FloorToInt((limit.y - h) / 2f / c) * c;
+        return new RectInt(Mathf.Max(0, x), Mathf.Max(0, y), Mathf.Min(w, limit.x), Mathf.Min(h, limit.y));
+    }
+
+    public static Vector2Int Limit(GameDatabase db) =>
+        new Vector2Int(Mathf.Max(db.mapSize.x, db.mapMaxSize.x), Mathf.Max(db.mapSize.y, db.mapMaxSize.y));
+
+    /// <summary>Create the map: the starting area plus any zones explored in a saved game.</summary>
+    public static MapData Create(int seed, GameDatabase db, List<int> savedZones)
+    {
+        Vector2Int limit = Limit(db);
         var deposits = new List<DepositType>(db.deposits.FindAll(d => d != null));
-        var map = new MapData(w, h, seed, deposits);
-        var rng = new System.Random(seed);
+        var map = new MapData(limit.x, limit.y, seed, Mathf.Max(4, db.chunkSize), deposits);
+        var initial = InitialArea(db);
+        map.Settings = BuildSettings(seed, db, initial, deposits.Count);
 
-        float hx = Offset(rng), hy = Offset(rng), mx = Offset(rng), my = Offset(rng);
-        float[] height = new float[w * h];
-        float[] moisture = new float[w * h];
-        for (int y = 0; y < h; y++)
+        var zones = new List<Vector2Int>();
+        int c = map.ChunkSize;
+        for (int cy = initial.yMin / c; cy < Mathf.CeilToInt(initial.yMax / (float)c); cy++)
         {
-            for (int x = 0; x < w; x++)
+            for (int cx = initial.xMin / c; cx < Mathf.CeilToInt(initial.xMax / (float)c); cx++)
             {
-                height[y * w + x] = Fbm(x * db.terrainScale + hx, y * db.terrainScale + hy, 5);
-                moisture[y * w + x] = Fbm(x * db.terrainScale * 1.6f + mx, y * db.terrainScale * 1.6f + my, 3);
+                zones.Add(new Vector2Int(cx, cy));
             }
         }
-        Stretch(height);
-        Stretch(moisture);
-
-        // Lakes are the lowest share of the map, hills the highest.
-        float waterLine = Percentile(height, db.waterShare);
-        float hillLine = Percentile(height, 1f - db.hillShare);
-        for (int y = 0; y < h; y++)
+        if (savedZones != null)
         {
-            for (int x = 0; x < w; x++)
+            foreach (int index in savedZones)
             {
-                float v = height[y * w + x];
-                map.SetTerrain(x, y, v <= waterLine ? TerrainType.Water : v >= hillLine ? TerrainType.Hill : TerrainType.Grass);
+                zones.Add(new Vector2Int(index % map.ChunksX, index / map.ChunksX));
             }
         }
-
-        for (int i = 0; i < db.riverCount; i++)
-        {
-            CarveRiver(map, height, rng);
-        }
-
-        PlaceDeposits(map, moisture, deposits, rng);
+        RevealZones(map, zones);
         return map;
     }
 
-    // ---------- Rivers ----------
-
-    /// <summary>Start high up and flow downhill until reaching water or the map edge.</summary>
-    private static void CarveRiver(MapData map, float[] height, System.Random rng)
+    /// <summary>
+    /// Explore zones: generate them if needed and make them part of the map.
+    /// Returns the tile rects of zones that just became explored (for drawing).
+    /// </summary>
+    public static List<RectInt> RevealZones(MapData map, IEnumerable<Vector2Int> zones)
     {
-        int w = map.Width, h = map.Height;
-        // Pick a fairly high starting tile.
-        int sx = 0, sy = 0;
-        float best = -1;
-        for (int i = 0; i < 40; i++)
+        var shown = new List<RectInt>();
+        foreach (var z in zones)
         {
-            int x = rng.Next(4, w - 4), y = rng.Next(4, h - 4);
-            if (height[y * w + x] > best)
+            if (!map.ZoneInLimit(z.x, z.y) || map.IsZoneRevealed(z.x, z.y))
             {
-                best = height[y * w + x];
-                sx = x;
-                sy = y;
+                continue;
             }
+            var rect = map.ZoneRect(z.x, z.y);
+            if (!map.IsChunkGenerated(z.x, z.y))
+            {
+                GenerateArea(map, rect);
+                map.MarkChunkGenerated(z.x, z.y);
+            }
+            map.SetZoneRevealed(z.x, z.y);
+            shown.Add(rect);
+        }
+        return shown;
+    }
+
+    // ---------- Settings ----------
+
+    /// <summary>Fix noise offsets and levels by sampling the starting area once.</summary>
+    private static Settings BuildSettings(int seed, GameDatabase db, RectInt sampleArea, int depositCount)
+    {
+        var rng = new System.Random(seed);
+        var s = new Settings
+        {
+            hx = Offset(rng), hy = Offset(rng), mx = Offset(rng), my = Offset(rng), rx = Offset(rng), ry = Offset(rng),
+            terrainScale = db.terrainScale,
+            riverWidth = 0.0045f * Mathf.Max(0, db.riverCount),
+            depositX = new float[depositCount],
+            depositY = new float[depositCount]
+        };
+        for (int i = 0; i < depositCount; i++)
+        {
+            s.depositX[i] = Offset(rng);
+            s.depositY[i] = Offset(rng);
         }
 
-        var visited = new HashSet<int>();
-        int cx = sx, cy = sy;
-        int[] dx = { 1, -1, 0, 0 };
-        int[] dy = { 0, 0, 1, -1 };
-        for (int step = 0; step < w * 2; step++)
+        var heights = new List<float>();
+        var moists = new List<float>();
+        for (int y = sampleArea.yMin; y < sampleArea.yMax; y += 2)
         {
-            if (step > 3 && map.GetTerrain(cx, cy) == TerrainType.Water)
+            for (int x = sampleArea.xMin; x < sampleArea.xMax; x += 2)
             {
-                return; // reached a lake or another river
+                heights.Add(RawHeight(s, x, y));
+                moists.Add(RawMoisture(s, x, y));
             }
-            map.SetTerrain(cx, cy, TerrainType.Water);
-            if (rng.NextDouble() < 0.35)
-            {
-                // Occasionally two tiles wide.
-                int k = rng.Next(4);
-                if (map.InBounds(cx + dx[k], cy + dy[k]))
-                {
-                    map.SetTerrain(cx + dx[k], cy + dy[k], TerrainType.Water);
-                }
-            }
-            visited.Add(cy * w + cx);
-            if (cx == 0 || cy == 0 || cx == w - 1 || cy == h - 1)
-            {
-                return; // flowed off the map
-            }
+        }
+        heights.Sort();
+        moists.Sort();
+        s.heightMin = heights[0];
+        s.heightMax = heights[heights.Count - 1];
+        s.moistMin = moists[0];
+        s.moistMax = moists[moists.Count - 1];
+        s.waterLine = Normalize(heights[Index(heights.Count, db.waterShare)], s.heightMin, s.heightMax);
+        s.hillLine = Normalize(heights[Index(heights.Count, 1f - db.hillShare)], s.heightMin, s.heightMax);
+        return s;
+    }
 
-            // Mostly downhill, with some wander.
-            int nextX = -1, nextY = -1;
-            float lowest = float.MaxValue;
-            for (int k = 0; k < 4; k++)
+    // ---------- Tiles ----------
+
+    private static void GenerateArea(MapData map, RectInt area)
+    {
+        var s = map.Settings;
+        for (int y = area.yMin; y < area.yMax; y++)
+        {
+            for (int x = area.xMin; x < area.xMax; x++)
             {
-                int nx = cx + dx[k], ny = cy + dy[k];
-                if (!map.InBounds(nx, ny) || visited.Contains(ny * w + nx))
+                float h = Normalize(RawHeight(s, x, y), s.heightMin, s.heightMax);
+                var t = h <= s.waterLine ? TerrainType.Water : h >= s.hillLine ? TerrainType.Hill : TerrainType.Grass;
+
+                // Rivers: a thin band along a noise contour meanders endlessly across chunks.
+                if (t != TerrainType.Hill && s.riverWidth > 0)
+                {
+                    float r = Mathf.PerlinNoise(x * RiverScale + s.rx, y * RiverScale + s.ry);
+                    if (Mathf.Abs(r - 0.5f) < s.riverWidth)
+                    {
+                        t = TerrainType.Water;
+                    }
+                }
+                map.SetTerrain(x, y, t);
+                map.SetDeposit(x, y, null);
+                if (t == TerrainType.Water)
                 {
                     continue;
                 }
-                float v = height[ny * w + nx] + (float)rng.NextDouble() * 0.04f;
-                if (v < lowest)
-                {
-                    lowest = v;
-                    nextX = nx;
-                    nextY = ny;
-                }
-            }
-            if (nextX < 0)
-            {
-                Pond(map, cx, cy, 2);
-                return;
-            }
-            // Stuck in a dip: pool into a small lake and keep going.
-            if (lowest > height[cy * w + cx] + 0.06f)
-            {
-                Pond(map, cx, cy, 2);
-            }
-            cx = nextX;
-            cy = nextY;
-        }
-    }
 
-    private static void Pond(MapData map, int cx, int cy, int r)
-    {
-        for (int y = -r; y <= r; y++)
-        {
-            for (int x = -r; x <= r; x++)
-            {
-                if (x * x + y * y <= r * r)
+                float m = Normalize(RawMoisture(s, x, y), s.moistMin, s.moistMax);
+                for (int i = 0; i < map.Deposits.Count; i++)
                 {
-                    map.SetTerrain(cx + x, cy + y, TerrainType.Water);
-                }
-            }
-        }
-    }
-
-    // ---------- Deposits ----------
-
-    private static void PlaceDeposits(MapData map, float[] moisture, List<DepositType> deposits, System.Random rng)
-    {
-        int w = map.Width;
-        foreach (var type in deposits)
-        {
-            float ox = Offset(rng), oy = Offset(rng);
-            for (int y = 0; y < map.Height; y++)
-            {
-                for (int x = 0; x < w; x++)
-                {
-                    if (map.GetDeposit(x, y) != null)
+                    var type = map.Deposits[i];
+                    if ((t == TerrainType.Hill) != type.onHills || m < type.minMoisture || m > type.maxMoisture)
                     {
                         continue;
                     }
-                    var t = map.GetTerrain(x, y);
-                    if (t == TerrainType.Water || (t == TerrainType.Hill) != type.onHills)
-                    {
-                        continue;
-                    }
-                    float m = moisture[y * w + x];
-                    if (m < type.minMoisture || m > type.maxMoisture)
-                    {
-                        continue;
-                    }
-                    float patch = Mathf.PerlinNoise(x * type.patchScale + ox, y * type.patchScale + oy);
-                    // A little speckle so patch edges aren't perfectly smooth.
-                    patch += ((float)rng.NextDouble() - 0.5f) * 0.08f;
+                    float patch = Mathf.PerlinNoise(x * type.patchScale + s.depositX[i], y * type.patchScale + s.depositY[i]);
+                    patch += (Hash01(x, y, map.Seed, i) - 0.5f) * 0.08f; // ragged edges
                     if (patch > type.rarity)
                     {
                         map.SetDeposit(x, y, type);
+                        break;
                     }
                 }
             }
@@ -183,6 +181,15 @@ public static class MapGenerator
     }
 
     // ---------- Noise helpers ----------
+
+    private static float RawHeight(Settings s, int x, int y) => Fbm(x * s.terrainScale + s.hx, y * s.terrainScale + s.hy, 5);
+
+    private static float RawMoisture(Settings s, int x, int y) =>
+        Fbm(x * s.terrainScale * 1.6f + s.mx, y * s.terrainScale * 1.6f + s.my, 3);
+
+    private static float Normalize(float v, float min, float max) => Mathf.Clamp01((v - min) / Mathf.Max(1e-5f, max - min));
+
+    private static int Index(int count, float share) => Mathf.Clamp(Mathf.RoundToInt(share * (count - 1)), 0, count - 1);
 
     private static float Offset(System.Random rng) => (float)rng.NextDouble() * 10000f;
 
@@ -199,27 +206,16 @@ public static class MapGenerator
         return sum / norm;
     }
 
-    /// <summary>Rescale values to span 0..1.</summary>
-    private static void Stretch(float[] values)
+    /// <summary>A stable pseudo-random 0..1 per tile (same answer whenever the chunk is generated).</summary>
+    private static float Hash01(int x, int y, int seed, int salt)
     {
-        float min = float.MaxValue, max = float.MinValue;
-        foreach (float v in values)
+        unchecked
         {
-            min = Mathf.Min(min, v);
-            max = Mathf.Max(max, v);
+            uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663) ^ (uint)(seed * 83492791) ^ (uint)(salt * 2654435761u);
+            h ^= h >> 13;
+            h *= 0x5bd1e995;
+            h ^= h >> 15;
+            return (h & 0xFFFFFF) / 16777216f;
         }
-        float range = Mathf.Max(1e-5f, max - min);
-        for (int i = 0; i < values.Length; i++)
-        {
-            values[i] = (values[i] - min) / range;
-        }
-    }
-
-    private static float Percentile(float[] values, float share)
-    {
-        var copy = (float[])values.Clone();
-        Array.Sort(copy);
-        int index = Mathf.Clamp(Mathf.RoundToInt(share * (copy.Length - 1)), 0, copy.Length - 1);
-        return copy[index];
     }
 }

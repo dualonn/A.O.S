@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Watchtower
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Watchtower
+  displayName: Watchtower
+  description: An archer on an open platform shoots raiders in range.
+  icon: {fileID: 21300000, guid: 4516d8e50bc09c34fbf95ea57c4f93bd, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 4516d8e50bc09c34fbf95ea57c4f93bd, type: 3}
+    - {fileID: 21300000, guid: d9a6ab607e621e541bfdcc0384082d11, type: 3}
+    - {fileID: 21300000, guid: 3f45a2edf94ca1a4cb9df7891e757c28, type: 3}
+    - {fileID: 21300000, guid: cd01683655482bf41bb37eecf18ee1e6, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 483061995b3fc4a479c01b8ed42332d6, type: 3}
+    - {fileID: 21300000, guid: 4e68d4a47f5e03a4cb5ab87658c46562, type: 3}
+    - {fileID: 21300000, guid: 6b57714a1f8160b418118459246e6e46, type: 3}
+    - {fileID: 21300000, guid: d1dc8706b59e6e649b6e1efd16a367e4, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: cbd85c78eac191f4ab30af2fc2ee4ab6, type: 3}
+    - {fileID: 21300000, guid: 3a745cedfcccebf4f9fd9731a56be8d9, type: 3}
+    - {fileID: 21300000, guid: e2bd69261bc4c03429be895705c49f09, type: 3}
+    - {fileID: 21300000, guid: f405ac54380fc8940a60cb08ab2f6bf6, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 735e28b398a2d154ea4212589e9f5b78, type: 3}
+    - {fileID: 21300000, guid: f8db1eb3865b7cd4e8a5bc224784bb9d, type: 3}
+    - {fileID: 21300000, guid: 32a650aa095120f419e6175856d8997a, type: 3}
+    - {fileID: 21300000, guid: 2f697d97bca4c244389b0d28e82e2a40, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 70
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 40
+  upgrades:
+  - name: Taller Tower
+    description: 'See and shoot further: +1.5 range.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0.2
+  - name: Bronze-Tipped Arrows
+    description: 'Arrows bite deeper: +6 damage.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 6
+    operatorLift: 0
+  - name: Bronze Plating
+    description: 'Bronze sheets on the parapet: +80 health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 80
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 150
+  housing: 0
+  workers: 1
+  production: []
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 6
+  towerDamage: 15
+  towerCooldown: 1.3
+  towerProjectile: {fileID: 21300000, guid: e564e8df4bd03384b8538f742e0443ac, type: 3}
+  operatorIdle: {fileID: 21300000, guid: 64cf9caa9961c9e448990cd9b75505c5, type: 3}
+  operatorShoot:
+  - {fileID: 21300000, guid: 13bec3701eafb2747bcd78cdbbd9bd9c, type: 3}
+  - {fileID: 21300000, guid: ea3a2563cc7baa846ab304fe20932dc5, type: 3}
+  - {fileID: 21300000, guid: be32b163f4c5e7541a339c338175b040, type: 3}
+  - {fileID: 21300000, guid: f50fdcee91a439d4ebde30c525e06408, type: 3}
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.45}

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: SwiftFeet
   displayName: Swift Feet
-  description: Melee troops move 20% faster.
+  description: +6% speed for all troops.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -31,9 +31,11 @@ MonoBehaviour:
       amount: 40
   researchTime: 35
   unitModifiers:
-  - troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  - troopClass: {fileID: 0}
     healthMultiplier: 1
     attackMultiplier: 1
-    speedMultiplier: 1.2
+    speedMultiplier: 1.06
     cooldownMultiplier: 1
+    rangeMultiplier: 1
   productionModifiers: []
+  buildingHealthMultiplier: 1

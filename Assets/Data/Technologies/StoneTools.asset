@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: StoneTools
   displayName: Stone Tools
-  description: 'Better tools: +20% wood. Unlocks the Quarry.'
+  description: +5% output from all buildings. Unlocks the Quarry.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -30,5 +30,6 @@ MonoBehaviour:
   researchTime: 30
   unitModifiers: []
   productionModifiers:
-  - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
-    multiplier: 1.2
+  - resource: {fileID: 0}
+    multiplier: 1.05
+  buildingHealthMultiplier: 1

@@ -405,12 +405,29 @@ public class FreeModeHUD : MonoBehaviour
         }
 
         // Upgrades: the next tier for this building, or "fully upgraded".
-        bool hasUpgrades = def.upgrades.Count > 0;
+        bool hasUpgrades = def.upgrades.Count > 0 || def.rankUpTo != null;
         upgradeButton.gameObject.SetActive(hasUpgrades && state.IsBuilt);
         if (hasUpgrades)
         {
             var next = settlement.NextUpgrade(state);
-            if (next == null)
+            var rankTarget = settlement.RankUpTarget(state);
+            if (next == null && rankTarget != null)
+            {
+                // Fully upgraded: offer to rank up into the next age's version.
+                if (state.rankingUp)
+                {
+                    upgradeButton.interactable = false;
+                    upgradeLabel.text = $"<b>Ranking up: {rankTarget.displayName}</b>\n<size=80%><color=#fd6>{state.upgradeProgress:P0}</color></size>";
+                }
+                else
+                {
+                    bool can = settlement.CanRankUp(state, out string why);
+                    upgradeButton.interactable = can;
+                    upgradeLabel.text = $"<b>Rank up: {rankTarget.displayName}</b>\n" +
+                                        $"<size=80%>{SubtitleFor(def.rankUpRequirements.cost, can, why)}</size>";
+                }
+            }
+            else if (next == null)
             {
                 upgradeButton.interactable = false;
                 upgradeLabel.text = "<b>Fully upgraded</b>";
@@ -743,6 +760,32 @@ public class FreeModeHUD : MonoBehaviour
             return "";
         }
         var next = settlement.NextUpgrade(view.State);
+        var rankTarget = settlement.RankUpTarget(view.State);
+        if (next == null && rankTarget != null)
+        {
+            var from = view.Definition;
+            var now = settlement.StatsOf(view.State);
+            var then = Settlement.StatsOf(rankTarget, 0);
+            var rank = new StringBuilder($"<b>Rank up into a {rankTarget.displayName}</b>\n");
+            rank.Append($"<color=#ccc>Rebuild it in place as the {rankTarget.age.displayName} version. " +
+                        "Its upgrades start again from the first tier.</color>\n");
+            if (!string.IsNullOrEmpty(rankTarget.description))
+            {
+                rank.Append($"<color=#ccc>{rankTarget.description}</color>\n");
+            }
+            rank.Append($"Cost: {CostText(from.rankUpRequirements.cost)}   Time: {from.rankUpTime:0}s\n");
+            var changes = new List<string>();
+            if (then.housing != now.housing) changes.Add($"housing {now.housing} to {then.housing}");
+            if (then.maxHealth != now.maxHealth) changes.Add($"health {now.maxHealth} to {then.maxHealth}");
+            if (rankTarget.trainsUnit != null && rankTarget.trainsUnit != from.trainsUnit) changes.Add($"trains {rankTarget.trainsUnit.displayName}s");
+            if (then.maxUnits != now.maxUnits && rankTarget.trainsUnit != null) changes.Add($"{then.maxUnits} troops");
+            if (changes.Count > 0)
+            {
+                rank.Append($"<color=#8f8>{string.Join(", ", changes)}</color>\n");
+            }
+            AppendMissing(rank, settlement.CanRankUp(view.State, out string why), why);
+            return rank.ToString().TrimEnd();
+        }
         if (next == null)
         {
             return "<b>Fully upgraded</b>";
@@ -778,7 +821,14 @@ public class FreeModeHUD : MonoBehaviour
     private void UpgradeSelected()
     {
         var view = controller.Selected;
-        if (view != null && !settlement.TryStartUpgrade(view.State, out string reason))
+        if (view == null)
+        {
+            return;
+        }
+        bool rankUp = settlement.NextUpgrade(view.State) == null && settlement.RankUpTarget(view.State) != null;
+        string reason;
+        bool started = rankUp ? settlement.TryStartRankUp(view.State, out reason) : settlement.TryStartUpgrade(view.State, out reason);
+        if (!started)
         {
             AddMessage(reason.Split('\n')[0]);
         }

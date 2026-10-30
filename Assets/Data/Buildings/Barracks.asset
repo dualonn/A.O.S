@@ -15,8 +15,33 @@ MonoBehaviour:
   id: Barracks
   displayName: Barracks
   description: Trains Clubmen to defend the settlement.
-  icon: {fileID: 21300000, guid: c7c65ecd471dd0e4385a43aeed0e5ffe, type: 3}
+  icon: {fileID: 21300000, guid: b07de582c5a51ca45852c75cfc7714d7, type: 3}
   prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: b07de582c5a51ca45852c75cfc7714d7, type: 3}
+    - {fileID: 21300000, guid: 5962a3331297f43499763f745a3d05fa, type: 3}
+    - {fileID: 21300000, guid: 521fc3f3c043b634195578df426c3bac, type: 3}
+    - {fileID: 21300000, guid: d4870d5dafb053c4392167b8f12c7bde, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 779408b2e74e035449e983a8524a9b90, type: 3}
+    - {fileID: 21300000, guid: 472e779340615c64f83973219bf3114b, type: 3}
+    - {fileID: 21300000, guid: 3b816bba295d1294580be85a47220340, type: 3}
+    - {fileID: 21300000, guid: 77221ab3482e0524499caacec91d4cb7, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 49118817d26098b4c84e34c1d0526098, type: 3}
+    - {fileID: 21300000, guid: 27caea705874736488b022af6de665e9, type: 3}
+    - {fileID: 21300000, guid: e0e61a7280c63ea41afb0312646beeb5, type: 3}
+    - {fileID: 21300000, guid: 5ba34eb0ead516e478a00f431dde8318, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: a95dce6fab3bf2a4ea4153830c748637, type: 3}
+    - {fileID: 21300000, guid: f7d928e170c705f46850a188daab1de4, type: 3}
+    - {fileID: 21300000, guid: dc8f036f13c6cfc438c484a734f03609, type: 3}
+    - {fileID: 21300000, guid: 4e21a8b20b343d8488570926032a8e19, type: 3}
+    fps: 5
   size: {x: 3, y: 3}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -55,6 +80,10 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1.25
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
   - name: Bigger Bunks
     description: Room for one more Clubman.
     requirements:
@@ -80,6 +109,10 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
   - name: Hardened Clubs
     description: Fire-hardened clubs and hide padding.
     requirements:
@@ -105,6 +138,22 @@ MonoBehaviour:
       attackMultiplier: 1.2
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: f7bfc11e8906da44f8d120f50d6b8a56, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 40
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 20
+  rankUpTime: 30
   isTownCenter: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
@@ -121,3 +170,11 @@ MonoBehaviour:
   defensePower: 1
   trainsUnit: {fileID: 11400000, guid: a0aef520dc1fb324ab64c1aada202de8, type: 2}
   maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

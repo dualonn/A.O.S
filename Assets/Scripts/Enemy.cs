@@ -156,13 +156,15 @@ public class Enemy : Unit
         if (CanSwing)
         {
             var target = buildingTarget;
-            StartSwingAt(() =>
+            System.Action hit = () =>
             {
                 if (target != null && raid.IsStanding(target))
                 {
                     raid.HitBuilding(target, this);
                 }
-            });
+            };
+            // Archers shoot fire arrows at buildings; melee raiders smash them.
+            StartSwingAt(IsRanged ? () => Shoot(point, hit) : hit);
         }
     }
 

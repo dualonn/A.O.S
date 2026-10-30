@@ -30,5 +30,7 @@ MonoBehaviour:
       amount: 200
     - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
       amount: 150
-  playerUnits: []
-  enemyUnits: []
+  playerUnits:
+  - {fileID: 11400000, guid: 5b23e323322de3f4fbb64b9fa95f40a9, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 868f05ff54690fa41bb804085bfaa94c, type: 2}

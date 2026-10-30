@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: House
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: House
+  displayName: Mud-Brick House
+  description: Sun-dried brick walls and a flat roof. Houses more people than a hut.
+  icon: {fileID: 21300000, guid: 7b652bab2d78ed44d9f047c981f7d047, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7b652bab2d78ed44d9f047c981f7d047, type: 3}
+    - {fileID: 21300000, guid: 7f28369c24a80eb468c69e750ff90e1d, type: 3}
+    - {fileID: 21300000, guid: 96253116d7c805a40a751752cedb2edb, type: 3}
+    - {fileID: 21300000, guid: ab530f89e592a0e4593940147c0c8cb2, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 9f898107264f5df44bf99e5873a8a758, type: 3}
+    - {fileID: 21300000, guid: 5ebcd58ff3ad37649a011f68aec1c95b, type: 3}
+    - {fileID: 21300000, guid: 241cfb486bdf44840b1e849fba6a6860, type: 3}
+    - {fileID: 21300000, guid: 858ab9473c01c3847ac73dbe3804bcf9, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 6177aa61fdc7fd646bf8f172a0fd4952, type: 3}
+    - {fileID: 21300000, guid: 53d6e849f724c394caf6372521f6a6f5, type: 3}
+    - {fileID: 21300000, guid: dfb9779ecc00d4e4d8d76082fb646b98, type: 3}
+    - {fileID: 21300000, guid: cd3853b199724e04ba28b22240cb99d7, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 50
+  upgrades:
+  - name: Whitewashed Walls
+    description: Lime plaster keeps the rain off the bricks.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 30
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 1
+    extraHealth: 60
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Upper Room
+    description: A second storey on the roof, with a reed awning.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 50
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 3
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 180
+  housing: 11
+  workers: 0
+  production: []
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

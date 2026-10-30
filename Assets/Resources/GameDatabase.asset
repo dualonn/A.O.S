@@ -28,19 +28,30 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 1541f213eb13ed74789de6010715aeb1, type: 2}
   - {fileID: 11400000, guid: e69220c9ffb340c438e2971f6189fef1, type: 2}
   - {fileID: 11400000, guid: 78f92c662a35c324f886d3ee392e1e73, type: 2}
+  - {fileID: 11400000, guid: 05b52b464aef59544a9e2194253128d9, type: 2}
+  - {fileID: 11400000, guid: b72bfbf5eb9df3a40b406806b18a29b7, type: 2}
+  - {fileID: 11400000, guid: f7bfc11e8906da44f8d120f50d6b8a56, type: 2}
+  - {fileID: 11400000, guid: 242a84b775cd6784d8e8209474f4f171, type: 2}
   technologies:
   - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
   - {fileID: 11400000, guid: 53c62db14bf15104a8b3276f2156db9d, type: 2}
   - {fileID: 11400000, guid: 9c92e89968ceb5044bdf08fb2723be88, type: 2}
   - {fileID: 11400000, guid: b1f9b14cc7bcbce43b1ce9b8709d7ab7, type: 2}
   - {fileID: 11400000, guid: d388d99fbc34e7149b63fa16783aa2cb, type: 2}
+  - {fileID: 11400000, guid: b93e58db496df4346a9fd66981f1a2d7, type: 2}
+  - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
+  - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+  - {fileID: 11400000, guid: 0eebb2033cd874541b56fedfdf32f9cf, type: 2}
   startingResources:
   - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
     amount: 100
   - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
     amount: 120
   startingPopulation: 3
-  mapSize: {x: 160, y: 110}
+  mapSize: {x: 160, y: 112}
+  mapMaxSize: {x: 2048, y: 2048}
+  chunkSize: 16
+  growWhenWithin: 12
   deposits:
   - {fileID: 11400000, guid: a8f92a5f3043afa409d059f969e6c070, type: 2}
   - {fileID: 11400000, guid: 882f1d4129e7b3c4f83d909ba36418da, type: 2}

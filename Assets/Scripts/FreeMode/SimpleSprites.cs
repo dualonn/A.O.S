@@ -5,6 +5,37 @@ public static class SimpleSprites
 {
     private static Sprite square;
     private static Sprite gridCell;
+    private static Sprite gridBlock;
+
+    /// <summary>An 8x8-cell block of grid lines (one world unit per cell), for tiling big areas cheaply.</summary>
+    public static Sprite GridBlock
+    {
+        get
+        {
+            if (gridBlock == null)
+            {
+                const int cell = 16, size = cell * 8;
+                var tex = new Texture2D(size, size)
+                {
+                    filterMode = FilterMode.Point,
+                    wrapMode = TextureWrapMode.Repeat
+                };
+                var clear = new Color(1, 1, 1, 0);
+                var line = new Color(1, 1, 1, 0.5f);
+                for (int y = 0; y < size; y++)
+                {
+                    for (int x = 0; x < size; x++)
+                    {
+                        tex.SetPixel(x, y, x % cell == 0 || y % cell == 0 ? line : clear);
+                    }
+                }
+                tex.Apply();
+                gridBlock = Sprite.Create(tex, new Rect(0, 0, size, size), Vector2.zero, cell, 0, SpriteMeshType.FullRect);
+                gridBlock.name = "GridBlock";
+            }
+            return gridBlock;
+        }
+    }
 
     /// <summary>A white 1x1 world-unit square, pivot bottom-left.</summary>
     public static Sprite Square

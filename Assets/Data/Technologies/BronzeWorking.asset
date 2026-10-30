@@ -33,3 +33,4 @@ MonoBehaviour:
   researchTime: 60
   unitModifiers: []
   productionModifiers: []
+  buildingHealthMultiplier: 1

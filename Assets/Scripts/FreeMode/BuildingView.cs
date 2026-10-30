@@ -55,18 +55,20 @@ public class BuildingView : MonoBehaviour
             var visual = Instantiate(def.prefab, transform);
             visual.transform.position = grid.AreaCenter(state.cell, def.size);
         }
-        else if (def.icon != null)
+        else if (def.icon != null || def.looks.Count > 0)
         {
             body = new GameObject("Sprite").AddComponent<SpriteRenderer>();
             body.transform.SetParent(transform, false);
-            body.sprite = def.icon;
+            var first = CurrentFrame() ?? def.icon;
+            body.sprite = first;
             // Fit the sprite to the footprint whatever its pixels-per-unit.
-            Vector2 spriteSize = def.icon.bounds.size;
+            Vector2 spriteSize = first.bounds.size;
             body.transform.localScale = new Vector3(size.x / spriteSize.x, size.y / spriteSize.y, 1);
             body.transform.localPosition = new Vector3(
-                -def.icon.bounds.min.x * body.transform.localScale.x,
-                -def.icon.bounds.min.y * body.transform.localScale.y, 0);
+                -first.bounds.min.x * body.transform.localScale.x,
+                -first.bounds.min.y * body.transform.localScale.y, 0);
             body.sortingOrder = SortingOrder;
+            animationPhase = Random.Range(0f, 10f);
         }
         else
         {
@@ -150,8 +152,158 @@ public class BuildingView : MonoBehaviour
         hovered = !controller.Placer.IsPlacing && controller.Grid != null &&
                   Contains(controller.Grid.WorldToCell(SettlementGrid.MouseWorld()));
         Refresh();
+        Animate();
         UpdateShake();
         TrainTroops();
+        TowerAttack();
+    }
+
+    // ---------- Animation and looks ----------
+
+    private float animationPhase;
+
+    /// <summary>The frame to show now: this upgrade level's look, looping (still while building or ruined).</summary>
+    private Sprite CurrentFrame()
+    {
+        var looks = Definition.looks;
+        if (looks == null || looks.Count == 0)
+        {
+            return null;
+        }
+        var look = looks[Mathf.Clamp(State.upgradeLevel, 0, looks.Count - 1)];
+        if (look.frames == null || look.frames.Count == 0)
+        {
+            return null;
+        }
+        bool active = State.IsBuilt && State.health > 0;
+        int frame = active ? (int)((Time.time + animationPhase) * look.fps) % look.frames.Count : 0;
+        return look.frames[frame];
+    }
+
+    private void Animate()
+    {
+        if (body == null)
+        {
+            return;
+        }
+        var frame = CurrentFrame();
+        if (frame != null && body.sprite != frame)
+        {
+            body.sprite = frame;
+        }
+    }
+
+    // ---------- Towers (crewed by a visible operator) ----------
+
+    private const float OperatorFrameTime = 0.11f;
+    private float nextTowerShot;
+    private SpriteRenderer towerOperator;
+    private float shootStart = -99f;
+    private Unit pendingTarget;
+    private bool releasePending;
+
+    /// <summary>Crew sprites are cut at the waist this far (sprite units) above their pivot.</summary>
+    private const float CrewCutAbovePivot = 0.3f;
+
+    private SpriteRenderer TowerOperator()
+    {
+        if (towerOperator == null && Definition.operatorIdle != null)
+        {
+            towerOperator = new GameObject("Operator").AddComponent<SpriteRenderer>();
+            towerOperator.transform.SetParent(transform, false);
+            // Same scale as troops in the field.
+            towerOperator.transform.localScale = Vector3.one * controller.unitScale;
+            towerOperator.sprite = Definition.operatorIdle;
+            towerOperator.sortingOrder = SortingOrder;
+        }
+        if (towerOperator != null)
+        {
+            // Upgrades that make the tower taller lift the operator with the deck.
+            float lift = 0f;
+            for (int i = 0; i < State.upgradeLevel && i < Definition.upgrades.Count; i++)
+            {
+                lift += Definition.upgrades[i].operatorLift;
+            }
+            // Just in front of the tower: crew sprites are cut at the waist, and that cut sits on the
+            // parapet top (operatorOffset), so the archer reads as standing behind it.
+            float pivotToCut = CrewCutAbovePivot * towerOperator.transform.localScale.y;
+            towerOperator.transform.localPosition = new Vector3(Definition.operatorOffset.x, Definition.operatorOffset.y + lift - pivotToCut, -0.001f);
+        }
+        return towerOperator;
+    }
+
+    /// <summary>Towers shoot the nearest raider in range; the operator draws and looses each arrow.</summary>
+    private void TowerAttack()
+    {
+        if (Definition.towerRange <= 0)
+        {
+            return;
+        }
+        bool working = controller.Settlement.IsWorking(State, Definition);
+        var op = TowerOperator();
+        if (op != null)
+        {
+            op.enabled = working; // nobody on a ruined or unfinished tower
+            AnimateOperator(op);
+        }
+        if (!working)
+        {
+            return;
+        }
+
+        var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        Vector3 launch = op != null ? op.transform.position + Vector3.up * 0.45f
+            : controller.Grid.AreaCenter(State.cell, Definition.size) + Vector3.up * Definition.size.y * 0.45f;
+
+        // Release on the right frame of the draw animation.
+        if (releasePending && Time.time >= shootStart + OperatorFrameTime * Definition.operatorReleaseFrame)
+        {
+            releasePending = false;
+            if (pendingTarget != null && pendingTarget.IsAlive)
+            {
+                if (Definition.towerProjectile != null)
+                {
+                    Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, 11f, stats.towerDamage, null);
+                }
+                else
+                {
+                    pendingTarget.TakeDamage(stats.towerDamage);
+                }
+            }
+        }
+
+        if (Time.time < nextTowerShot)
+        {
+            return;
+        }
+        var target = Unit.FindNearestEnemy(Team.Player, launch, stats.towerRange);
+        if (target == null)
+        {
+            nextTowerShot = Time.time + 0.25f; // look again shortly
+            return;
+        }
+        nextTowerShot = Time.time + Definition.towerCooldown;
+        pendingTarget = target;
+        releasePending = true;
+        shootStart = Time.time;
+        if (op != null)
+        {
+            op.flipX = target.transform.position.x < op.transform.position.x;
+        }
+    }
+
+    private void AnimateOperator(SpriteRenderer op)
+    {
+        var frames = Definition.operatorShoot;
+        float since = Time.time - shootStart;
+        if (frames != null && frames.Count > 0 && since < OperatorFrameTime * frames.Count)
+        {
+            op.sprite = frames[Mathf.Clamp((int)(since / OperatorFrameTime), 0, frames.Count - 1)];
+        }
+        else
+        {
+            op.sprite = Definition.operatorIdle;
+        }
     }
 
     private void Refresh()
@@ -185,6 +337,7 @@ public class BuildingView : MonoBehaviour
         // Label: name (with upgrade level) on hover/selection, plus any status worth knowing.
         string status = !built ? "<color=#9cf>Building</color>"
             : ruined ? "<color=#ff7070>Ruined</color>"
+            : State.rankingUp ? "<color=#fd6>Ranking up</color>"
             : State.upgrading ? "<color=#fd6>Upgrading</color>"
             : "";
         string name = State.upgradeLevel > 0 ? $"{Definition.displayName} <size=75%>Lv {State.upgradeLevel + 1}</size>" : Definition.displayName;

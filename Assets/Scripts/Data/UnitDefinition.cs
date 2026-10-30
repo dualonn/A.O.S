@@ -37,4 +37,10 @@ public class UnitDefinition : ScriptableObject
 
     [Tooltip("How far away (world units) the unit notices enemies.")]
     public float detectionRange = 2.5f;
+
+    [Header("Ranged (leave the projectile empty for melee)")]
+    [Tooltip("Arrow/stone sprite. When set, the unit shoots: damage lands when the projectile arrives.")]
+    public Sprite projectile;
+
+    public float projectileSpeed = 9f;
 }

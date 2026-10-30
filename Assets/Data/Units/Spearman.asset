@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Spearman
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Bronze Spearman
+  icon: {fileID: 21300000, guid: 15a451ff7071b0e48a3937bbcaa2f90b, type: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 843689390167708181, guid: e2be4506bcbc9934dbbd3da5f1ebe1bd, type: 3}
+  cost: 0
+  populationCost: 1
+  maxHealth: 150
+  moveSpeed: 0.85
+  attackPower: 15
+  attackCooldown: 1.1
+  attackRange: 0.75
+  hitDelay: 0.3
+  detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 9

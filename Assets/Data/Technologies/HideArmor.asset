@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: HideArmor
   displayName: Hide Armor
-  description: +25% melee health.
+  description: +6% health for all troops.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -29,9 +29,11 @@ MonoBehaviour:
       amount: 80
   researchTime: 40
   unitModifiers:
-  - troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-    healthMultiplier: 1.25
+  - troopClass: {fileID: 0}
+    healthMultiplier: 1.06
     attackMultiplier: 1
     speedMultiplier: 1
     cooldownMultiplier: 1
+    rangeMultiplier: 1
   productionModifiers: []
+  buildingHealthMultiplier: 1

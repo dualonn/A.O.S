@@ -10,7 +10,7 @@ using static Painter;
 /// then assigns them to buildings, resources and the ArtLibrary.
 /// Re-running overwrites the generated files only; hand-made art elsewhere is untouched.
 /// </summary>
-public static class PlaceholderArt
+public static partial class PlaceholderArt
 {
     private const string Root = "Assets/Art/Generated";
     private const float BuildingPPU = 128f;
@@ -47,30 +47,16 @@ public static class PlaceholderArt
             Directory.CreateDirectory(Path.Combine(Root, folder));
         }
 
-        var buildingDrawers = new Dictionary<string, Action<Painter>>
-        {
-            { "Hut", DrawHut },
-            { "ForagerCamp", DrawForagerCamp },
-            { "LumberCamp", DrawLumberCamp },
-            { "Quarry", DrawQuarry },
-            { "Barracks", DrawBarracks },
-            { "BronzeFoundry", DrawFoundry },
-            { "Campfire", DrawCampfire },
-        };
-
         var database = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         if (database != null)
         {
+            // Every building: one look per upgrade level, each a loop of animation frames.
             foreach (var def in database.buildings)
             {
-                if (def == null || !buildingDrawers.TryGetValue(def.id, out var draw))
+                if (def != null)
                 {
-                    continue;
+                    GenerateBuildingLooks(def);
                 }
-                var painter = new Painter(def.size.x, def.size.y, BuildingPPU);
-                draw(painter);
-                def.icon = Save(painter, $"Buildings/{def.id}.png", BuildingPPU, Vector2.zero);
-                EditorUtility.SetDirty(def);
             }
 
             var resourceDrawers = new Dictionary<string, Action<Painter>>
@@ -155,6 +141,33 @@ public static class PlaceholderArt
             EditorUtility.SetDirty(raiderDef);
         }
 
+        // Bronze Age units, the Watchtower crew and its arrows
+        var spearmanDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/Spearman.asset");
+        var bronzeRaiderDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/BronzeRaider.asset");
+        if (spearmanDef != null)
+        {
+            spearmanDef.prefab = BuildWarrior(SpearmanStyle, false, spearmanDef);
+            spearmanDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Spearman/Spearman_Idle.png");
+            EditorUtility.SetDirty(spearmanDef);
+        }
+        if (bronzeRaiderDef != null)
+        {
+            bronzeRaiderDef.prefab = BuildWarrior(BronzeRaiderStyle, true, bronzeRaiderDef);
+            bronzeRaiderDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/BronzeRaider/BronzeRaider_Idle.png");
+            EditorUtility.SetDirty(bronzeRaiderDef);
+        }
+        var arrow = ArrowSprite();
+        var crew = BuildOperator(TowerArcherStyle);
+        var watchtower = database != null ? database.GetBuilding("Watchtower") : null;
+        if (watchtower != null)
+        {
+            watchtower.towerProjectile = arrow;
+            watchtower.operatorIdle = crew.idle;
+            watchtower.operatorShoot = crew.shoot;
+            watchtower.operatorReleaseFrame = 2;
+            EditorUtility.SetDirty(watchtower);
+        }
+
         // Deposit sprites on the map
         if (database != null)
         {
@@ -233,181 +246,6 @@ public static class PlaceholderArt
         var p = new Painter(64, 64, 1);
         p.Box(V(32, 32), V(64, 64), 14, Color.white);
         return Save(p, "UI/Panel.png", 100, new Vector2(0.5f, 0.5f), border: new Vector4(16, 16, 16, 16));
-    }
-
-    // ---------- Buildings (drawn in grid cells; 1 unit = 1 cell) ----------
-
-    private static void DrawHut(Painter p)
-    {
-        p.Ellipse(V(1, 0.32f), V(0.85f, 0.18f), Shadow);
-        p.OutlinedBox(0.45f, 0.3f, 1.55f, 1.05f, 0.03f, Mud);
-        // Wall planks
-        for (float x = 0.62f; x < 1.5f; x += 0.2f)
-        {
-            p.InkLine(V(x, 0.33f), V(x, 1.0f), 0.5f);
-        }
-        p.OutlinedBox(0.84f, 0.3f, 1.16f, 0.78f, 0.12f, Dark);
-        var roof = new[] { V(0.22f, 0.92f), V(1.78f, 0.92f), V(1f, 1.82f) };
-        p.OutlinedPolygon(roof, Straw);
-        for (int i = 1; i < 6; i++)
-        {
-            float t = i / 6f;
-            p.Line(V(1f, 1.78f), V(Mathf.Lerp(0.3f, 1.7f, t), 0.96f), 0.02f, StrawDark);
-        }
-        p.OutlinedLine(V(0.86f, 1.66f), V(1.14f, 1.98f), 0.05f, WoodDark);
-        p.OutlinedLine(V(1.14f, 1.66f), V(0.86f, 1.98f), 0.05f, WoodDark);
-    }
-
-    private static void DrawForagerCamp(Painter p)
-    {
-        p.Ellipse(V(1, 0.32f), V(0.9f, 0.18f), Shadow);
-        // Hide tent
-        p.OutlinedLine(V(0.38f, 0.3f), V(0.8f, 1.42f), 0.04f, WoodDark);
-        p.OutlinedLine(V(1.12f, 0.3f), V(0.62f, 1.42f), 0.04f, WoodDark);
-        p.OutlinedPolygon(new[] { V(0.18f, 0.3f), V(1.22f, 0.3f), V(0.7f, 1.25f) }, Hide);
-        p.OutlinedPolygon(new[] { V(0.54f, 0.3f), V(0.86f, 0.3f), V(0.7f, 0.78f) }, Dark);
-        // Berry bush
-        var bush = new[] { (V(1.5f, 0.66f), 0.36f), (V(1.24f, 0.52f), 0.24f), (V(1.76f, 0.5f), 0.24f) };
-        foreach (var (c, r) in bush) p.Circle(c, r + p.Outline, p.Ink);
-        foreach (var (c, r) in bush) p.Circle(c, r, Leaf);
-        p.Circle(V(1.42f, 0.78f), 0.12f, LeafLight);
-        foreach (var c in new[] { V(1.38f, 0.58f), V(1.58f, 0.72f), V(1.66f, 0.48f), V(1.2f, 0.46f), V(1.52f, 0.86f) })
-        {
-            p.OutlinedCircle(c, 0.045f, Berry);
-        }
-        // Basket
-        p.OutlinedBox(0.95f, 0.28f, 1.2f, 0.45f, 0.04f, Straw);
-        p.OutlinedCircle(V(1.03f, 0.5f), 0.04f, Berry);
-        p.OutlinedCircle(V(1.12f, 0.5f), 0.04f, Berry);
-    }
-
-    private static void DrawLumberCamp(Painter p)
-    {
-        p.Ellipse(V(1, 0.32f), V(0.9f, 0.18f), Shadow);
-        // Log pile 3-2-1
-        float[] rows = { 0.42f, 0.66f, 0.9f };
-        for (int row = 0; row < 3; row++)
-        {
-            float y = rows[row];
-            float x0 = 0.2f + row * 0.13f;
-            float length = 1.0f - row * 0.1f;
-            p.OutlinedBox(x0, y - 0.11f, x0 + length, y + 0.11f, 0.1f, Wood);
-            p.Line(V(x0 + 0.15f, y), V(x0 + length - 0.2f, y), 0.012f, WoodDark);
-            float ex = x0 + length;
-            p.OutlinedEllipse(V(ex, rows[row]), V(0.09f, 0.11f), WoodLight);
-            p.Ellipse(V(ex, rows[row]), V(0.04f, 0.05f), Wood);
-        }
-        // Stump and axe
-        p.OutlinedBox(1.45f, 0.28f, 1.8f, 0.55f, 0.03f, Wood);
-        p.OutlinedEllipse(V(1.625f, 0.55f), V(0.175f, 0.06f), WoodLight);
-        p.OutlinedLine(V(1.56f, 0.58f), V(1.82f, 1.12f), 0.045f, WoodLight);
-        p.OutlinedPolygon(new[] { V(1.72f, 0.98f), V(1.92f, 1.0f), V(1.95f, 1.18f), V(1.78f, 1.1f) }, StoneLight);
-    }
-
-    private static void DrawQuarry(Painter p)
-    {
-        p.Ellipse(V(1.5f, 0.38f), V(1.35f, 0.24f), Shadow);
-        var face = new[] { V(0.18f, 0.3f), V(0.35f, 1.55f), V(0.95f, 2.35f), V(1.8f, 2.55f), V(2.55f, 2.05f), V(2.82f, 0.3f) };
-        p.OutlinedPolygon(face, Stone);
-        p.OutlinedPolygon(new[] { V(0.8f, 0.3f), V(0.95f, 1.5f), V(1.6f, 1.85f), V(2.2f, 1.4f), V(2.3f, 0.3f) }, StoneDark);
-        p.Polygon(new[] { V(0.95f, 2.2f), V(1.8f, 2.42f), V(2.3f, 2.1f), V(1.6f, 2.05f) }, StoneLight);
-        p.InkLine(V(0.5f, 1.2f), V(0.75f, 1.0f));
-        p.InkLine(V(2.45f, 1.6f), V(2.6f, 1.2f));
-        p.InkLine(V(1.3f, 1.7f), V(1.45f, 1.35f));
-        // Cut blocks
-        p.OutlinedBox(0.95f, 0.3f, 1.4f, 0.62f, 0.02f, StoneLight);
-        p.OutlinedBox(1.45f, 0.3f, 1.9f, 0.62f, 0.02f, StoneLight);
-        p.OutlinedBox(1.2f, 0.67f, 1.65f, 0.99f, 0.02f, StoneLight);
-        // Pickaxe
-        p.OutlinedLine(V(2.15f, 0.32f), V(2.45f, 1.05f), 0.05f, WoodLight);
-        p.OutlinedPolygon(new[] { V(2.15f, 1.02f), V(2.42f, 1.14f), V(2.72f, 0.98f), V(2.44f, 1.03f) }, StoneDark);
-    }
-
-    private static void DrawBarracks(Painter p)
-    {
-        p.Ellipse(V(1.5f, 0.38f), V(1.4f, 0.25f), Shadow);
-        // Longhouse
-        p.OutlinedBox(0.5f, 1.0f, 2.5f, 1.85f, 0.03f, Mud);
-        for (float x = 0.7f; x < 2.45f; x += 0.22f)
-        {
-            p.InkLine(V(x, 1.03f), V(x, 1.8f), 0.5f);
-        }
-        p.OutlinedPolygon(new[] { V(0.3f, 1.78f), V(2.7f, 1.78f), V(2.3f, 2.5f), V(0.7f, 2.5f) }, StrawDark);
-        for (float x = 0.6f; x < 2.5f; x += 0.18f)
-        {
-            p.Line(V(x, 1.82f), V(x + 0.12f, 2.46f), 0.018f, Straw);
-        }
-        // Crossed clubs emblem
-        p.OutlinedLine(V(1.3f, 1.2f), V(1.7f, 1.65f), 0.06f, WoodLight);
-        p.OutlinedLine(V(1.7f, 1.2f), V(1.3f, 1.65f), 0.06f, WoodLight);
-        p.OutlinedCircle(V(1.7f, 1.65f), 0.07f, Wood);
-        p.OutlinedCircle(V(1.3f, 1.65f), 0.07f, Wood);
-        // Flag
-        p.OutlinedLine(V(2.55f, 1.9f), V(2.55f, 2.9f), 0.04f, WoodDark);
-        p.OutlinedPolygon(new[] { V(2.57f, 2.86f), V(2.95f, 2.72f), V(2.57f, 2.58f) }, Flag);
-        // Palisade with a gate gap
-        var rng = new System.Random(7);
-        for (float x = 0.22f; x < 2.85f; x += 0.21f)
-        {
-            if (x > 1.25f && x < 1.75f) continue;
-            float top = 1.08f + (float)rng.NextDouble() * 0.12f;
-            p.OutlinedPolygon(new[] { V(x - 0.09f, 0.3f), V(x + 0.09f, 0.3f), V(x + 0.09f, top), V(x, top + 0.14f), V(x - 0.09f, top) }, Wood);
-        }
-        p.OutlinedLine(V(0.15f, 0.8f), V(1.25f, 0.8f), 0.05f, WoodDark);
-        p.OutlinedLine(V(1.75f, 0.8f), V(2.88f, 0.8f), 0.05f, WoodDark);
-    }
-
-    private static void DrawFoundry(Painter p)
-    {
-        p.Ellipse(V(1.5f, 0.38f), V(1.35f, 0.24f), Shadow);
-        // Chimney + smoke
-        p.OutlinedBox(1.75f, 1.4f, 2.1f, 2.55f, 0.02f, StoneDark);
-        p.Circle(V(1.95f, 2.72f), 0.13f, new Color(0.5f, 0.5f, 0.5f, 0.55f));
-        p.Circle(V(2.1f, 2.86f), 0.1f, new Color(0.5f, 0.5f, 0.5f, 0.4f));
-        // Furnace dome
-        p.OutlinedBox(0.35f, 0.3f, 2.05f, 1.85f, 0.55f, Stone);
-        var rng = new System.Random(3);
-        for (int i = 0; i < 14; i++)
-        {
-            float x = 0.55f + (float)rng.NextDouble() * 1.3f;
-            float y = 0.5f + (float)rng.NextDouble() * 1.15f;
-            p.Box(V(x, y), V(0.22f, 0.12f), 0.03f, StoneLight);
-            p.InkLine(V(x - 0.11f, y - 0.06f), V(x + 0.11f, y - 0.06f), 0.5f);
-        }
-        // Fire mouth
-        p.OutlinedBox(0.85f, 0.3f, 1.55f, 0.95f, 0.3f, Dark);
-        p.Circle(V(1.2f, 0.5f), 0.22f, Fire);
-        p.Circle(V(1.2f, 0.47f), 0.12f, FireCore);
-        // Bronze ingots
-        foreach (var (x, y) in new[] { (2.2f, 0.32f), (2.55f, 0.32f), (2.38f, 0.48f) })
-        {
-            p.OutlinedPolygon(new[] { V(x - 0.15f, y), V(x + 0.15f, y), V(x + 0.1f, y + 0.14f), V(x - 0.1f, y + 0.14f) }, Bronze);
-            p.Line(V(x - 0.07f, y + 0.1f), V(x + 0.07f, y + 0.1f), 0.02f, BronzeLight);
-        }
-    }
-
-    private static void DrawCampfire(Painter p)
-    {
-        p.Ellipse(V(1, 0.5f), V(0.85f, 0.25f), Shadow);
-        // Sitting logs
-        p.OutlinedBox(0.15f, 0.25f, 0.65f, 0.42f, 0.08f, Wood);
-        p.OutlinedBox(1.35f, 0.25f, 1.85f, 0.42f, 0.08f, Wood);
-        // Stone ring
-        for (int i = 0; i < 9; i++)
-        {
-            float a = i / 9f * Mathf.PI * 2;
-            p.OutlinedCircle(V(1 + Mathf.Cos(a) * 0.42f, 0.62f + Mathf.Sin(a) * 0.2f), 0.09f, i % 2 == 0 ? Stone : StoneLight);
-        }
-        // Crossed logs and fire
-        p.OutlinedLine(V(0.7f, 0.55f), V(1.3f, 0.75f), 0.08f, WoodDark);
-        p.OutlinedLine(V(1.3f, 0.55f), V(0.7f, 0.75f), 0.08f, WoodDark);
-        p.OutlinedPolygon(new[] { V(0.78f, 0.68f), V(1.22f, 0.68f), V(1.1f, 1.05f), V(1.0f, 0.9f), V(0.92f, 1.15f), V(0.86f, 0.95f) }, Fire);
-        p.Polygon(new[] { V(0.9f, 0.7f), V(1.1f, 0.7f), V(1.02f, 0.92f), V(0.96f, 0.85f) }, FireCore);
-        // Banner pole marks the town center
-        p.OutlinedLine(V(1.72f, 0.55f), V(1.72f, 1.85f), 0.045f, WoodDark);
-        p.OutlinedPolygon(new[] { V(1.74f, 1.82f), V(1.98f, 1.7f), V(1.74f, 1.56f) }, Blue);
-        p.Circle(V(1.0f, 1.35f), 0.12f, new Color(0.5f, 0.5f, 0.5f, 0.45f));
-        p.Circle(V(1.12f, 1.58f), 0.09f, new Color(0.5f, 0.5f, 0.5f, 0.3f));
     }
 
     // ---------- World ----------
@@ -578,7 +416,30 @@ public static class PlaceholderArt
         public Color gear;     // headband, wraps, belt
         public bool feather;   // raider extras
         public bool necklace;
+        public Weapon weapon = Weapon.Club;
+        public bool helmet;    // bronze helmet
+        public bool shield;    // round bronze shield
+        public Color crest = new Color(0, 0, 0, 0);
     }
+
+    private enum Weapon { Club, Spear, Bow }
+
+    private static readonly WarriorStyle SpearmanStyle = new WarriorStyle
+    {
+        name = "Spearman", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f),
+        weapon = Weapon.Spear, helmet = true, shield = true, crest = new Color(0.22f, 0.45f, 0.9f)
+    };
+
+    private static readonly WarriorStyle BronzeRaiderStyle = new WarriorStyle
+    {
+        name = "BronzeRaider", ink = new Color(0.78f, 0.13f, 0.12f), gear = new Color(0.18f, 0.12f, 0.08f),
+        weapon = Weapon.Spear, helmet = true, shield = true, necklace = true, crest = new Color(0.15f, 0.1f, 0.08f)
+    };
+
+    private static readonly WarriorStyle TowerArcherStyle = new WarriorStyle
+    {
+        name = "TowerArcher", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f), weapon = Weapon.Bow
+    };
 
     private static readonly WarriorStyle ClubmanStyle = new WarriorStyle
     {
@@ -694,8 +555,20 @@ public static class PlaceholderArt
         p.Line(R(hip), R(footL), limb, s.ink);
         p.Line(R(hip), R(footR), limb, s.ink);
         p.Line(R(hip), R(V(0.5f, 0.69f)), limb, s.ink);
-        p.Line(R(shoulder), R(handL), limb, s.ink);
-        p.Line(R(shoulder), R(handR), limb, s.ink);
+        // A shield stays braced in front of the chest, so it never covers the face mid-thrust.
+        if (s.shield && pose != WarPose.Down && pose != WarPose.Falling)
+        {
+            handL = new Vector2(Mathf.Clamp(handL.x, 0.54f, 0.6f), Mathf.Min(handL.y, 0.5f));
+        }
+        // Arms: clubs use both pose hands; spears draw their own weapon arm; bows draw both their own.
+        if (s.weapon != Weapon.Bow)
+        {
+            p.Line(R(shoulder), R(handL), limb, s.ink);
+        }
+        if (s.weapon == Weapon.Club)
+        {
+            p.Line(R(shoulder), R(handR), limb, s.ink);
+        }
         p.Circle(R(head), 0.085f, s.ink);
 
         // Gear
@@ -703,8 +576,11 @@ public static class PlaceholderArt
         p.Line(R(V(0.455f, 0.385f)), R(V(0.545f, 0.385f)), 0.03f, s.gear);           // belt
         p.Line(R(V(0.5f, 0.385f)), R(V(0.53f, 0.31f)), 0.022f, s.gear);              // belt tail
         Vector2 Wrist(Vector2 hand) => Vector2.Lerp(shoulder, hand, 0.82f);
-        p.Circle(R(Wrist(handL)), 0.022f, s.gear);                                    // wrist wraps
-        p.Circle(R(Wrist(handR)), 0.022f, s.gear);
+        if (s.weapon == Weapon.Club)
+        {
+            p.Circle(R(Wrist(handL)), 0.022f, s.gear);                                // wrist wraps
+            p.Circle(R(Wrist(handR)), 0.022f, s.gear);
+        }
         if (s.necklace)
         {
             // Bone teeth hanging on the chest
@@ -716,22 +592,154 @@ public static class PlaceholderArt
             }
         }
 
-        // Club: wrapped grip, then the knobbly head
-        if (pose != WarPose.Down && pose != WarPose.Falling)
+        bool dead = pose == WarPose.Down || pose == WarPose.Falling;
+        if (s.helmet)
         {
+            // Bronze dome helmet with a crest
+            var dome = new List<Vector2>();
+            for (int i = 0; i <= 8; i++)
+            {
+                float a = Mathf.PI * i / 8f;
+                dome.Add(R(head + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 0.1f));
+            }
+            dome.Add(R(head + V(-0.1f, -0.02f)));
+            p.OutlinedPolygon(dome.ToArray(), Bronze2);
+            if (s.crest.a > 0)
+            {
+                p.OutlinedLine(R(head + V(-0.06f, 0.1f)), R(head + V(0.06f, 0.12f)), 0.04f, s.crest);
+            }
+        }
+        if (s.shield && !dead)
+        {
+            // Bronze Age shield: a tall wooden frame covered in spotted hide, with a rounded top
+            // (as carried by Egyptian and Sumerian spearmen), held in front of the body.
+            Vector2 c = handL + V(0.03f, 0.02f);
+            var outline = new List<Vector2>();
+            outline.Add(R(c + V(-0.085f, -0.19f)));
+            outline.Add(R(c + V(0.085f, -0.19f)));
+            for (int i = 0; i <= 6; i++)
+            {
+                float a = Mathf.PI * i / 6f;
+                outline.Add(R(c + V(0.085f * Mathf.Cos(a), 0.12f + 0.07f * Mathf.Sin(a))));
+            }
+            p.OutlinedPolygon(outline.ToArray(), Hide);
+            p.Circle(R(c + V(-0.03f, 0.08f)), 0.022f, WoodDark);
+            p.Circle(R(c + V(0.035f, -0.03f)), 0.026f, WoodDark);
+            p.Circle(R(c + V(-0.02f, -0.12f)), 0.018f, WoodDark);
+            p.Line(R(c + V(-0.085f, -0.19f)), R(c + V(-0.085f, 0.12f)), 0.012f, Wood);
+            p.Line(R(c + V(0.085f, -0.19f)), R(c + V(0.085f, 0.12f)), 0.012f, Wood);
+        }
+
+        if (dead)
+        {
+            // Dropped weapon on the ground
+            if (s.weapon == Weapon.Spear)
+            {
+                p.OutlinedLine(T(V(0.0f, 0.09f)), T(V(0.55f, 0.11f)), 0.03f, WoodLight);
+                p.OutlinedPolygon(new[] { T(V(0.55f, 0.07f)), T(V(0.68f, 0.11f)), T(V(0.55f, 0.15f)) }, Bronze2);
+            }
+            else if (s.weapon == Weapon.Club)
+            {
+                p.OutlinedLine(T(V(0.2f, 0.08f)), T(V(0.42f, 0.1f)), 0.035f, WoodLight);
+                p.OutlinedLine(T(V(0.38f, 0.1f)), T(V(0.55f, 0.12f)), 0.075f, Wood);
+            }
+            return;
+        }
+
+        if (s.weapon == Weapon.Club)
+        {
+            // Club: wrapped grip, then the knobbly head
             Vector2 grip = Vector2.Lerp(handR, clubTip, 0.18f);
             p.OutlinedLine(R(handR), R(Vector2.Lerp(handR, clubTip, 0.55f)), 0.035f, WoodLight);
             p.Line(R(Vector2.Lerp(handR, clubTip, -0.04f)), R(grip), 0.045f, s.gear);
             p.OutlinedLine(R(Vector2.Lerp(handR, clubTip, 0.5f)), R(clubTip), 0.075f, Wood);
-            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.78f)), 0.012f, WoodDark);        // knots
+            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.78f)), 0.012f, WoodDark);
             p.Circle(R(Vector2.Lerp(handR, clubTip, 0.9f)), 0.012f, WoodDark);
+        }
+        else if (s.weapon == Weapon.Spear)
+        {
+            // Spear: held level for the thrust, upright when idle or walking
+            Vector2 dir;
+            switch (pose)
+            {
+                case WarPose.Windup: dir = V(1f, 0.05f); handR = V(0.4f, 0.55f); break;
+                case WarPose.Raised: dir = V(1f, 0.1f); handR = V(0.45f, 0.6f); break;
+                case WarPose.Strike: dir = V(1f, -0.05f); handR = V(0.78f, 0.55f); break;
+                case WarPose.Recover: dir = V(1f, -0.15f); handR = V(0.65f, 0.5f); break;
+                default: dir = V(0.15f, 1f); break;
+            }
+            dir.Normalize();
+            p.Line(R(shoulder), R(handR), limb, s.ink); // the arm reaching the spear
+            Vector2 butt = handR - dir * 0.3f, tip = handR + dir * 0.55f;
+            p.OutlinedLine(R(butt), R(tip), 0.03f, WoodLight);
+            Vector2 side = new Vector2(-dir.y, dir.x);
+            p.OutlinedPolygon(new[] { R(tip - side * 0.05f), R(tip + dir * 0.14f), R(tip + side * 0.05f) }, Bronze2);
+            p.Circle(R(handR), 0.025f, s.gear);
         }
         else
         {
-            // Dropped club on the ground
-            p.OutlinedLine(T(V(0.2f, 0.08f)), T(V(0.42f, 0.1f)), 0.035f, WoodLight);
-            p.OutlinedLine(T(V(0.38f, 0.1f)), T(V(0.55f, 0.12f)), 0.075f, Wood);
+            // Bow (tower crews): aim forward, string drawn back on the draw frame
+            Vector2 bowHand, stringHand;
+            bool drawn = false, released = false;
+            switch (pose)
+            {
+                case WarPose.Windup: bowHand = V(0.68f, 0.6f); stringHand = V(0.6f, 0.62f); break;
+                case WarPose.Raised: bowHand = V(0.74f, 0.64f); stringHand = V(0.48f, 0.68f); drawn = true; break;
+                case WarPose.Strike: bowHand = V(0.74f, 0.64f); stringHand = V(0.42f, 0.7f); released = true; break;
+                case WarPose.Recover: bowHand = V(0.7f, 0.6f); stringHand = V(0.5f, 0.58f); break;
+                default: bowHand = V(0.62f, 0.5f); stringHand = V(0.4f, 0.45f); break;
+            }
+            p.Line(R(shoulder), R(bowHand), limb, s.ink);
+            p.Line(R(shoulder), R(stringHand), limb, s.ink);
+            Vector2 c = bowHand + V(-0.2f, 0);
+            Vector2 top = c + V(0.12f, 0.2f), bottom = c + V(0.12f, -0.2f);
+            Vector2 cw = R(c);
+            p.Draw(q => Mathf.Max(Mathf.Abs(SdCircle(q, cw, 0.23f)) - 0.016f, cw.x + 0.1f - q.x),
+                new Rect(cw.x - 0.3f, cw.y - 0.3f, 0.6f, 0.6f), WoodDark);
+            Vector2 nock = drawn ? stringHand : V(top.x, (top.y + bottom.y) / 2);
+            p.Line(R(top), R(nock), 0.008f, new Color(0.9f, 0.88f, 0.8f));
+            p.Line(R(nock), R(bottom), 0.008f, new Color(0.9f, 0.88f, 0.8f));
+            if (!released)
+            {
+                Vector2 from = drawn ? stringHand : nock;
+                p.Line(R(from), R(from + V(0.38f, 0)), 0.014f, WoodLight);
+                p.OutlinedPolygon(new[] { R(from + V(0.38f, -0.025f)), R(from + V(0.45f, 0)), R(from + V(0.38f, 0.025f)) }, Bronze2);
+            }
+            // Quiver on the back
+            p.OutlinedBox(0.36f + shift.x, 0.48f, 0.42f + shift.x, 0.66f, 0.01f, Hide);
         }
+    }
+
+    /// <summary>Height (sprite units) where tower crew sprites are cut off, just under the hip.</summary>
+    private const float OperatorCut = 0.36f;
+
+    /// <summary>Frames for a tower crew member (idle + shoot), for a building to use.</summary>
+    private static (Sprite idle, List<Sprite> shoot) BuildOperator(WarriorStyle style)
+    {
+        string dir = $"Units/{style.name}";
+        Directory.CreateDirectory(Path.Combine(Root, dir));
+        Sprite Frame(string frame, WarPose pose)
+        {
+            var p = new Painter(1.6f, 1.2f, 160) { Outline = 0.018f };
+            DrawWarrior(p, pose, style);
+            // Crews stand behind a parapet: keep the waist up. The game draws them in front of the
+            // tower with this cut line on the parapet top, so roofs and posts can't hide them.
+            p.ClearBelow(OperatorCut);
+            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, new Vector2(0.5f, 0.05f));
+        }
+        var idle = Frame("Idle", WarPose.Idle);
+        var shoot = new List<Sprite> { Frame("Shoot0", WarPose.Windup), Frame("Shoot1", WarPose.Raised), Frame("Shoot2", WarPose.Strike), Frame("Shoot3", WarPose.Recover) };
+        return (idle, shoot);
+    }
+
+    private static Sprite ArrowSprite()
+    {
+        var p = new Painter(0.6f, 0.14f, 160) { Outline = 0.012f };
+        p.Line(V(0.08f, 0.07f), V(0.48f, 0.07f), 0.016f, WoodLight);
+        p.OutlinedPolygon(new[] { V(0.48f, 0.035f), V(0.58f, 0.07f), V(0.48f, 0.105f) }, Bronze2);
+        p.Line(V(0.04f, 0.04f), V(0.14f, 0.07f), 0.02f, Color.white);
+        p.Line(V(0.04f, 0.1f), V(0.14f, 0.07f), 0.02f, Color.white);
+        return Save(p, "Units/Arrow.png", 160, new Vector2(0.5f, 0.5f));
     }
 
     // ---------- Villager (ambient townsfolk) ----------

@@ -10,6 +10,9 @@ public class CameraController : MonoBehaviour
     public float minZoom = 4f;
     public float maxZoom = 18f;
 
+    [Tooltip("Mouse wheel zooms faster when far out, so crossing a huge map isn't tedious.")]
+    public float farZoomBoost = 1.6f;
+
     [Tooltip("Each wheel notch zooms by this factor.")]
     public float zoomStep = 1.15f;
 
@@ -32,7 +35,8 @@ public class CameraController : MonoBehaviour
         float scroll = Input.mouseScrollDelta.y;
         if (Mathf.Abs(scroll) > 0.01f && !BuildingPlacer.IsPointerOverUI())
         {
-            ZoomAt(Input.mousePosition, Mathf.Pow(zoomStep, -scroll));
+            float step = cam.orthographicSize > 60f ? Mathf.Pow(zoomStep, farZoomBoost) : zoomStep;
+            ZoomAt(Input.mousePosition, Mathf.Pow(step, -scroll));
         }
         if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
         {

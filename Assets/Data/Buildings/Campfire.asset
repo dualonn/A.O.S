@@ -15,8 +15,27 @@ MonoBehaviour:
   id: Campfire
   displayName: Campfire
   description: The heart of your settlement. Place it where you want to live.
-  icon: {fileID: 21300000, guid: 94f8f9084d474a34ca3222aa6f3f3f85, type: 3}
+  icon: {fileID: 21300000, guid: 3ee5104880c62fd42aae7a8776425be0, type: 3}
   prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3ee5104880c62fd42aae7a8776425be0, type: 3}
+    - {fileID: 21300000, guid: b18572e37f73a044b99ade99e463d945, type: 3}
+    - {fileID: 21300000, guid: 38a5453e6420bf74ba56bf1be304958f, type: 3}
+    - {fileID: 21300000, guid: c60e54f7a944e6543b2f3682e4871477, type: 3}
+    fps: 7
+  - frames:
+    - {fileID: 21300000, guid: c7110a9f99263b74ca70f2654d631da6, type: 3}
+    - {fileID: 21300000, guid: a29e6e8558a9c2847b570ecad096f1de, type: 3}
+    - {fileID: 21300000, guid: 3d8b7128c7676c547851966af313f852, type: 3}
+    - {fileID: 21300000, guid: 2b3cc545999ecfa4392001a3f69c0082, type: 3}
+    fps: 7
+  - frames:
+    - {fileID: 21300000, guid: 7d8abc7696fc59b4082036d76cbc6405, type: 3}
+    - {fileID: 21300000, guid: 14128e728d4af2c43a624cef0431eb0d, type: 3}
+    - {fileID: 21300000, guid: fce48f3b4c0bfb848937aec855c69453, type: 3}
+    - {fileID: 21300000, guid: 3b30ebb2762704a4f912e9202ba22507, type: 3}
+    fps: 7
   size: {x: 2, y: 2}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
@@ -49,6 +68,10 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
   - name: Gathering Circle
     description: Logs around the fire for the whole tribe.
     requirements:
@@ -76,6 +99,18 @@ MonoBehaviour:
       attackMultiplier: 1
       speedMultiplier: 1
       cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
   isTownCenter: 1
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
@@ -92,3 +127,11 @@ MonoBehaviour:
   defensePower: 1
   trainsUnit: {fileID: 0}
   maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

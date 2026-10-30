@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: BronzeWeapons
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: BronzeWeapons
+  displayName: Bronze Weapons
+  description: 'Bronze blades and spearheads: +6% attack for all troops.'
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+    technologies: []
+    buildings:
+    - building: {fileID: 11400000, guid: 78f92c662a35c324f886d3ee392e1e73, type: 2}
+      count: 1
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 40
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+  researchTime: 50
+  unitModifiers:
+  - troopClass: {fileID: 0}
+    healthMultiplier: 1
+    attackMultiplier: 1.06
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+    rangeMultiplier: 1
+  productionModifiers: []
+  buildingHealthMultiplier: 1

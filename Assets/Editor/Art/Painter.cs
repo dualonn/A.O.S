@@ -66,6 +66,16 @@ public class Painter
         pixels[i] = o;
     }
 
+    /// <summary>Erase everything below a height (units), e.g. to keep only a figure's upper body.</summary>
+    public void ClearBelow(float yUnits)
+    {
+        int rows = Mathf.Clamp(Mathf.RoundToInt(yUnits * Scale), 0, Height);
+        for (int i = 0; i < rows * Width; i++)
+        {
+            pixels[i] = Color.clear;
+        }
+    }
+
     public Texture2D ToTexture()
     {
         var tex = new Texture2D(Width, Height, TextureFormat.RGBA32, false);

@@ -14,6 +14,9 @@ public class SettlementState
 
     [Tooltip("The map is regenerated from this seed, so only the seed is saved.")]
     public int mapSeed;
+
+    [Tooltip("Explored zones of the map (zone indices); tiles are regenerated from the seed on load.")]
+    public List<int> exploredZones = new List<int>();
     public List<ResourceStock> resources = new List<ResourceStock>();
     public List<BuildingState> buildings = new List<BuildingState>();
     public List<string> researched = new List<string>();
@@ -64,6 +67,9 @@ public class BuildingState
     public float upgradeProgress;
 
     public bool upgrading;
+
+    [Tooltip("The work under way is a rank up (into the next age's version), not an upgrade.")]
+    public bool rankingUp;
 
     [Tooltip("For buildings that train troops: what those troops do.")]
     public TroopStance stance = TroopStance.Defend;

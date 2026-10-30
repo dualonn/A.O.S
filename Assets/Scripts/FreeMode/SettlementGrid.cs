@@ -3,264 +3,282 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// Draws the generated free mode map and maps tiles to world positions.
-/// Tile (0,0) is at this object's position; each tile is cellSize world units.
-/// Ground (grass, water, hills) is a Tilemap; deposits are individual sprites so units
-/// can walk in front of and behind them.
+/// Draws the free mode map and maps tiles to world positions. Tile (0,0) is at this object's
+/// position; each tile is cellSize world units. Only explored zones are drawn; the map grows
+/// zone by zone as the player explores, up to a (very large) size limit.
+///
+/// Three levels of detail, by camera zoom:
+///  1. Detail: ground and deposit Tilemaps (deposits split into regions so updates stay cheap).
+///  2. Overview: pre-drawn pictures, a couple of pixels per tile, one per region.
+///  3. Strategy: one coloured square per zone, plus map markers (settlements) drawn by others.
 /// </summary>
 public class SettlementGrid : MonoBehaviour
 {
     public float cellSize = 1f;
 
-    [Tooltip("Scenery drawn beyond the map edge so the view never shows emptiness.")]
-    public float sceneryBeyondEdge = 25f;
-
-    public Vector2Int Size { get; private set; }
-    public MapData Map { get; private set; }
-
-    /// <summary>The playable map. Raiders enter at its edges.</summary>
-    public Rect MapRect { get; private set; }
-
-    /// <summary>The map plus a strip of scenery beyond it.</summary>
-    public Rect WorldArea { get; private set; }
-
-    private SpriteRenderer gridLines;
-    private static readonly Color LinesIdle = new Color(1, 1, 1, 0f);
-    private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.35f);
-
-    private GameObject tileGrid;
-
-    [Header("Zoomed-out overview (level of detail)")]
-    [Tooltip("Above this camera zoom the detailed map is swapped for a simple pre-drawn overview.")]
+    [Header("Levels of detail (camera zoom)")]
+    [Tooltip("Above this zoom the detailed tiles are swapped for the overview pictures.")]
     public float overviewZoom = 26f;
 
+    [Tooltip("Above this zoom the overview is swapped for the strategy map of zone squares.")]
+    public float strategyZoom = 90f;
+
+    public MapData Map { get; private set; }
+
+    /// <summary>Bounding box of the explored map (camera limits).</summary>
+    public Rect MapRect { get; private set; }
+
+    public enum Detail { Tiles, Overview, Strategy }
+    public Detail CurrentDetail { get; private set; } = Detail.Tiles;
+
+    private const int RegionTiles = 64;          // deposit tilemap and overview picture regions
+    private const int OverviewPixelsPerTile = 2;
+
+    private static readonly Color LinesIdle = new Color(1, 1, 1, 0f);
+    private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.35f);
+    private static readonly Color32 FogColor = new Color32(24, 32, 22, 255);
+    private static readonly Color32 GrassColor = new Color32(108, 153, 79, 255);
+    private static readonly Color32 WaterColor = new Color32(69, 133, 204, 255);
+    private static readonly Color32 HillColor = new Color32(143, 130, 110, 255);
+
+    private GameObject tileGrid;
+    private SpriteRenderer gridLines;
+    private Tilemap groundTilemap;
     private TilemapRenderer groundRenderer;
-    private TilemapRenderer depositRenderer;
-    private SpriteRenderer overview;
-    private bool showingOverview;
+    private Tile grassTile, waterTile, hillTile;
 
-    /// <summary>
-    /// Bake the whole map into one small picture: a few pixels per tile, coloured by terrain
-    /// and deposit, with a little pattern so forests and rocks still read as forests and rocks.
-    /// </summary>
-    private void BuildOverview(MapData map)
+    private class Region
     {
-        const int px = 4; // pixels per tile
-        var tex = new Texture2D(map.Width * px, map.Height * px, TextureFormat.RGBA32, false)
-        {
-            filterMode = FilterMode.Bilinear,
-            wrapMode = TextureWrapMode.Clamp
-        };
-        var pixels = new Color32[tex.width * tex.height];
-        var grass = new Color32(108, 153, 79, 255);
-        var water = new Color32(69, 133, 204, 255);
-        var hill = new Color32(143, 130, 110, 255);
-        var rng = new System.Random(map.Seed);
-        for (int y = 0; y < map.Height; y++)
-        {
-            for (int x = 0; x < map.Width; x++)
-            {
-                var t = map.GetTerrain(x, y);
-                Color32 baseColor = t == TerrainType.Water ? water : t == TerrainType.Hill ? hill : grass;
-                var deposit = map.GetDeposit(x, y);
-                Color32 mark = deposit != null ? OverviewColor(deposit) : baseColor;
-                for (int dy = 0; dy < px; dy++)
-                {
-                    for (int dx = 0; dx < px; dx++)
-                    {
-                        // Deposits: a blob in the tile centre over the terrain colour.
-                        bool inMark = deposit != null && dx >= 1 && dx <= 2 + (rng.Next(2)) && dy >= 1 && dy <= 2 + (rng.Next(2));
-                        pixels[(y * px + dy) * tex.width + x * px + dx] = inMark ? mark : baseColor;
-                    }
-                }
-            }
-        }
-        tex.SetPixels32(pixels);
-        tex.Apply();
-
-        overview = new GameObject("Overview").AddComponent<SpriteRenderer>();
-        overview.transform.SetParent(transform, false);
-        overview.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, px / cellSize);
-        overview.sortingOrder = -20;
-        overview.enabled = false;
+        public Tilemap deposits;
+        public TilemapRenderer depositRenderer;
+        public Texture2D overview;
+        public SpriteRenderer overviewRenderer;
+        public bool overviewDirty;
     }
 
-    private static Color32 OverviewColor(DepositType deposit)
-    {
-        switch (deposit.id)
-        {
-            case "Forest": return new Color32(46, 98, 48, 255);
-            case "Berries": return new Color32(176, 52, 66, 255);
-            case "Stone": return new Color32(196, 196, 202, 255);
-            case "CopperOre": return new Color32(214, 128, 60, 255);
-            default: return new Color32(230, 220, 120, 255);
-        }
-    }
+    private readonly Dictionary<Vector2Int, Region> regions = new Dictionary<Vector2Int, Region>();
+    private readonly Dictionary<Sprite, Tile> depositTileFor = new Dictionary<Sprite, Tile>();
+    private readonly HashSet<Vector2Int> hiddenDeposits = new HashSet<Vector2Int>();
+    private readonly List<TileChangeData> depositChanges = new List<TileChangeData>();
 
-    private void LateUpdate()
-    {
-        var cam = Camera.main;
-        if (cam == null || overview == null)
-        {
-            return;
-        }
-        // A little hysteresis so it doesn't flicker right at the threshold.
-        bool want = showingOverview ? cam.orthographicSize > overviewZoom * 0.9f : cam.orthographicSize > overviewZoom;
-        if (want == showingOverview)
-        {
-            return;
-        }
-        showingOverview = want;
-        overview.enabled = want;
-        groundRenderer.enabled = !want;
-        depositRenderer.enabled = !want;
-    }
+    private Texture2D strategyTexture;
+    private SpriteRenderer strategy;
+
+    // ---------- Building ----------
 
     public void Build(MapData map)
     {
         Map = map;
-        Size = new Vector2Int(map.Width, map.Height);
         var art = ArtLibrary.Load();
-        Vector2 origin = transform.position;
-        MapRect = new Rect(origin, new Vector2(map.Width, map.Height) * cellSize);
-        WorldArea = new Rect(MapRect.min - Vector2.one * sceneryBeyondEdge, MapRect.size + Vector2.one * sceneryBeyondEdge * 2);
 
-        // Grass beyond the edge
-        var wild = Tiled("Beyond", art != null ? art.grassTile : null, new Color(0.3f, 0.45f, 0.25f), -23);
-        wild.transform.position = new Vector3(WorldArea.x, WorldArea.y, 0);
-        wild.size = WorldArea.size;
+        // Unexplored land: plain fog colour under everything (stretched, not tiled).
+        var fog = new GameObject("Fog").AddComponent<SpriteRenderer>();
+        fog.transform.SetParent(transform, false);
+        fog.sprite = SimpleSprites.Square;
+        fog.color = FogColor;
+        fog.sortingOrder = -24;
+        fog.transform.localPosition = new Vector3(-200, -200, 0);
+        fog.transform.localScale = new Vector3(map.Width + 400, map.Height + 400, 1);
 
-        BuildGround(map, art);
-        BuildDeposits(map);
-        BuildOverview(map);
-        DrawMapEdge();
+        tileGrid = new GameObject("TileGrid");
+        tileGrid.transform.SetParent(transform, false);
+        tileGrid.AddComponent<Grid>().cellSize = new Vector3(cellSize, cellSize, 0);
+        var groundObject = new GameObject("Ground");
+        groundObject.transform.SetParent(tileGrid.transform, false);
+        groundTilemap = groundObject.AddComponent<Tilemap>();
+        groundRenderer = groundObject.AddComponent<TilemapRenderer>();
+        groundRenderer.sortingOrder = -21;
+        grassTile = MakeTile(art != null ? art.grassTile : null, new Color(0.42f, 0.6f, 0.31f));
+        waterTile = MakeTile(art != null ? art.waterTile : null, new Color(0.25f, 0.48f, 0.75f));
+        hillTile = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
 
+        // Strategy map: one pixel per zone, point-filtered into crisp squares.
+        strategyTexture = new Texture2D(map.ChunksX, map.ChunksY, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        var fogPixels = new Color32[map.ChunksX * map.ChunksY];
+        for (int i = 0; i < fogPixels.Length; i++)
+        {
+            fogPixels[i] = FogColor;
+        }
+        strategyTexture.SetPixels32(fogPixels);
+        strategy = new GameObject("StrategyMap").AddComponent<SpriteRenderer>();
+        strategy.transform.SetParent(transform, false);
+        strategy.sprite = Sprite.Create(strategyTexture, new Rect(0, 0, map.ChunksX, map.ChunksY), Vector2.zero, 1f / (map.ChunkSize * cellSize));
+        strategy.sortingOrder = -20;
+        strategy.enabled = false;
+
+        // Grid lines over the explored map; 8x8-cell tiles keep the tile count low.
         gridLines = new GameObject("GridLines").AddComponent<SpriteRenderer>();
         gridLines.transform.SetParent(transform, false);
-        gridLines.sprite = SimpleSprites.GridCell;
+        gridLines.sprite = SimpleSprites.GridBlock;
         gridLines.drawMode = SpriteDrawMode.Tiled;
-        gridLines.size = new Vector2(map.Width, map.Height);
         gridLines.transform.localScale = Vector3.one * cellSize;
         gridLines.sortingOrder = -19;
         SetPlacing(false);
+
+        var all = new List<RectInt>();
+        foreach (int index in map.RevealedZoneIndices())
+        {
+            all.Add(map.ZoneRect(index % map.ChunksX, index / map.ChunksX));
+        }
+        OnMapGrown(all);
     }
 
-    // ---------- Ground ----------
-
-    private void BuildGround(MapData map, ArtLibrary art)
+    /// <summary>Draw newly explored zones.</summary>
+    public void OnMapGrown(List<RectInt> newAreas)
     {
-        var gridObject = new GameObject("TileGrid");
-        gridObject.transform.SetParent(transform, false);
-        tileGrid = gridObject;
-        var unityGrid = gridObject.AddComponent<Grid>();
-        unityGrid.cellSize = new Vector3(cellSize, cellSize, 0);
+        foreach (var area in newAreas)
+        {
+            DrawArea(area);
+            PaintStrategyZone(area);
+        }
+        foreach (var region in regions.Values)
+        {
+            if (region.overviewDirty)
+            {
+                region.overview.Apply();
+                region.overviewDirty = false;
+            }
+        }
+        strategyTexture.Apply();
+        UpdateBounds();
+        ApplyDetail(CurrentDetail, force: true);
+    }
 
-        var tilemapObject = new GameObject("Ground");
-        tilemapObject.transform.SetParent(gridObject.transform, false);
-        var tilemap = tilemapObject.AddComponent<Tilemap>();
-        var renderer = tilemapObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = -21;
-        groundRenderer = renderer;
+    private void UpdateBounds()
+    {
+        var r = Map.Revealed;
+        MapRect = new Rect((Vector2)transform.position + new Vector2(r.x, r.y) * cellSize, new Vector2(r.width, r.height) * cellSize);
+        var r8 = new Vector2Int(r.xMin - r.xMin % 8, r.yMin - r.yMin % 8);
+        gridLines.transform.position = CellToWorld(r8);
+        gridLines.size = new Vector2(Mathf.Ceil((r.xMax - r8.x) / 8f) * 8, Mathf.Ceil((r.yMax - r8.y) / 8f) * 8);
+    }
 
-        Tile grass = MakeTile(art != null ? art.grassTile : null, new Color(0.42f, 0.6f, 0.31f));
-        Tile water = MakeTile(art != null ? art.waterTile : null, new Color(0.25f, 0.48f, 0.75f));
-        Tile hill = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
+    // ---------- Regions ----------
 
-        var positions = new Vector3Int[map.Width * map.Height];
-        var tiles = new TileBase[positions.Length];
+    private Region RegionAt(int x, int y)
+    {
+        var key = new Vector2Int(x / RegionTiles, y / RegionTiles);
+        if (regions.TryGetValue(key, out var region))
+        {
+            return region;
+        }
+        region = new Region();
+        var depositObject = new GameObject($"Deposits {key.x},{key.y}");
+        depositObject.transform.SetParent(tileGrid.transform, false);
+        region.deposits = depositObject.AddComponent<Tilemap>();
+        region.depositRenderer = depositObject.AddComponent<TilemapRenderer>();
+        region.depositRenderer.sortingOrder = -11;
+        region.depositRenderer.sortOrder = TilemapRenderer.SortOrder.TopLeft; // lower trees overlap higher ones
+        region.depositRenderer.mode = TilemapRenderer.Mode.Chunk;
+
+        int px = OverviewPixelsPerTile;
+        region.overview = new Texture2D(RegionTiles * px, RegionTiles * px, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        var fill = new Color32[region.overview.width * region.overview.height];
+        for (int i = 0; i < fill.Length; i++)
+        {
+            fill[i] = FogColor;
+        }
+        region.overview.SetPixels32(fill);
+        region.overviewRenderer = new GameObject($"Overview {key.x},{key.y}").AddComponent<SpriteRenderer>();
+        region.overviewRenderer.transform.SetParent(transform, false);
+        region.overviewRenderer.transform.localPosition = new Vector3(key.x * RegionTiles, key.y * RegionTiles, 0) * cellSize;
+        region.overviewRenderer.sprite = Sprite.Create(region.overview,
+            new Rect(0, 0, region.overview.width, region.overview.height), Vector2.zero, px / cellSize);
+        region.overviewRenderer.sortingOrder = -20;
+        regions[key] = region;
+        return region;
+    }
+
+    // ---------- Drawing ----------
+
+    /// <summary>Draw one area (inside a single region): ground, deposits and its overview pixels.</summary>
+    private void DrawArea(RectInt area)
+    {
+        int n = area.width * area.height;
+        var positions = new Vector3Int[n];
+        var tiles = new TileBase[n];
+        int px = OverviewPixelsPerTile;
+        var block = new Color32[px * px];
+        var region = RegionAt(area.xMin, area.yMin);
+        int baseX = (area.xMin / RegionTiles) * RegionTiles, baseY = (area.yMin / RegionTiles) * RegionTiles;
         int i = 0;
-        for (int y = 0; y < map.Height; y++)
+        for (int y = area.yMin; y < area.yMax; y++)
         {
-            for (int x = 0; x < map.Width; x++)
+            for (int x = area.xMin; x < area.xMax; x++)
             {
+                var t = Map.RawTerrain(x, y);
                 positions[i] = new Vector3Int(x, y, 0);
-                var t = map.GetTerrain(x, y);
-                tiles[i] = t == TerrainType.Water ? water
-                    : t == TerrainType.Hill ? hill
-                    : grass;
+                tiles[i] = t == TerrainType.Water ? waterTile : t == TerrainType.Hill ? hillTile : grassTile;
                 i++;
-            }
-        }
-        tilemap.SetTiles(positions, tiles);
-    }
 
-    private static Tile MakeTile(Sprite sprite, Color fallback)
-    {
-        var tile = ScriptableObject.CreateInstance<Tile>();
-        tile.sprite = sprite != null ? sprite : SimpleSprites.Square;
-        tile.color = sprite != null ? Color.white : fallback;
-        return tile;
-    }
-
-    // ---------- Deposits ----------
-
-    /// <summary>
-    /// Deposits go on their own Tilemap (thousands of separate sprites were too slow).
-    /// Drawn top rows first, so lower trees overlap the ones behind them.
-    /// </summary>
-    private void BuildDeposits(MapData map)
-    {
-        var tilemapObject = new GameObject("Deposits");
-        tilemapObject.transform.SetParent(tileGrid.transform, false);
-        depositTilemap = tilemapObject.AddComponent<Tilemap>();
-        var renderer = tilemapObject.AddComponent<TilemapRenderer>();
-        renderer.sortingOrder = -11;
-        renderer.sortOrder = TilemapRenderer.SortOrder.TopLeft;
-        renderer.mode = TilemapRenderer.Mode.Chunk;
-        depositRenderer = renderer;
-
-        var tileFor = new Dictionary<Sprite, Tile>();
-        var rng = new System.Random(map.Seed ^ 0x5f3759df);
-        for (int y = 0; y < map.Height; y++)
-        {
-            for (int x = 0; x < map.Width; x++)
-            {
-                var type = map.GetDeposit(x, y);
-                if (type == null || type.sprites.Count == 0)
+                var deposit = Map.RawDeposit(x, y);
+                Color32 baseColor = TerrainColor(t);
+                Color32 mark = deposit != null ? OverviewColor(deposit) : baseColor;
+                for (int b = 0; b < block.Length; b++)
                 {
-                    continue;
+                    // One corner pixel keeps the terrain colour so patches read as dotted, not solid.
+                    block[b] = deposit != null && b != 0 ? mark : baseColor;
                 }
-                var sprite = type.sprites[rng.Next(type.sprites.Count)];
-                if (!tileFor.TryGetValue(sprite, out var tile))
+                region.overview.SetPixels32((x - baseX) * px, (y - baseY) * px, px, px, block);
+
+                if (deposit != null && deposit.sprites.Count > 0 && !hiddenDeposits.Contains(new Vector2Int(x, y)))
                 {
-                    tile = ScriptableObject.CreateInstance<Tile>();
-                    tile.sprite = sprite;
-                    tile.flags = TileFlags.LockColor; // transform set per tile below
-                    tileFor[sprite] = tile;
+                    depositChanges.Add(DepositChange(x, y, deposit));
                 }
-                var cell = new Vector3Int(x, y, 0);
-                // Jitter, size and mirroring so patches look natural, sized to about one tile.
-                float scale = (0.6f + (float)rng.NextDouble() * 0.2f) / Mathf.Max(0.5f, sprite.bounds.size.x);
-                float flip = rng.NextDouble() < 0.5 ? -1f : 1f;
-                var offset = new Vector3(((float)rng.NextDouble() - 0.5f) * 0.4f, ((float)rng.NextDouble() - 0.5f) * 0.3f - 0.3f, 0);
-                var matrix = Matrix4x4.TRS(offset, Quaternion.identity, new Vector3(scale * flip, scale, 1));
-                depositTiles[new Vector2Int(x, y)] = (tile, matrix);
             }
         }
-        ShowDeposits(null);
+        region.overviewDirty = true;
+        groundTilemap.SetTiles(positions, tiles);
+        region.deposits.SetTiles(depositChanges.ToArray(), true);
+        depositChanges.Clear();
     }
 
-    private Tilemap depositTilemap;
-    private readonly Dictionary<Vector2Int, (Tile tile, Matrix4x4 matrix)> depositTiles =
-        new Dictionary<Vector2Int, (Tile, Matrix4x4)>();
-    private readonly HashSet<Vector2Int> hiddenDeposits = new HashSet<Vector2Int>();
-
-    private void ShowDeposits(HashSet<Vector2Int> hide)
+    /// <summary>One square on the strategy map: the zone's most common terrain or deposit colour.</summary>
+    private void PaintStrategyZone(RectInt area)
     {
-        foreach (var pair in depositTiles)
+        int grass = 0, water = 0, hill = 0, forest = 0;
+        for (int y = area.yMin; y < area.yMax; y++)
         {
-            bool hidden = hide != null && hide.Contains(pair.Key);
-            var cell = new Vector3Int(pair.Key.x, pair.Key.y, 0);
-            if (hidden)
+            for (int x = area.xMin; x < area.xMax; x++)
             {
-                depositTilemap.SetTile(cell, null);
-            }
-            else if (depositTilemap.GetTile(cell) == null)
-            {
-                depositTilemap.SetTile(cell, pair.Value.tile);
-                depositTilemap.SetTransformMatrix(cell, pair.Value.matrix);
+                var t = Map.RawTerrain(x, y);
+                if (t == TerrainType.Water) water++;
+                else if (t == TerrainType.Hill) hill++;
+                else if (Map.RawDeposit(x, y)?.id == "Forest") forest++;
+                else grass++;
             }
         }
+        Color32 c = water >= grass && water >= hill && water >= forest ? WaterColor
+            : hill >= grass && hill >= forest ? HillColor
+            : forest >= grass ? new Color32(46, 98, 48, 255)
+            : GrassColor;
+        strategyTexture.SetPixel(area.xMin / Map.ChunkSize, area.yMin / Map.ChunkSize, c);
+    }
+
+    /// <summary>One deposit sprite with a stable per-tile jitter, size and mirroring.</summary>
+    private TileChangeData DepositChange(int x, int y, DepositType type)
+    {
+        var sprite = type.sprites[(int)(Hash01(x, y, 1) * type.sprites.Count) % type.sprites.Count];
+        if (!depositTileFor.TryGetValue(sprite, out var tile))
+        {
+            tile = ScriptableObject.CreateInstance<Tile>();
+            tile.sprite = sprite;
+            tile.flags = TileFlags.LockColor;
+            depositTileFor[sprite] = tile;
+        }
+        float scale = (0.6f + Hash01(x, y, 2) * 0.2f) / Mathf.Max(0.5f, sprite.bounds.size.x);
+        float flip = Hash01(x, y, 3) < 0.5f ? -1f : 1f;
+        var offset = new Vector3((Hash01(x, y, 4) - 0.5f) * 0.4f, (Hash01(x, y, 5) - 0.5f) * 0.3f - 0.3f, 0);
+        return new TileChangeData(new Vector3Int(x, y, 0), tile, Color.white,
+            Matrix4x4.TRS(offset, Quaternion.identity, new Vector3(scale * flip, scale, 1)));
     }
 
     /// <summary>Hide deposits under buildings (and show them again when a building goes).</summary>
@@ -277,66 +295,129 @@ public class SettlementGrid : MonoBehaviour
                 }
             }
         }
-        if (covered.SetEquals(hiddenDeposits))
+        // Only touch tiles whose state changed.
+        var previously = new HashSet<Vector2Int>(hiddenDeposits);
+        hiddenDeposits.Clear();
+        hiddenDeposits.UnionWith(covered);
+        foreach (var cell in covered)
+        {
+            if (!previously.Contains(cell))
+            {
+                RegionAt(cell.x, cell.y).deposits.SetTile(new Vector3Int(cell.x, cell.y, 0), null);
+            }
+        }
+        foreach (var cell in previously)
+        {
+            if (!covered.Contains(cell))
+            {
+                var type = Map.RawDeposit(cell.x, cell.y);
+                if (type != null && type.sprites.Count > 0 && Map.InBounds(cell.x, cell.y))
+                {
+                    RegionAt(cell.x, cell.y).deposits.SetTiles(new[] { DepositChange(cell.x, cell.y, type) }, true);
+                }
+            }
+        }
+    }
+
+    // ---------- Level of detail ----------
+
+    private void LateUpdate()
+    {
+        var cam = Camera.main;
+        if (cam == null || Map == null)
         {
             return;
         }
-        hiddenDeposits.Clear();
-        hiddenDeposits.UnionWith(covered);
-        ShowDeposits(covered);
+        float size = cam.orthographicSize;
+        // A little hysteresis so it doesn't flicker right at a threshold.
+        Detail want = CurrentDetail;
+        if (size > strategyZoom * (CurrentDetail == Detail.Strategy ? 0.9f : 1f)) want = Detail.Strategy;
+        else if (size > overviewZoom * (CurrentDetail != Detail.Tiles ? 0.9f : 1f)) want = Detail.Overview;
+        else want = Detail.Tiles;
+        ApplyDetail(want, force: false);
     }
 
-    // ---------- Edge and helpers ----------
-
-    /// <summary>Darken everything outside the map so its edge is clear.</summary>
-    private void DrawMapEdge()
+    private void ApplyDetail(Detail detail, bool force)
     {
-        var shade = new Color(0.05f, 0.07f, 0.04f, 0.55f);
-        Rect map = MapRect;
-        Rect world = WorldArea;
-        Strip("EdgeBelow", new Rect(world.xMin, world.yMin, world.width, map.yMin - world.yMin), shade);
-        Strip("EdgeAbove", new Rect(world.xMin, map.yMax, world.width, world.yMax - map.yMax), shade);
-        Strip("EdgeLeft", new Rect(world.xMin, map.yMin, map.xMin - world.xMin, map.height), shade);
-        Strip("EdgeRight", new Rect(map.xMax, map.yMin, world.xMax - map.xMax, map.height), shade);
+        if (detail == CurrentDetail && !force)
+        {
+            return;
+        }
+        CurrentDetail = detail;
+        bool tiles = detail == Detail.Tiles;
+        groundRenderer.enabled = tiles;
+        foreach (var region in regions.Values)
+        {
+            region.depositRenderer.enabled = tiles;
+            region.overviewRenderer.enabled = detail == Detail.Overview;
+        }
+        strategy.enabled = detail == Detail.Strategy;
     }
 
-    private void Strip(string objectName, Rect rect, Color color)
+    // ---------- Helpers ----------
+
+    private static Color32 TerrainColor(TerrainType t) =>
+        t == TerrainType.Water ? WaterColor : t == TerrainType.Hill ? HillColor : GrassColor;
+
+    private static Color32 OverviewColor(DepositType deposit)
     {
-        var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
-        sr.transform.SetParent(transform, true);
-        sr.transform.position = new Vector3(rect.x, rect.y, 0);
-        sr.sprite = SimpleSprites.Square;
-        sr.drawMode = SpriteDrawMode.Tiled;
-        sr.size = rect.size;
-        sr.color = color;
-        sr.sortingOrder = -9;
+        switch (deposit.id)
+        {
+            case "Forest": return new Color32(46, 98, 48, 255);
+            case "Berries": return new Color32(176, 52, 66, 255);
+            case "Stone": return new Color32(196, 196, 202, 255);
+            case "CopperOre": return new Color32(214, 128, 60, 255);
+            default: return new Color32(230, 220, 120, 255);
+        }
     }
 
-    private SpriteRenderer Tiled(string objectName, Sprite sprite, Color fallbackColor, int order)
+    private static Tile MakeTile(Sprite sprite, Color fallback)
     {
-        var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
-        sr.transform.SetParent(transform, false);
-        sr.sprite = sprite != null ? sprite : SimpleSprites.Square;
-        sr.color = sprite != null ? new Color(0.75f, 0.8f, 0.75f) : fallbackColor;
-        sr.drawMode = SpriteDrawMode.Tiled;
-        sr.sortingOrder = order;
-        return sr;
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = sprite != null ? sprite : SimpleSprites.Square;
+        tile.color = sprite != null ? Color.white : fallback;
+        return tile;
     }
 
-    /// <summary>A random walkable point on the map's edge.</summary>
+    private float Hash01(int x, int y, int salt)
+    {
+        unchecked
+        {
+            uint h = (uint)(x * 73856093) ^ (uint)(y * 19349663) ^ (uint)(Map.Seed * 83492791) ^ (uint)(salt * 2654435761u);
+            h ^= h >> 13;
+            h *= 0x5bd1e995;
+            h ^= h >> 15;
+            return (h & 0xFFFFFF) / 16777216f;
+        }
+    }
+
+    /// <summary>All zone edges where explored land meets unexplored land (or the limit), in world space.</summary>
+    private List<(Vector3 a, Vector3 b)> FrontierEdges()
+    {
+        var edges = new List<(Vector3, Vector3)>();
+        int c = Map.ChunkSize;
+        foreach (int index in Map.RevealedZoneIndices())
+        {
+            int zx = index % Map.ChunksX, zy = index / Map.ChunksX;
+            Vector3 min = CellToWorld(new Vector2Int(zx * c, zy * c));
+            Vector3 max = min + new Vector3(c, c, 0) * cellSize;
+            if (Map.IsFrontier(zx, zy, -1, 0)) edges.Add((new Vector3(min.x + 0.5f, min.y), new Vector3(min.x + 0.5f, max.y)));
+            if (Map.IsFrontier(zx, zy, 1, 0)) edges.Add((new Vector3(max.x - 0.5f, min.y), new Vector3(max.x - 0.5f, max.y)));
+            if (Map.IsFrontier(zx, zy, 0, -1)) edges.Add((new Vector3(min.x, min.y + 0.5f), new Vector3(max.x, min.y + 0.5f)));
+            if (Map.IsFrontier(zx, zy, 0, 1)) edges.Add((new Vector3(min.x, max.y - 0.5f), new Vector3(max.x, max.y - 0.5f)));
+        }
+        return edges;
+    }
+
+    /// <summary>A random walkable point on the edge of the explored land.</summary>
     public Vector3 RandomEdgePoint()
     {
-        Rect m = MapRect;
-        for (int attempt = 0; attempt < 50; attempt++)
+        var edges = FrontierEdges();
+        for (int attempt = 0; attempt < 60 && edges.Count > 0; attempt++)
         {
-            float perimeter = 2 * (m.width + m.height);
-            float t = Random.Range(0f, perimeter);
-            Vector3 p;
-            if (t < m.width) p = new Vector3(m.xMin + t, m.yMin + 0.5f, 0);
-            else if ((t -= m.width) < m.height) p = new Vector3(m.xMax - 0.5f, m.yMin + t, 0);
-            else if ((t -= m.height) < m.width) p = new Vector3(m.xMax - t, m.yMax - 0.5f, 0);
-            else p = new Vector3(m.xMin + 0.5f, m.yMax - (t - m.width), 0);
-            if (Map == null || Map.IsWalkable(p))
+            var (a, b) = edges[Random.Range(0, edges.Count)];
+            Vector3 p = Vector3.Lerp(a, b, Random.Range(0.05f, 0.95f));
+            if (Map.IsWalkable(p))
             {
                 return p;
             }
@@ -344,23 +425,24 @@ public class SettlementGrid : MonoBehaviour
         return MapRect.center;
     }
 
-    /// <summary>The walkable point on the map's edge nearest to 'from'.</summary>
+    /// <summary>The walkable point on the edge of the explored land nearest to 'from'.</summary>
     public Vector3 NearestEdgePoint(Vector3 from)
     {
-        Rect m = MapRect;
-        float x = Mathf.Clamp(from.x, m.xMin + 0.5f, m.xMax - 0.5f);
-        float y = Mathf.Clamp(from.y, m.yMin + 0.5f, m.yMax - 0.5f);
-        float toLeft = x - m.xMin, toRight = m.xMax - x, toBottom = y - m.yMin, toTop = m.yMax - y;
-        float min = Mathf.Min(Mathf.Min(toLeft, toRight), Mathf.Min(toBottom, toTop));
-        Vector3 p = min == toLeft ? new Vector3(m.xMin + 0.5f, y, 0)
-            : min == toRight ? new Vector3(m.xMax - 0.5f, y, 0)
-            : min == toBottom ? new Vector3(x, m.yMin + 0.5f, 0)
-            : new Vector3(x, m.yMax - 0.5f, 0);
-        if (Map != null && !Map.IsWalkable(p))
+        Vector3 best = MapRect.center;
+        float bestDistance = float.MaxValue;
+        foreach (var (a, b) in FrontierEdges())
         {
-            return RandomEdgePoint();
+            Vector3 ab = b - a;
+            float t = Mathf.Clamp01(Vector3.Dot(from - a, ab) / Mathf.Max(1e-4f, ab.sqrMagnitude));
+            Vector3 p = a + ab * t;
+            float d = (p - from).sqrMagnitude;
+            if (d < bestDistance && Map.IsWalkable(p))
+            {
+                bestDistance = d;
+                best = p;
+            }
         }
-        return p;
+        return bestDistance < float.MaxValue ? best : RandomEdgePoint();
     }
 
     /// <summary>Show the grid lines while placing a building.</summary>

@@ -96,7 +96,8 @@ public class Settlement : MonoBehaviour
         {
             State.mapSeed = NewSeed();
         }
-        Map = MapGenerator.Generate(State.mapSeed, Database);
+        Map = MapGenerator.Create(State.mapSeed, Database, State.exploredZones);
+        State.exploredZones = Map.RevealedZoneIndices();
         // Older saves could hold fractional building health; snap it to whole points.
         foreach (var building in State.buildings)
         {
@@ -126,6 +127,32 @@ public class Settlement : MonoBehaviour
     }
 
     private static int NewSeed() => UnityEngine.Random.Range(1, int.MaxValue);
+
+    /// <summary>Raised with the tile areas just generated when the map grows.</summary>
+    public event Action<List<RectInt>> MapGrown;
+
+    /// <summary>
+    /// Explore new zones (only ones bordering explored land, inside the size limit).
+    /// Returns how many were added.
+    /// </summary>
+    public int ExploreZones(IEnumerable<Vector2Int> zones)
+    {
+        var shown = MapGenerator.RevealZones(Map, zones);
+        if (shown.Count == 0)
+        {
+            return 0;
+        }
+        foreach (var rect in shown)
+        {
+            int index = Map.ZoneIndex(rect.x / Map.ChunkSize, rect.y / Map.ChunkSize);
+            if (!State.exploredZones.Contains(index))
+            {
+                State.exploredZones.Add(index);
+            }
+        }
+        MapGrown?.Invoke(shown);
+        return shown.Count;
+    }
 
     private void OnDestroy()
     {
@@ -183,6 +210,8 @@ public class Settlement : MonoBehaviour
         public int housing;
         public int workers;
         public int maxUnits;
+        public float towerRange;
+        public int towerDamage;
         public int catchment;
         public float defense;
         public float output;
@@ -195,14 +224,35 @@ public class Settlement : MonoBehaviour
         return StatsOf(def, building.upgradeLevel);
     }
 
+    /// <summary>Global building health bonus from research (all buildings).</summary>
+    public float BuildingHealthMultiplier
+    {
+        get
+        {
+            float m = 1f;
+            foreach (var id in State.researched)
+            {
+                var tech = Database.GetTechnology(id);
+                if (tech != null)
+                {
+                    m *= tech.buildingHealthMultiplier;
+                }
+            }
+            return m;
+        }
+    }
+
     public static BuildingStats StatsOf(BuildingDefinition def, int level)
     {
+        float researchHealth = Instance != null && Instance.State != null ? Instance.BuildingHealthMultiplier : 1f;
         var s = new BuildingStats
         {
-            maxHealth = def.maxHealth,
+            maxHealth = Mathf.RoundToInt(def.maxHealth * researchHealth),
             housing = def.housing,
             workers = def.workers,
             maxUnits = def.maxUnits,
+            towerRange = def.towerRange,
+            towerDamage = def.towerDamage,
             catchment = def.catchmentRadius,
             defense = def.defensePower,
             output = 1f,
@@ -214,6 +264,8 @@ public class Settlement : MonoBehaviour
             s.maxHealth += u.extraHealth;
             s.housing += u.extraHousing;
             s.maxUnits += u.extraUnits;
+            s.towerRange += u.extraTowerRange;
+            s.towerDamage += u.extraTowerDamage;
             s.catchment += u.extraCatchment;
             s.defense += u.extraDefense;
             s.output *= u.productionMultiplier;
@@ -223,6 +275,7 @@ public class Settlement : MonoBehaviour
                 s.trainedUnits.attackMultiplier *= u.trainedUnits.attackMultiplier;
                 s.trainedUnits.speedMultiplier *= u.trainedUnits.speedMultiplier;
                 s.trainedUnits.cooldownMultiplier *= u.trainedUnits.cooldownMultiplier;
+                s.trainedUnits.rangeMultiplier *= u.trainedUnits.rangeMultiplier;
             }
         }
         return s;
@@ -273,12 +326,109 @@ public class Settlement : MonoBehaviour
         return true;
     }
 
+    // ---------- Rank up: a fully upgraded building becomes the next age's version, in place ----------
+
+    /// <summary>What this building can rank up into, once fully upgraded (null if nothing).</summary>
+    public BuildingDefinition RankUpTarget(BuildingState building)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        return def != null ? def.rankUpTo : null;
+    }
+
+    public bool CanRankUp(BuildingState building, out string missing)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        var target = def != null ? def.rankUpTo : null;
+        if (target == null)
+        {
+            missing = "Can't rank up";
+            return false;
+        }
+        if (building.upgradeLevel < def.upgrades.Count)
+        {
+            missing = "Finish its upgrades first";
+            return false;
+        }
+        if (!building.IsBuilt)
+        {
+            missing = "Finish building it first";
+            return false;
+        }
+        if (building.health <= 0)
+        {
+            missing = "Repair it first";
+            return false;
+        }
+        if (building.upgrading)
+        {
+            missing = building.rankingUp ? "Already ranking up" : "Already upgrading";
+            return false;
+        }
+        if (target.size != def.size)
+        {
+            missing = $"{Name(target)} needs a different footprint";
+            return false;
+        }
+        if (!IsAgeUnlocked(target))
+        {
+            missing = $"Reach the {target.age.displayName}";
+            return false;
+        }
+        return Meets(def.rankUpRequirements, out missing);
+    }
+
+    public bool TryStartRankUp(BuildingState building, out string reason)
+    {
+        if (!CanRankUp(building, out reason))
+        {
+            return false;
+        }
+        Spend(Database.GetBuilding(building.definitionId).rankUpRequirements.cost);
+        building.upgrading = true;
+        building.rankingUp = true;
+        building.upgradeProgress = 0;
+        Changed?.Invoke();
+        return true;
+    }
+
+    private void TickRankUp(BuildingState building, float dt)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        var target = def != null ? def.rankUpTo : null;
+        if (target == null)
+        {
+            building.upgrading = building.rankingUp = false;
+            return;
+        }
+        building.upgradeProgress += def.rankUpTime > 0 ? dt / def.rankUpTime : 1f;
+        if (building.upgradeProgress < 1f)
+        {
+            return;
+        }
+        // Keep the same share of health; the new building starts its own upgrade track from scratch.
+        float healthShare = Mathf.Clamp01(building.health / Mathf.Max(1, StatsOf(building).maxHealth));
+        building.upgrading = building.rankingUp = false;
+        building.upgradeProgress = 0;
+        building.definitionId = target.id;
+        building.upgradeLevel = 0;
+        var stats = StatsOf(building);
+        building.health = Mathf.Max(1, Mathf.Round(healthShare * stats.maxHealth));
+        building.siteQuality = SiteQuality(target, new RectInt(building.cell, target.size), stats.catchment);
+        Notify($"{Name(def)} ranked up into a {Name(target)}!");
+        Changed?.Invoke();
+    }
+
     private void TickUpgrades(float dt)
     {
         foreach (var building in State.buildings)
         {
             if (!building.upgrading)
             {
+                continue;
+            }
+            if (building.rankingUp)
+            {
+                TickRankUp(building, dt);
                 continue;
             }
             var next = NextUpgrade(building);
@@ -404,6 +554,17 @@ public class Settlement : MonoBehaviour
         if (State.researchProgress >= 1f)
         {
             State.researched.Add(tech.id);
+            if (tech.buildingHealthMultiplier != 1f)
+            {
+                // Health research raises current health too, so buildings don't suddenly look damaged.
+                foreach (var building in State.buildings)
+                {
+                    if (building.health > 0)
+                    {
+                        building.health = Mathf.Min(building.health * tech.buildingHealthMultiplier, StatsOf(building).maxHealth);
+                    }
+                }
+            }
             State.researchingId = null;
             State.researchProgress = 0;
             Notify($"Research complete: {tech.displayName}.");
@@ -791,6 +952,7 @@ public class Settlement : MonoBehaviour
                     total.attackMultiplier *= mod.attackMultiplier;
                     total.speedMultiplier *= mod.speedMultiplier;
                     total.cooldownMultiplier *= mod.cooldownMultiplier;
+                    total.rangeMultiplier *= mod.rangeMultiplier;
                 }
             }
         }
@@ -819,7 +981,8 @@ public class Settlement : MonoBehaviour
             healthMultiplier = a.healthMultiplier * b.healthMultiplier,
             attackMultiplier = a.attackMultiplier * b.attackMultiplier,
             speedMultiplier = a.speedMultiplier * b.speedMultiplier,
-            cooldownMultiplier = a.cooldownMultiplier * b.cooldownMultiplier
+            cooldownMultiplier = a.cooldownMultiplier * b.cooldownMultiplier,
+            rangeMultiplier = a.rangeMultiplier * b.rangeMultiplier
         };
     }
 
@@ -839,6 +1002,11 @@ public class Settlement : MonoBehaviour
                 var stats = StatsOf(def, building.upgradeLevel);
                 float healthFactor = building.health / stats.maxHealth;
                 total += stats.defense * healthFactor;
+                if (stats.towerRange > 0)
+                {
+                    // A tower counts like a few troops, scaled by its damage rate.
+                    total += stats.towerDamage / 10f / Mathf.Max(0.2f, def.towerCooldown) * 1.5f * healthFactor;
+                }
                 if (def.trainsUnit != null)
                 {
                     var mod = Combine(GetUnitModifier(def.trainsUnit), stats.trainedUnits);
