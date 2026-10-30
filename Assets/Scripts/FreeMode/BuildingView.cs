@@ -158,7 +158,8 @@ public class BuildingView : MonoBehaviour
     {
         bool built = State.IsBuilt;
         bool ruined = built && State.health <= 0;
-        float healthShare = State.health / Definition.maxHealth;
+        var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        float healthShare = State.health / stats.maxHealth;
 
         if (body != null)
         {
@@ -171,20 +172,25 @@ public class BuildingView : MonoBehaviour
             scaffold.enabled = !built;
         }
 
-        // Bar: build progress while constructing, health once damaged.
-        float fill = built ? healthShare : State.buildProgress;
-        bool showBar = !built || State.health < Definition.maxHealth;
+        // Bar: build progress while constructing, upgrade progress while upgrading, health once damaged.
+        bool damaged = built && State.health < stats.maxHealth;
+        float fill = !built ? State.buildProgress : damaged ? healthShare : State.upgradeProgress;
+        bool showBar = !built || damaged || State.upgrading;
         barBack.enabled = barFill.enabled = showBar;
         barFill.transform.localScale = new Vector3(barBack.transform.localScale.x * Mathf.Clamp01(fill), barFill.transform.localScale.y, 1);
-        barFill.color = !built ? new Color(0.4f, 0.7f, 1f) : Color.Lerp(Color.red, Color.green, healthShare);
+        barFill.color = !built ? new Color(0.4f, 0.7f, 1f)
+            : damaged ? Color.Lerp(Color.red, Color.green, healthShare)
+            : new Color(1f, 0.85f, 0.3f);
 
-        // Label: name on hover/selection, plus any status worth knowing.
+        // Label: name (with upgrade level) on hover/selection, plus any status worth knowing.
         string status = !built ? "<color=#9cf>Building</color>"
             : ruined ? "<color=#ff7070>Ruined</color>"
+            : State.upgrading ? "<color=#fd6>Upgrading</color>"
             : "";
+        string name = State.upgradeLevel > 0 ? $"{Definition.displayName} <size=75%>Lv {State.upgradeLevel + 1}</size>" : Definition.displayName;
         bool showName = selected || hovered;
-        label.text = showName && status.Length > 0 ? $"{Definition.displayName}\n<size=75%>{status}</size>"
-            : showName ? Definition.displayName
+        label.text = showName && status.Length > 0 ? $"{name}\n<size=75%>{status}</size>"
+            : showName ? name
             : status.Length > 0 ? $"<size=75%>{status}</size>"
             : "";
     }
@@ -192,20 +198,22 @@ public class BuildingView : MonoBehaviour
     private void TrainTroops()
     {
         troops.RemoveAll(t => t == null || !t.IsAlive);
-        // Keep the troops' orders in line with this building's stance.
+        var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        // Keep the troops' orders and upgrades in line with this building.
         foreach (var t in troops)
         {
             if (t.Stance != State.stance)
             {
                 t.SetStance(State.stance, controller.TownZone, controller.SightRange);
             }
+            t.SetBuildingModifier(stats.trainedUnits);
         }
         var unit = Definition.trainsUnit;
         if (unit == null || unit.prefab == null || !controller.Settlement.IsWorking(State, Definition))
         {
             return;
         }
-        if (troops.Count >= Definition.maxUnits)
+        if (troops.Count >= stats.maxUnits)
         {
             trainTimer = 0;
             return;
@@ -223,6 +231,7 @@ public class BuildingView : MonoBehaviour
         {
             troop.SetRallyPoint(controller.GetRallyPoint(this));
             troop.SetStance(State.stance, controller.TownZone, controller.SightRange);
+            troop.SetBuildingModifier(stats.trainedUnits);
             troops.Add(troop);
         }
     }

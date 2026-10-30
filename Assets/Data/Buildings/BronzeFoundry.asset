@@ -18,8 +18,9 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: cd68227c60b7e9f48939d080c53fb788, type: 3}
   prefab: {fileID: 0}
   size: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
   requirements:
-    minimumAge: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+    minimumAge: {fileID: 0}
     technologies: []
     buildings: []
     population: 0
@@ -28,6 +29,64 @@ MonoBehaviour:
       amount: 100
     - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
       amount: 80
+  upgrades:
+  - name: Clay Crucibles
+    description: Better crucibles waste less metal.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 40
+    upgradeTime: 20
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+  - name: Bellows
+    description: Hotter fires, faster smelting.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 20
+    upgradeTime: 30
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+  isTownCenter: 0
+  requiredDeposit: {fileID: 11400000, guid: 7649324227f818f4b9c96ca6b1f9a2e8, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 6
+  canBuildOnHills: 1
+  waterBonus: 0.15
   buildTime: 25
   maxCount: 0
   maxHealth: 150

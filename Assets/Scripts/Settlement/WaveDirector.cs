@@ -44,7 +44,7 @@ public class WaveDirector : MonoBehaviour
 
     private void Update()
     {
-        if (settlement == null || settlement.State == null)
+        if (settlement == null || settlement.State == null || !settlement.IsFounded)
         {
             return;
         }

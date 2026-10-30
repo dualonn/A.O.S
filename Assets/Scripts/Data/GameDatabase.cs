@@ -20,8 +20,26 @@ public class GameDatabase : ScriptableObject
     public List<ResourceAmount> startingResources = new List<ResourceAmount>();
     public int startingPopulation = 3;
 
-    [Tooltip("Grid size of the settlement, in cells.")]
-    public Vector2Int gridSize = new Vector2Int(30, 20);
+    [Header("Free mode: map")]
+    [Tooltip("Size of the generated map, in tiles. The whole map is buildable.")]
+    [UnityEngine.Serialization.FormerlySerializedAs("gridSize")]
+    public Vector2Int mapSize = new Vector2Int(160, 110);
+
+    public List<DepositType> deposits = new List<DepositType>();
+
+    [Tooltip("Bigger = larger, smoother landforms.")]
+    public float terrainScale = 0.03f;
+
+    [Tooltip("Share of the map that is lakes (rivers come on top).")]
+    [Range(0, 0.5f)] public float waterShare = 0.1f;
+
+    [Tooltip("Share of the map that is hills.")]
+    [Range(0, 0.5f)] public float hillShare = 0.12f;
+
+    public int riverCount = 3;
+
+    [Tooltip("Units move at this fraction of their speed on hills.")]
+    [Range(0.1f, 1)] public float hillSpeed = 0.5f;
 
     [Header("Free mode: population")]
     public ResourceType food;

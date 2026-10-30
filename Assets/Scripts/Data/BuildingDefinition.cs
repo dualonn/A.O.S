@@ -1,5 +1,39 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// One upgrade tier for a specific building type. Bought per building (instance), in order.
+/// Effects add up across tiers.
+/// </summary>
+[Serializable]
+public class BuildingUpgrade
+{
+    public string name;
+
+    [TextArea]
+    public string description;
+
+    public Requirements requirements = new Requirements();
+
+    [Tooltip("Seconds to complete. The building keeps working meanwhile.")]
+    public float upgradeTime = 15f;
+
+    [Header("Effects (added to the building)")]
+    [Tooltip("Multiplies output (1.25 = +25%).")]
+    public float productionMultiplier = 1f;
+
+    public int extraHousing;
+    public int extraHealth;
+    public float extraDefense;
+    public int extraUnits;
+
+    [Tooltip("Grow the catchment by this many tiles (re-scores the site).")]
+    public int extraCatchment;
+
+    [Tooltip("Applied to troops this building trains (e.g. speed).")]
+    public UnitStatModifier trainedUnits = new UnitStatModifier();
+}
 
 /// <summary>A building type that can be placed on the free mode grid.</summary>
 [CreateAssetMenu(fileName = "NewBuilding", menuName = "Age of Stickman/Building")]
@@ -19,8 +53,36 @@ public class BuildingDefinition : GameData
     [Tooltip("Footprint in grid cells.")]
     public Vector2Int size = Vector2Int.one;
 
+    [Tooltip("The age this building belongs to. It unlocks on reaching that age (plus any research in requirements).")]
+    public Age age;
+
     [Header("Building it")]
     public Requirements requirements = new Requirements();
+
+    [Header("Upgrades (unique to this building)")]
+    public List<BuildingUpgrade> upgrades = new List<BuildingUpgrade>();
+
+    [Tooltip("The settlement's founding building (Campfire). Nothing else can be built until one exists.")]
+    public bool isTownCenter;
+
+    [Header("Where it can go (OpenTTD-style)")]
+    [Tooltip("The deposit this building works. Leave empty if it can go anywhere.")]
+    public DepositType requiredDeposit;
+
+    [Tooltip("How far (tiles) around the building it gathers from.")]
+    public int catchmentRadius = 3;
+
+    [Tooltip("Deposit tiles needed in the catchment just to build here.")]
+    public int minDepositTiles = 2;
+
+    [Tooltip("Deposit tiles in the catchment for full output. Fewer = proportionally less.")]
+    public int fullOutputTiles = 10;
+
+    [Tooltip("Can be built on hills (quarries, mines).")]
+    public bool canBuildOnHills;
+
+    [Tooltip("Output bonus when water is within the catchment (0.2 = +20%).")]
+    public float waterBonus;
 
     [Tooltip("Seconds to construct.")]
     public float buildTime = 10f;

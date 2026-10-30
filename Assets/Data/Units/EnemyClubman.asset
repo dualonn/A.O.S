@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
   m_Name: EnemyClubman
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
-  displayName: Enemy Clubman
-  icon: {fileID: 0}
+  displayName: Raider
+  icon: {fileID: 21300000, guid: 5b0a87d8a698fea4f9c74cdc780ff4fd, type: 3}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-  prefab: {fileID: 1655273718425694568, guid: 8ed9bee67c8c0f7438c6cdc4a555329c, type: 3}
+  prefab: {fileID: 6617472647642340712, guid: 5b45772fa6e3b1242bb134ad4f20deec, type: 3}
   cost: 0
   populationCost: 1
   maxHealth: 100
-  moveSpeed: 1.2
+  moveSpeed: 0.9
   attackPower: 20
   attackCooldown: 1
-  attackRange: 2
+  attackRange: 0.55
+  hitDelay: 0.3
   detectionRange: 2.5

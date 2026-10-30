@@ -17,6 +17,12 @@ public class Settlement : MonoBehaviour
     public SettlementState State { get; private set; }
     public WaveDirector Waves { get; private set; }
 
+    /// <summary>The generated map (rebuilt from State.mapSeed; never saved itself).</summary>
+    public MapData Map { get; private set; }
+
+    /// <summary>True once the player has placed their town center (Campfire).</summary>
+    public bool IsFounded => State.buildings.Exists(b => Database.GetBuilding(b.definitionId)?.isTownCenter == true);
+
     /// <summary>Something structural changed (building placed/finished/removed, research done, new age).</summary>
     public event Action Changed;
 
@@ -86,6 +92,11 @@ public class Settlement : MonoBehaviour
         Instance = this;
         Database = database;
         State = LoadState() ?? NewState();
+        if (State.mapSeed == 0)
+        {
+            State.mapSeed = NewSeed();
+        }
+        Map = MapGenerator.Generate(State.mapSeed, Database);
         // Older saves could hold fractional building health; snap it to whole points.
         foreach (var building in State.buildings)
         {
@@ -101,7 +112,8 @@ public class Settlement : MonoBehaviour
         var state = new SettlementState
         {
             population = Database.startingPopulation,
-            secondsUntilWave = Database.firstWaveDelay
+            secondsUntilWave = Database.firstWaveDelay,
+            mapSeed = NewSeed()
         };
         foreach (var start in Database.startingResources)
         {
@@ -112,6 +124,8 @@ public class Settlement : MonoBehaviour
         }
         return state;
     }
+
+    private static int NewSeed() => UnityEngine.Random.Range(1, int.MaxValue);
 
     private void OnDestroy()
     {
@@ -148,11 +162,149 @@ public class Settlement : MonoBehaviour
 
     public void Tick(float dt)
     {
+        if (!IsFounded)
+        {
+            return; // nothing happens until the player picks a spot
+        }
         TickConstruction(dt);
+        TickUpgrades(dt);
         RecalculateDerived();
         TickProduction(dt);
         TickPopulation(dt);
         TickResearch(dt);
+    }
+
+    // ---------- Building stats and upgrades ----------
+
+    /// <summary>A building's effective numbers: its type's base values plus every finished upgrade.</summary>
+    public struct BuildingStats
+    {
+        public int maxHealth;
+        public int housing;
+        public int workers;
+        public int maxUnits;
+        public int catchment;
+        public float defense;
+        public float output;
+        public UnitStatModifier trainedUnits;
+    }
+
+    public BuildingStats StatsOf(BuildingState building)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        return StatsOf(def, building.upgradeLevel);
+    }
+
+    public static BuildingStats StatsOf(BuildingDefinition def, int level)
+    {
+        var s = new BuildingStats
+        {
+            maxHealth = def.maxHealth,
+            housing = def.housing,
+            workers = def.workers,
+            maxUnits = def.maxUnits,
+            catchment = def.catchmentRadius,
+            defense = def.defensePower,
+            output = 1f,
+            trainedUnits = new UnitStatModifier()
+        };
+        for (int i = 0; i < level && i < def.upgrades.Count; i++)
+        {
+            var u = def.upgrades[i];
+            s.maxHealth += u.extraHealth;
+            s.housing += u.extraHousing;
+            s.maxUnits += u.extraUnits;
+            s.catchment += u.extraCatchment;
+            s.defense += u.extraDefense;
+            s.output *= u.productionMultiplier;
+            if (u.trainedUnits != null)
+            {
+                s.trainedUnits.healthMultiplier *= u.trainedUnits.healthMultiplier;
+                s.trainedUnits.attackMultiplier *= u.trainedUnits.attackMultiplier;
+                s.trainedUnits.speedMultiplier *= u.trainedUnits.speedMultiplier;
+                s.trainedUnits.cooldownMultiplier *= u.trainedUnits.cooldownMultiplier;
+            }
+        }
+        return s;
+    }
+
+    public BuildingUpgrade NextUpgrade(BuildingState building)
+    {
+        var def = Database.GetBuilding(building.definitionId);
+        return def != null && building.upgradeLevel < def.upgrades.Count ? def.upgrades[building.upgradeLevel] : null;
+    }
+
+    public bool CanUpgrade(BuildingState building, out string missing)
+    {
+        var next = NextUpgrade(building);
+        if (next == null)
+        {
+            missing = "Fully upgraded";
+            return false;
+        }
+        if (!building.IsBuilt)
+        {
+            missing = "Finish building it first";
+            return false;
+        }
+        if (building.health <= 0)
+        {
+            missing = "Repair it first";
+            return false;
+        }
+        if (building.upgrading)
+        {
+            missing = "Already upgrading";
+            return false;
+        }
+        return Meets(next.requirements, out missing);
+    }
+
+    public bool TryStartUpgrade(BuildingState building, out string reason)
+    {
+        if (!CanUpgrade(building, out reason))
+        {
+            return false;
+        }
+        Spend(NextUpgrade(building).requirements.cost);
+        building.upgrading = true;
+        building.upgradeProgress = 0;
+        Changed?.Invoke();
+        return true;
+    }
+
+    private void TickUpgrades(float dt)
+    {
+        foreach (var building in State.buildings)
+        {
+            if (!building.upgrading)
+            {
+                continue;
+            }
+            var next = NextUpgrade(building);
+            if (next == null)
+            {
+                building.upgrading = false;
+                continue;
+            }
+            building.upgradeProgress += next.upgradeTime > 0 ? dt / next.upgradeTime : 1f;
+            if (building.upgradeProgress < 1f)
+            {
+                continue;
+            }
+            building.upgrading = false;
+            building.upgradeProgress = 0;
+            building.upgradeLevel++;
+            building.health += next.extraHealth;
+            var def = Database.GetBuilding(building.definitionId);
+            if (next.extraCatchment != 0)
+            {
+                // A bigger reach can mean more deposit tiles: re-score the site.
+                building.siteQuality = SiteQuality(def, new RectInt(building.cell, def.size), StatsOf(building).catchment);
+            }
+            Notify($"{Name(def)} upgraded: {next.name}.");
+            Changed?.Invoke();
+        }
     }
 
     private void TickConstruction(float dt)
@@ -184,12 +336,13 @@ public class Settlement : MonoBehaviour
             {
                 continue;
             }
-            float healthFactor = building.health / def.maxHealth;
+            var stats = StatsOf(def, building.upgradeLevel);
+            float healthFactor = building.health / stats.maxHealth;
             foreach (var rate in def.production)
             {
                 if (rate.resource != null)
                 {
-                    float multiplier = ProductionMultiplier(rate.resource);
+                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * stats.output;
                     AddResource(rate.resource, rate.perSecond * dt * efficiency * healthFactor * multiplier);
                 }
             }
@@ -269,8 +422,9 @@ public class Settlement : MonoBehaviour
             {
                 continue;
             }
-            housing += def.housing;
-            workers += def.workers;
+            var stats = StatsOf(def, building.upgradeLevel);
+            housing += stats.housing;
+            workers += stats.workers;
         }
         Housing = housing;
         WorkersNeeded = workers;
@@ -375,14 +529,56 @@ public class Settlement : MonoBehaviour
 
     // ---------- Buildings ----------
 
-    public bool IsAreaFree(BuildingDefinition def, Vector2Int cell, int ignoreInstanceId = 0)
+    /// <summary>
+    /// Can 'def' go at 'cell'? Checks terrain, overlap and the deposits it needs (OpenTTD-style).
+    /// 'quality' is the output multiplier the site would give (deposit coverage + water bonus).
+    /// </summary>
+    public bool CheckSite(BuildingDefinition def, Vector2Int cell, out float quality, out string reason)
     {
+        quality = 1f;
         var area = new RectInt(cell, def.size);
-        var grid = new RectInt(Vector2Int.zero, Database.gridSize);
-        if (area.xMin < grid.xMin || area.yMin < grid.yMin || area.xMax > grid.xMax || area.yMax > grid.yMax)
+        if (!Map.CanBuildOn(area, def.canBuildOnHills, out reason))
         {
             return false;
         }
+        if (!IsAreaFree(def, cell))
+        {
+            reason = "Something is already built there";
+            return false;
+        }
+        if (def.requiredDeposit != null)
+        {
+            int count = Map.CountDeposit(def.requiredDeposit, area, def.catchmentRadius);
+            if (count < def.minDepositTiles)
+            {
+                reason = $"Needs {def.requiredDeposit.displayName} nearby ({count}/{def.minDepositTiles} tiles)";
+                return false;
+            }
+        }
+        quality = SiteQuality(def, area, def.catchmentRadius);
+        reason = null;
+        return true;
+    }
+
+    /// <summary>Output multiplier from deposit tiles within 'radius' plus any water bonus.</summary>
+    public float SiteQuality(BuildingDefinition def, RectInt area, int radius)
+    {
+        float quality = 1f;
+        if (def.requiredDeposit != null)
+        {
+            int count = Map.CountDeposit(def.requiredDeposit, area, radius);
+            quality = Mathf.Clamp01(count / (float)Mathf.Max(1, def.fullOutputTiles));
+        }
+        if (def.waterBonus > 0 && Map.AnyWater(area, radius))
+        {
+            quality *= 1f + def.waterBonus;
+        }
+        return quality;
+    }
+
+    public bool IsAreaFree(BuildingDefinition def, Vector2Int cell, int ignoreInstanceId = 0)
+    {
+        var area = new RectInt(cell, def.size);
         foreach (var other in State.buildings)
         {
             if (other.instanceId == ignoreInstanceId)
@@ -400,6 +596,16 @@ public class Settlement : MonoBehaviour
 
     public bool CanBuild(BuildingDefinition def, out string missing)
     {
+        if (!def.isTownCenter && !IsFounded)
+        {
+            missing = "Found your settlement first: place a Campfire";
+            return false;
+        }
+        if (!IsAgeUnlocked(def))
+        {
+            missing = $"Reach the {def.age.displayName}";
+            return false;
+        }
         if (def.maxCount > 0 && CountAll(def) >= def.maxCount)
         {
             missing = $"You can only have {def.maxCount} {def.displayName}";
@@ -408,6 +614,9 @@ public class Settlement : MonoBehaviour
         return Meets(def.requirements, out missing);
     }
 
+    /// <summary>Each age unlocks its buildings; earlier ages' buildings stay available.</summary>
+    public bool IsAgeUnlocked(BuildingDefinition def) => def.age == null || def.age.order <= State.ageIndex;
+
     public bool TryPlaceBuilding(BuildingDefinition def, Vector2Int cell, out BuildingState placed, out string reason)
     {
         placed = null;
@@ -415,11 +624,11 @@ public class Settlement : MonoBehaviour
         {
             return false;
         }
-        if (!IsAreaFree(def, cell))
+        if (!CheckSite(def, cell, out float quality, out reason))
         {
-            reason = "That spot is blocked";
             return false;
         }
+        bool founding = def.isTownCenter && !IsFounded;
         Spend(def.requirements.cost);
         placed = new BuildingState
         {
@@ -427,9 +636,16 @@ public class Settlement : MonoBehaviour
             definitionId = def.id,
             cell = cell,
             health = def.maxHealth,
-            buildProgress = def.buildTime > 0 ? 0 : 1
+            buildProgress = def.buildTime > 0 ? 0 : 1,
+            siteQuality = quality
         };
         State.buildings.Add(placed);
+        if (founding)
+        {
+            // Raiders only start coming once there's something to raid.
+            State.secondsUntilWave = Database.firstWaveDelay;
+            Notify("Your settlement is founded! Build huts and camps near food and wood.");
+        }
         Changed?.Invoke();
         return true;
     }
@@ -450,7 +666,7 @@ public class Settlement : MonoBehaviour
         {
             return cost;
         }
-        float damage = 1f - building.health / def.maxHealth;
+        float damage = 1f - building.health / StatsOf(building).maxHealth;
         foreach (var item in def.requirements.cost)
         {
             int amount = Mathf.CeilToInt(item.amount * Database.repairCostShare * damage);
@@ -472,7 +688,7 @@ public class Settlement : MonoBehaviour
             return false;
         }
         Spend(cost);
-        building.health = def.maxHealth;
+        building.health = StatsOf(building).maxHealth;
         reason = null;
         Changed?.Invoke();
         return true;
@@ -596,6 +812,17 @@ public class Settlement : MonoBehaviour
         return health / 100f * (attack / 10f) / cooldown;
     }
 
+    public static UnitStatModifier Combine(UnitStatModifier a, UnitStatModifier b)
+    {
+        return new UnitStatModifier
+        {
+            healthMultiplier = a.healthMultiplier * b.healthMultiplier,
+            attackMultiplier = a.attackMultiplier * b.attackMultiplier,
+            speedMultiplier = a.speedMultiplier * b.speedMultiplier,
+            cooldownMultiplier = a.cooldownMultiplier * b.cooldownMultiplier
+        };
+    }
+
     /// <summary>Settlement defence used when a wave is resolved without being watched.</summary>
     public float DefensePower
     {
@@ -609,11 +836,13 @@ public class Settlement : MonoBehaviour
                 {
                     continue;
                 }
-                float healthFactor = building.health / def.maxHealth;
-                total += def.defensePower * healthFactor;
+                var stats = StatsOf(def, building.upgradeLevel);
+                float healthFactor = building.health / stats.maxHealth;
+                total += stats.defense * healthFactor;
                 if (def.trainsUnit != null)
                 {
-                    total += def.maxUnits * UnitPower(def.trainsUnit, GetUnitModifier(def.trainsUnit));
+                    var mod = Combine(GetUnitModifier(def.trainsUnit), stats.trainedUnits);
+                    total += stats.maxUnits * UnitPower(def.trainsUnit, mod);
                 }
             }
             return total;
@@ -650,7 +879,7 @@ public class Settlement : MonoBehaviour
         float totalHealth = 0;
         foreach (var b in standing)
         {
-            totalHealth += Database.GetBuilding(b.definitionId)?.maxHealth ?? 0;
+            totalHealth += StatsOf(b).maxHealth;
         }
         // Damage is dealt in whole points so health always matches what the UI shows.
         float damageLeft = Mathf.Round(totalHealth * severity * Database.maxBuildingDamageShare);
@@ -659,8 +888,7 @@ public class Settlement : MonoBehaviour
         while (damageLeft >= 1f && standing.Count > 0 && guard-- > 0)
         {
             var target = standing[UnityEngine.Random.Range(0, standing.Count)];
-            var def = Database.GetBuilding(target.definitionId);
-            float hit = Mathf.Round(Mathf.Min(damageLeft, target.health, def.maxHealth * 0.5f));
+            float hit = Mathf.Round(Mathf.Min(damageLeft, target.health, StatsOf(target).maxHealth * 0.5f));
             hit = Mathf.Clamp(hit, 1f, target.health);
             target.health -= hit;
             damageLeft -= hit;

@@ -54,6 +54,9 @@ public abstract class Unit : MonoBehaviour
 
     public Slider healthSlider;
 
+    [Tooltip("How close other units may stand (world units). 0 = work it out from the unit's scale.")]
+    public float personalSpace;
+
     [Header("Runtime (read only)")]
     public Unit currentTarget;
 
@@ -80,6 +83,7 @@ public abstract class Unit : MonoBehaviour
     private float engageAngle;
     private float wobbleSeed;
     private Vector2 knockVelocity;
+    private readonly PathFollower pathFollower = new PathFollower();
     private const float SeparationStrength = 4f;
     private const float KnockbackDrag = 14f;
 
@@ -111,6 +115,7 @@ public abstract class Unit : MonoBehaviour
         }
         ApplyResearchUpgrades();
         health = maxHealth;
+        visual = GetComponent<IUnitVisual>();
 
         if (healthSlider != null)
         {
@@ -131,6 +136,7 @@ public abstract class Unit : MonoBehaviour
         {
             healthSlider.value = health;
         }
+        visual?.SetHealth(health / (float)Mathf.Max(1, maxHealth));
 
         // A swing in progress lands when the club connects; the unit keeps moving meanwhile.
         if (swingPending && Time.time >= swingHitTime)
@@ -155,6 +161,55 @@ public abstract class Unit : MonoBehaviour
         else
         {
             Idle();
+        }
+    }
+
+    private IUnitVisual visual;
+
+    // Stats after research, before any building upgrades (captured on first use).
+    private bool hasBaseStats;
+    private int baseMaxHealth;
+    private int baseAttack;
+    private float baseSpeed;
+    private float baseCooldown;
+    private UnitStatModifier appliedBuildingMod;
+
+    /// <summary>
+    /// Apply upgrades from the building that trained this unit. Safe to call every frame;
+    /// re-applies only when the modifier changes, keeping the current health share.
+    /// </summary>
+    public void SetBuildingModifier(UnitStatModifier mod)
+    {
+        if (mod == null || isDead)
+        {
+            return;
+        }
+        if (appliedBuildingMod != null &&
+            Mathf.Approximately(appliedBuildingMod.healthMultiplier, mod.healthMultiplier) &&
+            Mathf.Approximately(appliedBuildingMod.attackMultiplier, mod.attackMultiplier) &&
+            Mathf.Approximately(appliedBuildingMod.speedMultiplier, mod.speedMultiplier) &&
+            Mathf.Approximately(appliedBuildingMod.cooldownMultiplier, mod.cooldownMultiplier))
+        {
+            return;
+        }
+        if (!hasBaseStats)
+        {
+            hasBaseStats = true;
+            baseMaxHealth = maxHealth;
+            baseAttack = attackPower;
+            baseSpeed = moveSpeed;
+            baseCooldown = attackCooldown;
+        }
+        float healthShare = health / (float)Mathf.Max(1, maxHealth);
+        maxHealth = Mathf.RoundToInt(baseMaxHealth * mod.healthMultiplier);
+        health = Mathf.Max(1, Mathf.RoundToInt(maxHealth * healthShare));
+        attackPower = Mathf.RoundToInt(baseAttack * mod.attackMultiplier);
+        moveSpeed = baseSpeed * mod.speedMultiplier;
+        attackCooldown = baseCooldown * mod.cooldownMultiplier;
+        appliedBuildingMod = Settlement.Combine(mod, new UnitStatModifier());
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
         }
     }
 
@@ -260,12 +315,17 @@ public abstract class Unit : MonoBehaviour
             }
         }
         Vector2 step = push * SeparationStrength * Time.deltaTime + knockVelocity * Time.deltaTime;
-        transform.position = pos + new Vector3(step.x, step.y, 0);
+        Vector3 nudged = pos + new Vector3(step.x, step.y, 0);
+        // Never get shoved into water.
+        if (MapNavigator.Current == null || MapNavigator.Current.IsWalkable(nudged))
+        {
+            transform.position = nudged;
+        }
         knockVelocity = Vector2.MoveTowards(knockVelocity, Vector2.zero, KnockbackDrag * Time.deltaTime);
     }
 
     /// <summary>How close other units can stand, scaled with the unit's size.</summary>
-    private float PersonalSpace => 1.6f * Mathf.Abs(transform.lossyScale.y);
+    private float PersonalSpace => personalSpace > 0 ? personalSpace : 1.6f * Mathf.Abs(transform.lossyScale.y);
 
     /// <summary>True when a new swing can start.</summary>
     protected bool CanSwing => !isDead && !swingPending && Time.time >= nextAttackTime;
@@ -292,7 +352,11 @@ public abstract class Unit : MonoBehaviour
         // A little randomness so groups don't swing in lockstep.
         float cooldown = attackCooldown * Random.Range(0.85f, 1.15f);
         nextAttackTime = Time.time + Mathf.Max(cooldown, hitDelay + FollowThrough);
-        if (anim != null)
+        if (visual != null)
+        {
+            visual.PlayAttack(hitDelay);
+        }
+        else if (anim != null)
         {
             anim.SetTrigger("Attack");
         }
@@ -321,9 +385,16 @@ public abstract class Unit : MonoBehaviour
     protected bool MoveTowards(Vector3 destination, float speed, bool faceMovement = true)
     {
         destination.z = transform.position.z;
+        // On the free mode map, route around water and slow down on hills.
+        Vector3 next = pathFollower.NextPoint(transform.position, destination);
+        next.z = transform.position.z;
+        if (MapNavigator.Current != null)
+        {
+            speed *= MapNavigator.Current.SpeedFactor(transform.position);
+        }
         transform.position = Vector3.MoveTowards(
             transform.position,
-            destination,
+            next,
             speed * Time.deltaTime
         );
         // Close enough counts as arrived (separation pushes can keep us a hair away).
@@ -331,14 +402,18 @@ public abstract class Unit : MonoBehaviour
         SetMoving(!arrived);
         if (!arrived && faceMovement)
         {
-            Face(destination);
+            Face(next);
         }
         return arrived;
     }
 
     protected void SetMoving(bool moving)
     {
-        if (anim != null)
+        if (visual != null)
+        {
+            visual.SetMoving(moving);
+        }
+        else if (anim != null)
         {
             anim.SetBool("IsMoving", moving);
         }
@@ -366,7 +441,7 @@ public abstract class Unit : MonoBehaviour
             {
                 away = Random.insideUnitCircle;
             }
-            float size = Mathf.Abs(transform.lossyScale.y) / 0.5f;
+            float size = PersonalSpace / 0.8f;
             knockVelocity += away.normalized * knockback * size;
         }
         health = Mathf.Max(0, health - amount);
@@ -384,7 +459,11 @@ public abstract class Unit : MonoBehaviour
         swingTarget = null;
         swingAction = null;
         SetMoving(false);
-        if (anim != null)
+        if (visual != null)
+        {
+            visual.PlayDeath();
+        }
+        else if (anim != null)
         {
             anim.ResetTrigger("Attack");
             anim.SetBool("Death", true);

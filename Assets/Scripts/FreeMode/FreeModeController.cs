@@ -21,10 +21,10 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public float secondsBetweenWaveSpawns = 0.6f;
 
     [Tooltip("Units are drawn at this size in free mode so they suit the building scale.")]
-    public float unitScale = 0.6f;
+    public float unitScale = 0.42f;
 
     [Tooltip("Defending troops hold the settlement plus this much ground around it.")]
-    public float townGuardMargin = 3f;
+    public float townGuardMargin = 5f;
 
     public Settlement Settlement { get; private set; }
     public SettlementGrid Grid => grid;
@@ -56,18 +56,9 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
 
         EnsureEventSystem();
-        grid.Build(Settlement.Database.gridSize);
-        WorldDecorator.Decorate(transform, grid, null, null);
-        if (Camera.main != null)
-        {
-            var cameraController = Camera.main.GetComponent<CameraController>();
-            if (cameraController == null)
-            {
-                cameraController = Camera.main.gameObject.AddComponent<CameraController>();
-            }
-            // Keep the view over the map.
-            cameraController.bounds = grid.MapRect;
-        }
+        grid.Build(Settlement.Map);
+        MapNavigator.Current = new MapNavigator(Settlement.Map, Settlement.Database.hillSpeed);
+        SetUpCamera();
         Placer = new GameObject("BuildingPlacer").AddComponent<BuildingPlacer>();
         Placer.transform.SetParent(transform, false);
         Placer.Init(this);
@@ -94,7 +85,77 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         {
             Settlement.Waves.LiveBattlefield = null;
         }
+        MapNavigator.Current = null;
         ResolveUnfinishedWave();
+    }
+
+    /// <summary>
+    /// Before founding: show the whole map so the player can pick a spot.
+    /// After: start over the settlement.
+    /// </summary>
+    private void SetUpCamera()
+    {
+        var cam = Camera.main;
+        if (cam == null)
+        {
+            return;
+        }
+        var cameraController = cam.GetComponent<CameraController>();
+        if (cameraController == null)
+        {
+            cameraController = cam.gameObject.AddComponent<CameraController>();
+        }
+        Rect map = grid.MapRect;
+        cameraController.bounds = map;
+        float fitWhole = Mathf.Max(map.height * 0.5f, map.width * 0.5f / Mathf.Max(0.5f, cam.aspect)) + 4f;
+        cameraController.maxZoom = fitWhole;
+
+        if (Settlement.IsFounded)
+        {
+            cam.transform.position = new Vector3(TownCenterPosition.x, TownCenterPosition.y, cam.transform.position.z);
+            cam.orthographicSize = 12f;
+        }
+        else
+        {
+            cam.transform.position = new Vector3(map.center.x, map.center.y, cam.transform.position.z);
+            cam.orthographicSize = fitWhole;
+        }
+    }
+
+    /// <summary>Move and zoom the camera onto a point (e.g. right after founding).</summary>
+    public void FocusOn(Vector3 point, float zoom = 12f)
+    {
+        var cam = Camera.main;
+        if (cam == null)
+        {
+            return;
+        }
+        cam.transform.position = new Vector3(point.x, point.y, cam.transform.position.z);
+        cam.orthographicSize = zoom;
+    }
+
+    /// <summary>Centre of the town center building (or of the map before founding).</summary>
+    public Vector3 TownCenterPosition
+    {
+        get
+        {
+            foreach (var view in views.Values)
+            {
+                if (view.Definition.isTownCenter)
+                {
+                    return grid.AreaCenter(view.State.cell, view.Definition.size);
+                }
+            }
+            foreach (var state in Settlement.State.buildings)
+            {
+                var def = Settlement.Database.GetBuilding(state.definitionId);
+                if (def != null && def.isTownCenter)
+                {
+                    return grid.AreaCenter(state.cell, def.size);
+                }
+            }
+            return grid.MapRect.center;
+        }
     }
 
     private void Update()
@@ -153,6 +214,13 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             Destroy(views[id].gameObject);
             views.Remove(id);
         }
+
+        var areas = new List<RectInt>();
+        foreach (var view in views.Values)
+        {
+            areas.Add(new RectInt(view.State.cell, view.Definition.size));
+        }
+        grid.RefreshCoverage(areas);
     }
 
     public BuildingView BuildingAt(Vector2Int cell)
@@ -191,8 +259,20 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         Vector3 center = home != null
             ? grid.AreaCenter(home.State.cell, home.Definition.size) - new Vector3(0, home.Definition.size.y * 0.5f + 0.8f, 0)
             : SettlementCenter;
-        Vector2 offset = UnityEngine.Random.insideUnitCircle * rallySpread;
-        return center + new Vector3(offset.x, offset.y, 0);
+        // Somewhere dry on the map, near the building.
+        Rect map = grid.MapRect;
+        for (int attempt = 0; attempt < 30; attempt++)
+        {
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * (rallySpread + attempt * 0.3f);
+            Vector3 spot = center + new Vector3(offset.x, offset.y, 0);
+            spot.x = Mathf.Clamp(spot.x, map.xMin + 0.5f, map.xMax - 0.5f);
+            spot.y = Mathf.Clamp(spot.y, map.yMin + 0.5f, map.yMax - 0.5f);
+            if (Settlement.Map.IsWalkable(spot))
+            {
+                return spot;
+            }
+        }
+        return center;
     }
 
     public void ShowMessage(string message) => MessageShown?.Invoke(message);
@@ -219,14 +299,27 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     private Vector3 SettlementCenter => grid.AreaCenter(Vector2Int.zero, grid.Size);
 
-    /// <summary>The ground Defend troops hold: the settlement plus a margin.</summary>
+    /// <summary>The ground Defend troops hold: the area around all your buildings, plus a margin.</summary>
     public Rect TownZone
     {
         get
         {
-            Vector2 min = grid.CellToWorld(Vector2Int.zero);
-            Vector2 size = new Vector2(grid.Size.x, grid.Size.y) * grid.cellSize;
-            return new Rect(min - Vector2.one * townGuardMargin, size + Vector2.one * townGuardMargin * 2);
+            if (views.Count == 0)
+            {
+                return new Rect(TownCenterPosition - Vector3.one * 8f, Vector2.one * 16f);
+            }
+            Vector2 min = new Vector2(float.MaxValue, float.MaxValue);
+            Vector2 max = new Vector2(float.MinValue, float.MinValue);
+            foreach (var view in views.Values)
+            {
+                Vector2 a = grid.CellToWorld(view.State.cell);
+                Vector2 b = a + (Vector2)view.Definition.size * grid.cellSize;
+                min = Vector2.Min(min, a);
+                max = Vector2.Max(max, b);
+            }
+            min -= Vector2.one * townGuardMargin;
+            max += Vector2.one * townGuardMargin;
+            return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
         }
     }
 
@@ -255,7 +348,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
         unspawned.AddRange(wave.units);
         waveInProgress = true;
-        string from = CompassName(raidOrigin - SettlementCenter);
+        string from = CompassName(raidOrigin - TownCenterPosition);
         ShowMessage(wave.units.Count == 1
             ? $"A raider is approaching from the {from}!"
             : $"{wave.units.Count} raiders are approaching from the {from}!");

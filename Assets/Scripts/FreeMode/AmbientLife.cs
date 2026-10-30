@@ -116,13 +116,20 @@ public class AmbientLife : MonoBehaviour
     public Vector3 RandomSpotNear(BuildingView building)
     {
         Vector3 door = DoorOf(building);
-        Vector2 offset = Random.insideUnitCircle * 4f;
-        Vector3 spot = door + new Vector3(offset.x, offset.y - 0.5f, 0);
         Vector3 min = Grid.CellToWorld(Vector2Int.zero) + Vector3.one * 0.3f;
         Vector3 max = Grid.CellToWorld(Grid.Size) - Vector3.one * 0.3f;
-        spot.x = Mathf.Clamp(spot.x, min.x, max.x);
-        spot.y = Mathf.Clamp(spot.y, min.y, max.y);
-        spot.z = 0;
-        return spot;
+        for (int attempt = 0; attempt < 8; attempt++)
+        {
+            Vector2 offset = Random.insideUnitCircle * 4f;
+            Vector3 spot = door + new Vector3(offset.x, offset.y - 0.5f, 0);
+            spot.x = Mathf.Clamp(spot.x, min.x, max.x);
+            spot.y = Mathf.Clamp(spot.y, min.y, max.y);
+            spot.z = 0;
+            if (MapNavigator.Current == null || MapNavigator.Current.IsWalkable(spot))
+            {
+                return spot;
+            }
+        }
+        return door;
     }
 }

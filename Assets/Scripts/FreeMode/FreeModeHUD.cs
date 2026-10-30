@@ -27,6 +27,10 @@ public class FreeModeHUD : MonoBehaviour
     private RectTransform selectionPanel;
     private TextMeshProUGUI selectionText;
     private Button repairButton;
+    private RectTransform foundingBanner;
+    private readonly List<(Age age, TextMeshProUGUI header)> ageHeaders = new List<(Age, TextMeshProUGUI)>();
+    private Button upgradeButton;
+    private TextMeshProUGUI upgradeLabel;
     private Button stanceButton;
     private TextMeshProUGUI stanceLabel;
     private Button allStanceButton;
@@ -140,12 +144,24 @@ public class FreeModeHUD : MonoBehaviour
         var build = UIBuilder.VerticalPanel("BuildPanel", root);
         UIBuilder.Anchor(build, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(10, -66), new Vector2(300, 0));
         UIBuilder.Text("Title", build, "<b>Build</b>", 24);
-        foreach (var def in settlement.Database.buildings)
+        // Grouped by age: each age's buildings under its own heading.
+        var db = settlement.Database;
+        foreach (var age in db.ages)
         {
-            var d = def;
-            var button = UIBuilder.Button(def.id, build, () => controller.Placer.Begin(d), out var label, 60, 18, def.icon);
-            UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
-            buildButtons.Add((def, button, label));
+            var header = UIBuilder.Text("Age", build, $"<size=85%><color=#fd8>{age.displayName}</color></size>", 18);
+            ageHeaders.Add((age, header));
+            foreach (var def in db.buildings)
+            {
+                var defAge = def.age != null ? def.age : db.ages[0];
+                if (defAge != age)
+                {
+                    continue;
+                }
+                var d = def;
+                var button = UIBuilder.Button(def.id, build, () => controller.Placer.Begin(d), out var label, 56, 18, def.icon);
+                UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
+                buildButtons.Add((def, button, label));
+            }
         }
         UIBuilder.Text("Hint", build, "<size=80%><color=#aaa>Click to place. Shift keeps placing.\nRight click / Esc cancels.</color></size>", 16);
 
@@ -168,6 +184,9 @@ public class FreeModeHUD : MonoBehaviour
         selectionPanel = UIBuilder.VerticalPanel("SelectionPanel", root);
         UIBuilder.Anchor(selectionPanel, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 150), new Vector2(460, 0));
         selectionText = UIBuilder.Text("Info", selectionPanel, "", 19);
+        upgradeButton = UIBuilder.Button("Upgrade", selectionPanel, UpgradeSelected, out upgradeLabel, 54);
+        upgradeButton.image.color = new Color(0.25f, 0.33f, 0.22f);
+        UIBuilder.OnHover(upgradeButton.gameObject, () => tooltipSource = UpgradeTooltip, HideTooltip);
         stanceButton = UIBuilder.Button("Stance", selectionPanel, ToggleSelectedStance, out stanceLabel, 50);
         UIBuilder.OnHover(stanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
         repairButton = UIBuilder.Button("Repair", selectionPanel, RepairSelected, out repairLabel, 44);
@@ -175,12 +194,24 @@ public class FreeModeHUD : MonoBehaviour
         demolishLabel.text = "Demolish (no refund)";
         selectionPanel.gameObject.SetActive(false);
 
+        // Founding banner (top centre, until the Campfire is placed)
+        foundingBanner = UIBuilder.Panel("FoundingBanner", root, new Color(0.1f, 0.08f, 0.02f, 0.9f)).rectTransform;
+        UIBuilder.Anchor(foundingBanner, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -70), new Vector2(760, 74));
+        foundingBanner.GetComponent<Image>().raycastTarget = false;
+        var bannerText = UIBuilder.Text("Text", foundingBanner,
+            "<b>Choose where to found your settlement</b>\n<size=80%>Place your Campfire. Look for forest, berries and stone nearby, and water for bonuses.</size>",
+            22, TextAlignmentOptions.Center);
+        UIBuilder.Stretch(bannerText.rectTransform, 8);
+
         // Messages (bottom centre)
         var log = UIBuilder.Panel("Messages", root, new Color(0, 0, 0, 0.45f)).rectTransform;
         UIBuilder.Anchor(log, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 10), new Vector2(900, 130));
         log.GetComponent<Image>().raycastTarget = false;
         messageLog = UIBuilder.Text("Text", log, "", 18, TextAlignmentOptions.BottomLeft);
         UIBuilder.Stretch(messageLog.rectTransform, 10);
+        messageGroup = log.gameObject.AddComponent<CanvasGroup>();
+        messageGroup.alpha = 0;
+        messageGroup.blocksRaycasts = false;
 
         // Tooltip (follows the mouse)
         tooltip = UIBuilder.VerticalPanel("Tooltip", root, 12);
@@ -204,11 +235,13 @@ public class FreeModeHUD : MonoBehaviour
             RefreshAll();
         }
         UpdateTooltip();
+        FadeMessages();
     }
 
     private void RefreshAll()
     {
         RefreshTopBar();
+        foundingBanner.gameObject.SetActive(!settlement.IsFounded);
         RefreshAllStanceButton();
         RefreshBuildButtons();
         RefreshResearchButtons();
@@ -279,10 +312,19 @@ public class FreeModeHUD : MonoBehaviour
 
     private void RefreshBuildButtons()
     {
+        // Show the current and earlier ages, plus a preview of the next one.
+        foreach (var (age, header) in ageHeaders)
+        {
+            header.gameObject.SetActive(settlement.IsFounded && age.order <= settlement.State.ageIndex + 1);
+        }
         foreach (var (def, button, label) in buildButtons)
         {
-            bool locked = def.requirements.minimumAge != null && def.requirements.minimumAge.order > settlement.State.ageIndex + 1;
-            button.gameObject.SetActive(!locked);
+            int ageOrder = def.age != null ? def.age.order : 0;
+            bool locked = ageOrder > settlement.State.ageIndex + 1;
+            // Before founding only the town center is offered; afterwards it's hidden once built.
+            bool founded = settlement.IsFounded;
+            bool hidden = locked || (founded ? def.isTownCenter && settlement.CountAll(def) > 0 : !def.isTownCenter);
+            button.gameObject.SetActive(!hidden);
             bool can = settlement.CanBuild(def, out string missing);
             button.interactable = can;
             bool placingThis = controller.Placer.Current == def;
@@ -345,9 +387,14 @@ public class FreeModeHUD : MonoBehaviour
         else
         {
             string ruined = state.health <= 0 ? " <color=#f77>(ruined: needs repair)</color>" : "";
-            sb.Append($"Health {Mathf.FloorToInt(state.health)}/{def.maxHealth}{ruined}\n");
+            sb.Append($"Health {Mathf.FloorToInt(state.health)}/{settlement.StatsOf(state).maxHealth}{ruined}\n");
         }
-        sb.Append(StatsText(def));
+        sb.Append(StatsText(def, state.upgradeLevel));
+        if (def.requiredDeposit != null || def.waterBonus > 0)
+        {
+            string color = state.siteQuality >= 0.99f ? "#8f8" : state.siteQuality >= 0.5f ? "#fe8" : "#fb7";
+            sb.Append($"Site output: <color={color}>{state.siteQuality:P0}</color>\n");
+        }
         selectionText.text = sb.ToString().TrimEnd();
 
         bool trains = def.trainsUnit != null;
@@ -357,7 +404,32 @@ public class FreeModeHUD : MonoBehaviour
             stanceLabel.text = StanceText(state.stance) + "\n<size=75%><color=#aaa>Click to switch</color></size>";
         }
 
-        bool damaged = state.IsBuilt && state.health < def.maxHealth;
+        // Upgrades: the next tier for this building, or "fully upgraded".
+        bool hasUpgrades = def.upgrades.Count > 0;
+        upgradeButton.gameObject.SetActive(hasUpgrades && state.IsBuilt);
+        if (hasUpgrades)
+        {
+            var next = settlement.NextUpgrade(state);
+            if (next == null)
+            {
+                upgradeButton.interactable = false;
+                upgradeLabel.text = "<b>Fully upgraded</b>";
+            }
+            else if (state.upgrading)
+            {
+                upgradeButton.interactable = false;
+                upgradeLabel.text = $"<b>Upgrading: {next.name}</b>\n<size=80%><color=#fd6>{state.upgradeProgress:P0}</color></size>";
+            }
+            else
+            {
+                bool can = settlement.CanUpgrade(state, out string why);
+                upgradeButton.interactable = can;
+                upgradeLabel.text = $"<b>Upgrade: {next.name}</b>  <size=75%>({state.upgradeLevel + 1}/{def.upgrades.Count})</size>\n" +
+                                    $"<size=80%>{SubtitleFor(next.requirements.cost, can, why)}</size>";
+            }
+        }
+
+        bool damaged = state.IsBuilt && state.health < settlement.StatsOf(state).maxHealth;
         repairButton.gameObject.SetActive(damaged);
         if (damaged)
         {
@@ -486,7 +558,23 @@ public class FreeModeHUD : MonoBehaviour
         {
             messageLog.text = string.Join("\n", messages);
         }
+        lastMessageTime = Time.unscaledTime;
     }
+
+    /// <summary>Messages stay up for a while after the latest one, then fade so the map is clear.</summary>
+    private void FadeMessages()
+    {
+        if (messageGroup == null)
+        {
+            return;
+        }
+        float age = Time.unscaledTime - lastMessageTime;
+        messageGroup.alpha = messages.Count == 0 ? 0 : Mathf.Clamp01(1f - (age - MessageHoldSeconds) / 1.5f);
+    }
+
+    private CanvasGroup messageGroup;
+    private float lastMessageTime = -999f;
+    private const float MessageHoldSeconds = 8f;
 
     // ---------- Tooltips ----------
 
@@ -524,9 +612,38 @@ public class FreeModeHUD : MonoBehaviour
             sb.Append($"<color=#ccc>{def.description}</color>\n");
         }
         sb.Append($"Cost: {CostText(def.requirements.cost)}   Build time: {def.buildTime:0}s\n");
-        sb.Append(StatsText(def));
+        sb.Append(StatsText(def, 0));
+        sb.Append(PlacementText(def));
+        if (def.upgrades.Count > 0)
+        {
+            sb.Append($"<color=#bdb>Upgrades: {string.Join(", ", def.upgrades.Select(u => u.name))}</color>\n");
+        }
         AppendMissing(sb, settlement.CanBuild(def, out string missing), missing);
         return sb.ToString().TrimEnd();
+    }
+
+    /// <summary>Where a building may go, in words.</summary>
+    private static string PlacementText(BuildingDefinition def)
+    {
+        var sb = new StringBuilder();
+        if (def.requiredDeposit != null)
+        {
+            sb.Append($"<color=#fe8>Build near {def.requiredDeposit.displayName}</color>: needs {def.minDepositTiles}+ tiles " +
+                      $"within {def.catchmentRadius}; full output at {def.fullOutputTiles}\n");
+        }
+        if (def.waterBonus > 0)
+        {
+            sb.Append($"<color=#8cf>+{def.waterBonus:P0} output near water</color>\n");
+        }
+        if (def.canBuildOnHills)
+        {
+            sb.Append("Can be built on hills\n");
+        }
+        if (def.isTownCenter)
+        {
+            sb.Append("<color=#fe8>Founds your settlement. Pick the spot carefully!</color>\n");
+        }
+        return sb.ToString();
     }
 
     private string TechTooltip(Technology tech)
@@ -578,33 +695,94 @@ public class FreeModeHUD : MonoBehaviour
         settlement.Database.resources.Where(r =>
             r != null && (r.unlockedIn == null || r.unlockedIn.order <= settlement.State.ageIndex));
 
-    private static string StatsText(BuildingDefinition def)
+    /// <summary>A building's numbers at a given upgrade level.</summary>
+    private static string StatsText(BuildingDefinition def, int level)
     {
+        var s = Settlement.StatsOf(def, level);
         var sb = new StringBuilder();
         foreach (var rate in def.production)
         {
             if (rate.resource != null)
             {
-                sb.Append($"Produces {rate.perSecond:0.##} {rate.resource.displayName}/s\n");
+                sb.Append($"Produces {rate.perSecond * s.output:0.##} {rate.resource.displayName}/s\n");
             }
         }
-        if (def.housing > 0)
+        if (s.housing > 0)
         {
-            sb.Append($"Houses {def.housing} people\n");
+            sb.Append($"Houses {s.housing} people\n");
         }
-        if (def.workers > 0)
+        if (s.workers > 0)
         {
-            sb.Append($"Needs {def.workers} workers\n");
+            sb.Append($"Needs {s.workers} workers\n");
         }
         if (def.trainsUnit != null)
         {
-            sb.Append($"Trains up to {def.maxUnits} {def.trainsUnit.displayName}\n");
+            sb.Append($"Trains up to {s.maxUnits} {def.trainsUnit.displayName}\n");
+            var m = s.trainedUnits;
+            var bonus = new List<string>();
+            if (m.speedMultiplier != 1) bonus.Add($"speed {m.speedMultiplier - 1:+0%;-0%}");
+            if (m.attackMultiplier != 1) bonus.Add($"attack {m.attackMultiplier - 1:+0%;-0%}");
+            if (m.healthMultiplier != 1) bonus.Add($"health {m.healthMultiplier - 1:+0%;-0%}");
+            if (bonus.Count > 0)
+            {
+                sb.Append($"Troops: {string.Join(", ", bonus)}\n");
+            }
         }
-        if (def.defensePower > 0)
+        if (s.defense > 0)
         {
-            sb.Append($"Defence +{def.defensePower:0.#}\n");
+            sb.Append($"Defence +{s.defense:0.#}\n");
         }
         return sb.ToString();
+    }
+
+    private string UpgradeTooltip()
+    {
+        var view = controller.Selected;
+        if (view == null)
+        {
+            return "";
+        }
+        var next = settlement.NextUpgrade(view.State);
+        if (next == null)
+        {
+            return "<b>Fully upgraded</b>";
+        }
+        var sb = new StringBuilder($"<b>{next.name}</b>\n");
+        if (!string.IsNullOrEmpty(next.description))
+        {
+            sb.Append($"<color=#ccc>{next.description}</color>\n");
+        }
+        sb.Append($"Cost: {CostText(next.requirements.cost)}   Time: {next.upgradeTime:0}s\n");
+        var effects = new List<string>();
+        if (next.productionMultiplier != 1) effects.Add($"output {next.productionMultiplier - 1:+0%;-0%}");
+        if (next.extraHousing != 0) effects.Add($"+{next.extraHousing} housing");
+        if (next.extraHealth != 0) effects.Add($"+{next.extraHealth} health");
+        if (next.extraDefense != 0) effects.Add($"+{next.extraDefense:0.#} defence");
+        if (next.extraUnits != 0) effects.Add($"+{next.extraUnits} troop");
+        if (next.extraCatchment != 0) effects.Add($"+{next.extraCatchment} reach");
+        var m = next.trainedUnits;
+        if (m != null)
+        {
+            if (m.speedMultiplier != 1) effects.Add($"troop speed {m.speedMultiplier - 1:+0%;-0%}");
+            if (m.attackMultiplier != 1) effects.Add($"troop attack {m.attackMultiplier - 1:+0%;-0%}");
+            if (m.healthMultiplier != 1) effects.Add($"troop health {m.healthMultiplier - 1:+0%;-0%}");
+        }
+        if (effects.Count > 0)
+        {
+            sb.Append($"<color=#8f8>{string.Join(", ", effects)}</color>\n");
+        }
+        AppendMissing(sb, settlement.CanUpgrade(view.State, out string missing), missing);
+        return sb.ToString().TrimEnd();
+    }
+
+    private void UpgradeSelected()
+    {
+        var view = controller.Selected;
+        if (view != null && !settlement.TryStartUpgrade(view.State, out string reason))
+        {
+            AddMessage(reason.Split('\n')[0]);
+        }
+        RefreshAll();
     }
 
     /// <summary>

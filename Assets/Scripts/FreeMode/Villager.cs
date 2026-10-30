@@ -99,10 +99,17 @@ public class Villager : MonoBehaviour
 
             case Mode.Walking:
                 Vector3 pos = transform.position;
-                Vector3 next = Vector3.MoveTowards(pos, target, Speed * (goingHome && life.UnderAttack ? 2f : 1f) * dt);
+                pos.z = 0;
+                Vector3 waypoint = pathFollower.NextPoint(pos, target);
+                float speed = Speed * (goingHome && life.UnderAttack ? 2f : 1f);
+                if (MapNavigator.Current != null)
+                {
+                    speed *= MapNavigator.Current.SpeedFactor(pos);
+                }
+                Vector3 next = Vector3.MoveTowards(pos, waypoint, speed * dt);
                 next.z = target.z;
                 transform.position = next;
-                Face(target.x - pos.x);
+                Face(waypoint.x - pos.x);
                 SetFrame(art.villagerWalk, WalkFps);
                 if (Vector2.Distance(next, target) < 0.02f)
                 {
@@ -179,6 +186,7 @@ public class Villager : MonoBehaviour
     }
 
     private Sprite pendingCarry;
+    private readonly PathFollower pathFollower = new PathFollower();
 
     private void WalkTo(Vector3 destination, Action arrive)
     {

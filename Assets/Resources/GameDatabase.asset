@@ -21,6 +21,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
   - {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
   buildings:
+  - {fileID: 11400000, guid: d3ff3402c09c6dd41944fff8bfc9b7c1, type: 2}
   - {fileID: 11400000, guid: a01eb155babc08847b5b74db3b2051ba, type: 2}
   - {fileID: 11400000, guid: 7654ac0a21fb9904f837073029632c34, type: 2}
   - {fileID: 11400000, guid: c1d74b413012c4240b048fb9214b0a70, type: 2}
@@ -29,6 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 78f92c662a35c324f886d3ee392e1e73, type: 2}
   technologies:
   - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
+  - {fileID: 11400000, guid: 53c62db14bf15104a8b3276f2156db9d, type: 2}
   - {fileID: 11400000, guid: 9c92e89968ceb5044bdf08fb2723be88, type: 2}
   - {fileID: 11400000, guid: b1f9b14cc7bcbce43b1ce9b8709d7ab7, type: 2}
   - {fileID: 11400000, guid: d388d99fbc34e7149b63fa16783aa2cb, type: 2}
@@ -38,7 +40,17 @@ MonoBehaviour:
   - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
     amount: 120
   startingPopulation: 3
-  gridSize: {x: 30, y: 20}
+  mapSize: {x: 160, y: 110}
+  deposits:
+  - {fileID: 11400000, guid: a8f92a5f3043afa409d059f969e6c070, type: 2}
+  - {fileID: 11400000, guid: 882f1d4129e7b3c4f83d909ba36418da, type: 2}
+  - {fileID: 11400000, guid: 99e73e782f5340e4b9aa7bda45c8b38e, type: 2}
+  - {fileID: 11400000, guid: 7649324227f818f4b9c96ca6b1f9a2e8, type: 2}
+  terrainScale: 0.03
+  waterShare: 0.1
+  hillShare: 0.12
+  riverCount: 3
+  hillSpeed: 0.5
   food: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
   foodPerPersonPerSecond: 0.02
   secondsPerNewPerson: 8

@@ -1,85 +1,303 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 /// <summary>
-/// Maps settlement grid cells to world positions and draws the ground and grid.
-/// Cell (0,0) is at this object's position; each cell is cellSize world units.
+/// Draws the generated free mode map and maps tiles to world positions.
+/// Tile (0,0) is at this object's position; each tile is cellSize world units.
+/// Ground (grass, water, hills) is a Tilemap; deposits are individual sprites so units
+/// can walk in front of and behind them.
 /// </summary>
 public class SettlementGrid : MonoBehaviour
 {
     public float cellSize = 1f;
 
-    [Tooltip("How much open land surrounds the settlement before the map edge.")]
-    public float mapMargin = 12f;
-
     [Tooltip("Scenery drawn beyond the map edge so the view never shows emptiness.")]
     public float sceneryBeyondEdge = 25f;
 
     public Vector2Int Size { get; private set; }
+    public MapData Map { get; private set; }
 
-    /// <summary>The playable map: the settlement plus open land around it. Raiders enter at its edges.</summary>
+    /// <summary>The playable map. Raiders enter at its edges.</summary>
     public Rect MapRect { get; private set; }
 
-    /// <summary>Everything that gets grass and scenery (the map plus a strip beyond it).</summary>
+    /// <summary>The map plus a strip of scenery beyond it.</summary>
     public Rect WorldArea { get; private set; }
 
     private SpriteRenderer gridLines;
-    private static readonly Color LinesIdle = new Color(1, 1, 1, 0.25f);
-    private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.8f);
+    private static readonly Color LinesIdle = new Color(1, 1, 1, 0f);
+    private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.35f);
 
-    public void Build(Vector2Int size)
+    private GameObject tileGrid;
+
+    [Header("Zoomed-out overview (level of detail)")]
+    [Tooltip("Above this camera zoom the detailed map is swapped for a simple pre-drawn overview.")]
+    public float overviewZoom = 26f;
+
+    private TilemapRenderer groundRenderer;
+    private TilemapRenderer depositRenderer;
+    private SpriteRenderer overview;
+    private bool showingOverview;
+
+    /// <summary>
+    /// Bake the whole map into one small picture: a few pixels per tile, coloured by terrain
+    /// and deposit, with a little pattern so forests and rocks still read as forests and rocks.
+    /// </summary>
+    private void BuildOverview(MapData map)
     {
-        Size = size;
-        var art = ArtLibrary.Load();
-        Vector2 gridWorld = new Vector2(size.x, size.y) * cellSize;
-        Vector2 origin = transform.position;
-        MapRect = new Rect(origin - Vector2.one * mapMargin, gridWorld + Vector2.one * mapMargin * 2);
-        WorldArea = new Rect(MapRect.min - Vector2.one * sceneryBeyondEdge,
-            MapRect.size + Vector2.one * sceneryBeyondEdge * 2);
-        DrawMapEdge();
+        const int px = 4; // pixels per tile
+        var tex = new Texture2D(map.Width * px, map.Height * px, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Bilinear,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        var pixels = new Color32[tex.width * tex.height];
+        var grass = new Color32(108, 153, 79, 255);
+        var water = new Color32(69, 133, 204, 255);
+        var hill = new Color32(143, 130, 110, 255);
+        var rng = new System.Random(map.Seed);
+        for (int y = 0; y < map.Height; y++)
+        {
+            for (int x = 0; x < map.Width; x++)
+            {
+                var t = map.GetTerrain(x, y);
+                Color32 baseColor = t == TerrainType.Water ? water : t == TerrainType.Hill ? hill : grass;
+                var deposit = map.GetDeposit(x, y);
+                Color32 mark = deposit != null ? OverviewColor(deposit) : baseColor;
+                for (int dy = 0; dy < px; dy++)
+                {
+                    for (int dx = 0; dx < px; dx++)
+                    {
+                        // Deposits: a blob in the tile centre over the terrain colour.
+                        bool inMark = deposit != null && dx >= 1 && dx <= 2 + (rng.Next(2)) && dy >= 1 && dy <= 2 + (rng.Next(2));
+                        pixels[(y * px + dy) * tex.width + x * px + dx] = inMark ? mark : baseColor;
+                    }
+                }
+            }
+        }
+        tex.SetPixels32(pixels);
+        tex.Apply();
 
-        // Wild grass everywhere
-        var wild = Tiled("Wilds", art != null ? art.grassTile : null, new Color(0.3f, 0.45f, 0.25f), -22);
+        overview = new GameObject("Overview").AddComponent<SpriteRenderer>();
+        overview.transform.SetParent(transform, false);
+        overview.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, px / cellSize);
+        overview.sortingOrder = -20;
+        overview.enabled = false;
+    }
+
+    private static Color32 OverviewColor(DepositType deposit)
+    {
+        switch (deposit.id)
+        {
+            case "Forest": return new Color32(46, 98, 48, 255);
+            case "Berries": return new Color32(176, 52, 66, 255);
+            case "Stone": return new Color32(196, 196, 202, 255);
+            case "CopperOre": return new Color32(214, 128, 60, 255);
+            default: return new Color32(230, 220, 120, 255);
+        }
+    }
+
+    private void LateUpdate()
+    {
+        var cam = Camera.main;
+        if (cam == null || overview == null)
+        {
+            return;
+        }
+        // A little hysteresis so it doesn't flicker right at the threshold.
+        bool want = showingOverview ? cam.orthographicSize > overviewZoom * 0.9f : cam.orthographicSize > overviewZoom;
+        if (want == showingOverview)
+        {
+            return;
+        }
+        showingOverview = want;
+        overview.enabled = want;
+        groundRenderer.enabled = !want;
+        depositRenderer.enabled = !want;
+    }
+
+    public void Build(MapData map)
+    {
+        Map = map;
+        Size = new Vector2Int(map.Width, map.Height);
+        var art = ArtLibrary.Load();
+        Vector2 origin = transform.position;
+        MapRect = new Rect(origin, new Vector2(map.Width, map.Height) * cellSize);
+        WorldArea = new Rect(MapRect.min - Vector2.one * sceneryBeyondEdge, MapRect.size + Vector2.one * sceneryBeyondEdge * 2);
+
+        // Grass beyond the edge
+        var wild = Tiled("Beyond", art != null ? art.grassTile : null, new Color(0.3f, 0.45f, 0.25f), -23);
         wild.transform.position = new Vector3(WorldArea.x, WorldArea.y, 0);
         wild.size = WorldArea.size;
 
-        // Settlement ground
-        var ground = Tiled("Ground", art != null ? art.settlementTile : null, new Color(0.45f, 0.55f, 0.3f), -21);
-        ground.size = gridWorld;
+        BuildGround(map, art);
+        BuildDeposits(map);
+        BuildOverview(map);
+        DrawMapEdge();
 
-        // Border
-        var border = Tiled("Border", null, new Color(0.2f, 0.15f, 0.08f, 0.6f), -21);
-        border.transform.localPosition = new Vector3(-0.08f, -0.08f, 0.01f);
-        border.size = gridWorld + Vector2.one * 0.16f;
-
-        // Grid lines
         gridLines = new GameObject("GridLines").AddComponent<SpriteRenderer>();
         gridLines.transform.SetParent(transform, false);
         gridLines.sprite = SimpleSprites.GridCell;
         gridLines.drawMode = SpriteDrawMode.Tiled;
-        gridLines.size = new Vector2(size.x, size.y);
+        gridLines.size = new Vector2(map.Width, map.Height);
         gridLines.transform.localScale = Vector3.one * cellSize;
         gridLines.sortingOrder = -19;
         SetPlacing(false);
     }
 
+    // ---------- Ground ----------
+
+    private void BuildGround(MapData map, ArtLibrary art)
+    {
+        var gridObject = new GameObject("TileGrid");
+        gridObject.transform.SetParent(transform, false);
+        tileGrid = gridObject;
+        var unityGrid = gridObject.AddComponent<Grid>();
+        unityGrid.cellSize = new Vector3(cellSize, cellSize, 0);
+
+        var tilemapObject = new GameObject("Ground");
+        tilemapObject.transform.SetParent(gridObject.transform, false);
+        var tilemap = tilemapObject.AddComponent<Tilemap>();
+        var renderer = tilemapObject.AddComponent<TilemapRenderer>();
+        renderer.sortingOrder = -21;
+        groundRenderer = renderer;
+
+        Tile grass = MakeTile(art != null ? art.grassTile : null, new Color(0.42f, 0.6f, 0.31f));
+        Tile water = MakeTile(art != null ? art.waterTile : null, new Color(0.25f, 0.48f, 0.75f));
+        Tile hill = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
+
+        var positions = new Vector3Int[map.Width * map.Height];
+        var tiles = new TileBase[positions.Length];
+        int i = 0;
+        for (int y = 0; y < map.Height; y++)
+        {
+            for (int x = 0; x < map.Width; x++)
+            {
+                positions[i] = new Vector3Int(x, y, 0);
+                var t = map.GetTerrain(x, y);
+                tiles[i] = t == TerrainType.Water ? water
+                    : t == TerrainType.Hill ? hill
+                    : grass;
+                i++;
+            }
+        }
+        tilemap.SetTiles(positions, tiles);
+    }
+
+    private static Tile MakeTile(Sprite sprite, Color fallback)
+    {
+        var tile = ScriptableObject.CreateInstance<Tile>();
+        tile.sprite = sprite != null ? sprite : SimpleSprites.Square;
+        tile.color = sprite != null ? Color.white : fallback;
+        return tile;
+    }
+
+    // ---------- Deposits ----------
+
+    /// <summary>
+    /// Deposits go on their own Tilemap (thousands of separate sprites were too slow).
+    /// Drawn top rows first, so lower trees overlap the ones behind them.
+    /// </summary>
+    private void BuildDeposits(MapData map)
+    {
+        var tilemapObject = new GameObject("Deposits");
+        tilemapObject.transform.SetParent(tileGrid.transform, false);
+        depositTilemap = tilemapObject.AddComponent<Tilemap>();
+        var renderer = tilemapObject.AddComponent<TilemapRenderer>();
+        renderer.sortingOrder = -11;
+        renderer.sortOrder = TilemapRenderer.SortOrder.TopLeft;
+        renderer.mode = TilemapRenderer.Mode.Chunk;
+        depositRenderer = renderer;
+
+        var tileFor = new Dictionary<Sprite, Tile>();
+        var rng = new System.Random(map.Seed ^ 0x5f3759df);
+        for (int y = 0; y < map.Height; y++)
+        {
+            for (int x = 0; x < map.Width; x++)
+            {
+                var type = map.GetDeposit(x, y);
+                if (type == null || type.sprites.Count == 0)
+                {
+                    continue;
+                }
+                var sprite = type.sprites[rng.Next(type.sprites.Count)];
+                if (!tileFor.TryGetValue(sprite, out var tile))
+                {
+                    tile = ScriptableObject.CreateInstance<Tile>();
+                    tile.sprite = sprite;
+                    tile.flags = TileFlags.LockColor; // transform set per tile below
+                    tileFor[sprite] = tile;
+                }
+                var cell = new Vector3Int(x, y, 0);
+                // Jitter, size and mirroring so patches look natural, sized to about one tile.
+                float scale = (0.6f + (float)rng.NextDouble() * 0.2f) / Mathf.Max(0.5f, sprite.bounds.size.x);
+                float flip = rng.NextDouble() < 0.5 ? -1f : 1f;
+                var offset = new Vector3(((float)rng.NextDouble() - 0.5f) * 0.4f, ((float)rng.NextDouble() - 0.5f) * 0.3f - 0.3f, 0);
+                var matrix = Matrix4x4.TRS(offset, Quaternion.identity, new Vector3(scale * flip, scale, 1));
+                depositTiles[new Vector2Int(x, y)] = (tile, matrix);
+            }
+        }
+        ShowDeposits(null);
+    }
+
+    private Tilemap depositTilemap;
+    private readonly Dictionary<Vector2Int, (Tile tile, Matrix4x4 matrix)> depositTiles =
+        new Dictionary<Vector2Int, (Tile, Matrix4x4)>();
+    private readonly HashSet<Vector2Int> hiddenDeposits = new HashSet<Vector2Int>();
+
+    private void ShowDeposits(HashSet<Vector2Int> hide)
+    {
+        foreach (var pair in depositTiles)
+        {
+            bool hidden = hide != null && hide.Contains(pair.Key);
+            var cell = new Vector3Int(pair.Key.x, pair.Key.y, 0);
+            if (hidden)
+            {
+                depositTilemap.SetTile(cell, null);
+            }
+            else if (depositTilemap.GetTile(cell) == null)
+            {
+                depositTilemap.SetTile(cell, pair.Value.tile);
+                depositTilemap.SetTransformMatrix(cell, pair.Value.matrix);
+            }
+        }
+    }
+
+    /// <summary>Hide deposits under buildings (and show them again when a building goes).</summary>
+    public void RefreshCoverage(IEnumerable<RectInt> buildingAreas)
+    {
+        var covered = new HashSet<Vector2Int>();
+        foreach (var area in buildingAreas)
+        {
+            for (int y = area.yMin; y < area.yMax; y++)
+            {
+                for (int x = area.xMin; x < area.xMax; x++)
+                {
+                    covered.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+        if (covered.SetEquals(hiddenDeposits))
+        {
+            return;
+        }
+        hiddenDeposits.Clear();
+        hiddenDeposits.UnionWith(covered);
+        ShowDeposits(covered);
+    }
+
+    // ---------- Edge and helpers ----------
+
     /// <summary>Darken everything outside the map so its edge is clear.</summary>
     private void DrawMapEdge()
     {
-        var shade = new Color(0.05f, 0.07f, 0.04f, 0.45f);
+        var shade = new Color(0.05f, 0.07f, 0.04f, 0.55f);
         Rect map = MapRect;
         Rect world = WorldArea;
-        // Four strips around the map: below, above, left, right.
         Strip("EdgeBelow", new Rect(world.xMin, world.yMin, world.width, map.yMin - world.yMin), shade);
         Strip("EdgeAbove", new Rect(world.xMin, map.yMax, world.width, world.yMax - map.yMax), shade);
         Strip("EdgeLeft", new Rect(world.xMin, map.yMin, map.xMin - world.xMin, map.height), shade);
         Strip("EdgeRight", new Rect(map.xMax, map.yMin, world.xMax - map.xMax, map.height), shade);
-        // A thin darker line right on the edge.
-        var line = new Color(0.05f, 0.05f, 0.03f, 0.6f);
-        const float w = 0.12f;
-        Strip("LineBelow", new Rect(map.xMin, map.yMin - w, map.width, w), line);
-        Strip("LineAbove", new Rect(map.xMin, map.yMax, map.width, w), line);
-        Strip("LineLeft", new Rect(map.xMin - w, map.yMin - w, w, map.height + w * 2), line);
-        Strip("LineRight", new Rect(map.xMax, map.yMin - w, w, map.height + w * 2), line);
     }
 
     private void Strip(string objectName, Rect rect, Color color)
@@ -91,46 +309,7 @@ public class SettlementGrid : MonoBehaviour
         sr.drawMode = SpriteDrawMode.Tiled;
         sr.size = rect.size;
         sr.color = color;
-        // Above scenery (-10), below buildings and units.
         sr.sortingOrder = -9;
-    }
-
-    /// <summary>A random point on the map's edge.</summary>
-    public Vector3 RandomEdgePoint()
-    {
-        Rect m = MapRect;
-        float perimeter = 2 * (m.width + m.height);
-        float t = Random.Range(0f, perimeter);
-        if (t < m.width) return new Vector3(m.xMin + t, m.yMin, 0);
-        t -= m.width;
-        if (t < m.height) return new Vector3(m.xMax, m.yMin + t, 0);
-        t -= m.height;
-        if (t < m.width) return new Vector3(m.xMax - t, m.yMax, 0);
-        t -= m.width;
-        return new Vector3(m.xMin, m.yMax - t, 0);
-    }
-
-    /// <summary>The point on the map's edge nearest to 'from'.</summary>
-    public Vector3 NearestEdgePoint(Vector3 from)
-    {
-        Rect m = MapRect;
-        float x = Mathf.Clamp(from.x, m.xMin, m.xMax);
-        float y = Mathf.Clamp(from.y, m.yMin, m.yMax);
-        float toLeft = x - m.xMin, toRight = m.xMax - x, toBottom = y - m.yMin, toTop = m.yMax - y;
-        float min = Mathf.Min(Mathf.Min(toLeft, toRight), Mathf.Min(toBottom, toTop));
-        if (min == toLeft) return new Vector3(m.xMin, y, 0);
-        if (min == toRight) return new Vector3(m.xMax, y, 0);
-        if (min == toBottom) return new Vector3(x, m.yMin, 0);
-        return new Vector3(x, m.yMax, 0);
-    }
-
-    /// <summary>Make the grid lines stand out while placing a building.</summary>
-    public void SetPlacing(bool placing)
-    {
-        if (gridLines != null)
-        {
-            gridLines.color = placing ? LinesPlacing : LinesIdle;
-        }
     }
 
     private SpriteRenderer Tiled(string objectName, Sprite sprite, Color fallbackColor, int order)
@@ -138,10 +317,59 @@ public class SettlementGrid : MonoBehaviour
         var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
         sr.transform.SetParent(transform, false);
         sr.sprite = sprite != null ? sprite : SimpleSprites.Square;
-        sr.color = sprite != null ? Color.white : fallbackColor;
+        sr.color = sprite != null ? new Color(0.75f, 0.8f, 0.75f) : fallbackColor;
         sr.drawMode = SpriteDrawMode.Tiled;
         sr.sortingOrder = order;
         return sr;
+    }
+
+    /// <summary>A random walkable point on the map's edge.</summary>
+    public Vector3 RandomEdgePoint()
+    {
+        Rect m = MapRect;
+        for (int attempt = 0; attempt < 50; attempt++)
+        {
+            float perimeter = 2 * (m.width + m.height);
+            float t = Random.Range(0f, perimeter);
+            Vector3 p;
+            if (t < m.width) p = new Vector3(m.xMin + t, m.yMin + 0.5f, 0);
+            else if ((t -= m.width) < m.height) p = new Vector3(m.xMax - 0.5f, m.yMin + t, 0);
+            else if ((t -= m.height) < m.width) p = new Vector3(m.xMax - t, m.yMax - 0.5f, 0);
+            else p = new Vector3(m.xMin + 0.5f, m.yMax - (t - m.width), 0);
+            if (Map == null || Map.IsWalkable(p))
+            {
+                return p;
+            }
+        }
+        return MapRect.center;
+    }
+
+    /// <summary>The walkable point on the map's edge nearest to 'from'.</summary>
+    public Vector3 NearestEdgePoint(Vector3 from)
+    {
+        Rect m = MapRect;
+        float x = Mathf.Clamp(from.x, m.xMin + 0.5f, m.xMax - 0.5f);
+        float y = Mathf.Clamp(from.y, m.yMin + 0.5f, m.yMax - 0.5f);
+        float toLeft = x - m.xMin, toRight = m.xMax - x, toBottom = y - m.yMin, toTop = m.yMax - y;
+        float min = Mathf.Min(Mathf.Min(toLeft, toRight), Mathf.Min(toBottom, toTop));
+        Vector3 p = min == toLeft ? new Vector3(m.xMin + 0.5f, y, 0)
+            : min == toRight ? new Vector3(m.xMax - 0.5f, y, 0)
+            : min == toBottom ? new Vector3(x, m.yMin + 0.5f, 0)
+            : new Vector3(x, m.yMax - 0.5f, 0);
+        if (Map != null && !Map.IsWalkable(p))
+        {
+            return RandomEdgePoint();
+        }
+        return p;
+    }
+
+    /// <summary>Show the grid lines while placing a building.</summary>
+    public void SetPlacing(bool placing)
+    {
+        if (gridLines != null)
+        {
+            gridLines.color = placing ? LinesPlacing : LinesIdle;
+        }
     }
 
     public Vector3 CellToWorld(Vector2Int cell) =>

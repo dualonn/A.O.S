@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: Clubman
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Clubman
-  icon: {fileID: 21300000, guid: ff457ba83bf34f041a4fb7666d96bedf, type: 3}
+  icon: {fileID: 21300000, guid: 684df46b453f6c74cb182d7053f72fed, type: 3}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-  prefab: {fileID: 1655273718425694568, guid: 2b5f61099276f4a489a3b8e6e68fc4db, type: 3}
+  prefab: {fileID: 1175909368095556330, guid: 3c6076d7f73bb7d41ac8e1abeabe8b57, type: 3}
   cost: 20
   populationCost: 1
   maxHealth: 100
-  moveSpeed: 0.6
+  moveSpeed: 0.8
   attackPower: 10
   attackCooldown: 1
-  attackRange: 2
+  attackRange: 0.55
+  hitDelay: 0.3
   detectionRange: 2.5

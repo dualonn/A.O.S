@@ -11,6 +11,9 @@ public class SettlementState
 {
     public int ageIndex;
     public float population;
+
+    [Tooltip("The map is regenerated from this seed, so only the seed is saved.")]
+    public int mapSeed;
     public List<ResourceStock> resources = new List<ResourceStock>();
     public List<BuildingState> buildings = new List<BuildingState>();
     public List<string> researched = new List<string>();
@@ -50,6 +53,17 @@ public class BuildingState
 
     [Tooltip("0 to 1. The building does nothing until this reaches 1.")]
     public float buildProgress;
+
+    [Tooltip("0+: output multiplier from the site (deposit tiles in reach, water bonus). Set when placed.")]
+    public float siteQuality = 1f;
+
+    [Tooltip("How many upgrade tiers are finished.")]
+    public int upgradeLevel;
+
+    [Tooltip("0 when idle; counts up to 1 while the next tier is being built.")]
+    public float upgradeProgress;
+
+    public bool upgrading;
 
     [Tooltip("For buildings that train troops: what those troops do.")]
     public TroopStance stance = TroopStance.Defend;

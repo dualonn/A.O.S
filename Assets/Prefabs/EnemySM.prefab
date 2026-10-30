@@ -545,18 +545,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 718c57435f39d3940b4d494cd1448c99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  definition: {fileID: 11400000, guid: b603c6fe562ddf243ad55cf285319863, type: 2}
+  definition: {fileID: 0}
   maxHealth: 100
   health: 100
   moveSpeed: 1.2
   attackPower: 20
   attackCooldown: 1
   attackRange: 2
+  hitDelay: 0.58
   detectionRange: 2.5
+  knockback: 2.5
+  corpseTime: 2
+  fadeTime: 0.8
   anim: {fileID: 4975582317321203896}
   healthSlider: {fileID: 4370703742565055112}
+  personalSpace: 0
   currentTarget: {fileID: 0}
   path: {fileID: 0}
+  lootPerHit: 4
+  lootCapacity: 20
 --- !u!61 &3047418884865616604
 BoxCollider2D:
   m_ObjectHideFlags: 0

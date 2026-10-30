@@ -55,6 +55,7 @@ public static class PlaceholderArt
             { "Quarry", DrawQuarry },
             { "Barracks", DrawBarracks },
             { "BronzeFoundry", DrawFoundry },
+            { "Campfire", DrawCampfire },
         };
 
         var database = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
@@ -96,6 +97,10 @@ public static class PlaceholderArt
         art.grassTile = Tile("World/Grass.png", 1, 1, p => DrawGrass(p, new Color(0.42f, 0.6f, 0.31f), 11));
         art.settlementTile = Tile("World/SettlementGround.png", 1, 1, p => DrawGrass(p, new Color(0.55f, 0.62f, 0.36f), 23));
         art.pathTile = Tile("World/Path.png", 1, 1.6f, DrawPath);
+        art.waterTile = Tile("World/Water.png", 1, 1, DrawWater);
+        art.hillTile = Tile("World/Hill.png", 1, 1, DrawHill);
+        var berryBush = Prop("World/BerryBush.png", 1f, 0.8f, DrawBerryBush);
+        var copperOre = Prop("World/CopperOre.png", 1f, 0.7f, DrawCopperOre);
         art.trees = new List<Sprite>
         {
             Prop("World/TreeRound.png", 1.4f, 2f, DrawRoundTree),
@@ -133,6 +138,39 @@ public static class PlaceholderArt
         art.enemyIcon = Icon("Icons/Enemy.png", p => DrawStickIcon(p, Painter.V(0, 0), new Color(0.85f, 0.15f, 0.15f), true));
         art.researchIcon = Icon("Icons/Research.png", DrawScrollIcon);
         EditorUtility.SetDirty(art);
+
+        // Troops and raiders in the same style and scale as everything else
+        var clubmanDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/Clubman.asset");
+        var raiderDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/EnemyClubman.asset");
+        if (clubmanDef != null)
+        {
+            clubmanDef.prefab = BuildWarrior(ClubmanStyle, false, clubmanDef);
+            clubmanDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Clubman/Clubman_Idle.png");
+            EditorUtility.SetDirty(clubmanDef);
+        }
+        if (raiderDef != null)
+        {
+            raiderDef.prefab = BuildWarrior(RaiderStyle, true, raiderDef);
+            raiderDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Raider/Raider_Idle.png");
+            EditorUtility.SetDirty(raiderDef);
+        }
+
+        // Deposit sprites on the map
+        if (database != null)
+        {
+            foreach (var deposit in database.deposits)
+            {
+                if (deposit == null) continue;
+                switch (deposit.id)
+                {
+                    case "Forest": deposit.sprites = new List<Sprite>(art.trees); break;
+                    case "Berries": deposit.sprites = new List<Sprite> { berryBush }; break;
+                    case "Stone": deposit.sprites = new List<Sprite>(art.rocks); break;
+                    case "CopperOre": deposit.sprites = new List<Sprite> { copperOre }; break;
+                }
+                EditorUtility.SetDirty(deposit);
+            }
+        }
 
         AssetDatabase.SaveAssets();
         Debug.Log("Placeholder art generated in " + Root);
@@ -348,7 +386,88 @@ public static class PlaceholderArt
         }
     }
 
+    private static void DrawCampfire(Painter p)
+    {
+        p.Ellipse(V(1, 0.5f), V(0.85f, 0.25f), Shadow);
+        // Sitting logs
+        p.OutlinedBox(0.15f, 0.25f, 0.65f, 0.42f, 0.08f, Wood);
+        p.OutlinedBox(1.35f, 0.25f, 1.85f, 0.42f, 0.08f, Wood);
+        // Stone ring
+        for (int i = 0; i < 9; i++)
+        {
+            float a = i / 9f * Mathf.PI * 2;
+            p.OutlinedCircle(V(1 + Mathf.Cos(a) * 0.42f, 0.62f + Mathf.Sin(a) * 0.2f), 0.09f, i % 2 == 0 ? Stone : StoneLight);
+        }
+        // Crossed logs and fire
+        p.OutlinedLine(V(0.7f, 0.55f), V(1.3f, 0.75f), 0.08f, WoodDark);
+        p.OutlinedLine(V(1.3f, 0.55f), V(0.7f, 0.75f), 0.08f, WoodDark);
+        p.OutlinedPolygon(new[] { V(0.78f, 0.68f), V(1.22f, 0.68f), V(1.1f, 1.05f), V(1.0f, 0.9f), V(0.92f, 1.15f), V(0.86f, 0.95f) }, Fire);
+        p.Polygon(new[] { V(0.9f, 0.7f), V(1.1f, 0.7f), V(1.02f, 0.92f), V(0.96f, 0.85f) }, FireCore);
+        // Banner pole marks the town center
+        p.OutlinedLine(V(1.72f, 0.55f), V(1.72f, 1.85f), 0.045f, WoodDark);
+        p.OutlinedPolygon(new[] { V(1.74f, 1.82f), V(1.98f, 1.7f), V(1.74f, 1.56f) }, Blue);
+        p.Circle(V(1.0f, 1.35f), 0.12f, new Color(0.5f, 0.5f, 0.5f, 0.45f));
+        p.Circle(V(1.12f, 1.58f), 0.09f, new Color(0.5f, 0.5f, 0.5f, 0.3f));
+    }
+
     // ---------- World ----------
+
+    private static void DrawWater(Painter p)
+    {
+        Color water = new Color(0.27f, 0.52f, 0.8f);
+        Color light = new Color(0.45f, 0.68f, 0.92f);
+        p.Box(V(0.5f, 0.5f), V(1, 1), 0, water);
+        var rng = new System.Random(17);
+        for (int i = 0; i < 3; i++)
+        {
+            float x = 0.15f + (float)rng.NextDouble() * 0.5f;
+            float y = 0.2f + (float)rng.NextDouble() * 0.6f;
+            p.Line(V(x, y), V(x + 0.08f, y + 0.03f), 0.018f, light);
+            p.Line(V(x + 0.08f, y + 0.03f), V(x + 0.16f, y), 0.018f, light);
+        }
+    }
+
+    private static void DrawHill(Painter p)
+    {
+        Color rock = new Color(0.56f, 0.51f, 0.43f);
+        Color dark = new Color(0.45f, 0.4f, 0.33f);
+        Color light = new Color(0.66f, 0.61f, 0.52f);
+        p.Box(V(0.5f, 0.5f), V(1, 1), 0, rock);
+        var rng = new System.Random(29);
+        for (int i = 0; i < 5; i++)
+        {
+            float x = 0.12f + (float)rng.NextDouble() * 0.76f;
+            float y = 0.12f + (float)rng.NextDouble() * 0.76f;
+            p.Ellipse(V(x, y), V(0.05f, 0.03f), i % 2 == 0 ? dark : light);
+        }
+        p.Line(V(0.2f, 0.7f), V(0.32f, 0.62f), 0.015f, dark);
+        p.Line(V(0.6f, 0.3f), V(0.72f, 0.36f), 0.015f, dark);
+    }
+
+    private static void DrawBerryBush(Painter p)
+    {
+        p.Ellipse(V(0.5f, 0.1f), V(0.42f, 0.07f), Shadow);
+        var blobs = new[] { (V(0.5f, 0.42f), 0.3f), (V(0.25f, 0.3f), 0.2f), (V(0.75f, 0.3f), 0.2f) };
+        foreach (var (c, r) in blobs) p.Circle(c, r + p.Outline, p.Ink);
+        foreach (var (c, r) in blobs) p.Circle(c, r, Leaf);
+        p.Circle(V(0.42f, 0.52f), 0.1f, LeafLight);
+        foreach (var c in new[] { V(0.35f, 0.38f), V(0.55f, 0.55f), V(0.66f, 0.32f), V(0.25f, 0.26f), V(0.5f, 0.3f), V(0.78f, 0.4f) })
+        {
+            p.OutlinedCircle(c, 0.045f, Berry);
+        }
+    }
+
+    private static void DrawCopperOre(Painter p)
+    {
+        Color copper = new Color(0.85f, 0.5f, 0.25f);
+        Color verdigris = new Color(0.35f, 0.7f, 0.6f);
+        p.Ellipse(V(0.5f, 0.1f), V(0.45f, 0.08f), Shadow);
+        p.OutlinedPolygon(new[] { V(0.08f, 0.08f), V(0.16f, 0.45f), V(0.45f, 0.62f), V(0.8f, 0.5f), V(0.92f, 0.08f) }, StoneDark);
+        foreach (var (c, col) in new[] { (V(0.3f, 0.3f), copper), (V(0.55f, 0.42f), verdigris), (V(0.7f, 0.25f), copper), (V(0.42f, 0.18f), verdigris), (V(0.62f, 0.3f), copper) })
+        {
+            p.OutlinedCircle(c, 0.05f, col);
+        }
+    }
 
     private static void DrawGrass(Painter p, Color baseColor, int seed)
     {
@@ -445,6 +564,176 @@ public static class PlaceholderArt
         p.OutlinedPolygon(new[] { V(0.22f, 1.22f), V(0.62f, 1.08f), V(0.22f, 0.92f) }, Blue);
     }
 
+    // ---------- Warriors (troops and raiders) ----------
+
+    private enum WarPose { Idle, StrideA, Pass, StrideB, Windup, Raised, Strike, Recover, Stagger, Falling, Down }
+
+    /// <summary>
+    /// A classic stick figure (line limbs, round head) in a team colour; all the detail is gear.
+    /// </summary>
+    private class WarriorStyle
+    {
+        public string name;
+        public Color ink;      // body colour = team colour
+        public Color gear;     // headband, wraps, belt
+        public bool feather;   // raider extras
+        public bool necklace;
+    }
+
+    private static readonly WarriorStyle ClubmanStyle = new WarriorStyle
+    {
+        name = "Clubman", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f)
+    };
+
+    private static readonly WarriorStyle RaiderStyle = new WarriorStyle
+    {
+        name = "Raider", ink = new Color(0.78f, 0.13f, 0.12f), gear = new Color(0.18f, 0.12f, 0.08f), feather = true, necklace = true
+    };
+
+    /// <summary>Generate a warrior's frames and build a prefab for it. Returns the prefab.</summary>
+    private static GameObject BuildWarrior(WarriorStyle style, bool isEnemy, UnitDefinition definition)
+    {
+        string dir = $"Units/{style.name}";
+        Directory.CreateDirectory(Path.Combine(Root, dir));
+        Sprite Frame(string frame, WarPose pose)
+        {
+            // Wide canvas so swings and falling bodies aren't clipped; feet stay at the centre.
+            var p = new Painter(1.6f, 1.2f, 160) { Outline = 0.018f };
+            DrawWarrior(p, pose, style);
+            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, new Vector2(0.5f, 0.05f));
+        }
+
+        var idle = Frame("Idle", WarPose.Idle);
+        var walk = new List<Sprite> { Frame("Walk0", WarPose.StrideA), Frame("Walk1", WarPose.Pass), Frame("Walk2", WarPose.StrideB), Frame("Walk3", WarPose.Pass) };
+        var attack = new List<Sprite> { Frame("Attack0", WarPose.Windup), Frame("Attack1", WarPose.Raised), Frame("Attack2", WarPose.Strike), Frame("Attack3", WarPose.Recover) };
+        var death = new List<Sprite> { Frame("Death0", WarPose.Stagger), Frame("Death1", WarPose.Falling), Frame("Death2", WarPose.Down) };
+
+        // Prefab: sprite + animation + combat + a small collider for targeting and hovering.
+        var go = new GameObject($"{style.name}Unit");
+        go.tag = isEnemy ? "enemy" : "troop";
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = idle;
+        var visual = go.AddComponent<SpriteUnitVisual>();
+        visual.idle = idle;
+        visual.walk = walk;
+        visual.attack = attack;
+        visual.death = death;
+        visual.impactFrame = 2;
+        visual.barHeight = 0.95f;
+        var col = go.AddComponent<CircleCollider2D>();
+        col.isTrigger = true;
+        col.radius = 0.25f;
+        col.offset = new Vector2(0, 0.4f);
+        go.AddComponent<MouseTouching>();
+        Unit unit = isEnemy ? go.AddComponent<Enemy>() : (Unit)go.AddComponent<Troop>();
+        unit.definition = definition;
+        unit.personalSpace = 0.38f;
+
+        string prefabPath = $"Assets/Prefabs/Units/{style.name}Unit.prefab";
+        Directory.CreateDirectory("Assets/Prefabs/Units");
+        var prefab = PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
+        UnityEngine.Object.DestroyImmediate(go);
+        return prefab;
+    }
+
+    private static void DrawWarrior(Painter p, WarPose pose, WarriorStyle s)
+    {
+        const float limb = 0.042f;
+        // Death frames lean the whole figure back around the feet.
+        float lean = pose == WarPose.Stagger ? -18f : pose == WarPose.Falling ? -55f : pose == WarPose.Down ? -88f : 0f;
+        Vector2 pivot = V(0.5f, 0.06f);
+        float rad = lean * Mathf.Deg2Rad;
+        // The figure is designed around x = 0.5; shift it to the middle of the 1.6-wide canvas.
+        Vector2 shift = V(0.3f, 0f);
+        Vector2 T(Vector2 v) => v + shift;
+        Vector2 R(Vector2 v)
+        {
+            Vector2 d = v - pivot;
+            return shift + pivot + new Vector2(d.x * Mathf.Cos(rad) - d.y * Mathf.Sin(rad), d.x * Mathf.Sin(rad) + d.y * Mathf.Cos(rad));
+        }
+        if (pose == WarPose.Down)
+        {
+            pivot = V(0.5f, 0.12f); // lie a little above the ground line
+        }
+
+        Vector2 hip = V(0.5f, 0.38f), shoulder = V(0.5f, 0.63f), head = V(0.5f, 0.77f);
+        Vector2 footL, footR, handL, handR, clubTip;
+        switch (pose)
+        {
+            case WarPose.StrideA:
+                footL = V(0.37f, 0.06f); footR = V(0.63f, 0.06f); handL = V(0.38f, 0.46f); handR = V(0.64f, 0.5f); clubTip = V(0.78f, 0.78f); break;
+            case WarPose.StrideB:
+                footL = V(0.63f, 0.06f); footR = V(0.37f, 0.06f); handL = V(0.62f, 0.46f); handR = V(0.58f, 0.48f); clubTip = V(0.72f, 0.8f); break;
+            case WarPose.Pass:
+                footL = V(0.47f, 0.06f); footR = V(0.54f, 0.11f); handL = V(0.45f, 0.44f); handR = V(0.62f, 0.48f); clubTip = V(0.76f, 0.79f); break;
+            case WarPose.Windup:
+                footL = V(0.38f, 0.06f); footR = V(0.62f, 0.06f); handL = V(0.44f, 0.6f); handR = V(0.4f, 0.62f); clubTip = V(0.16f, 0.72f); break;
+            case WarPose.Raised:
+                footL = V(0.38f, 0.06f); footR = V(0.62f, 0.06f); handL = V(0.5f, 0.86f); handR = V(0.53f, 0.88f); clubTip = V(0.32f, 1.0f); break;
+            case WarPose.Strike:
+                footL = V(0.36f, 0.06f); footR = V(0.66f, 0.06f); handL = V(0.7f, 0.58f); handR = V(0.72f, 0.56f); clubTip = V(0.95f, 0.3f); break;
+            case WarPose.Recover:
+                footL = V(0.38f, 0.06f); footR = V(0.64f, 0.06f); handL = V(0.62f, 0.46f); handR = V(0.66f, 0.45f); clubTip = V(0.86f, 0.2f); break;
+            default: // Idle and death frames
+                footL = V(0.42f, 0.06f); footR = V(0.58f, 0.06f); handL = V(0.38f, 0.44f); handR = V(0.63f, 0.47f); clubTip = V(0.75f, 0.78f); break;
+        }
+
+        p.Ellipse(T(V(pose == WarPose.Down ? 0.8f : 0.5f, 0.06f)), V(pose == WarPose.Down ? 0.36f : 0.16f, 0.035f), Shadow);
+
+        // Feather behind the head (drawn first so the head overlaps it)
+        if (s.feather)
+        {
+            p.OutlinedLine(R(V(0.45f, 0.82f)), R(V(0.36f, 0.98f)), 0.03f, new Color(0.95f, 0.92f, 0.85f));
+            p.Line(R(V(0.37f, 0.96f)), R(V(0.355f, 0.99f)), 0.03f, new Color(0.15f, 0.12f, 0.1f));
+        }
+        // Headband tails flowing behind
+        p.Line(R(V(0.43f, 0.79f)), R(V(0.33f, 0.74f)), 0.022f, s.gear);
+        p.Line(R(V(0.43f, 0.79f)), R(V(0.35f, 0.7f)), 0.022f, s.gear);
+
+        // The stickman: legs, spine, arms, round head
+        p.Line(R(hip), R(footL), limb, s.ink);
+        p.Line(R(hip), R(footR), limb, s.ink);
+        p.Line(R(hip), R(V(0.5f, 0.69f)), limb, s.ink);
+        p.Line(R(shoulder), R(handL), limb, s.ink);
+        p.Line(R(shoulder), R(handR), limb, s.ink);
+        p.Circle(R(head), 0.085f, s.ink);
+
+        // Gear
+        p.Line(R(V(0.425f, 0.785f)), R(V(0.575f, 0.785f)), 0.026f, s.gear);          // headband
+        p.Line(R(V(0.455f, 0.385f)), R(V(0.545f, 0.385f)), 0.03f, s.gear);           // belt
+        p.Line(R(V(0.5f, 0.385f)), R(V(0.53f, 0.31f)), 0.022f, s.gear);              // belt tail
+        Vector2 Wrist(Vector2 hand) => Vector2.Lerp(shoulder, hand, 0.82f);
+        p.Circle(R(Wrist(handL)), 0.022f, s.gear);                                    // wrist wraps
+        p.Circle(R(Wrist(handR)), 0.022f, s.gear);
+        if (s.necklace)
+        {
+            // Bone teeth hanging on the chest
+            p.Line(R(V(0.455f, 0.64f)), R(V(0.545f, 0.64f)), 0.01f, s.gear);
+            for (int i = -1; i <= 1; i++)
+            {
+                Vector2 top = V(0.5f + i * 0.03f, 0.635f);
+                p.OutlinedLine(R(top), R(top + V(0, -0.035f)), 0.014f, new Color(0.96f, 0.94f, 0.86f));
+            }
+        }
+
+        // Club: wrapped grip, then the knobbly head
+        if (pose != WarPose.Down && pose != WarPose.Falling)
+        {
+            Vector2 grip = Vector2.Lerp(handR, clubTip, 0.18f);
+            p.OutlinedLine(R(handR), R(Vector2.Lerp(handR, clubTip, 0.55f)), 0.035f, WoodLight);
+            p.Line(R(Vector2.Lerp(handR, clubTip, -0.04f)), R(grip), 0.045f, s.gear);
+            p.OutlinedLine(R(Vector2.Lerp(handR, clubTip, 0.5f)), R(clubTip), 0.075f, Wood);
+            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.78f)), 0.012f, WoodDark);        // knots
+            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.9f)), 0.012f, WoodDark);
+        }
+        else
+        {
+            // Dropped club on the ground
+            p.OutlinedLine(T(V(0.2f, 0.08f)), T(V(0.42f, 0.1f)), 0.035f, WoodLight);
+            p.OutlinedLine(T(V(0.38f, 0.1f)), T(V(0.55f, 0.12f)), 0.075f, Wood);
+        }
+    }
+
     // ---------- Villager (ambient townsfolk) ----------
 
     private enum VillagerPose { Idle, StrideA, Pass, StrideB, ToolUp, ToolDown }
@@ -487,14 +776,17 @@ public static class PlaceholderArt
         }
 
         p.Ellipse(V(0.3f, 0.05f), V(0.14f, 0.03f), Shadow);
+        // Classic stickman townsperson: a hide scarf and a little satchel set them apart from soldiers.
         p.Line(hip, footL, limb, ink);
         p.Line(hip, footR, limb, ink);
-        // Simple hide tunic so townsfolk read differently from soldiers
-        p.OutlinedPolygon(new[] { V(0.24f, 0.6f), V(0.36f, 0.6f), V(0.4f, 0.32f), V(0.2f, 0.32f) }, Hide);
+        p.Line(hip, V(0.3f, 0.66f), limb, ink);
         p.Line(shoulder, handL, limb, ink);
         p.Line(shoulder, handR, limb, ink);
-        p.Line(V(0.3f, 0.6f), V(0.3f, 0.66f), limb, ink);
         p.Circle(V(0.3f, 0.74f), 0.085f, ink);
+        p.Line(V(0.25f, 0.63f), V(0.35f, 0.63f), 0.035f, Hide);          // scarf
+        p.Line(V(0.27f, 0.63f), V(0.23f, 0.55f), 0.028f, Hide);          // scarf tail
+        p.Line(V(0.34f, 0.6f), V(0.24f, 0.42f), 0.012f, WoodDark);      // satchel strap
+        p.OutlinedBox(0.2f, 0.36f, 0.27f, 0.43f, 0.015f, Hide);          // satchel
 
         if (pose == VillagerPose.ToolUp || pose == VillagerPose.ToolDown)
         {

@@ -16,6 +16,8 @@ public class ArtLibrary : ScriptableObject
     public Sprite grassTile;
     public Sprite settlementTile;
     public Sprite pathTile;
+    public Sprite waterTile;
+    public Sprite hillTile;
     public List<Sprite> trees = new List<Sprite>();
     public List<Sprite> rocks = new List<Sprite>();
     public List<Sprite> bushes = new List<Sprite>();

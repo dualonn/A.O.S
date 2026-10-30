@@ -349,9 +349,8 @@ MonoBehaviour:
   rallySpread: 1.5
   troopTrainSeconds: 6
   secondsBetweenWaveSpawns: 1
-  unitScale: 0.6
-  raidDistance: 12
-  defendRadius: 20
+  unitScale: 1
+  townGuardMargin: 5
 --- !u!4 &1414726507
 Transform:
   m_ObjectHideFlags: 0
@@ -397,12 +396,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettlementGrid
   cellSize: 1
-  worldArea:
-    serializedVersion: 2
-    x: -30
-    y: -25
-    width: 100
-    height: 75
+  sceneryBeyondEdge: 25
+  overviewZoom: 26
 --- !u!4 &1772890885
 Transform:
   m_ObjectHideFlags: 0

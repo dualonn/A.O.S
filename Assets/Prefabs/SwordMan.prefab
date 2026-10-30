@@ -469,16 +469,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a698d5558c195ae459744ba38c2ab1c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  definition: {fileID: 11400000, guid: a0aef520dc1fb324ab64c1aada202de8, type: 2}
+  definition: {fileID: 0}
   maxHealth: 100
   health: 100
   moveSpeed: 0.6
   attackPower: 10
   attackCooldown: 1
   attackRange: 2
+  hitDelay: 0.58
   detectionRange: 2.5
+  knockback: 2.5
+  corpseTime: 2
+  fadeTime: 0.8
   anim: {fileID: 4975582317321203896}
   healthSlider: {fileID: 7503699889170397193}
+  personalSpace: 0
   currentTarget: {fileID: 0}
   targetPriority: 0
   ID: 0
