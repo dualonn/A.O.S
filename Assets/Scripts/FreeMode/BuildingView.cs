@@ -3,7 +3,8 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// Shows one settlement building in the free mode scene: footprint, label, progress/health bar.
+/// Shows one settlement building in the free mode scene: its sprite (scaffolded while
+/// building, darkened when ruined), a progress/health bar, and a status label.
 /// Buildings that train units keep their troops alive here while the scene is open.
 /// </summary>
 public class BuildingView : MonoBehaviour
@@ -13,15 +14,25 @@ public class BuildingView : MonoBehaviour
 
     private FreeModeController controller;
     private SpriteRenderer body;
+    private SpriteRenderer scaffold;
     private SpriteRenderer barBack;
     private SpriteRenderer barFill;
     private SpriteRenderer selectionOutline;
     private TextMeshPro label;
-    private Color baseColor;
+    private Color baseColor = Color.white;
+    private bool selected;
+    private bool hovered;
     private readonly List<Troop> troops = new List<Troop>();
     private float trainTimer;
 
-    private const float Margin = 0.08f;
+    /// <summary>Sorting order shared by building sprites and villagers; depth within it comes from z.</summary>
+    public const int SortingOrder = -6;
+
+    /// <summary>Things lower on screen get a nearer z, so they draw in front.</summary>
+    public static float DepthFor(float worldY) => worldY * 0.01f;
+
+    private const float Margin = 0.06f;
+    private static readonly Color RuinedTint = new Color(0.42f, 0.36f, 0.33f);
 
     public void Init(FreeModeController owner, BuildingState state, BuildingDefinition def)
     {
@@ -32,9 +43,11 @@ public class BuildingView : MonoBehaviour
 
         var grid = owner.Grid;
         Vector2 size = (Vector2)def.size * grid.cellSize;
-        transform.position = grid.CellToWorld(state.cell);
+        Vector3 corner = grid.CellToWorld(state.cell);
+        transform.position = new Vector3(corner.x, corner.y, DepthFor(corner.y));
 
-        selectionOutline = MakeQuad("Selection", new Vector2(-Margin, -Margin), size + Vector2.one * Margin * 2, Color.yellow, 0);
+        selectionOutline = MakeQuad("Selection", new Vector2(-Margin, -Margin), size + Vector2.one * Margin * 2,
+            new Color(1f, 0.9f, 0.2f, 0.35f), -8);
         selectionOutline.enabled = false;
 
         if (def.prefab != null)
@@ -42,37 +55,102 @@ public class BuildingView : MonoBehaviour
             var visual = Instantiate(def.prefab, transform);
             visual.transform.position = grid.AreaCenter(state.cell, def.size);
         }
+        else if (def.icon != null)
+        {
+            body = new GameObject("Sprite").AddComponent<SpriteRenderer>();
+            body.transform.SetParent(transform, false);
+            body.sprite = def.icon;
+            // Fit the sprite to the footprint whatever its pixels-per-unit.
+            Vector2 spriteSize = def.icon.bounds.size;
+            body.transform.localScale = new Vector3(size.x / spriteSize.x, size.y / spriteSize.y, 1);
+            body.transform.localPosition = new Vector3(
+                -def.icon.bounds.min.x * body.transform.localScale.x,
+                -def.icon.bounds.min.y * body.transform.localScale.y, 0);
+            body.sortingOrder = SortingOrder;
+        }
         else
         {
             baseColor = ColorFor(def.id);
-            body = MakeQuad("Body", Vector2.one * Margin, size - Vector2.one * Margin * 2, baseColor, 1);
+            body = MakeQuad("Body", Vector2.one * Margin, size - Vector2.one * Margin * 2, baseColor, SortingOrder);
         }
 
-        float barWidth = size.x - 0.4f;
-        barBack = MakeQuad("BarBack", new Vector2(0.2f, 0.2f), new Vector2(barWidth, 0.18f), new Color(0, 0, 0, 0.6f), 2);
-        barFill = MakeQuad("BarFill", new Vector2(0.2f, 0.2f), new Vector2(barWidth, 0.18f), Color.green, 3);
+        var art = ArtLibrary.Load();
+        if (art != null && art.scaffold != null)
+        {
+            scaffold = new GameObject("Scaffold").AddComponent<SpriteRenderer>();
+            scaffold.transform.SetParent(transform, false);
+            scaffold.sprite = art.scaffold;
+            Vector2 s = art.scaffold.bounds.size;
+            scaffold.transform.localScale = new Vector3(size.x / s.x, size.y / s.y, 1);
+            scaffold.sortingOrder = -5;
+        }
+
+        float barWidth = Mathf.Min(size.x - 0.3f, 1.6f);
+        float barX = (size.x - barWidth) / 2;
+        barBack = MakeQuad("BarBack", new Vector2(barX, size.y + 0.05f), new Vector2(barWidth, 0.16f), new Color(0, 0, 0, 0.6f), 6);
+        barFill = MakeQuad("BarFill", new Vector2(barX, size.y + 0.05f), new Vector2(barWidth, 0.16f), Color.green, 7);
 
         var labelObject = new GameObject("Label");
         labelObject.transform.SetParent(transform, false);
-        labelObject.transform.localPosition = new Vector3(size.x / 2, size.y / 2 + 0.15f, 0);
+        labelObject.transform.localPosition = new Vector3(size.x / 2, size.y + 0.55f, 0);
         label = labelObject.AddComponent<TextMeshPro>();
         label.alignment = TextAlignmentOptions.Center;
-        label.fontSize = 4.5f;
-        label.outlineWidth = 0.2f;
-        label.outlineColor = new Color32(0, 0, 0, 200);
-        label.rectTransform.sizeDelta = new Vector2(size.x, size.y);
-        label.sortingOrder = 4;
+        label.fontSize = 4f;
+        label.outlineWidth = 0.25f;
+        label.outlineColor = new Color32(0, 0, 0, 220);
+        label.rectTransform.sizeDelta = new Vector2(Mathf.Max(4, size.x + 2), 1.5f);
+        label.sortingOrder = 8;
 
         Refresh();
     }
 
     public bool Contains(Vector2Int cell) => new RectInt(State.cell, Definition.size).Contains(cell);
 
-    public void SetSelected(bool selected) => selectionOutline.enabled = selected;
+    /// <summary>Brief wobble when hit by a raider.</summary>
+    public void Shake()
+    {
+        shakeTime = 0.18f;
+    }
+
+    private float shakeTime;
+    private Vector3 bodyRestPosition;
+    private bool bodyRestKnown;
+
+    private void UpdateShake()
+    {
+        if (body == null)
+        {
+            return;
+        }
+        if (!bodyRestKnown)
+        {
+            bodyRestPosition = body.transform.localPosition;
+            bodyRestKnown = true;
+        }
+        if (shakeTime > 0)
+        {
+            shakeTime -= Time.deltaTime;
+            float strength = 0.06f * Mathf.Clamp01(shakeTime / 0.18f);
+            body.transform.localPosition = bodyRestPosition + (Vector3)(Random.insideUnitCircle * strength);
+        }
+        else
+        {
+            body.transform.localPosition = bodyRestPosition;
+        }
+    }
+
+    public void SetSelected(bool isSelected)
+    {
+        selected = isSelected;
+        selectionOutline.enabled = isSelected;
+    }
 
     private void Update()
     {
+        hovered = !controller.Placer.IsPlacing && controller.Grid != null &&
+                  Contains(controller.Grid.WorldToCell(SettlementGrid.MouseWorld()));
         Refresh();
+        UpdateShake();
         TrainTroops();
     }
 
@@ -84,34 +162,44 @@ public class BuildingView : MonoBehaviour
 
         if (body != null)
         {
-            Color c = baseColor;
-            if (!built)
-            {
-                c.a = 0.35f;
-            }
-            else if (ruined)
-            {
-                c = Color.Lerp(baseColor, new Color(0.25f, 0.1f, 0.1f), 0.75f);
-            }
+            Color c = ruined ? baseColor * RuinedTint : baseColor;
+            c.a = built ? 1f : 0.45f + 0.4f * State.buildProgress;
             body.color = c;
         }
+        if (scaffold != null)
+        {
+            scaffold.enabled = !built;
+        }
 
-        // Bar shows build progress while constructing, health afterwards (hidden at full health).
+        // Bar: build progress while constructing, health once damaged.
         float fill = built ? healthShare : State.buildProgress;
-        bool showBar = !built || healthShare < 0.999f;
+        bool showBar = !built || State.health < Definition.maxHealth;
         barBack.enabled = barFill.enabled = showBar;
         barFill.transform.localScale = new Vector3(barBack.transform.localScale.x * Mathf.Clamp01(fill), barFill.transform.localScale.y, 1);
         barFill.color = !built ? new Color(0.4f, 0.7f, 1f) : Color.Lerp(Color.red, Color.green, healthShare);
 
-        string status = !built ? $"\n<size=70%>Building {State.buildProgress:P0}</size>"
-            : ruined ? "\n<size=70%><color=#ff7070>Ruined</color></size>"
+        // Label: name on hover/selection, plus any status worth knowing.
+        string status = !built ? "<color=#9cf>Building</color>"
+            : ruined ? "<color=#ff7070>Ruined</color>"
             : "";
-        label.text = Definition.displayName + status;
+        bool showName = selected || hovered;
+        label.text = showName && status.Length > 0 ? $"{Definition.displayName}\n<size=75%>{status}</size>"
+            : showName ? Definition.displayName
+            : status.Length > 0 ? $"<size=75%>{status}</size>"
+            : "";
     }
 
     private void TrainTroops()
     {
         troops.RemoveAll(t => t == null || !t.IsAlive);
+        // Keep the troops' orders in line with this building's stance.
+        foreach (var t in troops)
+        {
+            if (t.Stance != State.stance)
+            {
+                t.SetStance(State.stance, controller.TownZone, controller.SightRange);
+            }
+        }
         var unit = Definition.trainsUnit;
         if (unit == null || unit.prefab == null || !controller.Settlement.IsWorking(State, Definition))
         {
@@ -130,10 +218,11 @@ public class BuildingView : MonoBehaviour
         trainTimer = 0;
 
         Vector3 spawn = controller.Grid.AreaCenter(State.cell, Definition.size);
-        var troop = Instantiate(unit.prefab, spawn, Quaternion.identity).GetComponent<Troop>();
+        var troop = controller.SpawnUnit(unit.prefab, spawn).GetComponent<Troop>();
         if (troop != null)
         {
-            troop.SetRallyPoint(controller.GetRallyPoint());
+            troop.SetRallyPoint(controller.GetRallyPoint(this));
+            troop.SetStance(State.stance, controller.TownZone, controller.SightRange);
             troops.Add(troop);
         }
     }
@@ -161,7 +250,7 @@ public class BuildingView : MonoBehaviour
         return sr;
     }
 
-    /// <summary>A stable, muted colour per building type until real art exists.</summary>
+    /// <summary>A stable, muted colour per building type, used only when there is no art.</summary>
     private static Color ColorFor(string id)
     {
         float hue = Mathf.Abs(id.GetHashCode() % 1000) / 1000f;

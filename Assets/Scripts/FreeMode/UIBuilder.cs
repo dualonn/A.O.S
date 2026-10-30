@@ -35,12 +35,49 @@ public static class UIBuilder
         rt.offsetMax = -Vector2.one * padding;
     }
 
+    /// <summary>Optional rounded 9-sliced sprite for panels and buttons (set from the ArtLibrary).</summary>
+    public static Sprite PanelSprite;
+
     public static Image Panel(string name, Transform parent, Color color)
     {
         var rt = Rect(name, parent);
         var image = rt.gameObject.AddComponent<Image>();
         image.color = color;
+        if (PanelSprite != null)
+        {
+            image.sprite = PanelSprite;
+            image.type = Image.Type.Sliced;
+            image.pixelsPerUnitMultiplier = 2f;
+        }
         return image;
+    }
+
+    public static Image Icon(string name, Transform parent, Sprite sprite, float size)
+    {
+        var rt = Rect(name, parent);
+        var image = rt.gameObject.AddComponent<Image>();
+        image.sprite = sprite;
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+        var element = rt.gameObject.AddComponent<LayoutElement>();
+        element.preferredWidth = element.minWidth = size;
+        element.preferredHeight = element.minHeight = size;
+        rt.sizeDelta = new Vector2(size, size);
+        return image;
+    }
+
+    /// <summary>A row that lays out its children left to right.</summary>
+    public static RectTransform Row(string name, Transform parent, float spacing = 6)
+    {
+        var rt = Rect(name, parent);
+        var layout = rt.gameObject.AddComponent<HorizontalLayoutGroup>();
+        layout.spacing = spacing;
+        layout.childAlignment = TextAnchor.MiddleLeft;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+        return rt;
     }
 
     /// <summary>A panel that stacks its children vertically and grows to fit them.</summary>
@@ -73,7 +110,7 @@ public static class UIBuilder
     }
 
     public static Button Button(string name, Transform parent, UnityAction onClick, out TextMeshProUGUI label,
-        float height = 52, float fontSize = 18)
+        float height = 52, float fontSize = 18, Sprite icon = null)
     {
         var image = Panel(name, parent, ButtonColor);
         var button = image.gameObject.AddComponent<Button>();
@@ -91,6 +128,17 @@ public static class UIBuilder
         label = Text("Label", image.transform, "", fontSize);
         Stretch(label.rectTransform, 8);
         label.alignment = TextAlignmentOptions.MidlineLeft;
+
+        if (icon != null)
+        {
+            float iconSize = height - 10;
+            var iconImage = Icon("Icon", image.transform, icon, iconSize);
+            var iconRect = iconImage.rectTransform;
+            iconRect.anchorMin = iconRect.anchorMax = new Vector2(0, 0.5f);
+            iconRect.pivot = new Vector2(0, 0.5f);
+            iconRect.anchoredPosition = new Vector2(6, 0);
+            label.rectTransform.offsetMin = new Vector2(iconSize + 14, label.rectTransform.offsetMin.y);
+        }
         return button;
     }
 

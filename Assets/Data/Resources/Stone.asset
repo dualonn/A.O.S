@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ResourceType
   id: Stone
   displayName: Stone
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b8c7b4105f4941f4fbd52fa5ff8c326f, type: 3}
   unlockedIn: {fileID: 0}

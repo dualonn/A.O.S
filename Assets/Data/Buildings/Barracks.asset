@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Barracks
   displayName: Barracks
   description: Trains Clubmen to defend the settlement.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c7c65ecd471dd0e4385a43aeed0e5ffe, type: 3}
   prefab: {fileID: 0}
   size: {x: 3, y: 3}
   requirements:

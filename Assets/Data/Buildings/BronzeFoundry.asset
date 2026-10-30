@@ -15,7 +15,7 @@ MonoBehaviour:
   id: BronzeFoundry
   displayName: Bronze Foundry
   description: Smelts bronze.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: cd68227c60b7e9f48939d080c53fb788, type: 3}
   prefab: {fileID: 0}
   size: {x: 3, y: 3}
   requirements:

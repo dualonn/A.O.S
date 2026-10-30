@@ -7,27 +7,31 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// Runs the free mode scene: starts the settlement, keeps building views in sync with it,
 /// handles selection, and fights waves for real while the player is watching.
+/// Raiders roam in from a random direction, smash and loot buildings, and run off with
+/// what they can carry; troops defend the whole town.
 /// </summary>
-public class FreeModeController : MonoBehaviour, ILiveBattlefield
+public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 {
     [Header("Scene references")]
     public SettlementGrid grid;
 
-    [Tooltip("The path enemies walk. Reaching its end means breaking into the settlement.")]
-    public WayPoints enemyPath;
-
-    [Tooltip("Where trained troops gather to defend.")]
-    public Transform rallyPoint;
-
     [Header("Tuning")]
     public float rallySpread = 1.5f;
     public float troopTrainSeconds = 6f;
-    public float secondsBetweenWaveSpawns = 1f;
+    public float secondsBetweenWaveSpawns = 0.6f;
+
+    [Tooltip("Units are drawn at this size in free mode so they suit the building scale.")]
+    public float unitScale = 0.6f;
+
+    [Tooltip("Defending troops hold the settlement plus this much ground around it.")]
+    public float townGuardMargin = 3f;
 
     public Settlement Settlement { get; private set; }
     public SettlementGrid Grid => grid;
     public BuildingPlacer Placer { get; private set; }
     public BuildingView Selected { get; private set; }
+    public IEnumerable<BuildingView> Buildings => views.Values;
+    public bool WaveInProgress => waveInProgress;
 
     /// <summary>For the HUD: selection changed, or a message to show.</summary>
     public event Action<BuildingView> SelectionChanged;
@@ -38,8 +42,9 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
     // Live wave tracking
     private readonly List<Enemy> liveEnemies = new List<Enemy>();
     private readonly List<UnitDefinition> unspawned = new List<UnitDefinition>();
-    private float liveWaveStrength;
+    private readonly List<ResourceAmount> stolenThisWave = new List<ResourceAmount>();
     private bool waveInProgress;
+    private Vector3 raidOrigin;
 
     private void Awake()
     {
@@ -52,20 +57,33 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
 
         EnsureEventSystem();
         grid.Build(Settlement.Database.gridSize);
+        WorldDecorator.Decorate(transform, grid, null, null);
+        if (Camera.main != null)
+        {
+            var cameraController = Camera.main.GetComponent<CameraController>();
+            if (cameraController == null)
+            {
+                cameraController = Camera.main.gameObject.AddComponent<CameraController>();
+            }
+            // Keep the view over the map.
+            cameraController.bounds = grid.MapRect;
+        }
         Placer = new GameObject("BuildingPlacer").AddComponent<BuildingPlacer>();
         Placer.transform.SetParent(transform, false);
         Placer.Init(this);
 
+        var life = new GameObject("AmbientLife").AddComponent<AmbientLife>();
+        life.transform.SetParent(transform, false);
+        life.Init(this);
+
         Settlement.Changed += SyncViews;
         Settlement.Message += ShowMessage;
         Settlement.Waves.LiveBattlefield = this;
-        Enemy.ReachedEnd += OnEnemyReachedEnd;
         SyncViews();
     }
 
     private void OnDestroy()
     {
-        Enemy.ReachedEnd -= OnEnemyReachedEnd;
         if (Settlement == null)
         {
             return;
@@ -167,29 +185,80 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
         SelectionChanged?.Invoke(Selected);
     }
 
-    public Vector3 GetRallyPoint()
+    /// <summary>Troops idle around the building that trained them.</summary>
+    public Vector3 GetRallyPoint(BuildingView home)
     {
-        Vector3 center = rallyPoint != null ? rallyPoint.position : grid.transform.position;
+        Vector3 center = home != null
+            ? grid.AreaCenter(home.State.cell, home.Definition.size) - new Vector3(0, home.Definition.size.y * 0.5f + 0.8f, 0)
+            : SettlementCenter;
         Vector2 offset = UnityEngine.Random.insideUnitCircle * rallySpread;
         return center + new Vector3(offset.x, offset.y, 0);
     }
 
     public void ShowMessage(string message) => MessageShown?.Invoke(message);
 
+    /// <summary>Spawn a troop or enemy prefab at free mode scale.</summary>
+    public GameObject SpawnUnit(GameObject prefab, Vector3 position)
+    {
+        var go = Instantiate(prefab, position, Quaternion.identity);
+        go.transform.localScale *= unitScale;
+        // Smaller bodies, shorter reach (otherwise they'd hit from a distance).
+        var unit = go.GetComponent<Unit>();
+        if (unit != null)
+        {
+            unit.attackRange *= unitScale;
+        }
+        // Troops go for the nearest raider; their building sets their stance.
+        if (unit is Troop troop)
+        {
+            troop.targetPriority = Troop.TargetPriority.Closest;
+            troop.SetStance(TroopStance.Defend, TownZone, SightRange);
+        }
+        return go;
+    }
+
+    private Vector3 SettlementCenter => grid.AreaCenter(Vector2Int.zero, grid.Size);
+
+    /// <summary>The ground Defend troops hold: the settlement plus a margin.</summary>
+    public Rect TownZone
+    {
+        get
+        {
+            Vector2 min = grid.CellToWorld(Vector2Int.zero);
+            Vector2 size = new Vector2(grid.Size.x, grid.Size.y) * grid.cellSize;
+            return new Rect(min - Vector2.one * townGuardMargin, size + Vector2.one * townGuardMargin * 2);
+        }
+    }
+
+    /// <summary>Troops can spot raiders anywhere on the map.</summary>
+    public float SightRange => grid.MapRect.size.magnitude;
+
+    /// <summary>Set the stance of every troop-training building at once.</summary>
+    public void SetAllStances(TroopStance stance)
+    {
+        foreach (var view in views.Values)
+        {
+            if (view.Definition.trainsUnit != null)
+            {
+                view.State.stance = stance;
+            }
+        }
+        ShowMessage(stance == TroopStance.Defend ? "All troops: defend the town." : "All troops: advance and attack!");
+    }
+
     // ---------- Live waves ----------
 
     public void SpawnWave(Wave wave)
     {
-        if (enemyPath == null || enemyPath.positions.Count == 0)
-        {
-            // Nowhere to fight it: fall back to the numbers.
-            Settlement.Waves.AutoResolve(wave);
-            return;
-        }
-        liveWaveStrength += wave.strength;
+        // Raiders enter together from a random point on the map edge.
+        raidOrigin = grid.RandomEdgePoint();
+
         unspawned.AddRange(wave.units);
         waveInProgress = true;
-        ShowMessage(wave.units.Count == 1 ? "An enemy is coming!" : $"A wave of {wave.units.Count} enemies is coming!");
+        string from = CompassName(raidOrigin - SettlementCenter);
+        ShowMessage(wave.units.Count == 1
+            ? $"A raider is approaching from the {from}!"
+            : $"{wave.units.Count} raiders are approaching from the {from}!");
         StartCoroutine(SpawnRoutine());
     }
 
@@ -201,25 +270,20 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
             unspawned.RemoveAt(0);
             if (unit.prefab != null)
             {
-                var enemy = Instantiate(unit.prefab, enemyPath.positions[0], Quaternion.identity).GetComponent<Enemy>();
+                Vector2 jitter = UnityEngine.Random.insideUnitCircle * 2f;
+                Rect map = grid.MapRect;
+                Vector3 spawn = raidOrigin + new Vector3(jitter.x, jitter.y, 0);
+                spawn.x = Mathf.Clamp(spawn.x, map.xMin, map.xMax);
+                spawn.y = Mathf.Clamp(spawn.y, map.yMin, map.yMax);
+                var enemy = SpawnUnit(unit.prefab, spawn).GetComponent<Enemy>();
                 if (enemy != null)
                 {
-                    enemy.path = enemyPath;
+                    enemy.StartRaid(this);
                     liveEnemies.Add(enemy);
                 }
             }
             yield return new WaitForSeconds(secondsBetweenWaveSpawns);
         }
-    }
-
-    private void OnEnemyReachedEnd(Enemy enemy)
-    {
-        if (!liveEnemies.Remove(enemy) || liveWaveStrength <= 0)
-        {
-            return;
-        }
-        float share = Settlement.UnitPower(enemy.definition) / liveWaveStrength;
-        Settlement.ApplyRaid(share);
     }
 
     private void TrackLiveWave()
@@ -232,13 +296,14 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
         if (liveEnemies.Count == 0 && unspawned.Count == 0)
         {
             waveInProgress = false;
-            liveWaveStrength = 0;
             Settlement.State.wavesSurvived++;
-            ShowMessage("The wave is over.");
+            string loss = Settlement.Describe(stolenThisWave);
+            ShowMessage(loss.Length > 0 ? $"The raid is over. Raiders got away with {loss}." : "The raid is over. Nothing was lost!");
+            stolenThisWave.Clear();
         }
     }
 
-    /// <summary>Leaving mid-wave: whatever hasn't been dealt with is resolved by the numbers.</summary>
+    /// <summary>Leaving mid-wave: raiders still about are resolved by the numbers.</summary>
     private void ResolveUnfinishedWave()
     {
         if (!waveInProgress)
@@ -268,7 +333,90 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield
         }
     }
 
+    // ---------- IRaidTargets (what raiders attack) ----------
+
+    public BuildingView NearestTarget(Vector3 from)
+    {
+        BuildingView best = null;
+        float bestDistance = float.MaxValue;
+        foreach (var view in views.Values)
+        {
+            if (!IsStanding(view))
+            {
+                continue;
+            }
+            float d = Vector2.Distance(from, ClosestPointOn(view, from));
+            if (d < bestDistance)
+            {
+                bestDistance = d;
+                best = view;
+            }
+        }
+        return best;
+    }
+
+    public bool IsStanding(BuildingView building) =>
+        building != null && building.State.IsBuilt && building.State.health > 0;
+
+    public Vector3 ClosestPointOn(BuildingView building, Vector3 from)
+    {
+        Vector3 min = grid.CellToWorld(building.State.cell);
+        Vector3 max = min + new Vector3(building.Definition.size.x, building.Definition.size.y, 0) * grid.cellSize;
+        return new Vector3(Mathf.Clamp(from.x, min.x, max.x), Mathf.Clamp(from.y, min.y, max.y), 0);
+    }
+
+    public void HitBuilding(BuildingView building, Enemy raider)
+    {
+        Settlement.DamageBuilding(building.State, raider.attackPower);
+        building.Shake();
+        var stolen = Settlement.Steal(raider.lootPerHit);
+        raider.Carry(stolen);
+    }
+
+    public Vector3 ExitPointFor(Vector3 from) => grid.NearestEdgePoint(from);
+
+    public void RaiderEscaped(Enemy raider)
+    {
+        liveEnemies.Remove(raider);
+        Merge(stolenThisWave, raider.Loot);
+    }
+
+    public void RaiderKilled(Enemy raider)
+    {
+        if (raider.LootCarried > 0)
+        {
+            Settlement.ReturnResources(raider.Loot);
+            ShowMessage($"Recovered {Settlement.Describe(raider.Loot)} from a fallen raider.");
+        }
+    }
+
     // ---------- Helpers ----------
+
+    private static void Merge(List<ResourceAmount> into, List<ResourceAmount> add)
+    {
+        foreach (var item in add)
+        {
+            int i = into.FindIndex(x => x.resource == item.resource);
+            if (i >= 0)
+            {
+                var x = into[i];
+                x.amount += item.amount;
+                into[i] = x;
+            }
+            else
+            {
+                into.Add(item);
+            }
+        }
+    }
+
+    private static string CompassName(Vector3 dir)
+    {
+        string[] names = { "east", "north-east", "north", "north-west", "west", "south-west", "south", "south-east" };
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        int index = Mathf.RoundToInt(((angle % 360) + 360) % 360 / 45f) % 8;
+        return names[index];
+    }
 
     private static void EnsureEventSystem()
     {

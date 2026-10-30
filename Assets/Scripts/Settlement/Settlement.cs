@@ -44,6 +44,13 @@ public class Settlement : MonoBehaviour
 
     // ---------- Lifetime ----------
 
+    /// <summary>The project has domain reload off, so statics must be cleared at each Play.</summary>
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        Instance = null;
+    }
+
     /// <summary>Once free mode has been started, keep it running from game launch.</summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void ResumeIfStarted()
@@ -79,6 +86,11 @@ public class Settlement : MonoBehaviour
         Instance = this;
         Database = database;
         State = LoadState() ?? NewState();
+        // Older saves could hold fractional building health; snap it to whole points.
+        foreach (var building in State.buildings)
+        {
+            building.health = Mathf.Round(building.health);
+        }
         RecalculateDerived();
         Waves = gameObject.AddComponent<WaveDirector>();
         Waves.Initialise(this);
@@ -640,17 +652,19 @@ public class Settlement : MonoBehaviour
         {
             totalHealth += Database.GetBuilding(b.definitionId)?.maxHealth ?? 0;
         }
-        float damageLeft = totalHealth * severity * Database.maxBuildingDamageShare;
+        // Damage is dealt in whole points so health always matches what the UI shows.
+        float damageLeft = Mathf.Round(totalHealth * severity * Database.maxBuildingDamageShare);
         int ruined = 0;
         int guard = 100;
-        while (damageLeft > 0.5f && standing.Count > 0 && guard-- > 0)
+        while (damageLeft >= 1f && standing.Count > 0 && guard-- > 0)
         {
             var target = standing[UnityEngine.Random.Range(0, standing.Count)];
             var def = Database.GetBuilding(target.definitionId);
-            float hit = Mathf.Min(damageLeft, target.health, def.maxHealth * 0.5f);
+            float hit = Mathf.Round(Mathf.Min(damageLeft, target.health, def.maxHealth * 0.5f));
+            hit = Mathf.Clamp(hit, 1f, target.health);
             target.health -= hit;
             damageLeft -= hit;
-            if (target.health <= 0.5f)
+            if (target.health <= 0f)
             {
                 target.health = 0;
                 standing.Remove(target);
@@ -664,6 +678,70 @@ public class Settlement : MonoBehaviour
 
         Notify(report.ToString());
         Changed?.Invoke();
+    }
+
+    /// <summary>A raider hits one building (live fights in the free mode scene).</summary>
+    public void DamageBuilding(BuildingState building, float amount)
+    {
+        if (building == null || !building.IsBuilt || building.health <= 0)
+        {
+            return;
+        }
+        building.health = Mathf.Max(0, building.health - Mathf.Round(amount));
+        if (building.health <= 0)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            Notify($"Raiders ruined a {Name(def)}! Repair it to use it again.");
+            Changed?.Invoke();
+        }
+    }
+
+    /// <summary>Take up to 'amount' resources from the stockpiles, spread across what's there.</summary>
+    public List<ResourceAmount> Steal(int amount)
+    {
+        var taken = new List<ResourceAmount>();
+        var available = State.resources.FindAll(s => s.amount >= 1);
+        for (int i = 0; i < amount && available.Count > 0; i++)
+        {
+            var stock = available[UnityEngine.Random.Range(0, available.Count)];
+            stock.amount -= 1;
+            var res = Database.GetResource(stock.id);
+            int index = taken.FindIndex(t => t.resource == res);
+            if (index >= 0)
+            {
+                var t = taken[index];
+                t.amount++;
+                taken[index] = t;
+            }
+            else
+            {
+                taken.Add(new ResourceAmount { resource = res, amount = 1 });
+            }
+            if (stock.amount < 1)
+            {
+                available.Remove(stock);
+            }
+        }
+        return taken;
+    }
+
+    /// <summary>Give back loot recovered from a defeated raider.</summary>
+    public void ReturnResources(List<ResourceAmount> loot)
+    {
+        foreach (var item in loot)
+        {
+            if (item.resource != null)
+            {
+                AddResource(item.resource, item.amount);
+            }
+        }
+    }
+
+    public static string Describe(List<ResourceAmount> amounts)
+    {
+        var parts = amounts.FindAll(a => a.resource != null && a.amount > 0)
+            .ConvertAll(a => $"{a.amount} {a.resource.displayName}");
+        return string.Join(", ", parts);
     }
 
     // ---------- Save / load ----------

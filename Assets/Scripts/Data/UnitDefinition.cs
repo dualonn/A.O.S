@@ -32,6 +32,9 @@ public class UnitDefinition : ScriptableObject
     [Tooltip("How close (world units) the unit must be to hit its target.")]
     public float attackRange = 2f;
 
+    [Tooltip("Seconds from the start of a swing until it lands (match the attack animation's impact frame).")]
+    public float hitDelay = 0.58f;
+
     [Tooltip("How far away (world units) the unit notices enemies.")]
     public float detectionRange = 2.5f;
 }

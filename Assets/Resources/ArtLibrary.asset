@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1def682712b869144b097357d54b2d3c, type: 3}
+  m_Name: ArtLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::ArtLibrary
+  grassTile: {fileID: 21300000, guid: 846dfb2c7414e2942af97f800e1d9c43, type: 3}
+  settlementTile: {fileID: 21300000, guid: b7208d832bf3ca9458b706323afb1ea9, type: 3}
+  pathTile: {fileID: 21300000, guid: 44813d148fca2d743b7c457fc305964f, type: 3}
+  trees:
+  - {fileID: 21300000, guid: 46b8baee51dff3d438622d918c9020c6, type: 3}
+  - {fileID: 21300000, guid: c06459b56106f044f99565423e485e63, type: 3}
+  rocks:
+  - {fileID: 21300000, guid: 07a850bebae54dd418f3d173c928bf23, type: 3}
+  - {fileID: 21300000, guid: c798c10300fc890408926f69e7ca6a5e, type: 3}
+  bushes:
+  - {fileID: 21300000, guid: ca0259682ec7e384f9cd1dfa286caad6, type: 3}
+  villagerIdle: {fileID: 21300000, guid: 711dab0c024751a4a9bacfaaddffeeef, type: 3}
+  villagerWalk:
+  - {fileID: 21300000, guid: ce3fd80c312fb0c4992c85e6dd0a7cf1, type: 3}
+  - {fileID: 21300000, guid: 9577a2babdc92334f974430a34703a0f, type: 3}
+  - {fileID: 21300000, guid: 5950eb259e85dd24d90d3d115e9a2fe9, type: 3}
+  - {fileID: 21300000, guid: 59298d6f5978fcc4ea4723abddb4885a, type: 3}
+  villagerWork:
+  - {fileID: 21300000, guid: 63d972994884a374b9120f626de6a6f7, type: 3}
+  - {fileID: 21300000, guid: 2eb63be80a835fc4e9ac8e72ab7333d5, type: 3}
+  scaffold: {fileID: 21300000, guid: c8cb80b516aaa6c458d84b1a6c77d5ba, type: 3}
+  rallyFlag: {fileID: 21300000, guid: 3759084e2082c42408895384476b9d88, type: 3}
+  panel: {fileID: 21300000, guid: 0ffd0ff1a5144004f8c6c2be6c51fab6, type: 3}
+  peopleIcon: {fileID: 21300000, guid: c8675e67a1b024d44964981ffaf34bbb, type: 3}
+  enemyIcon: {fileID: 21300000, guid: 88aa7de0adca4624d8b43948311c9c53, type: 3}
+  researchIcon: {fileID: 21300000, guid: 05123ad631ca9144aa42ffc3c0349727, type: 3}

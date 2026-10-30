@@ -23,6 +23,16 @@ public class SettlementState
     public int nextBuildingId = 1;
 }
 
+/// <summary>How a building's troops behave.</summary>
+public enum TroopStance
+{
+    /// <summary>Hold the town: only fight raiders inside it, then return.</summary>
+    Defend,
+
+    /// <summary>Advance: march out and hunt raiders anywhere on the map.</summary>
+    Attack
+}
+
 [Serializable]
 public class ResourceStock
 {
@@ -40,6 +50,9 @@ public class BuildingState
 
     [Tooltip("0 to 1. The building does nothing until this reaches 1.")]
     public float buildProgress;
+
+    [Tooltip("For buildings that train troops: what those troops do.")]
+    public TroopStance stance = TroopStance.Defend;
 
     public bool IsBuilt => buildProgress >= 1f;
 }

@@ -26,11 +26,32 @@ public class Troop : Unit
     /// <summary>The troop waiting for a destination click, if any.</summary>
     public static Troop Selected { get; private set; }
 
+    // Domain reload is off in this project, so clear statics at each Play.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() => Selected = null;
+
     public override Team Team => Team.Player;
     public bool IsHovered { get; private set; }
 
+    /// <summary>Free mode: Defend only fights inside the town zone; Attack fights anywhere.</summary>
+    public TroopStance Stance { get; private set; } = TroopStance.Attack;
+
     private Vector3 rallyPoint;
     private bool hasMoveOrder;
+    private Rect defendZone;
+    private bool hasDefendZone;
+
+    /// <summary>
+    /// Set how this troop behaves (free mode). 'townZone' is the area Defend troops hold;
+    /// 'sightRange' is how far they spot raiders.
+    /// </summary>
+    public void SetStance(TroopStance stance, Rect townZone, float sightRange)
+    {
+        Stance = stance;
+        defendZone = townZone;
+        hasDefendZone = true;
+        detectionRange = sightRange;
+    }
 
     protected override void Awake()
     {
@@ -99,6 +120,16 @@ public class Troop : Unit
 
     protected override Unit SelectTarget(List<Unit> candidates)
     {
+        // Defending: ignore raiders outside the town; return home once they leave it.
+        if (hasDefendZone && Stance == TroopStance.Defend)
+        {
+            candidates = candidates.FindAll(u => defendZone.Contains(u.transform.position));
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
+        }
+
         if (targetPriority == TargetPriority.Closest)
         {
             return base.SelectTarget(candidates);

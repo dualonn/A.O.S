@@ -14,13 +14,23 @@ public class FreeModeHUD : MonoBehaviour
     public FreeModeController controller;
 
     private Settlement settlement;
-    private TextMeshProUGUI topBar;
+    private ArtLibrary art;
+    private CameraController cameraController;
+    private TextMeshProUGUI ageText;
+    private TextMeshProUGUI peopleText;
+    private TextMeshProUGUI waveText;
+    private TextMeshProUGUI researchText;
+    private readonly Dictionary<ResourceType, TextMeshProUGUI> resourceChips = new Dictionary<ResourceType, TextMeshProUGUI>();
     private TextMeshProUGUI messageLog;
     private RectTransform tooltip;
     private TextMeshProUGUI tooltipText;
     private RectTransform selectionPanel;
     private TextMeshProUGUI selectionText;
     private Button repairButton;
+    private Button stanceButton;
+    private TextMeshProUGUI stanceLabel;
+    private Button allStanceButton;
+    private TextMeshProUGUI allStanceLabel;
     private TextMeshProUGUI repairLabel;
     private TextMeshProUGUI speedLabel;
     private Button advanceButton;
@@ -68,6 +78,10 @@ public class FreeModeHUD : MonoBehaviour
 
     private void BuildCanvas()
     {
+        art = ArtLibrary.Load();
+        UIBuilder.PanelSprite = art != null ? art.panel : null;
+        cameraController = Camera.main != null ? Camera.main.GetComponent<CameraController>() : null;
+
         var canvasObject = new GameObject("FreeModeCanvas", typeof(RectTransform));
         canvasObject.transform.SetParent(transform, false);
         var canvas = canvasObject.AddComponent<Canvas>();
@@ -80,12 +94,41 @@ public class FreeModeHUD : MonoBehaviour
         canvasObject.AddComponent<GraphicRaycaster>();
         Transform root = canvasObject.transform;
 
-        // Top bar
+        // Top bar: a row of icon + value chips, with view controls on the right
         var bar = UIBuilder.Panel("TopBar", root, UIBuilder.PanelColor).rectTransform;
-        UIBuilder.Anchor(bar, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1), Vector2.zero, new Vector2(0, 56));
-        topBar = UIBuilder.Text("Info", bar, "", 22, TextAlignmentOptions.MidlineLeft);
-        UIBuilder.Stretch(topBar.rectTransform, 12);
-        topBar.rectTransform.offsetMax = new Vector2(-150, -6);
+        UIBuilder.Anchor(bar, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(-8, 56));
+        var chips = UIBuilder.Row("Chips", bar, 26);
+        UIBuilder.Stretch(chips);
+        chips.offsetMin = new Vector2(16, 0);
+        chips.offsetMax = new Vector2(-520, 0);
+
+        ageText = Chip(chips, null);
+        foreach (var res in settlement.Database.resources)
+        {
+            resourceChips[res] = Chip(chips, res.icon);
+        }
+        peopleText = Chip(chips, art != null ? art.peopleIcon : null);
+        waveText = Chip(chips, art != null ? art.enemyIcon : null);
+        researchText = Chip(chips, art != null ? art.researchIcon : null);
+
+        var zoomOut = UIBuilder.Button("ZoomOut", bar, () => cameraController?.ZoomOut(), out var zoomOutLabel, 40, 26);
+        UIBuilder.Anchor((RectTransform)zoomOut.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+            new Vector2(-250, 0), new Vector2(44, 40));
+        zoomOutLabel.text = "-";
+        zoomOutLabel.alignment = TextAlignmentOptions.Center;
+        var zoomIn = UIBuilder.Button("ZoomIn", bar, () => cameraController?.ZoomIn(), out var zoomInLabel, 40, 26);
+        UIBuilder.Anchor((RectTransform)zoomIn.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+            new Vector2(-200, 0), new Vector2(44, 40));
+        zoomInLabel.text = "+";
+        zoomInLabel.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(zoomIn.gameObject, () => tooltipSource = ZoomHelp, HideTooltip);
+        UIBuilder.OnHover(zoomOut.gameObject, () => tooltipSource = ZoomHelp, HideTooltip);
+
+        allStanceButton = UIBuilder.Button("AllStance", bar, ToggleAllStances, out allStanceLabel, 40, 18);
+        UIBuilder.Anchor((RectTransform)allStanceButton.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+            new Vector2(-310, 0), new Vector2(190, 40));
+        allStanceLabel.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(allStanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
 
         var speed = UIBuilder.Button("Speed", bar, CycleSpeed, out speedLabel, 40, 20);
         UIBuilder.Anchor((RectTransform)speed.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
@@ -100,7 +143,7 @@ public class FreeModeHUD : MonoBehaviour
         foreach (var def in settlement.Database.buildings)
         {
             var d = def;
-            var button = UIBuilder.Button(def.id, build, () => controller.Placer.Begin(d), out var label);
+            var button = UIBuilder.Button(def.id, build, () => controller.Placer.Begin(d), out var label, 60, 18, def.icon);
             UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
             buildButtons.Add((def, button, label));
         }
@@ -125,6 +168,8 @@ public class FreeModeHUD : MonoBehaviour
         selectionPanel = UIBuilder.VerticalPanel("SelectionPanel", root);
         UIBuilder.Anchor(selectionPanel, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 150), new Vector2(460, 0));
         selectionText = UIBuilder.Text("Info", selectionPanel, "", 19);
+        stanceButton = UIBuilder.Button("Stance", selectionPanel, ToggleSelectedStance, out stanceLabel, 50);
+        UIBuilder.OnHover(stanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
         repairButton = UIBuilder.Button("Repair", selectionPanel, RepairSelected, out repairLabel, 44);
         UIBuilder.Button("Demolish", selectionPanel, DemolishSelected, out var demolishLabel, 44).image.color = new Color(0.45f, 0.18f, 0.18f);
         demolishLabel.text = "Demolish (no refund)";
@@ -164,6 +209,7 @@ public class FreeModeHUD : MonoBehaviour
     private void RefreshAll()
     {
         RefreshTopBar();
+        RefreshAllStanceButton();
         RefreshBuildButtons();
         RefreshResearchButtons();
         RefreshSelection();
@@ -188,29 +234,48 @@ public class FreeModeHUD : MonoBehaviour
         rateTimer = 0;
     }
 
+    /// <summary>An icon followed by a text value, added to a row. Returns the text.</summary>
+    private static TextMeshProUGUI Chip(Transform row, Sprite icon)
+    {
+        var chip = UIBuilder.Row("Chip", row, 6);
+        if (icon != null)
+        {
+            UIBuilder.Icon("Icon", chip, icon, 34);
+        }
+        return UIBuilder.Text("Value", chip, "", 22, TextAlignmentOptions.MidlineLeft);
+    }
+
     private void RefreshTopBar()
     {
-        var sb = new StringBuilder();
-        sb.Append($"<b>{settlement.CurrentAge?.displayName}</b>    ");
-        foreach (var res in VisibleResources())
+        ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b>";
+
+        var visible = new HashSet<ResourceType>(VisibleResources());
+        foreach (var pair in resourceChips)
         {
+            var res = pair.Key;
+            pair.Value.transform.parent.gameObject.SetActive(visible.Contains(res));
             float rate = rates.TryGetValue(res, out float r) ? r : 0;
             string rateText = Mathf.Abs(rate) < 0.05f ? "" :
-                rate > 0 ? $" <color=#8f8><size=75%>+{rate:0.0}/s</size></color>" : $" <color=#f88><size=75%>{rate:0.0}/s</size></color>";
-            sb.Append($"{res.displayName} <b>{Mathf.FloorToInt(settlement.GetAmount(res))}</b>{rateText}    ");
+                rate > 0 ? $" <color=#8f8><size=70%>+{rate:0.0}/s</size></color>" : $" <color=#f88><size=70%>{rate:0.0}/s</size></color>";
+            string name = res.icon == null ? res.displayName + " " : "";
+            pair.Value.text = $"{name}<b>{Mathf.FloorToInt(settlement.GetAmount(res))}</b>{rateText}";
         }
+
         string workers = settlement.WorkersNeeded > settlement.Population
-            ? $" <color=#fc6><size=75%>({settlement.WorkersNeeded} jobs)</size></color>" : "";
-        sb.Append($"People <b>{settlement.Population}/{settlement.Housing}</b>{workers}    ");
-        sb.Append($"Next wave <b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>");
+            ? $" <color=#fc6><size=70%>({settlement.WorkersNeeded} jobs)</size></color>" : "";
+        peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{workers}";
+        waveText.text = $"<b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>";
 
         var researching = settlement.Database.GetTechnology(settlement.State.researchingId ?? "");
+        researchText.transform.parent.gameObject.SetActive(researching != null);
         if (researching != null)
         {
-            sb.Append($"    Researching <b>{researching.displayName}</b> {settlement.State.researchProgress:P0}");
+            researchText.text = $"{researching.displayName} <b>{settlement.State.researchProgress:P0}</b>";
         }
-        topBar.text = sb.ToString();
     }
+
+    private static string ZoomHelp() =>
+        "<b>View</b>\nMouse wheel or +/- to zoom\nWASD / arrow keys or middle-drag to move";
 
     private void RefreshBuildButtons()
     {
@@ -280,10 +345,17 @@ public class FreeModeHUD : MonoBehaviour
         else
         {
             string ruined = state.health <= 0 ? " <color=#f77>(ruined: needs repair)</color>" : "";
-            sb.Append($"Health {Mathf.CeilToInt(state.health)}/{def.maxHealth}{ruined}\n");
+            sb.Append($"Health {Mathf.FloorToInt(state.health)}/{def.maxHealth}{ruined}\n");
         }
         sb.Append(StatsText(def));
         selectionText.text = sb.ToString().TrimEnd();
+
+        bool trains = def.trainsUnit != null;
+        stanceButton.gameObject.SetActive(trains);
+        if (trains)
+        {
+            stanceLabel.text = StanceText(state.stance) + "\n<size=75%><color=#aaa>Click to switch</color></size>";
+        }
 
         bool damaged = state.IsBuilt && state.health < def.maxHealth;
         repairButton.gameObject.SetActive(damaged);
@@ -332,6 +404,68 @@ public class FreeModeHUD : MonoBehaviour
         {
             settlement.Demolish(view.State);
         }
+    }
+
+    // ---------- Troop stances ----------
+
+    private static string StanceText(TroopStance stance) => stance == TroopStance.Defend
+        ? "<b>Stance:</b> <color=#8cf>Defend the town</color>"
+        : "<b>Stance:</b> <color=#f96>Advance and attack</color>";
+
+    private static string StanceHelp() =>
+        "<b>Troop stance</b>\n" +
+        "<color=#8cf>Defend</color>: hold the town, fight raiders that come into it, then return.\n" +
+        "<color=#f96>Attack</color>: march out and hunt raiders anywhere on the map.";
+
+    private void ToggleSelectedStance()
+    {
+        var view = controller.Selected;
+        if (view == null)
+        {
+            return;
+        }
+        view.State.stance = view.State.stance == TroopStance.Defend ? TroopStance.Attack : TroopStance.Defend;
+        RefreshAll();
+    }
+
+    /// <summary>The stance shared by all troop buildings, or null if they differ / there are none.</summary>
+    private TroopStance? CommonStance()
+    {
+        TroopStance? common = null;
+        foreach (var view in controller.Buildings)
+        {
+            if (view.Definition.trainsUnit == null)
+            {
+                continue;
+            }
+            if (common == null)
+            {
+                common = view.State.stance;
+            }
+            else if (common != view.State.stance)
+            {
+                return null;
+            }
+        }
+        return common;
+    }
+
+    private void ToggleAllStances()
+    {
+        var common = CommonStance();
+        controller.SetAllStances(common == TroopStance.Defend ? TroopStance.Attack : TroopStance.Defend);
+        RefreshAll();
+    }
+
+    private void RefreshAllStanceButton()
+    {
+        bool any = controller.Buildings.Any(v => v.Definition.trainsUnit != null);
+        allStanceButton.interactable = any;
+        var common = CommonStance();
+        allStanceLabel.text = !any ? "<color=#888>No troops yet</color>"
+            : common == TroopStance.Defend ? "All troops: <color=#8cf>Defend</color>"
+            : common == TroopStance.Attack ? "All troops: <color=#f96>Attack</color>"
+            : "All troops: Mixed";
     }
 
     private void CycleSpeed()
