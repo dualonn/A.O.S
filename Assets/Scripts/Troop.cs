@@ -71,6 +71,13 @@ public class Troop : Unit
         }
     }
 
+    /// <summary>Where the troop returns to when idle. Unlike a move order, it still fights on the way.</summary>
+    public void SetRallyPoint(Vector3 point)
+    {
+        point.z = transform.position.z;
+        rallyPoint = point;
+    }
+
     public void OrderMoveTo(Vector3 destination)
     {
         destination.z = transform.position.z;

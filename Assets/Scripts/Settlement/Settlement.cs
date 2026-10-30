@@ -357,7 +357,7 @@ public class Settlement : MonoBehaviour
                 }
             }
         }
-        missing = problems.ToString().TrimEnd();
+        missing = problems.ToString().Replace("\r", "").TrimEnd();
         return missing.Length == 0;
     }
 
