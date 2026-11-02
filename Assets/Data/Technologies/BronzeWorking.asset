@@ -21,7 +21,9 @@ MonoBehaviour:
     minimumAge: {fileID: 0}
     technologies:
     - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
-    buildings: []
+    buildings:
+    - building: {fileID: 11400000, guid: e69220c9ffb340c438e2971f6189fef1, type: 2}
+      count: 1
     population: 8
     cost:
     - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
