@@ -5,6 +5,15 @@ TextureImporter:
   - first:
       213: 8011056435868738099
     second: BronzeFoundry_L1_F2_0
+  - first:
+      213: 6026144822120688617
+    second: BronzeFoundry_L1_F2_1
+  - first:
+      213: -2651842968652818215
+    second: BronzeFoundry_L1_F2_2
+  - first:
+      213: -8374811534441685362
+    second: BronzeFoundry_L1_F2_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -47,11 +56,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
-  spriteExtrude: 1
-  spriteMeshType: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
   alignment: 9
-  spritePivot: {x: 0.01923077, y: 0.01923077}
-  spritePixelsToUnits: 128
+  spritePivot: {x: 0.1, y: 0.028571429}
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -96,19 +105,6 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -116,10 +112,10 @@ TextureImporter:
       name: BronzeFoundry_L1_F2_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 16
-        width: 363
-        height: 348
+        x: 56
+        y: 77
+        width: 11
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,6 +126,72 @@ TextureImporter:
       bones: []
       spriteID: 332209f426dfc2f60800000000000000
       internalID: 8011056435868738099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BronzeFoundry_L1_F2_1
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 70
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb209fa9ca21a350800000000000000
+      internalID: 6026144822120688617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BronzeFoundry_L1_F2_2
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 3
+        width: 101
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d8d45dbed2c23bd0800000000000000
+      internalID: -2651842968652818215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BronzeFoundry_L1_F2_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 62
+        width: 9
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8e52c4f741b6cb80800000000000000
+      internalID: -8374811534441685362
       vertices: []
       indices: 
       edges: []
@@ -149,6 +211,9 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       BronzeFoundry_L1_F2_0: 8011056435868738099
+      BronzeFoundry_L1_F2_1: 6026144822120688617
+      BronzeFoundry_L1_F2_2: -2651842968652818215
+      BronzeFoundry_L1_F2_3: -8374811534441685362
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

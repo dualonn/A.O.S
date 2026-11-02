@@ -23,25 +23,25 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 5962a3331297f43499763f745a3d05fa, type: 3}
     - {fileID: 21300000, guid: 521fc3f3c043b634195578df426c3bac, type: 3}
     - {fileID: 21300000, guid: d4870d5dafb053c4392167b8f12c7bde, type: 3}
-    fps: 5
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: 779408b2e74e035449e983a8524a9b90, type: 3}
     - {fileID: 21300000, guid: 472e779340615c64f83973219bf3114b, type: 3}
     - {fileID: 21300000, guid: 3b816bba295d1294580be85a47220340, type: 3}
     - {fileID: 21300000, guid: 77221ab3482e0524499caacec91d4cb7, type: 3}
-    fps: 5
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: 49118817d26098b4c84e34c1d0526098, type: 3}
     - {fileID: 21300000, guid: 27caea705874736488b022af6de665e9, type: 3}
     - {fileID: 21300000, guid: e0e61a7280c63ea41afb0312646beeb5, type: 3}
     - {fileID: 21300000, guid: 5ba34eb0ead516e478a00f431dde8318, type: 3}
-    fps: 5
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: a95dce6fab3bf2a4ea4153830c748637, type: 3}
     - {fileID: 21300000, guid: f7d928e170c705f46850a188daab1de4, type: 3}
     - {fileID: 21300000, guid: dc8f036f13c6cfc438c484a734f03609, type: 3}
     - {fileID: 21300000, guid: 4e21a8b20b343d8488570926032a8e19, type: 3}
-    fps: 5
+    fps: 4
   size: {x: 3, y: 3}
   artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
@@ -156,6 +156,8 @@ MonoBehaviour:
       amount: 20
   rankUpTime: 30
   isTownCenter: 0
+  wallKind: 0
+  pieces: []
   sortLine: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3

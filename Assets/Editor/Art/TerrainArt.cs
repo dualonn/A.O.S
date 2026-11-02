@@ -36,6 +36,12 @@ public static partial class PlaceholderArt
 
     private static void GenerateTerrain(ArtLibrary art)
     {
+        GeneratePixelTerrain(art);
+    }
+
+    /// <summary>The old smooth-shaded terrain (kept for reference; the game now uses pixel art).</summary>
+    private static void GenerateVectorTerrain(ArtLibrary art)
+    {
         Directory.CreateDirectory(Path.Combine(Root, "World/Terrain"));
 
         art.grassVariants = new List<Sprite>

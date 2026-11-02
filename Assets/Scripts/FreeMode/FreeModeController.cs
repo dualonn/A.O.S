@@ -27,6 +27,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public float townGuardMargin = 5f;
 
     public Settlement Settlement { get; private set; }
+    public static FreeModeController Instance { get; private set; }
     public SettlementGrid Grid => grid;
     public BuildingPlacer Placer { get; private set; }
     /// <summary>The first selected building (the one the single-building panel shows).</summary>
@@ -61,6 +62,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     private void Awake()
     {
+        Instance = this;
         Settlement = Settlement.EnsureStarted();
         if (Settlement == null)
         {
@@ -90,6 +92,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
         if (Settlement == null)
         {
             return;
@@ -846,6 +849,15 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             return;
         }
         Vector3 target = SettlementGrid.MouseWorld();
+        var camp = CampView.At(target);
+        if (camp != null)
+        {
+            // Right-click on a raider camp: everyone selected commits to burning it down.
+            foreach (var t in unitSelection) t.OrderAttackCamp(camp);
+            ShowOrderMarker(camp.Centre, new Color(1f, 0.45f, 0.35f, 0.9f));
+            ShowMessage(unitSelection.Count == 1 ? "Attacking the raider camp." : $"{unitSelection.Count} troops are attacking the raider camp.");
+            return;
+        }
         int n = unitSelection.Count;
         int columns = Mathf.CeilToInt(Mathf.Sqrt(n));
         float spacing = 0.7f;
@@ -855,7 +867,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             Vector3 offset = new Vector3((col - (columns - 1) * 0.5f) * spacing, -(row - (n - 1) / columns * 0.5f) * spacing, 0);
             unitSelection[i].OrderMoveTo(target + offset);
         }
-        ShowOrderMarker(target);
+        ShowOrderMarker(target, new Color(0.5f, 1f, 0.5f, 0.9f));
     }
 
     /// <summary>Send the selected troops back to their buildings.</summary>
@@ -870,16 +882,16 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private SpriteRenderer orderMarker;
     private float orderMarkerUntil;
 
-    private void ShowOrderMarker(Vector3 at)
+    private void ShowOrderMarker(Vector3 at, Color color)
     {
         if (orderMarker == null)
         {
             orderMarker = new GameObject("OrderMarker").AddComponent<SpriteRenderer>();
             orderMarker.transform.SetParent(transform, false);
             orderMarker.sprite = SimpleSprites.Ring;
-            orderMarker.color = new Color(0.5f, 1f, 0.5f, 0.9f);
             orderMarker.sortingOrder = 18;
         }
+        orderMarker.color = color;
         orderMarker.transform.position = new Vector3(at.x, at.y, -1f);
         orderMarker.enabled = true;
         orderMarkerUntil = Time.unscaledTime + 0.6f;
@@ -1075,7 +1087,14 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         waveInProgress = true;
         string from = CompassName(raidOrigin - TownCenterPosition);
         string where = camp != null ? $"the camp to the {from}" : $"the {from}";
-        ShowMessage(wave.units.Count == 1
+        if (wave.boss != null)
+        {
+            int band = wave.units.Count - 1;
+            ShowMessage(band > 0
+                ? $"{wave.boss.displayName} leads {band} raider{(band == 1 ? "" : "s")} from {where}!"
+                : $"{wave.boss.displayName} is coming from {where}!");
+        }
+        else ShowMessage(wave.units.Count == 1
             ? $"A raider is coming from {where}!"
             : $"{wave.units.Count} raiders are coming from {where}!");
         StartCoroutine(SpawnRoutine());

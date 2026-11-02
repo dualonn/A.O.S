@@ -46,4 +46,17 @@ public class UnitDefinition : ScriptableObject
     public Sprite projectile;
 
     public float projectileSpeed = 9f;
+
+    [Header("Boss (raider chiefs only)")]
+    public bool isBoss;
+    public BossAbility bossAbility;
+    [Tooltip("Seconds between uses of the ability.")]
+    public float abilityCooldown = 8f;
+    [Tooltip("Slam: reach in tiles.")]
+    public float abilityRadius = 2.2f;
+    [Tooltip("Slam: damage as a share of attack. War cry: attack and speed boost for raiders (1.3 = +30%).")]
+    public float abilityPower = 1.3f;
+    [Tooltip("Summon: what it calls in, and how many each time.")]
+    public UnitDefinition summons;
+    public int summonCount = 2;
 }

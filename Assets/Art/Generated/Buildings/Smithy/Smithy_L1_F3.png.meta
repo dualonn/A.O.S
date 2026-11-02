@@ -8,9 +8,6 @@ TextureImporter:
   - first:
       213: -6641256998920723350
     second: Smithy_L1_F3_1
-  - first:
-      213: 3381539629651064195
-    second: Smithy_L1_F3_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -43,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -53,11 +50,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
-  spriteExtrude: 1
-  spriteMeshType: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
   alignment: 9
-  spritePivot: {x: 0.01923077, y: 0.01923077}
-  spritePixelsToUnits: 128
+  spritePivot: {x: 0.1, y: 0.028571429}
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -102,19 +99,6 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -122,10 +106,10 @@ TextureImporter:
       name: Smithy_L1_F3_0
       rect:
         serializedVersion: 2
-        x: 278
-        y: 386
-        width: 34
-        height: 13
+        x: 10
+        y: 3
+        width: 101
+        height: 73
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -144,10 +128,10 @@ TextureImporter:
       name: Smithy_L1_F3_1
       rect:
         serializedVersion: 2
-        x: 302
-        y: 366
-        width: 26
-        height: 26
+        x: 58
+        y: 76
+        width: 9
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -158,28 +142,6 @@ TextureImporter:
       bones: []
       spriteID: a64e04542f385d3a0800000000000000
       internalID: -6641256998920723350
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Smithy_L1_F3_2
-      rect:
-        serializedVersion: 2
-        x: 8
-        y: 23
-        width: 383
-        height: 336
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 385f1438064adee20800000000000000
-      internalID: 3381539629651064195
       vertices: []
       indices: 
       edges: []
@@ -200,7 +162,6 @@ TextureImporter:
     nameFileIdTable:
       Smithy_L1_F3_0: 7031231504562139187
       Smithy_L1_F3_1: -6641256998920723350
-      Smithy_L1_F3_2: 3381539629651064195
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

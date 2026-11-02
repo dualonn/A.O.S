@@ -16,7 +16,9 @@ public enum GearLook
     // Shield
     HideShield, WickerShield, RoundShield, TowerShield,
     // Trinket
-    Charm, Horn, Amulet, Ring, Wreath
+    Charm, Horn, Amulet, Ring, Wreath,
+    // Unit kits only (no items use these yet)
+    Headband, Feather, BearPelt, Crown, PlumedHelm, Sling, Javelin, Ballista, OvalShield, Bare
 }
 
 /// <summary>

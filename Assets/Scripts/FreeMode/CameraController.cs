@@ -22,6 +22,9 @@ public class CameraController : MonoBehaviour
     [Tooltip("The camera centre stays inside this world area.")]
     public Rect bounds = new Rect(-8, -8, 56, 38);
 
+    [Tooltip("Art pixels per tile: close in, zoom steps so each art pixel is a whole number of screen pixels.")]
+    public float pixelsPerTile = 32f;
+
     private Camera cam;
     private Vector3 lastDragWorld;
 
@@ -29,6 +32,17 @@ public class CameraController : MonoBehaviour
     {
         cam = GetComponent<Camera>();
     }
+
+    private void Start()
+    {
+        float k = PixelScale(cam.orthographicSize);
+        if (k >= 1f) cam.orthographicSize = OrthoFor(Mathf.Round(k));
+    }
+
+    /// <summary>Screen pixels per art pixel at this zoom.</summary>
+    private float PixelScale(float ortho) => Screen.height / (2f * ortho * pixelsPerTile);
+
+    private float OrthoFor(float pixelScale) => Screen.height / (2f * pixelScale * pixelsPerTile);
 
     private void Update()
     {
@@ -75,10 +89,34 @@ public class CameraController : MonoBehaviour
     public void ZoomAt(Vector3 screenPoint, float factor)
     {
         Vector3 before = MouseWorld(screenPoint);
-        cam.orthographicSize = Mathf.Clamp(cam.orthographicSize * factor, minZoom, maxZoom);
+        float zoom = NextZoom(cam.orthographicSize, factor);
+        if (zoom < minZoom - 0.01f) zoom = factor < 1f ? cam.orthographicSize : minZoom;   // closest whole-pixel step allowed
+        cam.orthographicSize = Mathf.Min(zoom, maxZoom);
         Vector3 after = MouseWorld(screenPoint);
         transform.position += before - after;
         Clamp();
+    }
+
+    /// <summary>
+    /// The next zoom from here. Close in, it steps between whole pixel sizes (each art pixel 1, 2,
+    /// 3... screen pixels) so pixel art stays crisp and even; further out it zooms smoothly.
+    /// </summary>
+    private float NextZoom(float ortho, float factor)
+    {
+        float k = PixelScale(ortho);
+        if (factor < 1f)
+        {
+            float target = PixelScale(ortho * factor);
+            if (target < 1f) return ortho * factor;
+            float next = Mathf.Max(Mathf.Floor(k + 0.001f) + 1f, 1f);
+            return OrthoFor(next);
+        }
+        if (k > 1.001f)
+        {
+            float next = Mathf.Ceil(k - 0.001f) - 1f;
+            return next >= 1f ? OrthoFor(next) : ortho * factor;
+        }
+        return ortho * factor;
     }
 
     private void Clamp()
@@ -86,6 +124,14 @@ public class CameraController : MonoBehaviour
         Vector3 p = transform.position;
         p.x = Mathf.Clamp(p.x, bounds.xMin, bounds.xMax);
         p.y = Mathf.Clamp(p.y, bounds.yMin, bounds.yMax);
+        // At whole-pixel zooms, keep the view on the pixel grid so art doesn't shimmer as it pans.
+        float k = PixelScale(cam.orthographicSize);
+        if (Mathf.Abs(k - Mathf.Round(k)) < 0.01f && k >= 1f)
+        {
+            float grid = pixelsPerTile * Mathf.Round(k);
+            p.x = Mathf.Round(p.x * grid) / grid;
+            p.y = Mathf.Round(p.y * grid) / grid;
+        }
         transform.position = p;
     }
 

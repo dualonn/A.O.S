@@ -30,6 +30,25 @@ public class CampView : MonoBehaviour
     private readonly List<Enemy> guards = new List<Enemy>();
     private float nextGuardCheck;
     private int guardCount;
+    private Enemy chief;
+
+    /// <summary>
+    /// The stronger camps (Bronze Age and up) often have a raider chief. Fixed per camp, and more
+    /// likely each time raiders move back in.
+    /// </summary>
+    public bool HasChief
+    {
+        get
+        {
+            if (Tier < 1) return false;
+            uint h = (uint)(State.cell.x * 73856093) ^ (uint)(State.cell.y * 19349663);
+            float roll = (h % 1000) / 1000f;
+            return roll < 0.3f + 0.15f * Tier + 0.2f * State.extraTier;
+        }
+    }
+
+    /// <summary>The chief guarding this camp, if alive.</summary>
+    public Enemy Chief => chief != null && chief.IsAlive ? chief : null;
 
     private const float GuardRadius = 5f;
 
@@ -124,6 +143,16 @@ public class CampView : MonoBehaviour
         }
     }
 
+    /// <summary>The standing camp whose footprint (plus a little margin) is under this point, or null.</summary>
+    public static CampView At(Vector3 world, float margin = 0.4f)
+    {
+        foreach (var camp in Live)
+        {
+            if (camp != null && camp.IsStanding && Vector2.Distance(world, camp.ClosestPoint(world)) <= margin) return camp;
+        }
+        return null;
+    }
+
     /// <summary>The nearest standing camp within 'range' of 'from', or null.</summary>
     public static CampView Nearest(Vector3 from, float range)
     {
@@ -163,7 +192,7 @@ public class CampView : MonoBehaviour
         barFill.transform.localScale = new Vector3(barBack.transform.localScale.x * health / maxHealth, barFill.transform.localScale.y, 1);
         string age = controller.Settlement.Database.GetAge(Tier)?.displayName ?? "";
         label.text = hovered
-            ? $"<color=#ff9a8a>Raider camp</color>\n<size=75%>{age} raiders. Set troops to Attack to burn it down.</size>"
+            ? $"<color=#ff9a8a>Raider camp</color>\n<size=75%>{age} raiders{(Chief != null ? $", led by <color=#ff8a70>{Chief.definition.displayName}</color>" : "")}. Select troops and right-click it to burn it down.</size>"
             : "";
 
         KeepGuards();
@@ -172,9 +201,27 @@ public class CampView : MonoBehaviour
     /// <summary>Keep a few raiders posted at the camp (lost ones come back slowly).</summary>
     private void KeepGuards()
     {
+        if (chief != null && !chief.IsAlive)
+        {
+            State.bossDefeated = true; // stays dead until raiders move back in
+            chief = null;
+        }
         if (Time.time < nextGuardCheck)
         {
             return;
+        }
+        if (chief == null && !State.bossDefeated && HasChief)
+        {
+            var boss = PickChief();
+            if (boss != null && boss.prefab != null)
+            {
+                var e = controller.SpawnUnit(boss.prefab, Centre + new Vector3(0.6f, -1.8f, 0)).GetComponent<Enemy>();
+                if (e != null)
+                {
+                    e.StartGuard(Centre, GuardRadius);
+                    chief = e;
+                }
+            }
         }
         guards.RemoveAll(g => g == null || !g.IsAlive);
         bool firstFill = nextGuardCheck == 0f;
@@ -193,6 +240,22 @@ public class CampView : MonoBehaviour
                 guards.Add(enemy);
             }
         }
+    }
+
+    /// <summary>A chief of the camp's age (or the latest age that has one).</summary>
+    private UnitDefinition PickChief()
+    {
+        var db = controller.Settlement.Database;
+        for (int i = Tier; i >= 0; i--)
+        {
+            var age = db.GetAge(i);
+            if (age != null && age.bosses.Count > 0)
+            {
+                uint h = (uint)(State.cell.x * 83492791) ^ (uint)(State.cell.y * 2971215073u);
+                return age.bosses[(int)(h % (uint)age.bosses.Count)];
+            }
+        }
+        return null;
     }
 
     private UnitDefinition PickGuard()
@@ -219,6 +282,7 @@ public class CampView : MonoBehaviour
         {
             if (guard != null) Destroy(guard.gameObject);
         }
+        // The chief doesn't run: it stays by the ashes until someone kills it (and takes its gear).
         guards.Clear();
         Destroy(gameObject);
     }

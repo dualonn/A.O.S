@@ -69,11 +69,6 @@ public class ArtLibrary : ScriptableObject
     public List<Sprite> campFire = new List<Sprite>();
     public Sprite researchIcon;
 
-    [Header("Hero gear (indexed by GearLook)")]
-    [Tooltip("Each look as worn on a hero, pivoted on its anchor (head, chest, grip...).")]
-    public List<Sprite> wornGear = new List<Sprite>();
-    [Tooltip("The parts of each look tinted by rarity.")]
-    public List<Sprite> wornGearTrim = new List<Sprite>();
 
     private static ArtLibrary cached;
 

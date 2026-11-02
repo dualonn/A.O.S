@@ -111,7 +111,8 @@ Shader "Age of Stickman/Water Sprite"
             {
                 fixed4 c = tex2D(_MainTex, i.uv) * i.color;
                 float t = _Time.y * _Speed;
-                float2 p = i.world;
+                // Effects move in whole art pixels (32 a tile), so the water stays pixel art.
+                float2 p = (floor(i.world * 32) + 0.5) / 32;
 
                 // How much this pixel is open water (blue) rather than sand or foam.
                 float wet = saturate((c.b - c.r - 0.25) * 5);

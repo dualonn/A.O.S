@@ -84,8 +84,10 @@ public class BuildingView : MonoBehaviour
             scaffold = new GameObject("Scaffold").AddComponent<SpriteRenderer>();
             scaffold.transform.SetParent(transform, false);
             scaffold.sprite = art.scaffold;
-            Vector2 s = art.scaffold.bounds.size;
-            scaffold.transform.localScale = new Vector3(size.x / s.x, size.y / s.y, 1);
+            // Tile it over the footprint (stretching pixel art would warp it).
+            scaffold.drawMode = SpriteDrawMode.Tiled;
+            scaffold.tileMode = SpriteTileMode.Continuous;
+            scaffold.size = new Vector2(size.x, size.y);
             scaffold.sortingOrder = -5;
         }
 
@@ -315,8 +317,8 @@ public class BuildingView : MonoBehaviour
     private Unit pendingTarget;
     private bool releasePending;
 
-    /// <summary>Crew sprites are cut at the waist this far (sprite units) above their pivot.</summary>
-    private const float CrewCutAbovePivot = 0.3f;
+    /// <summary>Crew sprites are cut at the waist 8 art pixels above their feet (32 art pixels per tile).</summary>
+    private const float CrewCutAbovePivot = 8f / 32f;
 
     private SpriteRenderer TowerOperator()
     {
@@ -339,7 +341,7 @@ public class BuildingView : MonoBehaviour
             }
             // Just in front of the tower: crew sprites are cut at the waist, and that cut sits on the
             // parapet top (operatorOffset), so the archer reads as standing behind it.
-            float pivotToCut = CrewCutAbovePivot * towerOperator.transform.localScale.y;
+            float pivotToCut = CrewCutAbovePivot;
             towerOperator.transform.localPosition = new Vector3(Definition.operatorOffset.x, Definition.operatorOffset.y + lift - pivotToCut, -0.001f);
         }
         return towerOperator;

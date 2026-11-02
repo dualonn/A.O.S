@@ -26,7 +26,7 @@ public static partial class PlaceholderArt
             Debug.LogError("No ArtLibrary yet: run Generate Placeholder Art first.");
             return;
         }
-        GenerateDepositArt(art, database);
+        GeneratePixelProps(art, database);   // pixel art now (PixelWorld.cs)
         EditorUtility.SetDirty(art);
         AssetDatabase.SaveAssets();
         Debug.Log("Deposit art generated.");

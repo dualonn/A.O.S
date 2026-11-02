@@ -5,12 +5,6 @@ TextureImporter:
   - first:
       213: -4695849862876079685
     second: LumberCamp_L2_F0_0
-  - first:
-      213: -4623184018866821783
-    second: LumberCamp_L2_F0_1
-  - first:
-      213: 2977262403523722647
-    second: LumberCamp_L2_F0_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -43,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -53,11 +47,11 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 1
-  spriteExtrude: 1
-  spriteMeshType: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
   alignment: 9
-  spritePivot: {x: 0.028301887, y: 0.028301887}
-  spritePixelsToUnits: 128
+  spritePivot: {x: 0.13636364, y: 0.037037037}
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -102,19 +96,6 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -122,10 +103,10 @@ TextureImporter:
       name: LumberCamp_L2_F0_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 9
-        width: 247
-        height: 126
+        x: 10
+        y: 3
+        width: 68
+        height: 42
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -136,50 +117,6 @@ TextureImporter:
       bones: []
       spriteID: bb954bced6df4deb0800000000000000
       internalID: -4695849862876079685
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LumberCamp_L2_F0_1
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 120
-        width: 48
-        height: 84
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9652e2821a627dfb0800000000000000
-      internalID: -4623184018866821783
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: LumberCamp_L2_F0_2
-      rect:
-        serializedVersion: 2
-        x: 213
-        y: 71
-        width: 42
-        height: 86
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 79d382db16c515920800000000000000
-      internalID: 2977262403523722647
       vertices: []
       indices: 
       edges: []
@@ -199,8 +136,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       LumberCamp_L2_F0_0: -4695849862876079685
-      LumberCamp_L2_F0_1: -4623184018866821783
-      LumberCamp_L2_F0_2: 2977262403523722647
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

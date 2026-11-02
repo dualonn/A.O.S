@@ -41,13 +41,13 @@ public class Villager : MonoBehaviour
 
         carried = new GameObject("Carried").AddComponent<SpriteRenderer>();
         carried.transform.SetParent(transform, false);
-        carried.transform.localPosition = new Vector3(0.12f, 0.62f, -0.001f);
+        carried.transform.localPosition = new Vector3(0.12f, 0.78f, -0.001f);
         carried.transform.localScale = Vector3.one * 0.32f;
         carried.sortingOrder = BuildingView.SortingOrder;
         carried.enabled = false;
 
-        float scale = UnityEngine.Random.Range(0.75f, 0.9f);
-        transform.localScale = Vector3.one * scale;
+        // Pixel art: everyone is drawn at the same pixel size (no random scaling).
+        transform.localScale = Vector3.one;
 
         transform.position = life.DoorOf(home);
         StayInside(UnityEngine.Random.Range(0f, 1.5f));

@@ -33,3 +33,10 @@ MonoBehaviour:
   detectionRange: 4
   projectile: {fileID: 0}
   projectileSpeed: 10
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

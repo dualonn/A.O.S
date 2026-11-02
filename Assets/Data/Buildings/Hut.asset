@@ -108,6 +108,8 @@ MonoBehaviour:
       amount: 30
   rankUpTime: 20
   isTownCenter: 0
+  wallKind: 0
+  pieces: []
   sortLine: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3

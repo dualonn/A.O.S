@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Forest
   resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
   sprites:
-  - {fileID: 21300000, guid: 46b8baee51dff3d438622d918c9020c6, type: 3}
-  - {fileID: 21300000, guid: c06459b56106f044f99565423e485e63, type: 3}
+  - {fileID: 21300000, guid: 36a6983c4c3fd8143be8712f92a98118, type: 3}
+  - {fileID: 21300000, guid: efe9e410a77359e49a5d069b25da5f95, type: 3}
+  - {fileID: 21300000, guid: 478eb9104d198094c950badd2e38eb6c, type: 3}
   onHills: 0
   patchScale: 0.09
   rarity: 0.5

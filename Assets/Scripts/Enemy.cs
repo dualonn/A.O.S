@@ -71,6 +71,34 @@ public class Enemy : Unit
 
     public bool IsGuard => guarding;
 
+    /// <summary>Take on the same job as another raider (a boss's summoned help).</summary>
+    public void JoinSameJob(Enemy leader)
+    {
+        if (leader.guarding) StartGuard(leader.guardHome, leader.guardRadius);
+        else if (leader.raid != null) StartRaid(leader.raid);
+    }
+
+    // ---------- War cry ----------
+
+    private float warCryUntil;
+
+    /// <summary>Driven on by a war cry: attack and speed times 'boost' for a few seconds.</summary>
+    public void Rally(float boost, float seconds)
+    {
+        warCryUntil = Time.time + seconds;
+        SetBuildingModifier(new UnitStatModifier { attackMultiplier = boost, speedMultiplier = boost });
+    }
+
+    protected override void Update()
+    {
+        base.Update();
+        if (warCryUntil > 0 && Time.time >= warCryUntil)
+        {
+            warCryUntil = 0;
+            SetBuildingModifier(new UnitStatModifier());
+        }
+    }
+
     /// <summary>Stay around 'home', fighting anyone who comes within 'radius' of it.</summary>
     public void StartGuard(Vector3 home, float radius)
     {

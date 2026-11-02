@@ -441,7 +441,7 @@ public static partial class PlaceholderArt
             wall.defensePower = t.def;
             wall.production = new List<ResourceRate>();
             wall.upgrades = new List<BuildingUpgrade>();
-            wall.pieces = WallPieces(t.wall, style);
+            wall.pieces = WallPieces(t.wall, age);
             wall.icon = wall.pieces[3];
             wall.looks = new List<BuildingLook>();
             EditorUtility.SetDirty(wall);
@@ -454,7 +454,7 @@ public static partial class PlaceholderArt
             gate.defensePower = t.def * 1.5f;
             gate.production = new List<ResourceRate>();
             gate.upgrades = new List<BuildingUpgrade>();
-            gate.pieces = GatePieces(t.gate, style);
+            gate.pieces = GatePieces(t.gate, age);
             gate.icon = gate.pieces[0];
             gate.looks = new List<BuildingLook>();
             EditorUtility.SetDirty(gate);

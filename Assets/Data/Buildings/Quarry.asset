@@ -23,19 +23,19 @@ MonoBehaviour:
     - {fileID: 21300000, guid: ca8b387f0f6131742a11dc9b3b841916, type: 3}
     - {fileID: 21300000, guid: 34f9a688fb7da814fb01461428872d38, type: 3}
     - {fileID: 21300000, guid: 07c9d7c3de64bf449896973881eba3b9, type: 3}
-    fps: 6
+    fps: 5
   - frames:
     - {fileID: 21300000, guid: 2d4db744d20aec649a6578fc1a7a94fc, type: 3}
     - {fileID: 21300000, guid: 33e847eda04737f4c93bcea76832df26, type: 3}
     - {fileID: 21300000, guid: dd2b1116a23f82f4ba9a549447021eda, type: 3}
     - {fileID: 21300000, guid: 282a8fb2dd51f81408bfb77df23e00b7, type: 3}
-    fps: 6
+    fps: 5
   - frames:
     - {fileID: 21300000, guid: 5b5da97eea205ed488835861a0f64f88, type: 3}
     - {fileID: 21300000, guid: b139c9ec11ad0254b944dee9d756fa3a, type: 3}
     - {fileID: 21300000, guid: 900af377fb1d28b45a6750826f7144b2, type: 3}
     - {fileID: 21300000, guid: c44b73b5df5553146bb17d4e088065b6, type: 3}
-    fps: 6
+    fps: 5
   size: {x: 3, y: 3}
   artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
@@ -116,6 +116,8 @@ MonoBehaviour:
     cost: []
   rankUpTime: 30
   isTownCenter: 0
+  wallKind: 0
+  pieces: []
   sortLine: 0
   requiredDeposit: {fileID: 11400000, guid: 99e73e782f5340e4b9aa7bda45c8b38e, type: 2}
   catchmentRadius: 2

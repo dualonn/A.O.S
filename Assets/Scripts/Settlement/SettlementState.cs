@@ -94,6 +94,9 @@ public class CampState
     [Tooltip("Seconds until raiders move back into a cleared camp.")]
     public float reoccupyIn;
 
+    [Tooltip("Its chief has been killed (a new one comes when raiders move back in).")]
+    public bool bossDefeated;
+
     public const int Size = 3;
 
     public Vector2 Centre => cell + Vector2.one * (Size * 0.5f);

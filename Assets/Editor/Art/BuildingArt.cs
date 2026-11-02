@@ -59,20 +59,18 @@ public static partial class PlaceholderArt
     private static readonly Color Field = new Color(0.55f, 0.42f, 0.26f);
     private static readonly Color WaterBlue = new Color(0.3f, 0.55f, 0.85f);
 
-    /// <summary>Draw every level and frame of a building and store them as its looks.</summary>
-    [MenuItem("Tools/Age of Stickman/Generate Building Art")]
-    public static void GenerateBuildingsOnly()
+    /// <summary>The old smooth-shaded buildings (kept for reference; the game now uses pixel art).</summary>
+    public static void GenerateVectorBuildingsOnly()
     {
         var database = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         foreach (var def in database.buildings)
         {
             if (def != null)
             {
-                GenerateBuildingLooks(def);
+                GenerateVectorBuildingLooks(def);
             }
         }
         AssetDatabase.SaveAssets();
-        Debug.Log("Building art generated.");
     }
 
     /// <summary>Painted bounds of a building over every level and frame, in tiles from its footprint corner.</summary>
@@ -99,7 +97,7 @@ public static partial class PlaceholderArt
         return all;
     }
 
-    private static void GenerateBuildingLooks(BuildingDefinition def)
+    private static void GenerateVectorBuildingLooks(BuildingDefinition def)
     {
         if (!BuildingArt.TryGetValue(def.id, out var art))
         {

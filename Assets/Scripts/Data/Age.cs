@@ -23,6 +23,9 @@ public class Age : ScriptableObject
     public List<UnitDefinition> playerUnits = new List<UnitDefinition>();
     public List<UnitDefinition> enemyUnits = new List<UnitDefinition>();
 
+    [Tooltip("Raider chiefs of this age: they lead some raids and guard the stronger camps (never in the random wave pool).")]
+    public List<UnitDefinition> bosses = new List<UnitDefinition>();
+
     /// <summary>The distinct troop classes the player can field in this age.</summary>
     public List<TroopClass> PlayerClasses
     {

@@ -23,25 +23,25 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 65d43239408c2d44c9d288df682b6b09, type: 3}
     - {fileID: 21300000, guid: 8e3a079ce40fb414a9dc95976aefb24a, type: 3}
     - {fileID: 21300000, guid: 4ddeafad3e6bc354ca603c449793ad3f, type: 3}
-    fps: 6
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: c203c0a2e95a2cb44991048480cf4e94, type: 3}
     - {fileID: 21300000, guid: 24b4f37680754c84b86d92817f93c186, type: 3}
     - {fileID: 21300000, guid: 40ec6c0e49f7a1f4ea85276a65e70150, type: 3}
     - {fileID: 21300000, guid: 33c645c3124549941b5a93c08f1edc69, type: 3}
-    fps: 6
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: 40664dcc7802a0a46a69ff8b20985f4e, type: 3}
     - {fileID: 21300000, guid: 7d681a4d31598cc4f9debd20af86b830, type: 3}
     - {fileID: 21300000, guid: 291ef60d9e43f4246bad6527506c013c, type: 3}
     - {fileID: 21300000, guid: 448fb8d15115dfb4e83962fdf3a62b0e, type: 3}
-    fps: 6
+    fps: 4
   - frames:
     - {fileID: 21300000, guid: 0a39647c5f84499428b4a261218974ce, type: 3}
     - {fileID: 21300000, guid: aa20896cfd5fbc14dad6a64b3b1b66fb, type: 3}
     - {fileID: 21300000, guid: 77bc68d82de68bc47afa98f81fb19b09, type: 3}
     - {fileID: 21300000, guid: 5bf558ad8a4cf3b42a4ba9d1c1e42419, type: 3}
-    fps: 6
+    fps: 4
   size: {x: 2, y: 2}
   artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
@@ -187,7 +187,7 @@ MonoBehaviour:
   towerRange: 7
   towerDamage: 24
   towerCooldown: 1.2
-  towerProjectile: {fileID: 21300000, guid: e564e8df4bd03384b8538f742e0443ac, type: 3}
+  towerProjectile: {fileID: 21300000, guid: 9abcfbdfe46c20245962535b6dd316f5, type: 3}
   operatorIdle: {fileID: 21300000, guid: 49364285e64a6e94f91e36c14d348f09, type: 3}
   operatorShoot:
   - {fileID: 21300000, guid: 10140992b8ed68f4f895b07b728f0f1f, type: 3}

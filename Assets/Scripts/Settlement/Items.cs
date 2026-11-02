@@ -145,7 +145,7 @@ public static class Items
     }
 
     /// <summary>Roll a whole item: power, a template that fits it, rarity, traits and a name.</summary>
-    public static ItemInstance Roll(IList<ItemTemplate> templates, float progress, float sourceBonus, float luck, int uid, System.Random rng)
+    public static ItemInstance Roll(IList<ItemTemplate> templates, float progress, float sourceBonus, float luck, int uid, System.Random rng, Rarity minRarity = Rarity.Common)
     {
         float power = RollPower(progress, sourceBonus, rng);
         // Templates that exist at this power, favouring ones made for around this level.
@@ -178,7 +178,7 @@ public static class Items
             uid = uid,
             template = template.id,
             power = Mathf.Round(power * 100f) / 100f,
-            rarity = RollRarity(luck, rng),
+            rarity = (Rarity)Mathf.Max((int)minRarity, (int)RollRarity(luck, rng)),
         };
         int traitCount = RarityTraits[(int)item.rarity];
         var pool = TraitsFor(template.slot);

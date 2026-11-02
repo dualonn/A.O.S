@@ -184,7 +184,7 @@ MonoBehaviour:
   towerRange: 8.5
   towerDamage: 55
   towerCooldown: 2.2
-  towerProjectile: {fileID: 21300000, guid: 1532e968d380fb447ba62a33e26c8f20, type: 3}
+  towerProjectile: {fileID: 21300000, guid: 4b6ea02df15780549be304a154d4dd6f, type: 3}
   operatorIdle: {fileID: 21300000, guid: 1b2f615cc6112c841a889aa1e364c043, type: 3}
   operatorShoot:
   - {fileID: 21300000, guid: 44a291a68190c484ab8697e22acf33b8, type: 3}

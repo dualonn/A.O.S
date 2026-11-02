@@ -292,6 +292,7 @@ public partial class Settlement : MonoBehaviour
             if (camp.reoccupyIn <= 0)
             {
                 camp.cleared = false;
+                camp.bossDefeated = false;
                 camp.extraTier++;
                 Notify("Raiders have moved back into one of the camps you cleared, stronger than before.");
                 CampReoccupied?.Invoke(camp);

@@ -20,8 +20,8 @@ public static partial class PlaceholderArt
     private const int CampFrames = 4;
     private static readonly Rect CampCanvas = Rect.MinMaxRect(-0.3f, -0.3f, 3.3f, 3.6f);
 
-    [MenuItem("Tools/Age of Stickman/Generate Camp Art")]
-    public static void GenerateCampArt()
+    /// <summary>The old smooth-shaded camp (kept for reference; the game now uses pixel art).</summary>
+    public static void GenerateVectorCampArt()
     {
         var art = AssetDatabase.LoadAssetAtPath<ArtLibrary>("Assets/Resources/ArtLibrary.asset");
         string dir = Path.Combine(Root, "World/Camp");

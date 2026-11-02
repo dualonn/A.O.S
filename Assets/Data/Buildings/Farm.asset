@@ -118,6 +118,8 @@ MonoBehaviour:
     cost: []
   rankUpTime: 30
   isTownCenter: 0
+  wallKind: 0
+  pieces: []
   sortLine: 2
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3

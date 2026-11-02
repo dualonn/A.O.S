@@ -204,10 +204,10 @@ public partial class Settlement
     /// Roll a piece of gear into the inventory. Its strength centres on your progress (plus
     /// 'sourceBonus' for tough sources) with a slim chance of something far beyond.
     /// </summary>
-    public ItemInstance GainLoot(float sourceBonus, float luck, string from)
+    public ItemInstance GainLoot(float sourceBonus, float luck, string from, Rarity minRarity = Rarity.Common)
     {
         var rng = new System.Random(State.mapSeed ^ (State.nextItemId * 104729) ^ (int)(State.playTime * 10));
-        var item = Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng);
+        var item = Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng, minRarity);
         if (item == null)
         {
             return null;

@@ -38,111 +38,35 @@ public static partial class PlaceholderArt
     private static readonly Color Dark = new Color(0.2f, 0.13f, 0.08f);
     private static readonly Color Flag = new Color(0.85f, 0.2f, 0.18f);
     private static readonly Color Blue = new Color(0.25f, 0.45f, 0.85f);
+    private static readonly Color Iron = new Color(0.7f, 0.72f, 0.76f);
+    private static readonly Color IronDark = new Color(0.45f, 0.47f, 0.52f);
+    private static readonly Color Gold = new Color(0.95f, 0.78f, 0.25f);
 
-    [MenuItem("Tools/Age of Stickman/Generate Placeholder Art")]
+    /// <summary>Every piece of art in the game, in pixel art (32 pixels a tile).</summary>
+    [MenuItem("Tools/Age of Stickman/Generate All Art")]
     public static void GenerateAll()
     {
-        foreach (var folder in new[] { "Buildings", "World", "UI", "Icons" })
-        {
-            Directory.CreateDirectory(Path.Combine(Root, folder));
-        }
-
         var database = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        if (database != null)
-        {
-            // Every building: one look per upgrade level, each a loop of animation frames.
-            foreach (var def in database.buildings)
-            {
-                if (def != null)
-                {
-                    GenerateBuildingLooks(def);
-                }
-            }
-
-            var resourceDrawers = new Dictionary<string, Action<Painter>>
-            {
-                { "Food", DrawFoodIcon }, { "Wood", DrawWoodIcon }, { "Stone", DrawStoneIcon }, { "Bronze", DrawBronzeIcon },
-                { "Iron", DrawIronIcon }, { "Gold", DrawGoldIcon },
-                { "Charcoal", DrawCharcoalIcon }, { "Tools", DrawToolsIcon }, { "Coin", DrawCoinIcon },
-            };
-            foreach (var res in database.resources)
-            {
-                if (res != null && resourceDrawers.TryGetValue(res.id, out var draw))
-                {
-                    res.icon = Icon($"Icons/{res.id}.png", draw);
-                    EditorUtility.SetDirty(res);
-                }
-            }
-        }
-
         var art = AssetDatabase.LoadAssetAtPath<ArtLibrary>("Assets/Resources/ArtLibrary.asset");
         if (art == null)
         {
             art = ScriptableObject.CreateInstance<ArtLibrary>();
             AssetDatabase.CreateAsset(art, "Assets/Resources/ArtLibrary.asset");
         }
-
-        art.grassTile = Tile("World/Grass.png", 1, 1, p => DrawGrass(p, new Color(0.42f, 0.6f, 0.31f), 11));
-        art.settlementTile = Tile("World/SettlementGround.png", 1, 1, p => DrawGrass(p, new Color(0.55f, 0.62f, 0.36f), 23));
-        art.pathTile = Tile("World/Path.png", 1, 1.6f, DrawPath);
-        art.waterTile = Tile("World/Water.png", 1, 1, DrawWater);
-        art.hillTile = Tile("World/Hill.png", 1, 1, DrawHill);
-        GenerateTerrain(art);
-        var berryBush = Prop("World/BerryBush.png", 1f, 0.8f, DrawBerryBush);
-        art.trees = new List<Sprite>
-        {
-            Prop("World/TreeRound.png", 1.4f, 2f, DrawRoundTree),
-            Prop("World/TreePine.png", 1.2f, 2.2f, DrawPineTree),
-        };
-        GenerateDepositArt(art, database);   // stone and ores (DepositArt.cs)
-        art.bushes = new List<Sprite> { Prop("World/Bush.png", 1f, 0.7f, DrawBush) };
-
-        var scaffoldPainter = new Painter(1, 1, BuildingPPU);
-        DrawScaffold(scaffoldPainter);
-        art.scaffold = Save(scaffoldPainter, "World/Scaffold.png", BuildingPPU, Vector2.zero);
-        art.rallyFlag = Prop("World/RallyFlag.png", 0.7f, 1.3f, DrawRallyFlag);
-
-        Directory.CreateDirectory(Path.Combine(Root, "Units"));
-        art.villagerIdle = Villager("Units/Villager_Idle.png", VillagerPose.Idle);
-        art.villagerWalk = new List<Sprite>
-        {
-            Villager("Units/Villager_Walk0.png", VillagerPose.StrideA),
-            Villager("Units/Villager_Walk1.png", VillagerPose.Pass),
-            Villager("Units/Villager_Walk2.png", VillagerPose.StrideB),
-            Villager("Units/Villager_Walk3.png", VillagerPose.Pass),
-        };
-        art.villagerWork = new List<Sprite>
-        {
-            Villager("Units/Villager_Work0.png", VillagerPose.ToolUp),
-            Villager("Units/Villager_Work1.png", VillagerPose.ToolDown),
-        };
-
+        foreach (var def in database.buildings)
+            if (def != null) GenerateBuildingLooks(def);
+        GeneratePixelTerrain(art);
+        GeneratePixelProps(art, database);
+        GeneratePixelIcons(art, database);
+        GeneratePixelVillagers(art);
         art.panel = PanelSprite();
-        art.peopleIcon = Icon("Icons/People.png", p => DrawStickIcon(p, Painter.V(0, 0), new Color(0.1f, 0.1f, 0.1f), false));
-        art.enemyIcon = Icon("Icons/Enemy.png", p => DrawStickIcon(p, Painter.V(0, 0), new Color(0.85f, 0.15f, 0.15f), true));
-        art.researchIcon = Icon("Icons/Research.png", DrawScrollIcon);
         EditorUtility.SetDirty(art);
-
-        // Troops, raiders and tower crews for every age
         GenerateWarriorsAndCrews(database);
-
-        // Deposit sprites on the map
-        if (database != null)
-        {
-            foreach (var deposit in database.deposits)
-            {
-                if (deposit == null) continue;
-                switch (deposit.id)
-                {
-                    case "Forest": deposit.sprites = new List<Sprite>(art.trees); break;
-                    case "Berries": deposit.sprites = new List<Sprite> { berryBush }; break;
-                }
-                EditorUtility.SetDirty(deposit);
-            }
-        }
-
+        SetupBosses();
+        GenerateWallArt();
+        GenerateCampArt();
         AssetDatabase.SaveAssets();
-        Debug.Log("Placeholder art generated in " + Root);
+        Debug.Log("All art generated in " + Root);
     }
 
     // ---------- Saving ----------

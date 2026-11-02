@@ -83,7 +83,7 @@ public static partial class PlaceholderArt
             t.range = spec.range;
             t.armour = spec.armour;
             var look = spec.look;
-            t.icon = Icon($"Icons/Gear/{spec.id}.png", p => DrawGearIcon(p, look, spec.minPower));
+            t.icon = IconPixel($"Icons/Gear/{spec.id}.png", c => IcGear(c, look, spec.minPower));
             EditorUtility.SetDirty(t);
             db.itemTemplates.Add(t);
         }

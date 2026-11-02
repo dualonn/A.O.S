@@ -9,6 +9,9 @@ public class Wave
 
     /// <summary>Sum of UnitPower of every unit.</summary>
     public float strength;
+
+    /// <summary>The raider chief leading it (also first in 'units'), or null.</summary>
+    public UnitDefinition boss;
 }
 
 /// <summary>
@@ -102,6 +105,13 @@ public class WaveDirector : MonoBehaviour
         }
         agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
         float budget = settlement.ThreatLevel * agePower;
+        wave.boss = PickBoss();
+        if (wave.boss != null)
+        {
+            // A chief brings a smaller band.
+            wave.units.Add(wave.boss);
+            budget *= 0.6f;
+        }
         int guard = 200;
         while (guard-- > 0)
         {
@@ -116,6 +126,31 @@ public class WaveDirector : MonoBehaviour
             wave.strength += power;
         }
         return wave;
+    }
+
+    /// <summary>
+    /// Now and then, once a few raids have been beaten off, a raider chief of your age leads
+    /// one. Never two at once.
+    /// </summary>
+    private UnitDefinition PickBoss()
+    {
+        if (State.wavesSurvived < 4 || UnityEngine.Random.value > 0.15f + 0.03f * State.ageIndex)
+        {
+            return null;
+        }
+        foreach (var b in Boss.Live)
+        {
+            if (b != null && b.IsAlive && b.Unit.IsRaider) return null;
+        }
+        for (int i = State.ageIndex; i >= 0; i--)
+        {
+            var age = Database.GetAge(i);
+            if (age != null && age.bosses.Count > 0)
+            {
+                return age.bosses[UnityEngine.Random.Range(0, age.bosses.Count)];
+            }
+        }
+        return null;
     }
 
     public void Launch(Wave wave)

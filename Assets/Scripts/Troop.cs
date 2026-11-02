@@ -46,7 +46,8 @@ public class Troop : Unit
         {
             var tagObject = new GameObject("HeroName");
             tagObject.transform.SetParent(transform, false);
-            tagObject.transform.localPosition = new Vector3(0, 1.05f, 0);
+            var look = GetComponent<SpriteUnitVisual>();
+            tagObject.transform.localPosition = new Vector3(0, look != null ? look.barHeight + 0.5f : 1.05f, 0);
             nameTag = tagObject.AddComponent<TextMeshPro>();
             nameTag.alignment = TextAlignmentOptions.Center;
             nameTag.fontSize = 2.4f;
@@ -174,13 +175,32 @@ public class Troop : Unit
         rallyPoint = destination;
         hasMoveOrder = true;
         HasOrder = true;
+        TargetCamp = null;
     }
+
+    /// <summary>The raider camp this troop is set on burning down (null = none).</summary>
+    public CampView TargetCamp { get; private set; }
+
+    /// <summary>
+    /// Burn down this camp. The troop sticks to it until it falls: it only fights raiders that
+    /// get right up to it, rather than chasing every guard the camp sends out.
+    /// </summary>
+    public void OrderAttackCamp(CampView camp)
+    {
+        TargetCamp = camp;
+        HasOrder = true;
+        campOrder = true;
+        hasMoveOrder = false;
+    }
+
+    private bool campOrder;
 
     /// <summary>Drop the player's order: go back to the home building's rally point.</summary>
     public void ReturnHome(Vector3 homeRally)
     {
         HasOrder = false;
         hasMoveOrder = false;
+        TargetCamp = null;
         SetRallyPoint(homeRally);
     }
 
@@ -192,12 +212,27 @@ public class Troop : Unit
 
     protected override void Idle()
     {
-        // Advancing troops with nothing to fight go and burn down nearby raider camps.
+        // (A burnt camp is destroyed, so it can also read as null here.)
+        if (HasOrder && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && campOrder)
+        {
+            campOrder = false;
+            // Burnt down: the job is done, head back.
+            TargetCamp = null;
+            HasOrder = false; // back to its usual rally point
+        }
+        if (TargetCamp != null && TargetCamp.IsStanding)
+        {
+            AttackCamp(TargetCamp);
+            return;
+        }
+        // Advancing troops with nothing to fight go and burn down nearby raider camps, and
+        // stick to it once they start.
         if (!hasMoveOrder && hasDefendZone && Stance == TroopStance.Attack)
         {
             var camp = CampView.Nearest(transform.position, CampHuntRange);
             if (camp != null)
             {
+                TargetCamp = camp;
                 AttackCamp(camp);
                 return;
             }
@@ -229,8 +264,22 @@ public class Troop : Unit
         }
     }
 
+    /// <summary>How close a raider must be before a troop set on a camp turns to fight it.</summary>
+    private const float CampGuardReach = 1.3f;
+
     protected override Unit SelectTarget(List<Unit> candidates)
     {
+        // Set on a camp: only fight raiders right beside us, never chase.
+        if (TargetCamp != null && TargetCamp.IsStanding)
+        {
+            float reach = CampGuardReach + personalSpace;
+            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, transform.position) <= reach);
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
+        }
+
         // Defending: ignore raiders outside the town; return home once they leave it.
         if (hasDefendZone && Stance == TroopStance.Defend)
         {

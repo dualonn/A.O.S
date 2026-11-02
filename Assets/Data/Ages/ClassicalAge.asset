@@ -41,3 +41,5 @@ MonoBehaviour:
   enemyUnits:
   - {fileID: 11400000, guid: b453a588fe362ae4d9ef9ae0372923a0, type: 2}
   - {fileID: 11400000, guid: b0a46612329356a4f96dff4b5b26666f, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: a68ec1fdaecdd03488aab25aef4f3326, type: 2}

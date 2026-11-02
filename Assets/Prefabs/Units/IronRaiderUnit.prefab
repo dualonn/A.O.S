@@ -90,7 +90,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.5, y: 1.75}
+  m_Size: {x: 1.5, y: 1.375}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -125,16 +125,27 @@ MonoBehaviour:
   impactFrame: 2
   walkFps: 9
   deathFrameTime: 0.14
-  barHeight: 0.95
-  heroIdle: {fileID: 0}
-  heroWalk: []
-  heroAttack: []
-  heroDeath: []
-  anchors: []
+  barHeight: 0.875
+  barWidth: 0.375
+  alwaysShowBar: 0
+  figure:
+    team: Red
+    head: 4
+    body: 0
+    weapon: 13
+    shield: 19
+    trinket: 0
+    crest: 
+    shieldColor: Leather
+    cape: 
+    mount: 0
+    scale: 1
+    raider: 1
+    necklace: 1
+    warpaint: 0
+    coat: Horse
+  pixelsPerUnit: 32
   weaponClass: 0
-  defaultHead: 0
-  defaultShield: 0
-  defaultWeapon: 0
 --- !u!58 &1258857991673191451
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -169,7 +180,7 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.4}
+  m_Offset: {x: 0.046875, y: 0.3515625}
   m_Radius: 0.25
 --- !u!114 &8919864175049945898
 MonoBehaviour:

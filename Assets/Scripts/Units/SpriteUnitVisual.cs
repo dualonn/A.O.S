@@ -19,19 +19,7 @@ public interface IUnitVisual
 public enum WeaponClass { Melee, Bow, Thrown, None }
 
 /// <summary>
-/// Where a hero's gear sits on one animation frame (sprite-local units, feet at 0,0). Head, body
-/// and trinkets turn with the figure's lean; the weapon has its own angle.
-/// </summary>
-[System.Serializable]
-public struct GearAnchor
-{
-    public Vector2 head, neck, torso, hip, shield, grip, handL;
-    public float lean, weaponAngle;
-    public bool shieldShown;
-}
-
-/// <summary>
-/// Frame-by-frame sprite animation for units in the flat stickman style:
+/// Frame-by-frame sprite animation for units in pixel art:
 /// idle, walk cycle, a swing timed to land with the damage, and a fall when killed.
 /// Also draws a small health bar (only when hurt) and depth-sorts with buildings.
 /// </summary>
@@ -52,19 +40,20 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     [Tooltip("Height of the health bar above the unit's feet.")]
     public float barHeight = 1.0f;
 
-    [Header("Hero look (generated)")]
-    [Tooltip("The same frames without helmet, shield or melee weapon: a hero wears their own.")]
-    public Sprite heroIdle;
-    public List<Sprite> heroWalk = new List<Sprite>();
-    public List<Sprite> heroAttack = new List<Sprite>();
-    public List<Sprite> heroDeath = new List<Sprite>();
-    [Tooltip("Gear positions for the 12 frames: idle, walk 0-3, attack 0-3, death 0-2.")]
-    public List<GearAnchor> anchors = new List<GearAnchor>();
-    public WeaponClass weaponClass = WeaponClass.Melee;
-    [Tooltip("What the hero shows in a slot with nothing equipped (the unit's usual kit).")]
-    public GearLook defaultHead, defaultShield, defaultWeapon;
+    [Tooltip("Width of the health bar.")]
+    public float barWidth = 0.5f;
 
-    public bool HasHeroRig => heroIdle != null && anchors != null && anchors.Count == 12;
+    [Tooltip("Show the health bar even at full health (bosses).")]
+    public bool alwaysShowBar;
+
+    [Header("Look (generated)")]
+    [Tooltip("How this unit is drawn: heroes are redrawn from it in their own gear.")]
+    public FigureStyle figure;
+    [Tooltip("Pixels per world unit of the frames (matches the terrain's pixel size once the unit is scaled).")]
+    public float pixelsPerUnit = 32f;
+    public WeaponClass weaponClass = WeaponClass.Melee;
+
+    public bool HasHeroRig => figure != null && pixelsPerUnit > 0f;
 
     private SpriteRenderer body;
     private SpriteRenderer barBack;
@@ -75,17 +64,8 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     private float attackFrameTime = 0.1f;
     private float deathStart;
     private float walkTime;
-    private int frame; // 0 idle, 1-4 walk, 5-8 attack, 9-11 death
-
-    private class Overlay
-    {
-        public SpriteRenderer main, trim;
-        public GearLook look = (GearLook)(-1);
-        public Rarity rarity;
-    }
-    private Overlay[] overlays;
-
-    private const float BarWidth = 0.5f;
+    private readonly List<Object> heroArt = new List<Object>();
+    private string heroLookKey;
 
     private void Awake()
     {
@@ -100,8 +80,8 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     {
         var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
         sr.transform.SetParent(transform, false);
-        sr.transform.localPosition = new Vector3(-BarWidth / 2, barHeight, 0);
-        sr.transform.localScale = new Vector3(BarWidth, 0.07f, 1);
+        sr.transform.localPosition = new Vector3(-barWidth / 2, barHeight, 0);
+        sr.transform.localScale = new Vector3(barWidth, alwaysShowBar ? 0.1f : 0.07f, 1);
         sr.sprite = SimpleSprites.Square;
         sr.color = color;
         sr.sortingOrder = order;
@@ -130,11 +110,11 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
         {
             return;
         }
-        bool hurt = share < 0.999f;
+        bool hurt = share < 0.999f || alwaysShowBar;
         barBack.enabled = barFill.enabled = hurt;
         if (hurt)
         {
-            barFill.transform.localScale = new Vector3(BarWidth * Mathf.Clamp01(share), 0.07f, 1);
+            barFill.transform.localScale = new Vector3(barWidth * Mathf.Clamp01(share), barBack.transform.localScale.y, 1);
             barFill.color = Color.Lerp(new Color(0.9f, 0.2f, 0.2f), new Color(0.3f, 0.9f, 0.3f), share);
         }
     }
@@ -147,7 +127,6 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
             if (i >= 0)
             {
                 body.sprite = death[i];
-                frame = 9 + Mathf.Min(i, 2);
             }
             return;
         }
@@ -157,7 +136,6 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
         {
             int i = Mathf.Clamp((int)(sinceAttack / attackFrameTime), 0, attack.Count - 1);
             body.sprite = attack[i];
-            frame = 5 + Mathf.Min(i, 3);
             return;
         }
 
@@ -166,12 +144,10 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
             walkTime += Time.deltaTime;
             int i = (int)(walkTime * walkFps) % walk.Count;
             body.sprite = walk[i];
-            frame = 1 + Mathf.Min(i, 3);
         }
         else
         {
             body.sprite = idle;
-            frame = 0;
         }
     }
 
@@ -180,115 +156,61 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
         // Lower on screen = nearer the viewer, same rule as buildings and villagers.
         var p = transform.position;
         transform.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
-        PlaceOverlays();
     }
 
     // ---------- Hero gear ----------
 
-    /// <summary>Swap to the bare hero body; gear is then drawn on top by ShowGear.</summary>
-    public void UseHeroBody()
-    {
-        if (!HasHeroRig || overlays != null)
-        {
-            return;
-        }
-        idle = heroIdle;
-        walk = heroWalk;
-        attack = heroAttack;
-        death = heroDeath;
-        overlays = new Overlay[5];
-        for (int i = 0; i < 5; i++)
-        {
-            var main = new GameObject(((GearSlot)i).ToString()).AddComponent<SpriteRenderer>();
-            main.transform.SetParent(transform, false);
-            main.sortingOrder = body.sortingOrder;
-            var trim = new GameObject("Trim").AddComponent<SpriteRenderer>();
-            trim.transform.SetParent(main.transform, false);
-            trim.sortingOrder = body.sortingOrder;
-            overlays[i] = new Overlay { main = main, trim = trim };
-        }
-    }
-
     /// <summary>
     /// Show what a hero wears: one look and rarity per slot (Head, Body, Weapon, Shield, Trinket).
-    /// An empty slot (GearLook.None) falls back to the unit's usual helmet, shield or weapon.
+    /// The figure is redrawn with that gear, so every piece sits where it should (a weapon in the
+    /// far hand behind the body, a shield on the near arm in front). Empty slots keep the unit's kit.
     /// </summary>
     public void ShowGear(IList<GearLook> looks, IList<Rarity> rarities)
     {
-        UseHeroBody();
-        if (overlays == null)
-        {
-            return;
-        }
-        var art = ArtLibrary.Load();
+        if (!HasHeroRig) return;
+        var style = figure.Clone();
+        style.trims = new Rarity[5];
+        var key = new System.Text.StringBuilder();
         for (int i = 0; i < 5; i++)
         {
             var look = i < looks.Count ? looks[i] : GearLook.None;
             var rarity = i < rarities.Count ? rarities[i] : Rarity.Common;
-            if (look == GearLook.None)
-            {
-                look = i == (int)GearSlot.Head ? defaultHead : i == (int)GearSlot.Shield ? defaultShield
-                     : i == (int)GearSlot.Weapon ? defaultWeapon : GearLook.None;
-                rarity = Rarity.Common;
-            }
-            var o = overlays[i];
-            if (o.look == look && o.rarity == rarity)
-            {
-                continue;
-            }
-            o.look = look;
-            o.rarity = rarity;
-            int index = (int)look;
-            o.main.sprite = art != null && index < art.wornGear.Count ? art.wornGear[index] : null;
-            o.trim.sprite = art != null && index < art.wornGearTrim.Count && rarity > Rarity.Common ? art.wornGearTrim[index] : null;
-            o.trim.color = Items.RarityColors[(int)rarity];
-        }
-        PlaceOverlays();
-    }
-
-    // Drawn just in front of the body in this order: armour, helmet, trinket, shield, weapon.
-    private static readonly int[] OverlayDepth = { 2, 1, 5, 4, 3 }; // indexed by GearSlot
-
-    private void PlaceOverlays()
-    {
-        if (overlays == null || frame >= anchors.Count)
-        {
-            return;
-        }
-        var a = anchors[frame];
-        // Units face left by turning round, which points local z away from the camera.
-        float toCamera = Vector3.Dot(transform.forward, Vector3.forward) >= 0 ? -1f : 1f;
-        for (int i = 0; i < 5; i++)
-        {
-            var o = overlays[i];
-            bool shown = o.main.sprite != null && (i != (int)GearSlot.Shield || a.shieldShown);
-            o.main.enabled = shown;
-            o.trim.enabled = shown && o.trim.sprite != null;
-            if (!shown)
-            {
-                continue;
-            }
-            Vector2 at;
-            float angle = a.lean;
+            key.Append((int)look).Append(':').Append((int)rarity).Append(',');
+            if (look == GearLook.None) continue;
             switch ((GearSlot)i)
             {
-                case GearSlot.Head: at = a.head; break;
-                case GearSlot.Body: at = a.torso; break;
-                case GearSlot.Weapon: at = a.grip; angle = a.weaponAngle; break;
-                case GearSlot.Shield: at = a.shield; break;
-                default:
-                    at = o.look == GearLook.Wreath ? a.head : o.look == GearLook.Horn ? a.hip : o.look == GearLook.Ring ? a.handL : a.neck;
-                    break;
+                case GearSlot.Head: style.head = look; break;
+                case GearSlot.Body: style.body = look; break;
+                case GearSlot.Weapon: if (look != GearLook.Bow || style.weapon == GearLook.Bow) style.weapon = look; break;
+                case GearSlot.Shield: style.shield = look; break;
+                case GearSlot.Trinket: style.trinket = look; break;
             }
-            o.main.transform.localPosition = new Vector3(at.x, at.y, toCamera * OverlayDepth[i] * 0.00002f);
-            o.main.transform.localRotation = Quaternion.Euler(0, 0, angle);
-            o.trim.transform.localPosition = new Vector3(0, 0, toCamera * 0.00001f);
-            if (o.rarity == Rarity.Legendary)
-            {
-                // A slow shimmer on legendary trim.
-                float t = 0.5f + 0.5f * Mathf.Sin(Time.time * 4f + i);
-                o.trim.color = Color.Lerp(Items.RarityColors[(int)Rarity.Legendary], Color.white, t * 0.6f);
-            }
+            style.trims[i] = rarity;
         }
+        if (key.ToString() == heroLookKey) return;
+        heroLookKey = key.ToString();
+
+        foreach (var o in heroArt) if (o != null) Destroy(o);
+        heroArt.Clear();
+        var pivot = PixelFigure.PivotFor(style);
+        var frames = new Sprite[PixelFigure.FrameCount];
+        for (int f = 0; f < frames.Length; f++)
+        {
+            var tex = PixelFigure.Draw(style, f).ToTexture();
+            tex.name = $"Hero frame {f}";
+            frames[f] = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), pivot, pixelsPerUnit, 0, SpriteMeshType.FullRect);
+            heroArt.Add(tex);
+            heroArt.Add(frames[f]);
+        }
+        idle = frames[0];
+        walk = new List<Sprite> { frames[1], frames[2], frames[3], frames[4] };
+        attack = new List<Sprite> { frames[5], frames[6], frames[7], frames[8] };
+        death = new List<Sprite> { frames[9], frames[10], frames[11] };
+        if (body != null && !dead) body.sprite = idle;
+    }
+
+    private void OnDestroy()
+    {
+        foreach (var o in heroArt) if (o != null) Destroy(o);
     }
 }

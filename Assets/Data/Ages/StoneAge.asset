@@ -15,7 +15,15 @@ MonoBehaviour:
   displayName: Stone Age
   order: 0
   description: Where every civilisation begins.
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
   playerUnits:
   - {fileID: 11400000, guid: a0aef520dc1fb324ab64c1aada202de8, type: 2}
   enemyUnits:
   - {fileID: 11400000, guid: b603c6fe562ddf243ad55cf285319863, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 4c3da57c00118674d9af4196760ba9b4, type: 2}

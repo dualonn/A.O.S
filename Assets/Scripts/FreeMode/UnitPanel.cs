@@ -69,7 +69,8 @@ public class UnitPanel
                 sb.Append($"<size=85%><color=#aaa>From the {t.Home.Definition.displayName}. " +
                           $"Stance: {(t.Stance == TroopStance.Defend ? "<color=#8cf>Defend</color>" : "<color=#f96>Attack</color>")}</color></size>\n");
             }
-            if (t.HasOrder) sb.Append("<size=85%><color=#8f8>Holding where you sent it</color></size>");
+            if (t.TargetCamp != null) sb.Append("<size=85%><color=#f98>Burning down a raider camp</color></size>");
+            else if (t.HasOrder) sb.Append("<size=85%><color=#8f8>Holding where you sent it</color></size>");
             info.text = sb.ToString().TrimEnd();
             listElement.gameObject.SetActive(false);
         }
