@@ -121,6 +121,22 @@ public class GameDatabase : ScriptableObject
     [Tooltip("Camps get one age tougher every this many tiles from your town (never more than one age ahead of you).")]
     public float campTierDistance = 45f;
 
+    [Header("Free mode: wild sites")]
+    [Tooltip("Chance that a newly explored zone (without a camp) holds a ruin, dungeon, lair, shrine, cache or lore stone.")]
+    [Range(0, 1)] public float siteChance = 0.22f;
+
+    [Tooltip("Seconds of play before a cleared dungeon fills up again.")]
+    public float dungeonResetSeconds = 3600f;
+
+    [Tooltip("Seconds of play before creatures move back into a cleared lair.")]
+    public float lairResetSeconds = 1800f;
+
+    [Tooltip("Shrine blessings: technologies outside the research tree, granted at shrines.")]
+    public List<Technology> blessings = new List<Technology>();
+
+    [Tooltip("Creatures of the wild.")]
+    public UnitDefinition skeleton, skeletonArcher, wolf, giantSpider, troll, barrowKing;
+
     [Tooltip("Raiders spawn in a band this many tiles wide just outside a settlement's safe zone.")]
     public float raidSpawnBand = 12f;
 
@@ -143,7 +159,7 @@ public class GameDatabase : ScriptableObject
 
     public BuildingDefinition GetBuilding(string id) => buildings.Find(b => b != null && b.id == id);
 
-    public Technology GetTechnology(string id) => technologies.Find(t => t != null && t.id == id);
+    public Technology GetTechnology(string id) => technologies.Find(t => t != null && t.id == id) ?? blessings.Find(t => t != null && t.id == id);
 
     private static GameDatabase cached;
 

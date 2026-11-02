@@ -163,6 +163,22 @@ MonoBehaviour:
   campRaidRange: 110
   campReoccupySeconds: 1800
   campTierDistance: 45
+  siteChance: 0.22
+  dungeonResetSeconds: 3600
+  lairResetSeconds: 1800
+  blessings:
+  - {fileID: 11400000, guid: 378a78dc6e7153e4aa5ab38a0e7037a8, type: 2}
+  - {fileID: 11400000, guid: 5c9b76ea985280c41ac6a8fea76d991d, type: 2}
+  - {fileID: 11400000, guid: f0f59c2a59bf7a24388669aeaa9e188f, type: 2}
+  - {fileID: 11400000, guid: 62309f79d372f9343a7339b6b83904ba, type: 2}
+  - {fileID: 11400000, guid: c3dbc8c976448a14eb353707fa151eed, type: 2}
+  - {fileID: 11400000, guid: a9a904d785b77e24dbd16e633b087517, type: 2}
+  skeleton: {fileID: 11400000, guid: ca776f87f1d35884f967eb5c3a9a1edb, type: 2}
+  skeletonArcher: {fileID: 11400000, guid: fc360a19f57f83f4385539e2844c5a6a, type: 2}
+  wolf: {fileID: 11400000, guid: b8304984b78bae543a0b5059faa47fe3, type: 2}
+  giantSpider: {fileID: 11400000, guid: aac816aac7964df4eb65d6359fc06857, type: 2}
+  troll: {fileID: 11400000, guid: 7b336aba4c9c11f4b8c47b6221f9809a, type: 2}
+  barrowKing: {fileID: 11400000, guid: 183be144c5cd67148b4d7d5fbe020dca, type: 2}
   raidSpawnBand: 12
   maxResourceLossShare: 0.3
   maxBuildingDamageShare: 0.4

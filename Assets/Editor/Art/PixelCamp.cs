@@ -30,6 +30,19 @@ public static partial class PlaceholderArt
             art.campFire.Add(CampPx($"Camp_Fire_F{f}", PxCampFire, f));
         }
         art.campFrames = new List<Sprite>();
+        // Burnt down: scorched ground, charred frames where the tents stood, embers; and the blaze itself.
+        art.campBurntGround = CampPx("Camp_BurntGround", PxBurntGround, 0);
+        art.campBurntBackTent = CampPx("Camp_BurntBackTent", k => PxCharredTent(k, 24, 50, 22), 0);
+        art.campBurntFrontTent = CampPx("Camp_BurntFrontTent", k => PxCharredTent(k, 70, 30, 19), 0);
+        art.campEmbers = new List<Sprite>();
+        art.campBlazeBack = new List<Sprite>();
+        art.campBlazeFront = new List<Sprite>();
+        for (int f = 0; f < 4; f++)
+        {
+            art.campEmbers.Add(CampPx($"Camp_Embers_F{f}", PxEmbers, f));
+            art.campBlazeBack.Add(CampPx($"Camp_BlazeBack_F{f}", k => PxBlaze(k, 24, 50, 22, 30), f));
+            art.campBlazeFront.Add(CampPx($"Camp_BlazeFront_F{f}", k => PxBlaze(k, 70, 30, 19, 26), f));
+        }
         EditorUtility.SetDirty(art);
         AssetDatabase.SaveAssets();
         Debug.Log("Camp art generated.");
@@ -53,6 +66,61 @@ public static partial class PlaceholderArt
             k.Ellipse(48 + Mathf.Cos(a) * 9, 30 + Mathf.Sin(a) * 4.5f, 1.8f, 1.5f, P.Stone);
         }
         k.Line(20, 12, 25, 14, P.Bone[3]); k.Line(60, 58, 64, 56, P.Bone[2]);
+    }
+
+    private static void PxBurntGround(BuildingKit k)
+    {
+        // a blackened clearing with grey ash drifts
+        var scorched = new[] { P.Hex("1e1a1c"), P.Hex("2e2826"), P.Hex("413834"), P.Hex("5a4e46") };
+        k.Ground(2, 4, 94, 70, scorched);
+        for (int i = 0; i < 40; i++)
+        {
+            int x = 8 + (i * 37) % 80, y = 8 + (i * 23) % 58;
+            k.Px(x, y, i % 3 == 0 ? P.Stone[3] : P.Stone[2]);
+            if (i % 4 == 0) k.Px(x + 1, y, P.Stone[2]);
+        }
+        for (int i = 0; i < 9; i++)
+        {
+            float a = i / 9f * Mathf.PI * 2;
+            k.Ellipse(48 + Mathf.Cos(a) * 9, 30 + Mathf.Sin(a) * 4.5f, 1.8f, 1.5f, P.Coal);
+        }
+        k.Line(20, 12, 25, 14, P.Bone[2]);
+    }
+
+    private static void PxCharredTent(BuildingKit k, int cx, int y, int half)
+    {
+        // the frame left standing, black and broken, over a heap of ash and scraps of hide
+        var ash = new[] { P.Hex("2a2426"), P.Hex("3c3432"), P.Hex("5c524c"), P.Hex("7a706a") };
+        k.Ellipse(cx, y + 3, half + 2, 4.5f, ash, l => l.y >= y);
+        k.Line(cx - half + 3, y, cx - 1, y + half + 2, P.Coal[1], 2);
+        k.Line(cx + half - 4, y, cx + 3, y + half - 3, P.Coal[2], 2);
+        k.Line(cx - 2, y + half + 1, cx + 6, y + half - 6, P.Coal[1]);           // a fallen crossbar
+        k.Line(cx + 2, y + 1, cx + half + 2, y + 5, P.Coal[2], 2);                // a pole on the ground
+        for (int i = 0; i < 5; i++) k.Px(cx - half / 2 + i * 4, y + 6 + (i % 2) * 3, P.Leather[0]);   // scraps of hide
+        k.Finish();
+    }
+
+    private static void PxEmbers(BuildingKit k)
+    {
+        // smouldering coals where the fire and tents were, and thin smoke
+        foreach (var (x, y, w) in new[] { (44, 29, 9), (20, 51, 9), (66, 31, 8) })
+            for (int i = 0; i < w; i++)
+            {
+                bool hot = (i * 3 + k.Frame) % 4 == 0;
+                k.Px(x + i, y + (i % 2), hot ? P.Fire[3] : (i + k.Frame) % 3 == 0 ? P.Fire[1] : P.Fire[0]);
+            }
+        k.Smoke(48, 34, 0.8f, 110);
+        k.Smoke(25, 56, 0.7f, 90);
+        k.Smoke(70, 36, 0.7f, 90);
+    }
+
+    private static void PxBlaze(BuildingKit k, int cx, int y, int half, int h)
+    {
+        // a tent going up in flames
+        k.Fire(cx - half, y, half * 2, h);
+        k.Fire(cx - half / 2, y + h / 3, half, h);
+        k.Finish();
+        k.Smoke(cx + 2, y + h + 4, 1.4f, 170);
     }
 
     private static void PxRaiderTent(BuildingKit k, int cx, int y, int half, int h)

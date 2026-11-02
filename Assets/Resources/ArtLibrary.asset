@@ -137,4 +137,43 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6b5f703120e3c994abc204fec4bbf1ff, type: 3}
   - {fileID: 21300000, guid: e959f7adea49c3848b9d35ca9eff7555, type: 3}
   - {fileID: 21300000, guid: 81baabc355638ba4f86f1c2707d78133, type: 3}
+  campBurntGround: {fileID: 21300000, guid: 8030b0664b62d1b4680bbc8375d86b00, type: 3}
+  campBurntBackTent: {fileID: 21300000, guid: 04451ecf70d92db468c4e9caf124381c, type: 3}
+  campBurntFrontTent: {fileID: 21300000, guid: e2aaf4c42389ad041a0aea6c40be9993, type: 3}
+  campEmbers:
+  - {fileID: 21300000, guid: 9f896de65b9a27b40aa038a030e95818, type: 3}
+  - {fileID: 21300000, guid: ef384b80d5c8fff48aa7495aaeae5801, type: 3}
+  - {fileID: 21300000, guid: 3be84fa0357e59a4a853d58381828a7b, type: 3}
+  - {fileID: 21300000, guid: 6f450a2de7baa6a4d90b7235d2d600bf, type: 3}
+  campBlazeBack:
+  - {fileID: 21300000, guid: 43a77d33325a44940b47c942ba256d54, type: 3}
+  - {fileID: 21300000, guid: 21119cd04b2d36f49952a2ca2606f678, type: 3}
+  - {fileID: 21300000, guid: 46cdb4b778e6fb64c924bcbc77f7cea6, type: 3}
+  - {fileID: 21300000, guid: e33e4bedc1a73a74091a976eb54be79f, type: 3}
+  campBlazeFront:
+  - {fileID: 21300000, guid: f03207cbea0a54e4aae081735d3df5be, type: 3}
+  - {fileID: 21300000, guid: c8a3f1adb1611134780db2b963a475ba, type: 3}
+  - {fileID: 21300000, guid: fc9adfb3644f3fe448305b7e1a02077f, type: 3}
+  - {fileID: 21300000, guid: e14c9962b92a65b498e4f4e4e5ee14d6, type: 3}
   researchIcon: {fileID: 21300000, guid: 05123ad631ca9144aa42ffc3c0349727, type: 3}
+  siteRuins: {fileID: 21300000, guid: 49390a288becebb41b035e1e0f16f434, type: 3}
+  siteRuinsLooted: {fileID: 21300000, guid: fd0eca00b14b9184890df355fe00eadc, type: 3}
+  siteDungeon: {fileID: 21300000, guid: 4fc07ad8fbbfa1c4e94b8edf631db441, type: 3}
+  siteDungeonSealed: {fileID: 21300000, guid: b9e550a5c3812b14cb6bfa37aa25beda, type: 3}
+  siteShrine: {fileID: 21300000, guid: bf7c870722444b2459ed4982dfa90161, type: 3}
+  siteShrineUsed: {fileID: 21300000, guid: 41f5301176f0eb045b77848ff9a3ddc2, type: 3}
+  siteCache: {fileID: 21300000, guid: 7527a83bf4f320e4e9a2a1bf484e8e87, type: 3}
+  siteCaravan: {fileID: 21300000, guid: 4afa8c9c109a7294ab2a769ae4a39bc6, type: 3}
+  siteLoreStone: {fileID: 21300000, guid: 3549841bf5cb55844a84d4d61b310c0d, type: 3}
+  siteLoreStoneRead: {fileID: 21300000, guid: 52c9ee861f3e6df4688635c52e330a20, type: 3}
+  siteLairs:
+  - {fileID: 21300000, guid: cc93ad5c5f7fae14492b2003b8183103, type: 3}
+  - {fileID: 21300000, guid: dc95bccb0bfba3840ba69a5315537a19, type: 3}
+  - {fileID: 21300000, guid: 6602193cb31bd574580585cc3e31f90e, type: 3}
+  siteIcons:
+  - {fileID: 21300000, guid: 83034151085e0d94b97a7a3ed034255d, type: 3}
+  - {fileID: 21300000, guid: 2e985ef847e9e27408d14d34a472314f, type: 3}
+  - {fileID: 21300000, guid: 155754e1064b7ba4db068b7a2a26a2c9, type: 3}
+  - {fileID: 21300000, guid: be1b4cdcff1a5be42a4e2b35a9992f9e, type: 3}
+  - {fileID: 21300000, guid: 1c645bf04fcbe684ab4bc4a0c5a99b5d, type: 3}
+  - {fileID: 21300000, guid: 9327325a6a37c7340914eda140b15378, type: 3}

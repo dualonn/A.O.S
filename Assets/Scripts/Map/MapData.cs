@@ -48,6 +48,7 @@ public class MapData
         public byte[] deposit; // 0 = none, otherwise index + 1 into Deposits
         public byte[] wall;    // made when the first wall goes up here
         public bool generated, revealed;
+        public bool interior;  // an underground level: walkable, but not part of the explored map
     }
 
     private readonly Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
@@ -146,7 +147,37 @@ public class MapData
     public bool ZoneInLimit(int cx, int cy) => true;
 
     public bool IsZoneRevealed(int cx, int cy) =>
-        chunks.TryGetValue(new Vector2Int(cx, cy), out var chunk) && chunk.revealed;
+        chunks.TryGetValue(new Vector2Int(cx, cy), out var chunk) && chunk.revealed && !chunk.interior;
+
+    // ---------- Underground levels ----------
+
+    /// <summary>
+    /// Lay out an underground level in 'area' (far from the map): floor where 'isFloor' says so,
+    /// solid rock elsewhere. Units can walk and pathfind there, but it never counts as explored
+    /// land, isn't drawn as terrain and isn't saved.
+    /// </summary>
+    public void StampInterior(RectInt area, System.Func<int, int, bool> isFloor)
+    {
+        for (int y = area.yMin; y < area.yMax; y++)
+            for (int x = area.xMin; x < area.xMax; x++)
+            {
+                var chunk = FindOrMake(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize));
+                chunk.generated = chunk.revealed = chunk.interior = true;
+                int i = Local(x, y);
+                chunk.terrain[i] = isFloor(x, y) ? TerrainType.Grass : TerrainType.Water;
+                chunk.deposit[i] = 0;
+            }
+        WallVersion++;
+    }
+
+    /// <summary>Open or close one tile of an underground level (gates between rooms).</summary>
+    public void SetInteriorFloor(int x, int y, bool floor)
+    {
+        var chunk = Find(x, y);
+        if (chunk == null || !chunk.interior) return;
+        chunk.terrain[Local(x, y)] = floor ? TerrainType.Grass : TerrainType.Water;
+        WallVersion++;   // paths get re-planned
+    }
 
     public Vector2Int ZoneOf(int x, int y) => new Vector2Int(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize));
 

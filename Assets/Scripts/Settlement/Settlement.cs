@@ -361,6 +361,7 @@ public partial class Settlement : MonoBehaviour
         Waves = gameObject.AddComponent<WaveDirector>();
         Waves.Initialise(this);
         RollCamps(Map.RevealedZones());
+        RollSites(Map.RevealedZones());
     }
 
     /// <summary>The save format this build writes.</summary>
@@ -435,6 +436,7 @@ public partial class Settlement : MonoBehaviour
             State.explored.Add(zone);
         }
         RollCamps(newZones);
+        RollSites(newZones);
         MapGrown?.Invoke(shown);
         return shown.Count;
     }
@@ -489,6 +491,7 @@ public partial class Settlement : MonoBehaviour
         TickResearch(dt);
         TickAutomation(dt);
         TickCamps(dt);
+        TickSites(dt);
     }
 
     // ---------- Building stats and upgrades ----------
@@ -1375,6 +1378,11 @@ public partial class Settlement : MonoBehaviour
             reason = "There's a raider camp here: clear it first";
             return false;
         }
+        if (SiteAt(area) != null)
+        {
+            reason = "Something old stands here";
+            return false;
+        }
         if (def.requiredDeposit != null)
         {
             int count = Map.CountDeposit(def.requiredDeposit, area, def.catchmentRadius);
@@ -1476,6 +1484,7 @@ public partial class Settlement : MonoBehaviour
             State.secondsUntilWave = Database.firstWaveDelay;
             Notify("Your settlement is founded! Build huts and camps near food and wood.");
             RollCamps(Map.RevealedZones());
+            RollSites(Map.RevealedZones());
         }
         Changed?.Invoke();
         return true;

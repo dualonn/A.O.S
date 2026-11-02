@@ -226,6 +226,16 @@ public class FreeModeHUD : MonoBehaviour
                 researchButtons.Add((tech, button, label));
             }
         }
+        // The journal: lore from lore stones and blessings from shrines, folded away under research.
+        journalSection = new CollapsibleSection("Journal", researchContent, "Journal", new Color(0.95f, 0.82f, 0.5f));
+        journalSection.SetOpen(false);
+
+        // Dungeon progress (top centre, only while a party is underground)
+        dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
+        UIBuilder.Anchor(dungeonPanel, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -52), new Vector2(380, 0));
+        dungeonText = UIBuilder.Text("Info", dungeonPanel, "", 18, TMPro.TextAlignmentOptions.Center);
+        dungeonButton = UIBuilder.Button("View", dungeonPanel, ToggleDungeonView, out dungeonButtonLabel, 30, 16);
+        dungeonPanel.gameObject.SetActive(false);
 
         // Selected building (bottom centre)
         selectionPanel = UIBuilder.VerticalPanel("SelectionPanel", root);
@@ -306,6 +316,81 @@ public class FreeModeHUD : MonoBehaviour
         RefreshSelection();
         unitPanel.Refresh();
         RefreshAutoRepairNew();
+        RefreshJournal();
+        RefreshDungeon();
+    }
+
+    // ---------- Dungeon progress ----------
+
+    private RectTransform dungeonPanel;
+    private TMPro.TextMeshProUGUI dungeonText, dungeonButtonLabel;
+    private UnityEngine.UI.Button dungeonButton;
+    private DungeonRun shownRun;
+
+    private void RefreshDungeon()
+    {
+        DungeonRun run = controller.Viewing;
+        if (run == null)
+            foreach (var r in DungeonRun.Active)
+                if (r != null && r.Party.Count > 0) { run = r; break; }
+        shownRun = run;
+        dungeonPanel.gameObject.SetActive(run != null);
+        if (run == null) return;
+        // one block per room: done, current, still dark
+        var bar = new System.Text.StringBuilder();
+        for (int i = 0; i < run.Rooms.Count; i++)
+        {
+            string colour = i < run.Current ? "#8f8" : i == run.Current ? "#fd6" : "#666";
+            // the throne room's block is purple until the party reaches it
+            if (run.Rooms[i].throne && i > run.Current) colour = "#a070e0";
+            bar.Append($"<color={colour}>{(run.Rooms[i].throne ? "[ K ]" : "[ ]")}</color> ");
+        }
+        string where = run.Current >= run.Rooms.Count ? "The hoard!" : run.Rooms[run.Current].throne ? "Throne room" : $"Room {run.Current + 1} of {run.Rooms.Count}";
+        dungeonText.text = $"<b><color=#c9a6ff>{run.Title}</color></b>\n{bar}\n<size=85%>{where}  ·  {run.Party.Count} troops below</size>";
+        dungeonButtonLabel.text = controller.Viewing == run ? "Back to the surface" : "Go down to them";
+    }
+
+    private void ToggleDungeonView()
+    {
+        if (shownRun == null) return;
+        if (controller.Viewing == shownRun) controller.ShowSurface();
+        else controller.FocusDungeon(shownRun);
+    }
+
+    // ---------- Journal ----------
+
+    private CollapsibleSection journalSection;
+    private int journalShown = -1;
+
+    private void RefreshJournal()
+    {
+        var blessings = settlement.Blessings();
+        int count = settlement.State.journal.Count + blessings.Count * 1000;
+        if (journalSection == null || count == journalShown) return;
+        journalShown = count;
+        foreach (Transform child in journalSection.Body) Destroy(child.gameObject);
+        int lore = settlement.State.journal.Count;
+        journalSection.SetNote(lore + blessings.Count > 0 ? $"{lore} lore, {blessings.Count} blessings" : "");
+        if (lore + blessings.Count == 0)
+        {
+            UIBuilder.Text("Empty", journalSection.Body, "<size=85%><color=#aaa>Nothing yet. Send units to read lore stones, and heroes to kneel at shrines.</color></size>", 16);
+            return;
+        }
+        foreach (var b in blessings)
+        {
+            var tech = b;
+            var row = UIBuilder.Button(tech.id, journalSection.Body, () => { }, out var label, 30, 15);
+            label.text = $"<color=#9df>{tech.displayName}</color>";
+            UIBuilder.OnHover(row.gameObject, () => tooltipSource = () => $"<b>{tech.displayName}</b>\n{tech.description}", HideTooltip);
+        }
+        foreach (int id in settlement.State.journal)
+        {
+            if (id < 0 || id >= Lore.Entries.Length) continue;
+            var entry = Lore.Entries[id];
+            var row = UIBuilder.Button("Lore" + id, journalSection.Body, () => { }, out var label, 30, 15);
+            label.text = $"<color=#fd6>{entry.title}</color>";
+            UIBuilder.OnHover(row.gameObject, () => tooltipSource = () => $"<b>{entry.title}</b>\n<i>{entry.text}</i>", HideTooltip);
+        }
     }
 
     private void TrackRates()

@@ -45,6 +45,12 @@ public class SettlementState
 
     public List<HeroState> heroes = new List<HeroState>();
     public List<ItemInstance> inventory = new List<ItemInstance>();
+
+    [Tooltip("Ruins, dungeons, lairs, shrines, caches and lore stones found on the map.")]
+    public List<SiteState> sites = new List<SiteState>();
+
+    [Tooltip("Lore entries found (indexes into Lore.Entries), in the order found.")]
+    public List<int> journal = new List<int>();
     public int nextItemId = 1;
     public int nextHeroId = 1;
 }

@@ -171,11 +171,47 @@ public class Troop : Unit
 
     public void OrderMoveTo(Vector3 destination)
     {
+        if (Dungeon != null) return;   // the dungeon party moves together
         destination.z = transform.position.z;
         rallyPoint = destination;
         hasMoveOrder = true;
         HasOrder = true;
         TargetCamp = null;
+    }
+
+    // ---------- Dungeons ----------
+
+    /// <summary>The dungeon this troop is down in (null = on the surface).</summary>
+    public DungeonRun Dungeon { get; private set; }
+
+    /// <summary>Go down into a dungeon level, appearing at 'at'.</summary>
+    public void EnterDungeon(DungeonRun run, Vector3 at)
+    {
+        Dungeon = run;
+        TargetCamp = null;
+        campOrder = false;
+        hasMoveOrder = false;
+        HasOrder = true;
+        at.z = transform.position.z;
+        transform.position = at;
+        rallyPoint = at;
+    }
+
+    /// <summary>Where the dungeon party gathers next (the troop still fights on the way).</summary>
+    public void SetDungeonRally(Vector3 point)
+    {
+        point.z = transform.position.z;
+        rallyPoint = point;
+        hasMoveOrder = false;
+    }
+
+    /// <summary>Climb back out at 'at' and head home.</summary>
+    public void LeaveDungeon(Vector3 at, Vector3 homeRally)
+    {
+        Dungeon = null;
+        at.z = transform.position.z;
+        transform.position = at;
+        ReturnHome(homeRally);
     }
 
     /// <summary>The raider camp this troop is set on burning down (null = none).</summary>
@@ -198,6 +234,7 @@ public class Troop : Unit
     /// <summary>Drop the player's order: go back to the home building's rally point.</summary>
     public void ReturnHome(Vector3 homeRally)
     {
+        if (Dungeon != null) return;   // busy underground
         HasOrder = false;
         hasMoveOrder = false;
         TargetCamp = null;
@@ -210,8 +247,44 @@ public class Troop : Unit
     /// <summary>Troops on Attack go for raider camps within this many tiles once no raiders are about.</summary>
     public const float CampHuntRange = 60f;
 
+    /// <summary>Troops you've sent somewhere take on enemies within this many tiles of themselves.</summary>
+    public const float OrderFightRange = 10f;
+
+    /// <summary>Any troop this close to a camp, with nothing left to fight, sets about burning it.</summary>
+    public const float CampNearRange = 9f;
+
+    private float raidCheckAt;
+    private bool homeRaided;
+
+    /// <summary>
+    /// Is a raid on its way to (or in) this troop's home settlement? Any raider within raiding
+    /// range of home counts, from the moment it sets out. (Checked once a second.)
+    /// </summary>
+    private bool HomeUnderRaid()
+    {
+        if (Time.time < raidCheckAt) return homeRaided;
+        raidCheckAt = Time.time + 1f;
+        homeRaided = false;
+        if (defendArea == null) return false;
+        float reach = Settlement.Instance != null ? Settlement.Instance.Database.campRaidRange : 110f;
+        foreach (var u in Living)
+        {
+            if (u is Enemy e && e.IsAlive && e.IsRaider && defendArea.DistanceTo(e.transform.position) <= reach)
+            {
+                homeRaided = true;
+                break;
+            }
+        }
+        return homeRaided;
+    }
+
     protected override void Idle()
     {
+        if (Dungeon != null)
+        {
+            MoveTowards(rallyPoint, moveSpeed);
+            return;
+        }
         // (A burnt camp is destroyed, so it can also read as null here.)
         if (HasOrder && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && campOrder)
         {
@@ -222,14 +295,20 @@ public class Troop : Unit
         }
         if (TargetCamp != null && TargetCamp.IsStanding)
         {
-            AttackCamp(TargetCamp);
-            return;
+            // Raiders at home come first for a camp we took on ourselves (one you ordered stays).
+            if (!campOrder && HomeUnderRaid()) TargetCamp = null;
+            else
+            {
+                AttackCamp(TargetCamp);
+                return;
+            }
         }
-        // Advancing troops with nothing to fight go and burn down nearby raider camps, and
-        // stick to it once they start.
-        if (!hasMoveOrder && hasDefendZone && Stance == TroopStance.Attack)
+        // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach):
+        // burn it down and stick to it, unless home is being raided or you've sent us elsewhere.
+        if (!hasMoveOrder && !HomeUnderRaid())
         {
-            var camp = CampView.Nearest(transform.position, CampHuntRange);
+            float range = hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
+            var camp = CampView.Nearest(transform.position, range);
             if (camp != null)
             {
                 TargetCamp = camp;
@@ -269,19 +348,32 @@ public class Troop : Unit
 
     protected override Unit SelectTarget(List<Unit> candidates)
     {
+        // Underground: fight what's in this room, not through the walls.
+        if (Dungeon != null)
+        {
+            var me = transform.position;
+            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) < 9f && Mathf.Abs(u.transform.position.x - me.x) < 9f);
+            return candidates.Count == 0 ? null : base.SelectTarget(candidates);
+        }
         // Set on a camp: only fight raiders right beside us, never chase.
         if (TargetCamp != null && TargetCamp.IsStanding)
         {
             float reach = CampGuardReach + personalSpace;
             candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, transform.position) <= reach);
-            if (candidates.Count == 0)
-            {
-                return null;
-            }
+            return candidates.Count == 0 ? null : base.SelectTarget(candidates);
+        }
+
+        // Sent somewhere (on your order): fight what comes near, don't chase things across the map.
+        if (HasOrder)
+        {
+            var me = transform.position;
+            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) <= OrderFightRange);
+            if (candidates.Count == 0) return null;
         }
 
         // Defending: ignore raiders outside the town; return home once they leave it.
-        if (hasDefendZone && Stance == TroopStance.Defend)
+        // (Troops you've sent somewhere fight whatever they meet there.)
+        if (hasDefendZone && Stance == TroopStance.Defend && !HasOrder)
         {
             candidates = candidates.FindAll(u => InDefendArea(u.transform.position));
             if (candidates.Count == 0)

@@ -25,6 +25,9 @@ public class CameraController : MonoBehaviour
     [Tooltip("Art pixels per tile: close in, zoom steps so each art pixel is a whole number of screen pixels.")]
     public float pixelsPerTile = 32f;
 
+    [Tooltip("While set (looking down into a dungeon), the camera stays inside this area instead of the map.")]
+    public Rect? overrideBounds;
+
     private Camera cam;
     private Vector3 lastDragWorld;
 
@@ -122,8 +125,9 @@ public class CameraController : MonoBehaviour
     private void Clamp()
     {
         Vector3 p = transform.position;
-        p.x = Mathf.Clamp(p.x, bounds.xMin, bounds.xMax);
-        p.y = Mathf.Clamp(p.y, bounds.yMin, bounds.yMax);
+        var b = overrideBounds ?? bounds;
+        p.x = Mathf.Clamp(p.x, b.xMin, b.xMax);
+        p.y = Mathf.Clamp(p.y, b.yMin, b.yMax);
         // At whole-pixel zooms, keep the view on the pixel grid so art doesn't shimmer as it pans.
         float k = PixelScale(cam.orthographicSize);
         if (Mathf.Abs(k - Mathf.Round(k)) < 0.01f && k >= 1f)

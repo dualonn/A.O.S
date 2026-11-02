@@ -67,7 +67,20 @@ public class ArtLibrary : ScriptableObject
     public Sprite campGround, campBackTent, campFrontTent, campLoot;
     public List<Sprite> campBanner = new List<Sprite>();
     public List<Sprite> campFire = new List<Sprite>();
+    [Tooltip("A burnt-out camp: scorched ground, charred tent frames, smouldering embers; and the flames while it burns.")]
+    public Sprite campBurntGround, campBurntBackTent, campBurntFrontTent;
+    public List<Sprite> campEmbers = new List<Sprite>();
+    public List<Sprite> campBlazeBack = new List<Sprite>();
+    public List<Sprite> campBlazeFront = new List<Sprite>();
     public Sprite researchIcon;
+
+    [Header("Wild sites")]
+    public Sprite siteRuins, siteRuinsLooted, siteDungeon, siteDungeonSealed, siteShrine, siteShrineUsed;
+    public Sprite siteCache, siteCaravan, siteLoreStone, siteLoreStoneRead;
+    [Tooltip("Wolf den, spider nest, troll cave.")]
+    public List<Sprite> siteLairs = new List<Sprite>();
+    [Tooltip("Map icons, by SiteKind.")]
+    public List<Sprite> siteIcons = new List<Sprite>();
 
 
     private static ArtLibrary cached;

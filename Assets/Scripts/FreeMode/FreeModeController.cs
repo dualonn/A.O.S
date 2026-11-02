@@ -200,6 +200,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
 
         UpdateCampMarkers(zoomedOut, screenSize, raidMarker.sprite);
+        UpdateSiteMarkers(zoomedOut, screenSize);
 
         liveEnemies.RemoveAll(e => e == null);
         raidMarker.enabled = zoomedOut && waveInProgress && liveEnemies.Count > 0 && raidMarker.sprite != null;
@@ -223,7 +224,10 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private float nextCampSync;
     private readonly List<SpriteRenderer> campMarkers = new List<SpriteRenderer>();
 
-    /// <summary>A view (and guards) for every live camp; cleared ones are taken down.</summary>
+    /// <summary>
+    /// A view for every camp: live ones with their guards, burnt ones as smouldering ruins (until
+    /// raiders move back in, or you build over the ashes).
+    /// </summary>
     private void SyncCamps()
     {
         if (Time.unscaledTime < nextCampSync)
@@ -233,28 +237,40 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         nextCampSync = Time.unscaledTime + 1f;
         foreach (var camp in Settlement.State.camps)
         {
-            bool has = campViews.TryGetValue(camp, out var view);
-            if (!camp.cleared && !has)
+            bool has = campViews.TryGetValue(camp, out var view) && view != null;
+            bool builtOver = camp.cleared && BuiltOver(new RectInt(camp.cell, Vector2Int.one * CampState.Size));
+            // Raiders moved back into a ruin, or someone built over the ashes: take the old view down.
+            if (has && ((!camp.cleared && view.Burnt) || builtOver))
+            {
+                view.Remove();
+                campViews.Remove(camp);
+                has = false;
+            }
+            if (!has && !builtOver)
             {
                 view = new GameObject().AddComponent<CampView>();
                 view.transform.SetParent(grid.transform, true);
                 view.Init(this, camp, Settlement.CampTier(camp));
                 campViews[camp] = view;
             }
-            else if (camp.cleared && has)
-            {
-                if (view != null) view.Remove();
-                campViews.Remove(camp);
-            }
         }
+    }
+
+    private bool BuiltOver(RectInt area)
+    {
+        foreach (var b in Settlement.State.buildings)
+        {
+            var def = Settlement.Database.GetBuilding(b.definitionId);
+            if (def != null && new RectInt(b.cell, def.size).Overlaps(area)) return true;
+        }
+        return false;
     }
 
     /// <summary>Troops burnt a camp down.</summary>
     public void CampDestroyed(CampView view)
     {
         Settlement.ClearCamp(view.State);
-        campViews.Remove(view.State);
-        view.Remove();
+        view.BurnDown(instant: false);   // it burns, then stays as a ruin until raiders return
     }
 
     /// <summary>The nearest live camp within raiding range of 'from', if any.</summary>
@@ -286,6 +302,128 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             if (map.IsWalkable(p)) return p;
         }
         return camp.Centre;
+    }
+
+    // ---------- Dungeon levels ----------
+
+    /// <summary>The dungeon level the camera is looking at (null = the surface).</summary>
+    public DungeonRun Viewing { get; private set; }
+    private Vector3 surfaceCamera;
+    private float surfaceZoom;
+
+    /// <summary>Look down into a dungeon level.</summary>
+    public void FocusDungeon(DungeonRun run)
+    {
+        var cam = Camera.main;
+        if (run == null || cam == null) return;
+        var cc = cam.GetComponent<CameraController>();
+        if (Viewing == null)
+        {
+            surfaceCamera = cam.transform.position;
+            surfaceZoom = cam.orthographicSize;
+        }
+        Viewing = run;
+        var r = run.WorldRect;
+        if (cc != null) cc.overrideBounds = r;
+        var room = run.Rooms[Mathf.Clamp(run.Current, 0, run.Rooms.Count - 1)];
+        cam.transform.position = new Vector3(room.Centre.x, room.Centre.y, cam.transform.position.z);
+    }
+
+    private Coroutine pan;
+
+    /// <summary>Glide the camera to a point (following a dungeon party room to room).</summary>
+    public void PanTo(Vector3 point)
+    {
+        if (pan != null) StopCoroutine(pan);
+        pan = StartCoroutine(PanRoutine(point));
+    }
+
+    private IEnumerator PanRoutine(Vector3 point)
+    {
+        var cam = Camera.main;
+        if (cam == null) yield break;
+        Vector3 from = cam.transform.position, to = new Vector3(point.x, point.y, from.z);
+        for (float t = 0; t < 1f; t += Time.unscaledDeltaTime / 1.2f)
+        {
+            if (cam == null) yield break;
+            float k = t * t * (3 - 2 * t);
+            cam.transform.position = Vector3.Lerp(from, to, k);
+            yield return null;
+        }
+        if (cam != null) cam.transform.position = to;
+        pan = null;
+    }
+
+    /// <summary>Back up to the surface.</summary>
+    public void ShowSurface()
+    {
+        var cam = Camera.main;
+        if (Viewing == null || cam == null) return;
+        var cc = cam.GetComponent<CameraController>();
+        if (cc != null) cc.overrideBounds = null;
+        cam.transform.position = surfaceCamera;
+        cam.orthographicSize = surfaceZoom;
+        Viewing = null;
+    }
+
+    /// <summary>A run ended: if we were looking at it, come back up.</summary>
+    public void LeaveDungeonView(DungeonRun run)
+    {
+        if (Viewing == run) ShowSurface();
+    }
+
+    // ---------- Wild sites ----------
+
+    private readonly Dictionary<SiteState, SiteView> siteViews = new Dictionary<SiteState, SiteView>();
+    private float nextSiteSync;
+    private readonly List<SpriteRenderer> siteMarkers = new List<SpriteRenderer>();
+
+    /// <summary>A view for every site on the map; taken caches disappear.</summary>
+    private void SyncSites()
+    {
+        if (Time.unscaledTime < nextSiteSync) return;
+        nextSiteSync = Time.unscaledTime + 1f;
+        foreach (var site in Settlement.State.sites)
+        {
+            bool has = siteViews.TryGetValue(site, out var view);
+            bool gone = site.kind == SiteKind.Cache && site.done;
+            if (!gone && !has)
+            {
+                view = new GameObject().AddComponent<SiteView>();
+                view.transform.SetParent(transform, false);
+                view.Init(this, site, Settlement.SiteTier(site));
+                siteViews[site] = view;
+            }
+            else if (gone && has)
+            {
+                if (view != null) view.Remove();
+                siteViews.Remove(site);
+            }
+        }
+    }
+
+    /// <summary>Site icons on the zoomed-out maps (used-up sites fade).</summary>
+    private void UpdateSiteMarkers(bool zoomedOut, float screenSize)
+    {
+        int i = 0;
+        var art = ArtLibrary.Load();
+        if (zoomedOut && art != null && art.siteIcons.Count >= 6)
+        {
+            foreach (var site in Settlement.State.sites)
+            {
+                if (site.kind == SiteKind.Cache && site.done) continue;
+                var icon = art.siteIcons[(int)site.kind];
+                if (icon == null) continue;
+                if (siteMarkers.Count <= i) siteMarkers.Add(MakeMarker("SiteMarker", icon));
+                var m = siteMarkers[i++];
+                m.sprite = icon;
+                m.enabled = true;
+                m.color = site.done ? new Color(1f, 1f, 1f, 0.45f) : Color.white;
+                m.transform.position = new Vector3(site.Centre.x, site.Centre.y, -1);
+                m.transform.localScale = Vector3.one * screenSize * 0.7f / Mathf.Max(0.01f, icon.bounds.size.y);
+            }
+        }
+        for (; i < siteMarkers.Count; i++) siteMarkers[i].enabled = false;
     }
 
     private void UpdateCampMarkers(bool zoomedOut, float screenSize, Sprite icon)
@@ -345,7 +483,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
         foreach (var unit in Unit.Living)
         {
-            if (unit != null && unit.Team == Team.Player && unit.IsAlive)
+            if (unit != null && unit.Team == Team.Player && unit.IsAlive && !(unit is Troop tr && tr.Dungeon != null))
             {
                 eyes.Add(new Rect(unit.transform.position, Vector2.zero));
             }
@@ -447,6 +585,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             SetUnitSelection(null);
         }
         SyncCamps();
+        SyncSites();
 
         TrackLiveWave();
         ExploreAroundUnitsAndBuildings();
@@ -849,6 +988,15 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             return;
         }
         Vector3 target = SettlementGrid.MouseWorld();
+        var site = SiteView.At(target);
+        if (site != null && site.State.kind == SiteKind.Dungeon && !site.State.done)
+        {
+            // Right-click on a dungeon: the selected troops go down into it together.
+            DungeonRun.For(this, site.State).Enlist(unitSelection);
+            ShowOrderMarker((Vector3)site.State.Centre, new Color(0.75f, 0.55f, 1f, 0.9f));
+            ShowMessage(unitSelection.Count == 1 ? "Heading into the dungeon." : $"{unitSelection.Count} troops are heading into the dungeon.");
+            return;
+        }
         var camp = CampView.At(target);
         if (camp != null)
         {

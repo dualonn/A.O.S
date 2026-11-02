@@ -32,6 +32,7 @@ public static class PixelPalette
     public static readonly Color32[] Straw = { H("6b4420"), H("a3702f"), H("d6a347"), H("f4d579") };
     public static readonly Color32[] Horse = { H("2e1a14"), H("5a3221"), H("8a5232"), H("b9804f") };
     public static readonly Color32[] DarkHorse = { H("161214"), H("2e2426"), H("4a3c3c"), H("6e5c58") };
+    public static readonly Color32[] Troll = { H("26341f"), H("42583a"), H("66844e"), H("93b06c") };
     public static readonly Color32[] Elephant = { H("38363f"), H("5d5a64"), H("858089"), H("aca6ab") };
 
     public static readonly Color32[] Grass = { H("1e4a2f"), H("2f7539"), H("4fa144"), H("84cc5c"), H("bde97f") };
@@ -71,7 +72,7 @@ public static class PixelPalette
     {
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
-        "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron,
+        "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock,
         _ => Blue,
     };
 }

@@ -5,6 +5,9 @@ using P = PixelPalette;
 
 public enum MountKind { None, Horse, Chariot, Elephant }
 
+/// <summary>Creatures that aren't built like people.</summary>
+public enum Beast { None, Wolf, Spider }
+
 /// <summary>
 /// How a fighter looks: team colour, the gear in each slot, a mount, and a few extras. Stored on
 /// each unit so heroes can be redrawn in the game with their own gear.
@@ -32,6 +35,12 @@ public class FigureStyle
     public bool raider, necklace, warpaint;
     [Tooltip("Mount coat colour ramp (Horse, DarkHorse, Elephant).")]
     public string coat = "Horse";
+    [Tooltip("Skin colour ramp (empty = people; Bone for skeletons, Troll...).")]
+    public string skin = "";
+    [Tooltip("Undead: glowing eyes and bare ribs.")]
+    public bool undead;
+    [Tooltip("A beast instead of a person (wolf, spider): drawn by its own rig.")]
+    public Beast beast;
 
     /// <summary>Rarity of the gear in each slot (Head, Body, Weapon, Shield, Trinket): sets its trim colour. Runtime only.</summary>
     [NonSerialized] public Rarity[] trims;
@@ -79,6 +88,11 @@ public static class PixelFigure
     public static void CanvasFor(FigureStyle s, out int w, out int h, out int cx, out int gy)
     {
         float S = s.scale;
+        if (s.beast != Beast.None)
+        {
+            w = Mathf.CeilToInt(48 * S); h = Mathf.CeilToInt(36 * S); cx = Mathf.RoundToInt(23 * S); gy = 4;
+            return;
+        }
         switch (s.mount)
         {
             case MountKind.Horse: w = 72; h = 60; cx = 34; gy = 4; break;
@@ -191,6 +205,11 @@ public static class PixelFigure
     {
         CanvasFor(s, out int w, out int h, out int cx, out int gy);
         var c = new PixelCanvas(w, h);
+        if (s.beast != Beast.None)
+        {
+            BeastRig.Draw(c, s, frame, cx, gy);
+            return c;
+        }
         var pose = PoseFor(s, frame);
         new Rig(c, s, pose, cx, gy).Draw();
         return c;
@@ -207,7 +226,7 @@ public static class PixelFigure
         private readonly float S;
         private readonly int limb;
         private readonly int cx, gy;
-        private readonly Color32[] team, crest, shieldRamp;
+        private readonly Color32[] team, crest, shieldRamp, skinRamp;
         private Vector2 hip, sh, head, shNear, shFar, hNear, hFar, footNear, footFar;
         private float headR;
         private bool riding, thrown;
@@ -224,6 +243,7 @@ public static class PixelFigure
             team = P.Named(s.team);
             crest = string.IsNullOrEmpty(s.crest) ? team : P.Named(s.crest);
             shieldRamp = string.IsNullOrEmpty(s.shieldColor) ? team : P.Named(s.shieldColor);
+            skinRamp = string.IsNullOrEmpty(s.skin) ? P.Skin : P.Named(s.skin);
         }
 
         private float X(float v) => v * S;
@@ -331,7 +351,7 @@ public static class PixelFigure
                 GearLook.Jerkin => P.Linen,
                 GearLook.Scale => P.Bronze,
                 GearLook.Mail or GearLook.Plate => P.Steel,
-                GearLook.Bare => P.Skin,
+                GearLook.Bare => skinRamp,
                 _ => team,
             };
             // Tunic skirt in the team colour shows below any armour.
@@ -365,8 +385,13 @@ public static class PixelFigure
                     c.Ellipse(shNear + V(0, 0.5f), X(1.8f), X(1.4f), P.Steel);   // pauldron
                     break;
                 case GearLook.Bare:
-                    // leather straps across a bare chest
-                    c.Line(V(b.x - r + 1, b.y), V(a.x + r - 1, a.y + 1), P.Leather[1]);
+                    if (s.undead)
+                    {
+                        // ribs and spine
+                        for (float y = a.y + X(1.5f); y < b.y - 1; y += X(1.6f)) c.Line(V(a.x - r + 1, y), V(a.x + r - 1, y), P.Coal[1]);
+                        c.Line(V(a.x - 0.5f, a.y), V(a.x - 0.5f, b.y), skinRamp[3]);
+                    }
+                    else c.Line(V(b.x - r + 1, b.y), V(a.x + r - 1, a.y + 1), P.Leather[1]);   // leather straps across a bare chest
                     break;
             }
             // hem, belt and buckle
@@ -401,12 +426,13 @@ public static class PixelFigure
 
         private void Head()
         {
-            var skin = P.Skin;
+            var skin = skinRamp;
             c.Ellipse(head, headR, X(3.6f), skin);
             // face (looking right): eye, brow, nose, ear
             Vector2 eye = head + V(X(1.7f), X(0.1f));
-            c.Put(c.T(eye), P.Ink);
-            if (S > 1.3f) c.Put(c.T(eye + V(0, 1)), P.Ink);
+            c.Put(c.T(eye), s.undead ? P.Red[3] : P.Ink);
+            if (S > 1.3f) c.Put(c.T(eye + V(0, 1)), s.undead ? P.Red[2] : P.Ink);
+            if (s.undead) c.Put(c.T(eye + V(-1.6f, 0)), P.Coal[1]);   // the other socket
             c.Put(c.T(eye + V(-0.2f, X(1.3f))), s.raider ? P.Hair[1] : skin[1]);   // brow
             c.Put(c.T(head + V(headR + 0.3f, X(-0.6f))), skin[2]);                  // nose
             c.Put(c.T(head + V(X(-1.2f), X(-0.4f))), skin[1]);                     // ear
@@ -430,6 +456,7 @@ public static class PixelFigure
 
         private void Hair(bool wild)
         {
+            if (s.undead) return;   // skulls are bald
             c.Ellipse(head + V(-0.3f, 0.4f), headR + 0.5f, X(3.6f) + 0.4f, P.Hair,
                 l => l.y > head.y + X(1.1f) || l.x < head.x - X(1.3f));
             if (wild)
@@ -447,6 +474,8 @@ public static class PixelFigure
                 case GearLook.None:
                     Hair(s.raider);
                     break;
+                case GearLook.Bare:
+                    break;   // bald (skulls, trolls)
                 case GearLook.Headband:
                 case GearLook.Feather:
                 {
@@ -586,7 +615,7 @@ public static class PixelFigure
 
         private void Arm(Vector2 from, Vector2 hand, bool far)
         {
-            var skin = P.Skin;
+            var skin = skinRamp;
             bool sleeve = s.body != GearLook.Bare;
             Color32 skinCol = far ? skin[1] : skin[2];
             c.Line(from, hand, skinCol, limb);
@@ -701,7 +730,7 @@ public static class PixelFigure
             Vector2 nock = p.loaded && p.attack && p.hFar.x < 2 ? hFar : V(top.x, hand.y);
             c.Line(top, nock, P.Linen[3]);
             c.Line(nock, bot, P.Linen[3]);
-            c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => P.Skin[2]);
+            c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => skinRamp[2]);
         }
 
         private void Quiver()
@@ -1026,6 +1055,117 @@ public static class PixelFigure
                 float y = tip.y + (i - 1) * X(2.5f);
                 c.LineRaw(V(tip.x + X(1), y), V(tip.x + X(5), y), new Color32(255, 255, 255, (byte)(i == 1 ? 200 : 120)));
             }
+        }
+    }
+
+    /// <summary>Wolves and giant spiders: four- and eight-legged, facing right, 12 frames like everyone else.</summary>
+    private static class BeastRig
+    {
+        public static void Draw(PixelCanvas c, FigureStyle s, int frame, int cx, int gy)
+        {
+            float S = s.scale;
+            int gait = frame == 1 ? 1 : frame == 3 ? -1 : 0;
+            float lunge = frame == 6 ? 3 : frame == 7 ? 5 : frame == 5 ? -1 : frame == 8 ? 1 : 0;
+            int death = frame >= 9 ? frame - 8 : 0;
+            bool bite = frame == 6 || frame == 7;
+            c.Pivot = new Vector2(cx, gy);
+            c.Angle = death == 1 ? -10 : 0;
+            if (s.beast == Beast.Wolf) Wolf(c, cx + lunge * S, gy, S, gait, bite, death, frame);
+            else Spider(c, cx + lunge * S, gy, S, gait, bite, death, frame);
+            c.Angle = 0;
+            c.Outline(P.Ink, 0.6f);
+            c.Shadow(cx + 1, gy, 13 * S, 2f * S);
+        }
+
+        private static Vector2 V(float x, float y) => new Vector2(x, y);
+
+        private static void Pt(PixelCanvas c, Vector2 v, Color32 col) => c.Put(c.T(v), col);
+
+        private static void Wolf(PixelCanvas c, float x, int gy, float S, int gait, bool bite, int death, int frame)
+        {
+            var fur = P.Wolf;
+            var dark = new[] { fur[0], fur[0], fur[1], fur[1] };
+            bool lying = death >= 2;
+            float body = lying ? gy + 4 * S : gy + 10 * S;
+            float bob = frame == 2 || frame == 4 ? 1 : 0;
+            body += bob;
+            // far legs, tail, body, head, near legs
+            if (!lying)
+            {
+                Leg(c, x - 6 * S, body - 2 * S, gy, -gait * 2 * S, dark, S);
+                Leg(c, x + 5 * S, body - 2 * S, gy, gait * 2 * S, dark, S);
+            }
+            c.Capsule(V(x - 9 * S, body + 1 * S), V(x - 15 * S, body - (lying ? 1 : 3) * S), 1.8f * S, fur);       // bushy tail
+            c.Capsule(V(x - 7 * S, body), V(x + 5 * S, body + 0.5f * S), 4.2f * S, fur);
+            c.Ellipse(V(x + 4 * S, body + 1 * S), 4.3f * S, 4.6f * S, fur);                                      // deep chest
+            c.Line(V(x - 6 * S, body - 3 * S), V(x + 3 * S, body - 3.5f * S), fur[3]);                           // pale belly
+            float hy = lying ? body + 2 * S : body + (bite ? 3 : 5) * S;
+            Vector2 head = V(x + 9 * S, hy);
+            c.Ellipse(head, 3.4f * S, 3f * S, fur);
+            c.Polygon(new[] { head + V(-2 * S, 2 * S), head + V(-1 * S, 5.5f * S), head + V(0.5f * S, 2 * S) }, l => fur[2]);   // ear
+            Vector2 snout = head + V(4.6f * S, -0.8f * S);
+            c.Capsule(head + V(1.5f * S, -0.5f * S), snout, 1.6f * S, fur);
+            Pt(c, snout + V(1.2f * S, 0.4f * S), P.Ink);                                                            // nose
+            if (bite)
+            {
+                c.Polygon(new[] { head + V(2 * S, -1.5f * S), snout + V(1.5f * S, -2.5f * S), snout + V(1 * S, -1 * S) }, l => P.Red[1]);
+                Pt(c, snout + V(0.5f * S, -1.2f * S), P.Bone[3]);
+                Pt(c, snout + V(-1 * S, -1.6f * S), P.Bone[3]);
+            }
+            Pt(c, head + V(1.2f * S, 0.8f * S), death > 0 ? P.Coal[2] : P.Gold[3]);                               // eye
+            if (!lying)
+            {
+                Leg(c, x - 4.5f * S, body - 2 * S, gy, gait * 2 * S, fur, S);
+                Leg(c, x + 6.5f * S, body - 2 * S, gy, -gait * 2 * S, fur, S);
+            }
+            else
+            {
+                for (int i = 0; i < 2; i++) c.Line(V(x - 4 * S + i * 9 * S, body - 2 * S), V(x - 1 * S + i * 9 * S, body - 4 * S), fur[1], 2);
+            }
+        }
+
+        private static void Leg(PixelCanvas c, float x, float top, int gy, float swing, Color32[] ramp, float S)
+        {
+            Vector2 knee = V(x + swing * 0.5f, (top + gy) * 0.5f + 1), foot = V(x + swing, gy + 1);
+            c.Line(V(x, top), knee, ramp[2], S > 1.3f ? 3 : 2);
+            c.Line(knee, foot, ramp[1], S > 1.3f ? 3 : 2);
+            Pt(c, foot + V(1, -1), ramp[0]);
+        }
+
+        private static void Spider(PixelCanvas c, float x, int gy, float S, int gait, bool bite, int death, int frame)
+        {
+            var carapace = new[] { P.Hex("1a1420"), P.Hex("2e2236"), P.Hex("4a3858"), P.Hex("6e5a80") };
+            bool curled = death >= 2;
+            float body = curled ? gy + 4 * S : gy + 8 * S + (frame == 2 || frame == 4 ? 1 : 0);
+            float rear = bite ? 3 * S : 0;   // rears up to strike
+            void Legs(bool far)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    float bx = x - 3 * S + i * 2.2f * S;
+                    float side = (i - 1.5f) * 3.4f * S;
+                    float step = ((i + (far ? 1 : 0)) % 2 == 0 ? gait : -gait) * 1.6f * S;
+                    Vector2 hip = V(bx, body), knee, foot;
+                    if (curled) { knee = hip + V(side * 0.4f, 3 * S); foot = knee + V(-side * 0.2f, 2 * S); }
+                    else
+                    {
+                        knee = V(bx + side + step * 0.5f, body + 5 * S + (i == 3 ? rear : 0));
+                        foot = V(bx + side * 1.6f + step, i == 3 && bite ? body + 4 * S : gy + 1);
+                    }
+                    var col = far ? carapace[1] : carapace[2];
+                    c.Line(hip, knee, col, 2);
+                    c.Line(knee, foot, far ? carapace[0] : carapace[1], S > 1.3f ? 2 : 1);
+                }
+            }
+            Legs(true);
+            Vector2 abdomen = V(x - 6 * S, body + 1.5f * S), head = V(x + 3 * S, body + rear * 0.4f);
+            c.Ellipse(abdomen, 6.5f * S, 5.2f * S, carapace);
+            c.Polygon(new[] { abdomen + V(-1 * S, 3 * S), abdomen + V(2 * S, 1 * S), abdomen + V(-1 * S, -1 * S), abdomen + V(-3 * S, 1 * S) }, l => P.Red[2]);   // hourglass
+            c.Ellipse(head, 4 * S, 3.4f * S, carapace);
+            for (int i = 0; i < 3; i++) Pt(c, head + V((1.5f + i * 0.9f) * S, (1 + (i % 2)) * S), death > 0 ? P.Coal[2] : P.Red[3]);   // eyes
+            c.Line(head + V(3 * S, -2 * S), head + V(3.5f * S, -(bite ? 4.5f : 3.5f) * S), P.Bone[2]);                                // fangs
+            c.Line(head + V(2 * S, -2 * S), head + V(2.2f * S, -(bite ? 4.5f : 3.5f) * S), P.Bone[2]);
+            Legs(false);
         }
     }
 }

@@ -25,6 +25,14 @@ public class CampView : MonoBehaviour
     private TextMeshPro label;
     private List<Sprite> bannerFrames, fireFrames;
     private SpriteRenderer banner, fire;
+    private SpriteRenderer backTent, frontTent, loot, blazeBack, blazeFront;
+    private float burnedAt = -99f;
+
+    /// <summary>Burnt down: a smouldering ruin until raiders move back in.</summary>
+    public bool Burnt { get; private set; }
+
+    /// <summary>How long the flames rage after it falls.</summary>
+    private const float BlazeSeconds = 7f;
     private float health, maxHealth;
     private float shake;
     private readonly List<Enemy> guards = new List<Enemy>();
@@ -68,11 +76,13 @@ public class CampView : MonoBehaviour
         transform.position = new Vector3(corner.x, corner.y, 0);
         var art = ArtLibrary.Load();
         body = Piece("Ground", art != null ? art.campGround : null, 3.2f, BuildingView.SortingOrder - 2); // flat: always under
-        Piece("BackTent", art != null ? art.campBackTent : null, 1.55f, BuildingView.SortingOrder);
+        backTent = Piece("BackTent", art != null ? art.campBackTent : null, 1.55f, BuildingView.SortingOrder);
         banner = Piece("Banner", null, 1.6f, BuildingView.SortingOrder);
-        Piece("FrontTent", art != null ? art.campFrontTent : null, 0.95f, BuildingView.SortingOrder);
+        frontTent = Piece("FrontTent", art != null ? art.campFrontTent : null, 0.95f, BuildingView.SortingOrder);
         fire = Piece("Fire", null, 0.92f, BuildingView.SortingOrder);
-        Piece("Loot", art != null ? art.campLoot : null, 0.25f, BuildingView.SortingOrder);
+        loot = Piece("Loot", art != null ? art.campLoot : null, 0.25f, BuildingView.SortingOrder);
+        blazeBack = Piece("BlazeBack", null, 1.5f, BuildingView.SortingOrder);
+        blazeFront = Piece("BlazeFront", null, 0.9f, BuildingView.SortingOrder);
         bannerFrames = art != null ? art.campBanner : null;
         fireFrames = art != null ? art.campFire : null;
 
@@ -92,6 +102,30 @@ public class CampView : MonoBehaviour
         label.sortingOrder = 8;
 
         Live.Add(this);
+        if (state.cleared) BurnDown(instant: true);
+    }
+
+    /// <summary>
+    /// The camp is destroyed: it goes up in flames, then stays as a scorched ruin with charred
+    /// tent frames and smouldering embers until raiders move back in.
+    /// </summary>
+    public void BurnDown(bool instant)
+    {
+        if (Burnt) return;
+        Burnt = true;
+        health = 0;
+        burnedAt = instant ? -99f : Time.time;
+        foreach (var g in guards) if (g != null) Destroy(g.gameObject);   // the guards scatter
+        guards.Clear();
+        var art = ArtLibrary.Load();
+        if (art == null) return;
+        body.sprite = art.campBurntGround;
+        backTent.sprite = art.campBurntBackTent;
+        frontTent.sprite = art.campBurntFrontTent;
+        loot.enabled = false;
+        banner.enabled = false;
+        barBack.enabled = barFill.enabled = false;
+        fireFrames = art.campEmbers;
     }
 
     private SpriteRenderer Piece(string objectName, Sprite sprite, float footTiles, int order)
@@ -174,6 +208,11 @@ public class CampView : MonoBehaviour
     private void Update()
     {
         int frame = (int)(Time.time * 6f) + (State.zoneXY.x * 7 + State.zoneXY.y * 13 & 15);
+        if (Burnt)
+        {
+            UpdateBurnt(frame);
+            return;
+        }
         if (bannerFrames != null && bannerFrames.Count > 0) banner.sprite = bannerFrames[frame % bannerFrames.Count];
         if (fireFrames != null && fireFrames.Count > 0) fire.sprite = fireFrames[frame % fireFrames.Count];
         if (shake > 0)
@@ -196,6 +235,25 @@ public class CampView : MonoBehaviour
             : "";
 
         KeepGuards();
+    }
+
+    private void UpdateBurnt(int frame)
+    {
+        var art = ArtLibrary.Load();
+        if (art != null && art.campEmbers.Count > 0) fire.sprite = art.campEmbers[frame % art.campEmbers.Count];
+        bool blazing = Time.time - burnedAt < BlazeSeconds;
+        blazeBack.enabled = blazeFront.enabled = blazing && art != null && art.campBlazeBack.Count > 0;
+        if (blazeBack.enabled)
+        {
+            blazeBack.sprite = art.campBlazeBack[frame % art.campBlazeBack.Count];
+            blazeFront.sprite = art.campBlazeFront[(frame + 2) % art.campBlazeFront.Count];
+        }
+        var grid = controller.Grid;
+        bool hovered = new RectInt(State.cell, Vector2Int.one * CampState.Size).Contains(grid.WorldToCell(SettlementGrid.MouseWorld()));
+        int minutes = Mathf.Max(1, Mathf.CeilToInt(State.reoccupyIn / 60f));
+        label.text = hovered
+            ? $"<color=#bbbbbb>Burnt raider camp</color>\n<size=75%>Raiders may move back in, in about {minutes} min.</size>"
+            : "";
     }
 
     /// <summary>Keep a few raiders posted at the camp (lost ones come back slowly).</summary>
