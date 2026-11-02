@@ -62,6 +62,11 @@ public class ArtLibrary : ScriptableObject
     [Header("Raider camps")]
     [Tooltip("Animated frames of a raider camp (3x3 tiles, pivot on the footprint corner).")]
     public List<Sprite> campFrames = new List<Sprite>();
+
+    [Tooltip("Camp pieces, each on the same 3x3 canvas, sorted separately so units can walk between them.")]
+    public Sprite campGround, campBackTent, campFrontTent, campLoot;
+    public List<Sprite> campBanner = new List<Sprite>();
+    public List<Sprite> campFire = new List<Sprite>();
     public Sprite researchIcon;
 
     private static ArtLibrary cached;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -20,6 +21,66 @@ public class Troop : Unit
     public bool HasOrder { get; private set; }
 
     private SpriteRenderer selectionRing;
+
+    /// <summary>Set when this troop is a hero (named, saved, wears gear).</summary>
+    public HeroState Hero { get; private set; }
+
+    private TextMeshPro nameTag;
+    private SpriteRenderer heroGlow;
+
+    /// <summary>Turn this troop into the given hero: name tag and a gold ring under its feet.</summary>
+    public void MakeHero(HeroState hero)
+    {
+        Hero = hero;
+        if (heroGlow == null)
+        {
+            heroGlow = new GameObject("HeroGlow").AddComponent<SpriteRenderer>();
+            heroGlow.transform.SetParent(transform, false);
+            heroGlow.sprite = SimpleSprites.Ring;
+            heroGlow.color = new Color(1f, 0.78f, 0.25f, 0.65f);
+            heroGlow.sortingOrder = BuildingView.SortingOrder - 1;
+            heroGlow.transform.localPosition = new Vector3(0, 0.02f, 0);
+            heroGlow.transform.localScale = new Vector3(1.9f, 1.9f, 1f);
+        }
+        if (nameTag == null)
+        {
+            var tagObject = new GameObject("HeroName");
+            tagObject.transform.SetParent(transform, false);
+            tagObject.transform.localPosition = new Vector3(0, 1.05f, 0);
+            nameTag = tagObject.AddComponent<TextMeshPro>();
+            nameTag.alignment = TextAlignmentOptions.Center;
+            nameTag.fontSize = 2.4f;
+            nameTag.outlineWidth = 0.25f;
+            nameTag.outlineColor = new Color32(0, 0, 0, 220);
+            nameTag.color = new Color(1f, 0.85f, 0.4f);
+            nameTag.rectTransform.sizeDelta = new Vector2(6, 0.8f);
+            nameTag.sortingOrder = 8;
+        }
+        RefreshHeroTag();
+    }
+
+    public void RefreshHeroTag()
+    {
+        if (nameTag != null && Hero != null)
+        {
+            nameTag.text = $"{Hero.name} <size=75%>Lv {Hero.level + 1}</size>";
+        }
+    }
+
+    private void LateUpdate()
+    {
+        // Units face left by turning round; keep the name readable.
+        if (nameTag != null) nameTag.transform.rotation = Quaternion.identity;
+    }
+
+    protected override void OnKilled(Unit victim)
+    {
+        if (Hero != null && Settlement.Instance != null && victim != null)
+        {
+            Settlement.Instance.GainXp(Hero, 4f + Settlement.UnitPower(victim.definition) * 6f);
+            RefreshHeroTag();
+        }
+    }
 
     /// <summary>Show or hide the ring under this troop's feet.</summary>
     public void SetSelected(bool selected)
@@ -168,6 +229,15 @@ public class Troop : Unit
         }
 
         return base.SelectTarget(candidates); // closest
+    }
+
+    protected override void Die()
+    {
+        if (Hero != null && Settlement.Instance != null)
+        {
+            Settlement.Instance.HeroFell(Hero);
+        }
+        base.Die();
     }
 
     public override void SetHovered(bool hovered)

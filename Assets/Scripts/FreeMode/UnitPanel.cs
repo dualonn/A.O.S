@@ -18,6 +18,7 @@ public class UnitPanel
     private readonly LayoutElement listElement;
     private readonly Button homeButton;
     private readonly List<(Troop troop, Button button, TextMeshProUGUI label)> rows = new List<(Troop, Button, TextMeshProUGUI)>();
+    private readonly GearPanel gear;
 
     /// <summary>Extra buttons and info for a single selected troop (heroes and gear hook in here).</summary>
     public RectTransform Extras { get; }
@@ -35,6 +36,7 @@ public class UnitPanel
         extrasLayout.childControlWidth = extrasLayout.childControlHeight = true;
         extrasLayout.childForceExpandWidth = true;
         extrasLayout.childForceExpandHeight = false;
+        gear = new GearPanel(controller, Extras, showTooltip, hideTooltip);
         homeButton = UIBuilder.Button("Home", panel, controller.ReturnSelectedHome, out var homeLabel, 40);
         homeLabel.text = "Back to their building";
         UIBuilder.OnHover(homeButton.gameObject, () => showTooltip(() =>
@@ -58,7 +60,9 @@ public class UnitPanel
         {
             var t = units[0];
             var def = t.definition;
-            var sb = new StringBuilder($"<b>{(def != null ? def.displayName : t.name)}</b>\n");
+            string title = t.Hero != null ? $"<color=#fd6>{t.Hero.name}</color> <size=80%>{def?.displayName}</size>"
+                : def != null ? def.displayName : t.name;
+            var sb = new StringBuilder($"<b>{title}</b>\n");
             sb.Append($"Health {t.health}/{t.maxHealth}   Attack {t.attackPower}   Speed {t.moveSpeed:0.0}\n");
             if (t.Home != null)
             {
@@ -81,6 +85,7 @@ public class UnitPanel
             SyncRows(units);
         }
         Extras.gameObject.SetActive(units.Count == 1);
+        gear.Refresh();
     }
 
     /// <summary>One row per selected troop: icon, name, health; click to select just that one.</summary>
@@ -101,7 +106,8 @@ public class UnitPanel
             var t = units[i];
             float share = t.maxHealth > 0 ? t.health / (float)t.maxHealth : 1f;
             string color = share > 0.66f ? "#8f8" : share > 0.33f ? "#fe8" : "#f88";
-            row.label.text = $"{(t.definition != null ? t.definition.displayName : t.name)}  <color={color}><size=85%>{t.health}/{t.maxHealth}</size></color>";
+            string who = t.Hero != null ? $"<color=#fd6>{t.Hero.name}</color>" : t.definition != null ? t.definition.displayName : t.name;
+            row.label.text = $"{who}  <color={color}><size=85%>{t.health}/{t.maxHealth}</size></color>";
             rows[i] = (t, row.button, row.label);
         }
         listElement.preferredHeight = Mathf.Min(units.Count, 6) * 34f;

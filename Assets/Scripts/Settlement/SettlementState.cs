@@ -39,6 +39,38 @@ public class SettlementState
 
     [Tooltip("Raider camps found on the map (generated from the seed; saved so cleared ones stay cleared).")]
     public List<CampState> camps = new List<CampState>();
+
+    [Tooltip("Seconds of play so far (heroes' recovery times count against this).")]
+    public float playTime;
+
+    public List<HeroState> heroes = new List<HeroState>();
+    public List<ItemInstance> inventory = new List<ItemInstance>();
+    public int nextItemId = 1;
+    public int nextHeroId = 1;
+}
+
+/// <summary>A promoted troop: named, saved, levels up, wears gear, and recovers when it falls.</summary>
+[Serializable]
+public class HeroState
+{
+    public int id;
+    public string name;
+
+    [Tooltip("The unit type it was promoted from.")]
+    public string unitId;
+
+    [Tooltip("Instance id of the building it lives at (it recovers there).")]
+    public int homeBuilding;
+
+    [Tooltip("0 = level 1.")]
+    public int level;
+    public float xp;
+
+    [Tooltip("Item uid per gear slot (Head, Body, Weapon, Shield, Trinket); 0 = empty.")]
+    public List<int> equipped = new List<int> { 0, 0, 0, 0, 0 };
+
+    [Tooltip("Play time when it's back on its feet after falling.")]
+    public float downUntil;
 }
 
 /// <summary>A raider camp out on the map: where raids come from, and somewhere to send your army.</summary>

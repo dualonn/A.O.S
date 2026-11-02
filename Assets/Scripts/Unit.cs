@@ -42,6 +42,17 @@ public abstract class Unit : MonoBehaviour
     [Tooltip("How hard this unit's hits shove targets back (world units per second at the default size).")]
     public float knockback = 2.5f;
 
+    // ---------- Gear effects (heroes) ----------
+    [HideInInspector] public float armour;       // each hit is cut by armour / (armour + 100)
+    [HideInInspector] public float lifeSteal;    // heal this share of damage dealt
+    [HideInInspector] public float cleave;       // also hit enemies beside the target for this share
+    [HideInInspector] public float thorns;       // attackers take this share back
+    [HideInInspector] public float mending;      // heal nearby allies this much per second
+    [HideInInspector] public float rallying;     // nearby allies move this share faster
+
+    private UnitStatModifier extraModifier;
+    private float rallyBoost, rallyUntil, nextAura;
+
     [Header("Death")]
     [Tooltip("Seconds the body stays after the death animation starts, before fading.")]
     public float corpseTime = 2f;
@@ -148,6 +159,7 @@ public abstract class Unit : MonoBehaviour
         }
 
         ApplyNudges();
+        Auras();
 
         if (Time.time >= nextScanTime)
         {
@@ -219,11 +231,16 @@ public abstract class Unit : MonoBehaviour
         {
             return;
         }
+        if (extraModifier != null)
+        {
+            mod = Settlement.Combine(mod, extraModifier); // gear and levels stack on top
+        }
         if (appliedBuildingMod != null &&
             Mathf.Approximately(appliedBuildingMod.healthMultiplier, mod.healthMultiplier) &&
             Mathf.Approximately(appliedBuildingMod.attackMultiplier, mod.attackMultiplier) &&
             Mathf.Approximately(appliedBuildingMod.speedMultiplier, mod.speedMultiplier) &&
-            Mathf.Approximately(appliedBuildingMod.cooldownMultiplier, mod.cooldownMultiplier))
+            Mathf.Approximately(appliedBuildingMod.cooldownMultiplier, mod.cooldownMultiplier) &&
+            Mathf.Approximately(appliedBuildingMod.rangeMultiplier, mod.rangeMultiplier))
         {
             return;
         }
@@ -247,6 +264,58 @@ public abstract class Unit : MonoBehaviour
         if (healthSlider != null)
         {
             healthSlider.maxValue = maxHealth;
+        }
+    }
+
+    /// <summary>Extra bonuses on top of the building's (a hero's gear and levels), plus its effects.</summary>
+    public void SetGear(GearStats gear)
+    {
+        var mod = gear.ToModifier();
+        if (extraModifier == null || !Mathf.Approximately(extraModifier.healthMultiplier, mod.healthMultiplier)
+            || !Mathf.Approximately(extraModifier.attackMultiplier, mod.attackMultiplier)
+            || !Mathf.Approximately(extraModifier.speedMultiplier, mod.speedMultiplier)
+            || !Mathf.Approximately(extraModifier.cooldownMultiplier, mod.cooldownMultiplier)
+            || !Mathf.Approximately(extraModifier.rangeMultiplier, mod.rangeMultiplier))
+        {
+            extraModifier = mod;
+            appliedBuildingMod = null; // re-apply with the new gear next time
+        }
+        armour = gear.armour;
+        lifeSteal = gear.lifeSteal;
+        cleave = gear.cleave;
+        thorns = gear.thorns;
+        mending = gear.mending;
+        rallying = gear.rallying;
+    }
+
+    public void Heal(int amount)
+    {
+        if (isDead || amount <= 0) return;
+        health = Mathf.Min(maxHealth, health + amount);
+    }
+
+    /// <summary>Called on the attacker when its hit (or arrow) kills a unit.</summary>
+    protected virtual void OnKilled(Unit victim) { }
+
+    /// <summary>Healing and rallying auras, once a second.</summary>
+    private void Auras()
+    {
+        if ((mending <= 0 && rallying <= 0) || Time.time < nextAura)
+        {
+            return;
+        }
+        nextAura = Time.time + 1f;
+        const float radius = 3f;
+        foreach (var u in All)
+        {
+            if (u == null || u.Team != Team || !u.IsAlive) continue;
+            if ((u.transform.position - transform.position).sqrMagnitude > radius * radius) continue;
+            if (mending > 0) u.Heal(Mathf.CeilToInt(mending));
+            if (rallying > 0)
+            {
+                u.rallyBoost = Mathf.Max(u.rallyBoost, rallying);
+                u.rallyUntil = Time.time + 1.5f;
+            }
         }
     }
 
@@ -435,6 +504,18 @@ public abstract class Unit : MonoBehaviour
         if (Vector2.Distance(transform.position, target.transform.position) <= attackRange * 1.25f + 0.2f)
         {
             target.TakeDamage(attackPower, this);
+            if (cleave > 0)
+            {
+                // Sweep: others right beside the target take a share too.
+                foreach (var u in All.ToArray())
+                {
+                    if (u == null || u == target || u.Team == Team || !u.IsAlive) continue;
+                    if (Vector2.Distance(u.transform.position, target.transform.position) <= 0.9f)
+                    {
+                        u.TakeDamage(Mathf.Max(1, Mathf.RoundToInt(attackPower * cleave)), this);
+                    }
+                }
+            }
         }
     }
 
@@ -461,6 +542,7 @@ public abstract class Unit : MonoBehaviour
         if (nav != null)
         {
             speed *= nav.SpeedFactor(transform.position);
+            if (Time.time < rallyUntil) speed *= 1f + rallyBoost;
             Vector3 before = transform.position;
             transform.position = nav.Step(transform.position, next, speed * Time.deltaTime, Team);
             // Barely moved and a wall is right ahead: report it.
@@ -521,10 +603,21 @@ public abstract class Unit : MonoBehaviour
             float size = PersonalSpace / 0.8f;
             knockVelocity += away.normalized * knockback * size;
         }
+        if (armour > 0)
+        {
+            amount = Mathf.Max(1, Mathf.RoundToInt(amount * 100f / (100f + armour)));
+        }
+        int dealt = Mathf.Min(health, amount);
         health = Mathf.Max(0, health - amount);
+        if (attacker != null && attacker.IsAlive)
+        {
+            if (attacker.lifeSteal > 0) attacker.Heal(Mathf.RoundToInt(dealt * attacker.lifeSteal));
+            if (thorns > 0) attacker.TakeDamage(Mathf.Max(1, Mathf.RoundToInt(amount * thorns))); // no attacker: thorns don't bounce
+        }
         if (health <= 0)
         {
             Die();
+            if (attacker != null) attacker.OnKilled(this);
         }
     }
 

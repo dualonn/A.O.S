@@ -90,6 +90,34 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 63f4b8aee345c9349a5f0156198bed96, type: 2}
   - {fileID: 11400000, guid: ec93168471c329d48afb5bae9f25688a, type: 2}
   - {fileID: 11400000, guid: a4c9b1b1079646e4ab259aee60ab9446, type: 2}
+  itemTemplates:
+  - {fileID: 11400000, guid: dc9247bfeb79374448b791f65132d071, type: 2}
+  - {fileID: 11400000, guid: 1f663026c005b4945b4162e0397d3f44, type: 2}
+  - {fileID: 11400000, guid: fe8c11f889d442749af8dd04920fd8d9, type: 2}
+  - {fileID: 11400000, guid: cfa8a0bfc4e3b2b4f8ba6d2007bc58dd, type: 2}
+  - {fileID: 11400000, guid: 9b0012b92d31164428f4c5e4f5619203, type: 2}
+  - {fileID: 11400000, guid: c78e53a05a432204dbb056d06bc1f13a, type: 2}
+  - {fileID: 11400000, guid: e50f1b9c1127bac4f914a26bb9d5347e, type: 2}
+  - {fileID: 11400000, guid: 858cffc0db6baea40b0b46a681e543ad, type: 2}
+  - {fileID: 11400000, guid: 746c4c525ad3a9345ab427d3b696be0f, type: 2}
+  - {fileID: 11400000, guid: 92eff56ec10c49945b4f6001ccce38db, type: 2}
+  - {fileID: 11400000, guid: 1b7dbbf4bc5a6c640b6d447e657203e1, type: 2}
+  - {fileID: 11400000, guid: f7693e119a255d841b48a4f92a0085a3, type: 2}
+  - {fileID: 11400000, guid: 7caccb4e9bfc98f4b8a4697f543cf3c8, type: 2}
+  - {fileID: 11400000, guid: bb1f140f89ab97a438306525ea438446, type: 2}
+  - {fileID: 11400000, guid: f75e7b24a1f2a264e99cdb59cf611208, type: 2}
+  - {fileID: 11400000, guid: 1d27ad13ec46d0844a991537fb676cc4, type: 2}
+  - {fileID: 11400000, guid: 1a49bac3f2e911b4e8d84d94bf50e199, type: 2}
+  - {fileID: 11400000, guid: 2d4e0eea6294a8f4baf275425eb580f6, type: 2}
+  - {fileID: 11400000, guid: 55da67f89caae014392911ca8fba5276, type: 2}
+  - {fileID: 11400000, guid: c8ee6c2b92475d6418c50a9140361530, type: 2}
+  - {fileID: 11400000, guid: 39101be8d81ce3e41af7f67fe2c78399, type: 2}
+  - {fileID: 11400000, guid: f77d3a05f864b0d4f8f5ddff5ddd5955, type: 2}
+  - {fileID: 11400000, guid: 2db0748b9a521db4b96b1e3cb16ee0be, type: 2}
+  - {fileID: 11400000, guid: 8f71b4e25c838f346b0e8b817151171d, type: 2}
+  - {fileID: 11400000, guid: e3f6c195936350347ba35d4811d33a72, type: 2}
+  - {fileID: 11400000, guid: 692f337490a201748bbc169d61c63e8e, type: 2}
+  - {fileID: 11400000, guid: 723fbcc07dd8d4148a51cce50a5e2156, type: 2}
   startingResources:
   - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
     amount: 100
@@ -129,6 +157,12 @@ MonoBehaviour:
   settlementSafeRadiusGrowthMax: 10
   outpostSafeRadius: 12
   defendAlertRange: 14
+  heroRecoverySeconds: 120
+  campChance: 0.14
+  campMinDistance: 44
+  campRaidRange: 110
+  campReoccupySeconds: 1800
+  campTierDistance: 45
   raidSpawnBand: 12
   maxResourceLossShare: 0.3
   maxBuildingDamageShare: 0.4

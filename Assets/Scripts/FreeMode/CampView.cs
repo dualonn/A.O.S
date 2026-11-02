@@ -23,7 +23,8 @@ public class CampView : MonoBehaviour
     private SpriteRenderer body;
     private SpriteRenderer barBack, barFill;
     private TextMeshPro label;
-    private List<Sprite> frames;
+    private List<Sprite> bannerFrames, fireFrames;
+    private SpriteRenderer banner, fire;
     private float health, maxHealth;
     private float shake;
     private readonly List<Enemy> guards = new List<Enemy>();
@@ -43,15 +44,18 @@ public class CampView : MonoBehaviour
 
         var grid = owner.Grid;
         Vector3 corner = grid.CellToWorld(state.cell);
-        transform.position = new Vector3(corner.x, corner.y, BuildingView.DepthFor(corner.y + 0.8f * grid.cellSize));
 
+        // Each piece sorts by where it stands (its foot, in tiles up the camp), like units do.
+        transform.position = new Vector3(corner.x, corner.y, 0);
         var art = ArtLibrary.Load();
-        frames = art != null ? art.campFrames : null;
-        body = new GameObject("Camp").AddComponent<SpriteRenderer>();
-        body.transform.SetParent(transform, false);
-        body.transform.localScale = Vector3.one * grid.cellSize;
-        body.sortingOrder = BuildingView.SortingOrder;
-        if (frames != null && frames.Count > 0) body.sprite = frames[0];
+        body = Piece("Ground", art != null ? art.campGround : null, 3.2f, BuildingView.SortingOrder - 2); // flat: always under
+        Piece("BackTent", art != null ? art.campBackTent : null, 1.55f, BuildingView.SortingOrder);
+        banner = Piece("Banner", null, 1.6f, BuildingView.SortingOrder);
+        Piece("FrontTent", art != null ? art.campFrontTent : null, 0.95f, BuildingView.SortingOrder);
+        fire = Piece("Fire", null, 0.92f, BuildingView.SortingOrder);
+        Piece("Loot", art != null ? art.campLoot : null, 0.25f, BuildingView.SortingOrder);
+        bannerFrames = art != null ? art.campBanner : null;
+        fireFrames = art != null ? art.campFire : null;
 
         float size = CampState.Size * grid.cellSize;
         barBack = Quad("BarBack", new Vector2(size * 0.2f, size + 0.15f), new Vector2(size * 0.6f, 0.16f), new Color(0, 0, 0, 0.6f), 6);
@@ -69,6 +73,19 @@ public class CampView : MonoBehaviour
         label.sortingOrder = 8;
 
         Live.Add(this);
+    }
+
+    private SpriteRenderer Piece(string objectName, Sprite sprite, float footTiles, int order)
+    {
+        var grid = controller.Grid;
+        var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
+        sr.transform.SetParent(transform, false);
+        sr.transform.localScale = Vector3.one * grid.cellSize;
+        float worldFoot = transform.position.y + footTiles * grid.cellSize;
+        sr.transform.localPosition = new Vector3(0, 0, BuildingView.DepthFor(worldFoot));
+        sr.sprite = sprite;
+        sr.sortingOrder = order;
+        return sr;
     }
 
     private SpriteRenderer Quad(string objectName, Vector2 offset, Vector2 size, Color color, int order)
@@ -127,14 +144,16 @@ public class CampView : MonoBehaviour
 
     private void Update()
     {
-        if (frames != null && frames.Count > 0)
-        {
-            body.sprite = frames[(int)(Time.time * 6f + (State.zoneXY.x * 7 + State.zoneXY.y * 13 & 15)) % frames.Count];
-        }
+        int frame = (int)(Time.time * 6f) + (State.zoneXY.x * 7 + State.zoneXY.y * 13 & 15);
+        if (bannerFrames != null && bannerFrames.Count > 0) banner.sprite = bannerFrames[frame % bannerFrames.Count];
+        if (fireFrames != null && fireFrames.Count > 0) fire.sprite = fireFrames[frame % fireFrames.Count];
         if (shake > 0)
         {
+            // Rattle the whole camp a little when hit.
             shake -= Time.deltaTime;
-            body.transform.localPosition = shake > 0 ? (Vector3)(Random.insideUnitCircle * 0.05f) : Vector3.zero;
+            Vector3 corner = controller.Grid.CellToWorld(State.cell);
+            Vector2 jitter = shake > 0 ? Random.insideUnitCircle * 0.05f : Vector2.zero;
+            transform.position = new Vector3(corner.x + jitter.x, corner.y + jitter.y, 0);
         }
 
         bool hurt = health < maxHealth;

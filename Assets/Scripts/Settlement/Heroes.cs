@@ -1,0 +1,204 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>Heroes, gear and loot: the settlement side (saved state and rules).</summary>
+public partial class Settlement
+{
+    /// <summary>Raised when a hero levels up, falls, recovers, or changes gear.</summary>
+    public event System.Action<HeroState> HeroChanged;
+
+    /// <summary>How many heroes you can have: one, plus one per age reached.</summary>
+    public int HeroSlots => 1 + State.ageIndex;
+
+    /// <summary>Highest level a hero can reach right now.</summary>
+    public int LevelCap => 5 + 5 * State.ageIndex;
+
+    /// <summary>
+    /// How far along you are, for matching loot (0 = start of the Stone Age, 1 = Bronze...).
+    /// Until ages are earned gradually, this is the middle of your current age.
+    /// </summary>
+    public float Progress => State.ageIndex + 0.5f;
+
+    public HeroState GetHero(int id) => State.heroes.Find(h => h.id == id);
+
+    public ItemInstance GetItem(int uid) => uid == 0 ? null : State.inventory.Find(i => i.uid == uid);
+
+    public ItemTemplate GetTemplate(string id) => Database.itemTemplates.Find(t => t != null && t.id == id);
+
+    public bool IsDown(HeroState hero) => hero != null && State.playTime < hero.downUntil;
+
+    /// <summary>A player unit type by asset name (heroes remember the type they were promoted from).</summary>
+    public UnitDefinition FindUnit(string name)
+    {
+        foreach (var age in Database.ages)
+        {
+            if (age == null) continue;
+            var unit = age.playerUnits.Find(u => u != null && u.name == name);
+            if (unit != null) return unit;
+        }
+        var building = Database.buildings.Find(b => b != null && b.trainsUnit != null && b.trainsUnit.name == name);
+        return building != null ? building.trainsUnit : null;
+    }
+
+    // ---------- Promotion ----------
+
+    public List<ResourceAmount> PromoteCost()
+    {
+        int a = State.ageIndex + 1;
+        var cost = new List<ResourceAmount>();
+        var food = Database.food;
+        var wood = Database.resources.Find(r => r != null && r.id == "Wood");
+        if (food != null) cost.Add(new ResourceAmount { resource = food, amount = 120 * a });
+        if (wood != null) cost.Add(new ResourceAmount { resource = wood, amount = 60 * a });
+        return cost;
+    }
+
+    public bool CanPromote(out string why)
+    {
+        if (State.heroes.Count >= HeroSlots)
+        {
+            why = $"All {HeroSlots} hero places are taken (one more each age)";
+            return false;
+        }
+        if (!CanAfford(PromoteCost()))
+        {
+            why = "Not enough resources";
+            return false;
+        }
+        why = null;
+        return true;
+    }
+
+    /// <summary>Make a troop of this type, from this building, into a named hero.</summary>
+    public HeroState Promote(UnitDefinition unit, BuildingState home, out string why)
+    {
+        if (unit == null || home == null)
+        {
+            why = "Can't promote that";
+            return null;
+        }
+        if (!CanPromote(out why))
+        {
+            return null;
+        }
+        Spend(PromoteCost());
+        var hero = new HeroState
+        {
+            id = State.nextHeroId++,
+            unitId = unit.name,
+            homeBuilding = home.instanceId,
+        };
+        hero.name = HeroName(hero.id);
+        State.heroes.Add(hero);
+        Notify($"{hero.name} the {unit.displayName} is now a hero!");
+        HeroChanged?.Invoke(hero);
+        return hero;
+    }
+
+    private static readonly string[] NameStarts = { "Ar", "Bran", "Cor", "Da", "Eld", "Fen", "Gar", "Hal", "Ivo", "Jor", "Kael", "Lu", "Mor", "Nyr", "Os", "Per", "Rho", "Syl", "Tor", "Ul", "Vex", "Wyn", "Yor", "Zan" };
+    private static readonly string[] NameEnds = { "ic", "a", "ok", "en", "is", "uth", "ar", "wyn", "o", "ric", "ia", "dor", "an", "et", "ius" };
+    private static readonly string[] Epithets = { "the Bold", "Ironhand", "the Swift", "Stoneheart", "the Wise", "Wolfsbane", "the Red", "Oathkeeper", "the Unbroken", "Farstrider" };
+
+    private string HeroName(int id)
+    {
+        var rng = new System.Random(State.mapSeed ^ (id * 7919));
+        return NameStarts[rng.Next(NameStarts.Length)] + NameEnds[rng.Next(NameEnds.Length)] + " " + Epithets[rng.Next(Epithets.Length)];
+    }
+
+    // ---------- Experience ----------
+
+    public float XpToNext(HeroState hero) => 60f * Mathf.Pow(hero.level + 1, 1.4f);
+
+    public void GainXp(HeroState hero, float xp)
+    {
+        if (hero == null || hero.level + 1 >= LevelCap)
+        {
+            return;
+        }
+        hero.xp += xp;
+        while (hero.level + 1 < LevelCap && hero.xp >= XpToNext(hero))
+        {
+            hero.xp -= XpToNext(hero);
+            hero.level++;
+            Notify($"{hero.name} reached level {hero.level + 1}!");
+            HeroChanged?.Invoke(hero);
+        }
+    }
+
+    /// <summary>A hero fell: back on their feet at home after a while.</summary>
+    public void HeroFell(HeroState hero)
+    {
+        if (hero == null) return;
+        hero.downUntil = State.playTime + Database.heroRecoverySeconds;
+        Notify($"{hero.name} has fallen, and will recover at home in {Database.heroRecoverySeconds:0}s.");
+        HeroChanged?.Invoke(hero);
+    }
+
+    // ---------- Gear ----------
+
+    /// <summary>The hero wearing this item, if any.</summary>
+    public HeroState WhoWears(int uid) => uid == 0 ? null : State.heroes.Find(h => h.equipped.Contains(uid));
+
+    public void Equip(HeroState hero, ItemInstance item)
+    {
+        var template = GetTemplate(item?.template);
+        if (hero == null || template == null)
+        {
+            return;
+        }
+        // Take it off whoever had it.
+        var other = WhoWears(item.uid);
+        if (other != null)
+        {
+            other.equipped[other.equipped.IndexOf(item.uid)] = 0;
+            HeroChanged?.Invoke(other);
+        }
+        while (hero.equipped.Count < 5) hero.equipped.Add(0);
+        hero.equipped[(int)template.slot] = item.uid;
+        HeroChanged?.Invoke(hero);
+    }
+
+    public void Unequip(HeroState hero, GearSlot slot)
+    {
+        if (hero == null) return;
+        while (hero.equipped.Count < 5) hero.equipped.Add(0);
+        hero.equipped[(int)slot] = 0;
+        HeroChanged?.Invoke(hero);
+    }
+
+    /// <summary>A hero's bonuses: every equipped item, plus +5% health and attack per level.</summary>
+    public GearStats HeroStats(HeroState hero)
+    {
+        var total = new GearStats();
+        if (hero == null) return total;
+        foreach (int uid in hero.equipped)
+        {
+            var item = GetItem(uid);
+            if (item != null) total.Add(Items.StatsOf(item, GetTemplate(item.template)));
+        }
+        total.health += 0.05f * hero.level;
+        total.attack += 0.05f * hero.level;
+        return total;
+    }
+
+    // ---------- Loot ----------
+
+    /// <summary>
+    /// Roll a piece of gear into the inventory. Its strength centres on your progress (plus
+    /// 'sourceBonus' for tough sources) with a slim chance of something far beyond.
+    /// </summary>
+    public ItemInstance GainLoot(float sourceBonus, float luck, string from)
+    {
+        var rng = new System.Random(State.mapSeed ^ (State.nextItemId * 104729) ^ (int)(State.playTime * 10));
+        var item = Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng);
+        if (item == null)
+        {
+            return null;
+        }
+        State.nextItemId++;
+        State.inventory.Add(item);
+        string ahead = item.power >= State.ageIndex + 1.5f ? " <color=#fd6>(far beyond your age!)</color>" : "";
+        Notify($"Found <color=#{Items.RarityHex(item.rarity)}>{item.name}</color> {from}.{ahead}");
+        return item;
+    }
+}

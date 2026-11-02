@@ -9,7 +9,7 @@ using UnityEngine;
 /// then runs whenever the game is open, in every scene (it survives scene loads).
 /// Scenes only display it and send it commands; all rules live here.
 /// </summary>
-public class Settlement : MonoBehaviour
+public partial class Settlement : MonoBehaviour
 {
     public static Settlement Instance { get; private set; }
 
@@ -269,6 +269,12 @@ public class Settlement : MonoBehaviour
         if (t >= 2) Add("Iron", 25 * t);
         if (t >= 3) Add("Gold", 30);
         foreach (var item in loot) AddResource(item.resource, item.amount);
+        // Sometimes gear too: better odds, and slightly stronger rolls, at tougher camps.
+        var rng = new System.Random(State.mapSeed ^ camp.cell.x * 31 ^ camp.cell.y * 17 ^ (int)State.playTime);
+        if (rng.NextDouble() < 0.45 + 0.1 * t)
+        {
+            GainLoot(0.25f * (t - State.ageIndex), 0.05f * t, "in the raiders' camp");
+        }
         camp.cleared = true;
         camp.reoccupyIn = Database.campReoccupySeconds;
         State.secondsUntilWave += 90f;
@@ -467,6 +473,7 @@ public class Settlement : MonoBehaviour
 
     public void Tick(float dt)
     {
+        State.playTime += dt;
         UpdateWallLayer();
         if (!IsFounded)
         {

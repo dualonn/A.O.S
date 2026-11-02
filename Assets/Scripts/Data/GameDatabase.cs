@@ -16,6 +16,9 @@ public class GameDatabase : ScriptableObject
     public List<BuildingDefinition> buildings = new List<BuildingDefinition>();
     public List<Technology> technologies = new List<Technology>();
 
+    [Tooltip("Kinds of gear that can drop (items are rolled from these).")]
+    public List<ItemTemplate> itemTemplates = new List<ItemTemplate>();
+
     [Header("Free mode: start")]
     public List<ResourceAmount> startingResources = new List<ResourceAmount>();
     public int startingPopulation = 3;
@@ -97,6 +100,10 @@ public class GameDatabase : ScriptableObject
 
     [Tooltip("Defending troops go after any raider that comes within this many tiles of their settlement's buildings.")]
     public float defendAlertRange = 14f;
+
+    [Header("Free mode: heroes")]
+    [Tooltip("Seconds of play before a fallen hero is back on their feet at home.")]
+    public float heroRecoverySeconds = 120f;
 
     [Header("Free mode: raider camps")]
     [Tooltip("Chance that a newly explored zone holds a raider camp.")]

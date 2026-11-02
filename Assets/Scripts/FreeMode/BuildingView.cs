@@ -500,6 +500,60 @@ public class BuildingView : MonoBehaviour
         return "";
     }
 
+    // ---------- Heroes who live here ----------
+
+    private readonly Dictionary<int, Troop> heroes = new Dictionary<int, Troop>();
+
+    /// <summary>A troop from this building has just been made a hero: it stops counting as a troop.</summary>
+    public void AdoptAsHero(Troop troop, HeroState hero)
+    {
+        troops.Remove(troop);
+        heroes[hero.id] = troop;
+        troop.MakeHero(hero);
+    }
+
+    /// <summary>Keep this building's heroes on the field (and bring them back once recovered).</summary>
+    private void KeepHeroes(Settlement.BuildingStats stats)
+    {
+        var settlement = controller.Settlement;
+        if (Definition.trainsUnit == null || !settlement.IsWorking(State, Definition))
+        {
+            return;
+        }
+        foreach (var hero in settlement.State.heroes)
+        {
+            // Heroes whose home is gone move in with the first troop building that notices.
+            if (hero.homeBuilding != State.instanceId && !settlement.State.buildings.Exists(b => b.instanceId == hero.homeBuilding))
+            {
+                hero.homeBuilding = State.instanceId;
+            }
+            if (hero.homeBuilding != State.instanceId)
+            {
+                continue;
+            }
+            heroes.TryGetValue(hero.id, out var troop);
+            if (troop == null || !troop.IsAlive)
+            {
+                if (settlement.IsDown(hero))
+                {
+                    continue;
+                }
+                var unit = settlement.FindUnit(hero.unitId) ?? Definition.trainsUnit;
+                if (unit == null || unit.prefab == null) continue;
+                var spawn = controller.Grid.AreaCenter(State.cell, Definition.size);
+                troop = controller.SpawnUnit(unit.prefab, spawn).GetComponent<Troop>();
+                if (troop == null) continue;
+                troop.Home = this;
+                troop.SetRallyPoint(controller.GetRallyPoint(this));
+                troop.SetStance(State.stance, controller.TownZoneFor(transform.position), controller.SightRange);
+                troop.MakeHero(hero);
+                heroes[hero.id] = troop;
+            }
+            troop.SetGear(settlement.HeroStats(hero));
+            troop.SetBuildingModifier(stats.trainedUnits);
+        }
+    }
+
     private void TrainTroops()
     {
         troops.RemoveAll(t => t == null || !t.IsAlive);
@@ -525,6 +579,17 @@ public class BuildingView : MonoBehaviour
                 t.SetDefendArea(defendArea, alertRange);
                 t.SetBuildingModifier(stats.trainedUnits);
             }
+        }
+        KeepHeroes(stats);
+        foreach (var h in heroes.Values)
+        {
+            if (h == null || !h.IsAlive) continue;
+            if (h.Stance != State.stance)
+            {
+                h.SetStance(State.stance, controller.TownZoneFor(transform.position), controller.SightRange);
+                h.ReturnHome(controller.GetRallyPoint(this));
+            }
+            h.SetDefendArea(controller.SettlementFor(transform.position), controller.Settlement.Database.defendAlertRange);
         }
         var unit = Definition.trainsUnit;
         if (unit == null || unit.prefab == null || !controller.Settlement.IsWorking(State, Definition))
@@ -567,6 +632,13 @@ public class BuildingView : MonoBehaviour
             if (troop != null)
             {
                 Destroy(troop.gameObject);
+            }
+        }
+        foreach (var hero in heroes.Values)
+        {
+            if (hero != null)
+            {
+                Destroy(hero.gameObject);
             }
         }
     }

@@ -121,9 +121,19 @@ MonoBehaviour:
   panel: {fileID: 21300000, guid: 0ffd0ff1a5144004f8c6c2be6c51fab6, type: 3}
   peopleIcon: {fileID: 21300000, guid: c8675e67a1b024d44964981ffaf34bbb, type: 3}
   enemyIcon: {fileID: 21300000, guid: 88aa7de0adca4624d8b43948311c9c53, type: 3}
-  campFrames:
-  - {fileID: 21300000, guid: 119296709292447478213ef26b98b743, type: 3}
-  - {fileID: 21300000, guid: 3bba7f3758e4354479fed60df32423eb, type: 3}
-  - {fileID: 21300000, guid: c66231caba051254a9970f42ec9a851d, type: 3}
-  - {fileID: 21300000, guid: bf786960255d0e942ac6b8abf0f14563, type: 3}
+  campFrames: []
+  campGround: {fileID: 21300000, guid: d02f440c85f05fe4cb1ca431c6e5355d, type: 3}
+  campBackTent: {fileID: 21300000, guid: 3a54b8a00f215164d8d08f19620107a0, type: 3}
+  campFrontTent: {fileID: 21300000, guid: 83c4468a053b4fc409e13d4c4408b177, type: 3}
+  campLoot: {fileID: 21300000, guid: e6c6525d5477808419d9b6535285ba7a, type: 3}
+  campBanner:
+  - {fileID: 21300000, guid: d84e0a4df0130ef4ca369e298cf8bd79, type: 3}
+  - {fileID: 21300000, guid: 6cafbe5d01d289c41a677c0734c2795b, type: 3}
+  - {fileID: 21300000, guid: 34786499ccd79384d990d404cf71e1fe, type: 3}
+  - {fileID: 21300000, guid: bac0736c4e7697549a2ac8a675912000, type: 3}
+  campFire:
+  - {fileID: 21300000, guid: 6f7060615b518ea48b89c909b476e7e8, type: 3}
+  - {fileID: 21300000, guid: 6b5f703120e3c994abc204fec4bbf1ff, type: 3}
+  - {fileID: 21300000, guid: e959f7adea49c3848b9d35ca9eff7555, type: 3}
+  - {fileID: 21300000, guid: 81baabc355638ba4f86f1c2707d78133, type: 3}
   researchIcon: {fileID: 21300000, guid: 05123ad631ca9144aa42ffc3c0349727, type: 3}
