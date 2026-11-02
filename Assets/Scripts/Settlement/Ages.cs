@@ -43,8 +43,10 @@ public partial class Settlement
         }
         foreach (var def in Database.buildings)
         {
-            // Walls are optional defences, so they don't count towards an age.
+            // Walls are optional defences, and a building that trains one kind of unit is a choice of
+            // army (you may never use that class), so neither counts unless research needs it.
             if (def == null || def.age != age || def.IsWall) continue;
+            if (def.trainsUnit != null && !NeededForResearch(def)) continue;
             info.buildingsTotal++;
             if (HaveOrOutgrew(def)) info.buildingsDone++;
             else info.missingBuildings.Add(def.displayName);
@@ -81,6 +83,18 @@ public partial class Settlement
         for (var d = def; d != null && steps++ < 12; d = d.rankUpTo)
         {
             if (CountBuilt(d) > 0) return true;
+        }
+        return false;
+    }
+
+    /// <summary>Some research asks for this building (so you need it to keep progressing).</summary>
+    private bool NeededForResearch(BuildingDefinition def)
+    {
+        foreach (var tech in Database.technologies)
+        {
+            if (tech == null) continue;
+            foreach (var need in tech.requirements.buildings)
+                if (need.building == def) return true;
         }
         return false;
     }
