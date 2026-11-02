@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Brigand
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Brigand
+  icon: {fileID: 21300000, guid: fb3f5999c92f5694f9d0ee15381fcb02, type: 3}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 3929547664018167242, guid: 6349db9194807bf4c98df995c57a7812, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 380
+  moveSpeed: 0.95
+  attackPower: 30
+  attackCooldown: 1.1
+  attackRange: 0.65
+  hitDelay: 0.3
+  detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 10
+  healer: 0
+  healRange: 8
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

@@ -69,6 +69,9 @@ public class Technology : GameData
     [Tooltip("How many times this can be researched. Each level adds its effects again.")]
     public int maxLevel = 1;
 
+    [Tooltip("Extra levels allowed for each age after this tech's own (caps rise a little as you advance).")]
+    public int extraLevelsPerAge;
+
     [Tooltip("Each level costs this many times the one before.")]
     public float levelCostGrowth = 1.5f;
 

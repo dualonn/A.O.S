@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CastleTower
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CastleTower
+  displayName: Castle Tower
+  description: A round stone tower. A crossbowman on its open top shoots at raiders
+    in range.
+  icon: {fileID: 21300000, guid: 58ad96d03ac53ba4292245a8565cf5dc, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 58ad96d03ac53ba4292245a8565cf5dc, type: 3}
+    - {fileID: 21300000, guid: e000df557e8784e46a2e8300be323e3c, type: 3}
+    - {fileID: 21300000, guid: fd41eac2c9f5a1641a5f984ff6ead591, type: 3}
+    - {fileID: 21300000, guid: 297b617fa68fb134f908804b80846959, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: ff50c40bbdfd18a479d13b5aec28a673, type: 3}
+    - {fileID: 21300000, guid: 0a83a45913f5e804cad9d067e5c99db7, type: 3}
+    - {fileID: 21300000, guid: 5fb2424459bb56044b9f83934f1d6f09, type: 3}
+    - {fileID: 21300000, guid: a6a6503c3ccf5fd4994b0c98f98ae81e, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: a4fd81022e46bb646afbe5380c919e64, type: 3}
+    - {fileID: 21300000, guid: 0c2f453fd826bf64fa8c6d365c85ac1b, type: 3}
+    - {fileID: 21300000, guid: 84cb5a416d634024e801c57889903c65, type: 3}
+    - {fileID: 21300000, guid: 4c3fe66c547c8174b9ecc7fef63b8a18, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: fa03206512cdb814ea199236e58e9c64, type: 3}
+    - {fileID: 21300000, guid: e1487eb4d47180e4f8817ab67a5ac46c, type: 3}
+    - {fileID: 21300000, guid: cd6037f0117aa9a42838e7f2aace33ad, type: 3}
+    - {fileID: 21300000, guid: 97f20303d1302714888731813863204a, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 7bb0cc08edb72584c88cc1f8a7c30ea7, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 40
+  upgrades:
+  - name: Machicolations
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 20
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Prods
+    description: +25 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 80
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 25
+    operatorLift: 0
+  - name: Thick Walls
+    description: +400 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 400
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 700
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 9.5
+  towerDamage: 70
+  towerCooldown: 2.2
+  towerProjectile: {fileID: 21300000, guid: 4b6ea02df15780549be304a154d4dd6f, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 15
+  operatorIdle: {fileID: 21300000, guid: 6b85cdacfabd56b43b35a078c59f6dc7, type: 3}
+  operatorShoot:
+  - {fileID: 21300000, guid: ba0ef750338b4ea4baea4e81a9d544b4, type: 3}
+  - {fileID: 21300000, guid: 9f3740931608d0144889e77351c76b38, type: 3}
+  - {fileID: 21300000, guid: d1fdf38ae75763e4b8a0773dec1724ef, type: 3}
+  - {fileID: 21300000, guid: bb719bff2dcc811408bb3257aebff96c, type: 3}
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

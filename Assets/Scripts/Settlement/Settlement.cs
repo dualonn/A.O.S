@@ -1036,7 +1036,7 @@ public partial class Settlement : MonoBehaviour
             State.researchingId = null;
             State.researchProgress = 0;
             Notify(tech.IsLevelled
-                ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{tech.maxLevel})."
+                ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{MaxLevel(tech)})."
                 : $"Research complete: {tech.displayName}.");
             Changed?.Invoke();
         }
@@ -1323,7 +1323,14 @@ public partial class Settlement : MonoBehaviour
     }
 
     /// <summary>Nothing more to research here (every level done, for Mastery research).</summary>
-    public bool IsFullyResearched(Technology tech) => ResearchLevel(tech) >= Mathf.Max(1, tech.maxLevel);
+    public bool IsFullyResearched(Technology tech) => ResearchLevel(tech) >= MaxLevel(tech);
+
+    /// <summary>How many levels a tech can have now: Mastery caps rise a little with each later age.</summary>
+    public int MaxLevel(Technology tech)
+    {
+        int ages = tech.age != null ? Mathf.Max(0, State.ageIndex - tech.age.order) : 0;
+        return Mathf.Max(1, tech.maxLevel + (tech.IsLevelled ? tech.extraLevelsPerAge * ages : 0));
+    }
 
     /// <summary>What the next level of this tech costs (each Mastery level costs more).</summary>
     public List<ResourceAmount> ResearchCost(Technology tech)

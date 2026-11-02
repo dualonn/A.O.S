@@ -31,6 +31,7 @@ public static partial class PlaceholderArt
         {
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
+            { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -113,6 +114,14 @@ public static partial class PlaceholderArt
         c.Rect(13, 13, 18, 16, P.Iron[2]); c.Put(17, 16, P.Iron[3]);
         c.Line(Iv(15, 3), Iv(5, 13), P.Wood[2], 2);
         c.Line(Iv(2, 11), Iv(7, 16), P.Steel[2], 2);
+    }
+
+    private static void IcRunestone(PixelCanvas c)
+    {
+        // a dark standing stone with a glowing rune
+        c.Polygon(new[] { Iv(5, 2), Iv(15, 2), Iv(14, 17), Iv(9, 19), Iv(6, 16) }, l => l.x < 8 ? P.Coal[3] : l.x > 12 ? P.Coal[1] : P.Coal[2]);
+        for (int y = 6; y < 14; y++) c.Put(10, y, P.Rune[3]);
+        c.Put(11, 11, P.Rune[2]); c.Put(12, 12, P.Rune[2]); c.Put(9, 8, P.Rune[2]); c.Put(8, 7, P.Rune[2]);
     }
 
     private static void IcCoin(PixelCanvas c)

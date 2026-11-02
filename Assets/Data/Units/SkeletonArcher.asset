@@ -29,6 +29,9 @@ MonoBehaviour:
   detectionRange: 5
   projectile: {fileID: 21300000, guid: 9abcfbdfe46c20245962535b6dd316f5, type: 3}
   projectileSpeed: 9
+  projectileArc: 0.15
+  healer: 0
+  healRange: 8
   isBoss: 0
   bossAbility: 0
   abilityCooldown: 8

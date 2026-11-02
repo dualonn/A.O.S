@@ -690,9 +690,9 @@ public class FreeModeHUD : MonoBehaviour
             if (tech.IsLevelled)
             {
                 int at = settlement.ResearchLevel(tech);
-                level = $"  <size=80%><color=#9df>Lv {at}/{tech.maxLevel}</color></size>";
+                level = $"  <size=80%><color=#9df>Lv {at}/{settlement.MaxLevel(tech)}</color></size>";
                 levels += at;
-                maxLevels += tech.maxLevel;
+                maxLevels += settlement.MaxLevel(tech);
                 if (button.gameObject.activeSelf) masteryShown++;
             }
             label.text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
@@ -1330,7 +1330,7 @@ public class FreeModeHUD : MonoBehaviour
         }
         if (tech.IsLevelled)
         {
-            sb.Append($"<color=#9df>Level {settlement.ResearchLevel(tech)} of {tech.maxLevel}</color> <size=85%><color=#aaa>(each level adds the bonus again, and costs more)</color></size>\n");
+            sb.Append($"<color=#9df>Level {settlement.ResearchLevel(tech)} of {settlement.MaxLevel(tech)}</color> <size=85%><color=#aaa>(each level adds the bonus again, and costs more)</color></size>\n");
         }
         sb.Append($"Cost: {CostText(settlement.ResearchCost(tech))}   Time: {settlement.ResearchTime(tech):0}s\n");
         AppendMissing(sb, settlement.CanResearch(tech, out string missing), missing);

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dcc1aff82e4ea4caf035c765b340a8, type: 3}
+  m_Name: Runestone
+  m_EditorClassIdentifier: Assembly-CSharp::DepositType
+  id: Runestone
+  displayName: Runestone
+  resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: d4b2738deb319d8489d334a71e8162a3, type: 3}
+  - {fileID: 21300000, guid: 9919da5ca8f11544b8ab623639a2365f, type: 3}
+  - {fileID: 21300000, guid: 7886c11af5e00f54ba24860728e54876, type: 3}
+  onHills: 1
+  patchScale: 0.22
+  rarity: 0.66
+  minMoisture: 0
+  maxMoisture: 1

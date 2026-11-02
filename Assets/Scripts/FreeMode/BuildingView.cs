@@ -378,7 +378,7 @@ public class BuildingView : MonoBehaviour
             {
                 if (Definition.towerProjectile != null)
                 {
-                    Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, 11f, stats.towerDamage, null);
+                    Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc);
                 }
                 else
                 {

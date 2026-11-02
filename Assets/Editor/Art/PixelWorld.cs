@@ -249,6 +249,7 @@ public static partial class PlaceholderArt
         var copper = PixelDeposits("Copper", 3, Ore.Copper);
         var iron = PixelDeposits("Iron", 3, Ore.Iron);
         var gold = PixelDeposits("Gold", 3, Ore.Gold);
+        var runes = PixelDeposits("Runestone", 3, Ore.Rune);
         if (database == null) return;
         foreach (var deposit in database.deposits)
         {
@@ -259,6 +260,7 @@ public static partial class PlaceholderArt
                 case "CopperOre": deposit.sprites = copper; break;
                 case "IronOre": deposit.sprites = iron; break;
                 case "GoldOre": deposit.sprites = gold; break;
+                case "Runestone": deposit.sprites = runes; break;
                 case "Forest": deposit.sprites = new List<Sprite>(art.trees); break;
                 case "Berries": deposit.sprites = new List<Sprite> { berry }; break;
                 default: continue;
@@ -398,6 +400,9 @@ public static partial class PlaceholderArt
         c.Put(3, 15, P.Steel[2]); c.Put(28, 15, P.Steel[2]); c.Put(3, 31, P.Steel[2]); c.Put(28, 31, P.Steel[2]);   // lashings
     }
 
+    /// <summary>Dark blue-grey runestone.</summary>
+    private static readonly Color32[] Slate = { P.Hex("1e2230"), P.Hex("343a4c"), P.Hex("4c5468"), P.Hex("6a7388"), P.Hex("8e97aa") };
+
     private static List<Sprite> PixelDeposits(string name, int count, Ore ore)
     {
         var sprites = new List<Sprite>();
@@ -413,7 +418,7 @@ public static partial class PlaceholderArt
     private static void PixelDeposit(PixelCanvas c, int variant, Ore ore)
     {
         var rng = new System.Random(variant * 31 + (int)ore * 7);
-        var rock = ore == Ore.None ? P.Stone : P.Rock;
+        var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : P.Rock;
         (float x, float y, float rx, float ry)[] stones = variant switch
         {
             0 => new (float x, float y, float rx, float ry)[] { (16, 10, 10, 7) },
@@ -432,8 +437,21 @@ public static partial class PlaceholderArt
             Ore.Copper => new[] { P.Hex("3f9c7a"), P.Hex("d9783a"), P.Hex("6fd0a0") },
             Ore.Iron => new[] { P.Hex("6e2e22"), P.Hex("a4503a"), P.Hex("c8785a") },
             Ore.Gold => new[] { P.Gold[1], P.Gold[2], P.Gold[3] },
+            Ore.Rune => new[] { P.Rune[2], P.Rune[1], P.Rune[3] },
             _ => null,
         };
+        if (ore == Ore.Rune)
+        {
+            // carved runes glowing on the biggest stone's face
+            var s0 = stones[0];
+            int gx = (int)s0.x - 3, gy = (int)s0.y - 2;
+            for (int i = 0; i < 2; i++)
+            {
+                int x = gx + i * 5;
+                for (int y = 0; y < 4; y++) c.Put(x, gy + y, P.Rune[2]);
+                c.Put(x + 1, gy + 2, P.Rune[3]); c.Put(x - 1, gy + 1, P.Rune[2]);
+            }
+        }
         for (int i = 0; i < (vein != null ? 10 : 4); i++)
         {
             int x = rng.Next(4, 28), y = rng.Next(4, 20);

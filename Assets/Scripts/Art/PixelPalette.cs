@@ -54,6 +54,8 @@ public static class PixelPalette
     public static readonly Color32[] Iron = { H("2a2e36"), H("4a505c"), H("767e8a"), H("a8b0ba") };
     public static readonly Color32[] Coal = { H("141216"), H("26222a"), H("3a3440"), H("5a5260") };
     public static readonly Color32[] Berry = { H("5a0e24"), H("a01e3a"), H("e0365a"), H("ff8aa0") };
+    /// <summary>The cold blue-green glow of carved runes.</summary>
+    public static readonly Color32[] Rune = { H("143a44"), H("1f7a80"), H("46d6c8"), H("c4fff2") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -72,7 +74,7 @@ public static class PixelPalette
     {
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
-        "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock,
+        "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
         _ => Blue,
     };
 }

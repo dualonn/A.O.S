@@ -168,6 +168,10 @@ public class BuildingDefinition : GameData
     public int towerDamage = 10;
     public float towerCooldown = 1.5f;
     public Sprite towerProjectile;
+    [Tooltip("How high the tower's shot is lobbed: 0 flies straight (bolts), 0.15 a bow's arc.")]
+    public float towerProjectileArc = 0.15f;
+    [Tooltip("How fast the tower's shot flies (tiles per second).")]
+    public float towerProjectileSpeed = 11f;
 
     [Tooltip("The unit seen operating the tower (until the Renaissance, ranged buildings are crewed).")]
     public Sprite operatorIdle;

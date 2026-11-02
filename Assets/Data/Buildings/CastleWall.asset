@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CastleWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CastleWall
+  displayName: Castle Wall
+  description: A tall curtain wall of dressed stone.
+  icon: {fileID: 21300000, guid: f3f3f427e88237849a418b15836a27d0, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 7bb0cc08edb72584c88cc1f8a7c30ea7, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 24
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: bf3f488adc505b24cb8000ba8a8e5d9f, type: 3}
+  - {fileID: 21300000, guid: e4fac3e625f3b5548873e5c487707811, type: 3}
+  - {fileID: 21300000, guid: de2228fa37d8e2c48b128917876c813e, type: 3}
+  - {fileID: 21300000, guid: f3f3f427e88237849a418b15836a27d0, type: 3}
+  - {fileID: 21300000, guid: 27e9f7bb76764ad4181950244de9c9bc, type: 3}
+  - {fileID: 21300000, guid: 668f91d2f321367468813284c06529bf, type: 3}
+  - {fileID: 21300000, guid: c0c4ed4108c00db4d8e29ec7569437d8, type: 3}
+  - {fileID: 21300000, guid: dc7573288d701d64d9ea1812554baacc, type: 3}
+  - {fileID: 21300000, guid: 885916ce92b66b8469c887ee3ae5f51e, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 7
+  maxCount: 0
+  maxHealth: 1600
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.15
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

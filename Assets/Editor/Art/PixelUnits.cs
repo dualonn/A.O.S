@@ -28,10 +28,10 @@ public static partial class PlaceholderArt
 
     private static FigureStyle Fig(string team, GearLook head, GearLook weapon, GearLook shield = GearLook.None, GearLook body = GearLook.None,
         MountKind mount = MountKind.None, string crest = "", string shieldColor = "", string cape = "", float scale = 1f,
-        bool raider = false, bool necklace = false, bool warpaint = false, string coat = "Horse") => new FigureStyle
+        bool raider = false, bool necklace = false, bool warpaint = false, string coat = "Horse", bool barding = false) => new FigureStyle
     {
         team = team, head = head, weapon = weapon, shield = shield, body = body, mount = mount, crest = crest, shieldColor = shieldColor,
-        cape = cape, scale = scale, raider = raider, necklace = necklace, warpaint = warpaint, coat = coat,
+        cape = cape, scale = scale, raider = raider, necklace = necklace, warpaint = warpaint, coat = coat, barding = barding,
     };
 
     private const string B = "Blue", Rd = "Red";
@@ -61,6 +61,16 @@ public static partial class PlaceholderArt
         ("WarElephant", Fig(B, GearLook.CrestedHelm, GearLook.Spear, mount: MountKind.Elephant, crest: "Blue", coat: "Elephant"), false),
         ("Barbarian", Fig(Rd, GearLook.None, GearLook.Axe, GearLook.OvalShield, GearLook.Bare, raider: true, necklace: true, warpaint: true, shieldColor: "Green"), true),
         ("HorseRaider", Fig(Rd, GearLook.Headband, GearLook.Sword, mount: MountKind.Horse, raider: true, coat: "DarkHorse"), true),
+        // Medieval Age
+        ("ManAtArms", Fig(B, GearLook.GreatHelm, GearLook.Sword, GearLook.KiteShield, GearLook.Surcoat, crest: "Gold"), false),
+        ("Pikeman", Fig(B, GearLook.KettleHat, GearLook.Pike, body: GearLook.Mail), false),
+        ("Crossbowman", Fig(B, GearLook.KettleHat, GearLook.Crossbow, body: GearLook.Jerkin), false),
+        ("Knight", Fig(B, GearLook.GreatHelm, GearLook.Lance, GearLook.KiteShield, GearLook.Surcoat, MountKind.Horse, crest: "Gold", barding: true), false),
+        ("Monk", Fig(B, GearLook.Cowl, GearLook.None, body: GearLook.Robe, crest: "Wolf"), false),
+        ("RuneWarden", Fig(B, GearLook.Cowl, GearLook.RuneStaff, body: GearLook.Robe, crest: "Purple"), false),
+        ("Brigand", Fig(Rd, GearLook.Cap, GearLook.Mace, GearLook.RoundShield, GearLook.Jerkin, raider: true, shieldColor: "Leather"), true),
+        ("Reaver", Fig(Rd, GearLook.KettleHat, GearLook.Sword, GearLook.KiteShield, GearLook.Mail, MountKind.Horse, raider: true, coat: "DarkHorse", shieldColor: "Coal"), true),
+        ("BanditCrossbow", Fig(Rd, GearLook.Hood, GearLook.Crossbow, body: GearLook.Jerkin, raider: true), true),
     };
 
     /// <summary>Tower crews (drawn from the waist up; they stand behind a parapet).</summary>
@@ -69,6 +79,7 @@ public static partial class PlaceholderArt
         ("Watchtower", "TowerArcher", Fig(B, GearLook.Cap, GearLook.Bow)),
         ("StoneTower", "TowerArcherIron", Fig(B, GearLook.ConeHelm, GearLook.Bow)),
         ("BallistaTower", "BallistaCrew", Fig(B, GearLook.CrestedHelm, GearLook.Ballista, crest: "Blue")),
+        ("CastleTower", "TowerCrossbowman", Fig(B, GearLook.KettleHat, GearLook.Crossbow, body: GearLook.Mail)),
     };
 
     [MenuItem("Tools/Age of Stickman/Generate Unit Art")]
@@ -87,6 +98,7 @@ public static partial class PlaceholderArt
         var bolt = PixelProjectile("Bolt", 16, 6, DrawBolt);
         var stone = PixelProjectile("SlingStone", 5, 5, DrawStone);
         var javelin = PixelProjectile("Javelin", 18, 5, DrawJavelin);
+        var runeBolt = PixelProjectile("RuneBolt", 12, 7, DrawRuneBolt);
         foreach (var (id, style, enemy) in PixelWarriors)
         {
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>($"Assets/Data/Units/{id}.asset");
@@ -95,7 +107,9 @@ public static partial class PlaceholderArt
             def.prefab = BuildPixelUnit(name, style, enemy, def);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{name}/{name}_Idle.png");
             def.projectile = style.weapon == GearLook.Bow ? arrow : style.weapon == GearLook.Sling ? stone
-                : style.weapon == GearLook.Javelin ? javelin : null;
+                : style.weapon == GearLook.Javelin ? javelin : style.weapon == GearLook.Crossbow ? bolt
+                : style.weapon == GearLook.RuneStaff ? runeBolt : null;
+            SetFlight(def, style.weapon);
             EditorUtility.SetDirty(def);
         }
         if (database == null) return;
@@ -114,9 +128,25 @@ public static partial class PlaceholderArt
             }
             tower.operatorIdle = Frame("Idle", 0);
             tower.operatorShoot = new List<Sprite> { Frame("Shoot0", 5), Frame("Shoot1", 6), Frame("Shoot2", 7), Frame("Shoot3", 8) };
-            tower.towerProjectile = style.weapon == GearLook.Ballista ? bolt : arrow;
+            bool bolts = style.weapon == GearLook.Ballista || style.weapon == GearLook.Crossbow;
+            tower.towerProjectile = bolts ? bolt : arrow;
+            tower.towerProjectileArc = bolts ? 0f : Projectile.BowArc;   // bolts fly straight, arrows are lobbed
+            tower.towerProjectileSpeed = bolts ? 15f : 11f;
             tower.operatorReleaseFrame = 2;
             EditorUtility.SetDirty(tower);
+        }
+    }
+
+    /// <summary>How each kind of shot flies: bolts straight and fast, arrows in an arc, javelins lobbed high, stones low.</summary>
+    private static void SetFlight(UnitDefinition def, GearLook weapon)
+    {
+        switch (weapon)
+        {
+            case GearLook.Crossbow: def.projectileArc = 0f; def.projectileSpeed = 15f; break;
+            case GearLook.RuneStaff: def.projectileArc = 0f; def.projectileSpeed = 12f; break;
+            case GearLook.Javelin: def.projectileArc = 0.22f; break;
+            case GearLook.Sling: def.projectileArc = 0.08f; break;
+            default: def.projectileArc = Projectile.BowArc; break;
         }
     }
 
@@ -251,6 +281,16 @@ public static partial class PlaceholderArt
         c.Rect(1, 1, 3, 3, PixelPalette.Stone[2]); c.Put(1, 3, PixelPalette.Stone[4]); c.Put(3, 1, PixelPalette.Stone[1]);
     }
 
+    private static void DrawRuneBolt(PixelCanvas c)
+    {
+        // a streak of rune-light with a bright head
+        var r = PixelPalette.Rune;
+        c.LineRaw(new Vector2(1, 3), new Vector2(7, 3), r[1]);
+        c.LineRaw(new Vector2(4, 3), new Vector2(8, 3), r[2]);
+        c.Ellipse(new Vector2(9, 3), 2.2f, 2.2f, r);
+        c.Put(9, 4, r[3]); c.Put(2, 2, r[1]); c.Put(3, 4, r[1]);
+    }
+
     private static void DrawJavelin(PixelCanvas c)
     {
         c.LineRaw(new Vector2(1, 2), new Vector2(13, 2), PixelPalette.Wood[3]);
@@ -301,6 +341,21 @@ public static partial class PlaceholderArt
             style = Fig(Rd, GearLook.PlumedHelm, GearLook.Sword, GearLook.RoundShield, GearLook.Plate, crest: "Purple", shieldColor: "Purple", cape: "Purple", scale: 1.7f, raider: true),
             health = 2700, attack = 52, speed = 1.0f, cooldown = 0.9f, range = 0.8f, detection = 3.5f,
             ability = BossAbility.Slam, abilityCooldown = 6f, abilityRadius = 2.3f, abilityPower = 1.3f,
+        },
+        new BossSpec
+        {
+            id = "BossBlackKnight", name = "The Black Knight", age = "MedievalAge",
+            style = Fig(Rd, GearLook.GreatHelm, GearLook.Lance, GearLook.KiteShield, GearLook.Surcoat, MountKind.Horse, crest: "Coal", shieldColor: "Coal",
+                cape: "Coal", scale: 1.35f, raider: true, coat: "DarkHorse", barding: true),
+            health = 3400, attack = 60, speed = 1.4f, cooldown = 1.0f, range = 1.1f, detection = 4.5f,
+            ability = BossAbility.WarCry, abilityCooldown = 11f, abilityPower = 1.35f,
+        },
+        new BossSpec
+        {
+            id = "BossWarlord", name = "Morcar, Warlord of the Marches", age = "MedievalAge",
+            style = Fig(Rd, GearLook.Crown, GearLook.Mace, GearLook.KiteShield, GearLook.Surcoat, crest: "Purple", shieldColor: "Purple", cape: "Purple", scale: 1.7f, raider: true),
+            health = 4200, attack = 64, speed = 0.9f, cooldown = 1.0f, range = 0.85f, detection = 3.5f,
+            ability = BossAbility.Summon, abilityCooldown = 14f, summons = "Brigand", summonCount = 3,
         },
     };
 

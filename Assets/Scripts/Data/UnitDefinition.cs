@@ -47,6 +47,9 @@ public class UnitDefinition : ScriptableObject
 
     public float projectileSpeed = 9f;
 
+    [Tooltip("How high it's lobbed, as a share of the shot's length: 0 flies straight (bolts), 0.15 a bow's arc.")]
+    public float projectileArc = 0.15f;
+
     [Header("Healer (medics)")]
     [Tooltip("Never fights: tends wounded troops instead, healing its attack power with each go.")]
     public bool healer;

@@ -29,7 +29,8 @@ public static partial class PlaceholderArt
         0 => new PxWallStyle { ramp = P.Wood, height = 25, kind = 0 },
         1 => new PxWallStyle { ramp = P.Mud, height = 22, kind = 1 },
         2 => new PxWallStyle { ramp = P.Stone, height = 29, kind = 2, crenels = true, towers = true },
-        _ => new PxWallStyle { ramp = P.Plaster, height = 32, kind = 3, crenels = true, towers = true },
+        3 => new PxWallStyle { ramp = P.Plaster, height = 32, kind = 3, crenels = true, towers = true },
+        _ => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
     };
 
     private static Color32 Edge(Color32[] r) => PixelCanvas.Mix(r[0], P.Ink, 0.5f);
@@ -49,12 +50,13 @@ public static partial class PlaceholderArt
             case 1:   // mud bricks: 3-pixel courses, 8 long, staggered
             case 2:   // stone blocks: 4-pixel courses
             case 3:   // ashlar: 5-pixel courses
+            case 4:   // castle: big 6-pixel courses
             {
-                int course = s.kind == 1 ? 3 : s.kind == 2 ? 4 : 5;
+                int course = s.kind == 1 ? 3 : s.kind == 2 ? 4 : s.kind == 3 ? 5 : 6;
                 int row = v / course, rv = v % course;
                 int bu = (((u + (row % 2) * 4) % 8) + 8) % 8;
-                if (s.kind == 3 && v < 2) return r[1];       // plinth
-                if (rv == 0 || bu == 0) return s.kind == 3 ? r[1] : r[0];
+                if (s.kind >= 3 && v < 2) return r[1];       // plinth
+                if (rv == 0 || bu == 0) return s.kind >= 3 ? r[1] : r[0];
                 int tone = ((u + (row % 2) * 4) / 8 * 5 + row * 3) % 4;
                 if (tone < 0) tone += 4;
                 Color32 face = tone == 0 ? r[3] : r[2];
@@ -295,7 +297,7 @@ public static partial class PlaceholderArt
     public static void GenerateWallArt()
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse") };
         for (int age = 0; age < tiers.Length; age++)
         {
             var wall = db.GetBuilding(tiers[age].Item1);

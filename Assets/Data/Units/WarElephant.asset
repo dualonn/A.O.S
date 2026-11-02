@@ -33,6 +33,8 @@ MonoBehaviour:
   detectionRange: 4
   projectile: {fileID: 0}
   projectileSpeed: 10
+  healer: 0
+  healRange: 8
   isBoss: 0
   bossAbility: 0
   abilityCooldown: 8

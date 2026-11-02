@@ -43,6 +43,8 @@ public class FigureStyle
     public Beast beast;
     [Tooltip("A medic: satchel of bandages on the hip and a white armband.")]
     public bool medic;
+    [Tooltip("A war horse in a cloth caparison (team colour) with a steel face plate.")]
+    public bool barding;
 
     /// <summary>Rarity of the gear in each slot (Head, Body, Weapon, Shield, Trinket): sets its trim colour. Runtime only.</summary>
     [NonSerialized] public Rarity[] trims;
@@ -59,6 +61,8 @@ public class FigureStyle
         GearLook.Bow => WeaponClass.Bow,
         GearLook.Sling or GearLook.Javelin => WeaponClass.Thrown,
         GearLook.Ballista => WeaponClass.None,
+        GearLook.Crossbow => WeaponClass.Crossbow,
+        GearLook.RuneStaff => WeaponClass.Staff,
         _ => WeaponClass.Melee,
     };
 }
@@ -124,7 +128,9 @@ public static class PixelFigure
         // Rest: the weapon hand (far) holds it up at the side; the near hand holds the shield in front.
         p.hFar = V(3, -5);
         p.hNear = shield ? V(4, -4) : V(-1, -6);
-        if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin) p.wa = 84;
+        if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin || s.weapon == GearLook.Pike || s.weapon == GearLook.RuneStaff) p.wa = 84;
+        if (s.weapon == GearLook.Lance) p.wa = 62;
+        if (cls == WeaponClass.Crossbow) { p.hNear = V(5, -4); p.hFar = V(2, -5); }
         if (s.weapon == GearLook.Club && s.scale > 1.3f) p.wa = 40;
         if (cls == WeaponClass.Bow) { p.hNear = V(4, -6); p.hFar = V(-1, -6); }
         if (s.weapon == GearLook.Sling) p.hFar = V(2, -6);
@@ -182,13 +188,28 @@ public static class PixelFigure
                 p.loaded = i <= 1;
                 p.release = i == 2;
                 return;
+            case WeaponClass.Crossbow:
+                // shouldered and aimed, loose, then lowered to span it again
+                p.hNear = i == 3 ? V(5, -4) : V(6, -1);
+                p.hFar = i == 3 ? V(2, -5) : V(2, -1);
+                p.loaded = i <= 1;
+                p.release = i == 2;
+                return;
+            case WeaponClass.Staff:
+                // raise the staff, gather the rune's light, then thrust it forward to loose it
+                p.hFar = i == 0 ? V(0, 5) : i == 1 ? V(3, 5) : i == 2 ? V(6, 1) : V(4, -3);
+                p.wa = i == 0 ? 100 : i == 1 ? 80 : i == 2 ? 20 : 70;
+                if (!shield) p.hNear = i == 2 ? V(6, 0) : V(4, -3);
+                p.loaded = i <= 1;
+                p.release = i == 2;
+                return;
             case WeaponClass.None:     // ballista crew: crank and loose
                 p.hFar = i == 1 ? V(3, -1) : V(4, -2);
                 p.loaded = i <= 1;
                 p.release = i == 2;
                 return;
         }
-        if (s.weapon == GearLook.Spear)
+        if (s.weapon == GearLook.Spear || s.weapon == GearLook.Pike || s.weapon == GearLook.Lance)
         {
             p.hFar = i == 0 ? V(-1, -2) : i == 1 ? V(0, -1) : i == 2 ? V(6, -1) : V(4, -2);
             p.wa = i == 0 ? 4 : i == 1 ? 6 : i == 2 ? 0 : -6;
@@ -352,11 +373,26 @@ public static class PixelFigure
             {
                 GearLook.Jerkin => P.Linen,
                 GearLook.Scale => P.Bronze,
-                GearLook.Mail or GearLook.Plate => P.Steel,
+                GearLook.Mail or GearLook.Plate or GearLook.Surcoat => P.Steel,
+                GearLook.Robe => crest,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
-            // Tunic skirt in the team colour shows below any armour.
+            if (s.body == GearLook.Robe)
+            {
+                // a long robe to the ankles, over the legs
+                float top = hip.y + 1, bottom = gy + 1;
+                c.FillLocal(new Rect(hip.x - X(4.2f), bottom, X(8.4f), top - bottom), l =>
+                {
+                    float t = (top - l.y) / Mathf.Max(1, top - bottom);
+                    float half = X(2.8f) + X(1.4f) * t;
+                    if (Mathf.Abs(l.x - hip.x) > half) return null;
+                    if (l.y < bottom + 1) return Trim(GearSlot.Body, crest[0]);
+                    return l.x < hip.x - half * 0.4f ? crest[1] : crest[2];
+                });
+            }
+            // Tunic skirt in the team colour shows below any armour (not under a robe).
+            if (s.body != GearLook.Robe)
             c.FillLocal(new Rect(hip.x - X(3.5f), hip.y - X(1.5f), X(7.5f), X(2.5f)), l =>
                 l.y < hip.y + 1 ? (Color32?)(l.x < hip.x ? team[2] : team[1]) : null);
             c.Capsule(a, b, r, cloth, s.body == GearLook.Bare ? -0.45f : 0f);   // a bare chest a shade darker, so the near arm shows
@@ -381,6 +417,22 @@ public static class PixelFigure
                     c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
                         ((int)l.x + (int)l.y) % 2 == 0 && Inside(l, a, b, r) ? (Color32?)P.Steel[1] : null);
                     break;
+                case GearLook.Surcoat:
+                {
+                    // mail, with a tabard in the team colour over it and a cross on the chest
+                    c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
+                        ((int)l.x + (int)l.y) % 2 == 0 && Inside(l, a, b, r) ? (Color32?)P.Steel[1] : null);
+                    c.FillLocal(new Rect(a.x - r + 1, a.y - X(1.5f), r * 2 - 2, b.y - a.y - X(0.5f)), l =>
+                        Inside(l, a, b, r) || l.y < a.y ? (Color32?)(l.x < a.x - X(0.6f) ? team[1] : team[2]) : null);
+                    Vector2 chest = Vector2.Lerp(a, b, 0.6f);
+                    c.Line(chest + V(0, X(-1.6f)), chest + V(0, X(1.6f)), Trim(GearSlot.Body, P.Linen[3]));
+                    c.Line(chest + V(X(-1.2f), X(0.4f)), chest + V(X(1.2f), X(0.4f)), Trim(GearSlot.Body, P.Linen[3]));
+                    break;
+                }
+                case GearLook.Robe:
+                    c.Line(V(a.x - X(0.5f), a.y), V(b.x - X(0.5f), b.y - 1), crest[1]);   // the robe's front fold
+                    c.Line(V(a.x - r + 0.5f, a.y - 1), V(a.x + r - 0.5f, a.y - 1), P.Linen[2]);   // rope belt
+                    break;
                 case GearLook.Plate:
                     c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
                         (int)(l.y - a.y) % 2 == 1 && Inside(l, a, b, r) ? (Color32?)P.Steel[1] : null);
@@ -398,10 +450,13 @@ public static class PixelFigure
             }
             // hem, belt and buckle
             Color32 hem = Trim(GearSlot.Body, s.body == GearLook.None ? team[1] : cloth[1]);
-            if (s.body != GearLook.None && s.body != GearLook.Bare)
+            if (s.body != GearLook.None && s.body != GearLook.Bare && s.body != GearLook.Robe)
                 c.Line(V(a.x - r + 0.5f, a.y), V(a.x + r - 0.5f, a.y), hem);
-            c.Line(V(a.x - r + 0.5f, a.y - 1), V(a.x + r - 0.5f, a.y - 1), s.raider ? team[2] : P.Leather[1]);
-            c.Put(c.T(V(a.x + r - 1.5f, a.y - 0.5f)), s.raider ? team[3] : P.Gold[2]);
+            if (s.body != GearLook.Robe)
+            {
+                c.Line(V(a.x - r + 0.5f, a.y - 1), V(a.x + r - 0.5f, a.y - 1), s.raider ? team[2] : P.Leather[1]);
+                c.Put(c.T(V(a.x + r - 1.5f, a.y - 0.5f)), s.raider ? team[3] : P.Gold[2]);
+            }
 
             if (s.necklace)
                 for (int i = -1; i <= 1; i++)
@@ -559,6 +614,35 @@ public static class PixelFigure
                         }
                     }
                     break;
+                case GearLook.GreatHelm:
+                {
+                    // a flat-topped barrel helm with an eye slit and breaths, the face fully hidden
+                    var box = new Rect(hd.x - r - 0.4f, hd.y - X(2.8f), r * 2 + 0.8f, X(6.8f));
+                    c.FillLocal(box, l => l.x < box.xMin + X(1.6f) ? P.Steel[1] : l.x > box.xMax - X(1.6f) ? P.Steel[3] : P.Steel[2]);
+                    c.Line(V(box.xMin, box.yMax - 0.5f), V(box.xMax - 0.5f, box.yMax - 0.5f), P.Steel[1]);
+                    c.Line(V(hd.x - X(0.2f), hd.y + X(0.6f)), V(box.xMax - 0.5f, hd.y + X(0.6f)), P.Ink);   // eye slit
+                    rim = Trim(GearSlot.Head, P.Gold[2]);
+                    c.Line(V(hd.x + X(1.6f), box.yMin), V(hd.x + X(1.6f), hd.y + X(0.2f)), rim);           // brass cross
+                    c.Line(V(hd.x + X(0.4f), hd.y - X(0.4f)), V(box.xMax - 0.5f, hd.y - X(0.4f)), rim);
+                    if (!string.IsNullOrEmpty(s.crest))
+                        c.Ellipse(V(hd.x, box.yMax + X(1.4f)), X(2.2f), X(1.6f), crest);                  // a crest on top
+                    break;
+                }
+                case GearLook.KettleHat:
+                    Hair(false);
+                    c.Ellipse(hd + V(0, 0.6f), r + 0.4f, X(3.6f) + 0.3f, P.Steel, l => l.y > hd.y + X(1.4f));
+                    rim = Trim(GearSlot.Head, P.Steel[1]);
+                    c.Line(V(hd.x - r - X(2.2f), hd.y + X(1.2f)), V(hd.x + r + X(2.2f), hd.y + X(1.2f)), rim, S > 1.3f ? 2 : 1);   // wide brim
+                    c.Line(V(hd.x - r - X(1.6f), hd.y + X(1.6f)), V(hd.x + r + X(1.6f), hd.y + X(1.6f)), P.Steel[2]);
+                    break;
+                case GearLook.Cowl:
+                {
+                    // a deep hood in the robe's colour, the face in its shadow
+                    c.Ellipse(hd + V(-0.5f, 0.5f), r + 1.2f, X(3.6f) + 1.0f, crest, l => l.y > hd.y + X(0.2f) || l.x < hd.x - X(0.6f));
+                    c.Line(V(hd.x - r - 1.2f, hd.y - 1), V(hd.x - r - X(1.2f), hd.y - X(3.2f)), crest[1], 2);   // drape behind
+                    c.Line(V(hd.x - X(0.4f), hd.y + X(0.4f)), V(hd.x + r, hd.y + X(0.4f)), Trim(GearSlot.Head, crest[1]));
+                    break;
+                }
                 case GearLook.Crown:
                     Hair(s.raider);
                     for (int i = -2; i <= 2; i++)
@@ -590,6 +674,11 @@ public static class PixelFigure
         private void FarArm()
         {
             // The far arm is behind the body (darker); its weapon is drawn first, the hand on top.
+            if (s.Class == WeaponClass.Crossbow)
+            {
+                Arm(shFar, hFar, true);
+                return;
+            }
             if (s.Class == WeaponClass.Bow)
             {
                 Arm(shFar, hFar, true);
@@ -607,6 +696,12 @@ public static class PixelFigure
 
         private void NearArm()
         {
+            if (s.Class == WeaponClass.Crossbow)
+            {
+                Crossbow();
+                Arm(shNear, hNear, false);
+                return;
+            }
             if (s.Class == WeaponClass.Bow)
             {
                 Arm(shNear, hNear, false);
@@ -616,7 +711,7 @@ public static class PixelFigure
             if (s.shield != GearLook.None && p.death < 2)
             {
                 Arm(shNear, hNear, false);
-                bool tall = s.shield == GearLook.TowerShield || s.shield == GearLook.HideShield || s.shield == GearLook.OvalShield;
+                bool tall = s.shield == GearLook.TowerShield || s.shield == GearLook.HideShield || s.shield == GearLook.OvalShield || s.shield == GearLook.KiteShield;
                 Shield(hNear + V(X(0.5f), tall ? X(-1.5f) : X(0.5f)));   // tall shields sit lower, clear of the face
             }
             else
@@ -631,6 +726,13 @@ public static class PixelFigure
         {
             var skin = skinRamp;
             bool sleeve = s.body != GearLook.Bare;
+            if (s.body == GearLook.Robe)
+            {
+                // wide robe sleeves to the wrist
+                c.Line(from, Vector2.Lerp(from, hand, 0.85f), far ? crest[1] : crest[2], limb + 1);
+                c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => far ? skinRamp[1] : skinRamp[2]);
+                return;
+            }
             Color32 skinCol = far ? skin[1] : skin[2];
             c.Line(from, hand, skinCol, limb);
             if (s.medic && !far)
@@ -640,7 +742,7 @@ public static class PixelFigure
             }
             if (sleeve)
             {
-                var sl = s.body == GearLook.Mail || s.body == GearLook.Plate ? P.Steel : s.body == GearLook.Scale ? P.Bronze : s.body == GearLook.Jerkin ? P.Linen : team;
+                var sl = s.body == GearLook.Mail || s.body == GearLook.Plate || s.body == GearLook.Surcoat ? P.Steel : s.body == GearLook.Scale ? P.Bronze : s.body == GearLook.Jerkin ? P.Linen : team;
                 c.Line(from, Vector2.Lerp(from, hand, 0.4f), far ? sl[1] : sl[2], limb);
             }
             c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => far ? skin[1] : skin[2]);
@@ -702,6 +804,51 @@ public static class PixelFigure
                     c.Line(at(len - X(1)), at(len), Trim(GearSlot.Weapon, team[2]), ww);
                     break;
                 }
+                case GearLook.Pike:
+                {
+                    float len = X(20), butt = X(6);
+                    c.Line(at(-butt), at(len), P.Wood[2], ww);
+                    c.Polygon(new[] { at(len, -X(1.1f)), at(len + X(4), 0), at(len, X(1.1f)) }, _ => P.Steel[3]);
+                    c.Line(at(len - X(2)), at(len), Trim(GearSlot.Weapon, P.Steel[1]), ww);   // langets
+                    break;
+                }
+                case GearLook.Lance:
+                {
+                    float len = X(riding ? 22 : 15), butt = X(4);
+                    c.Line(at(-butt), at(len), P.Wood[3], ww + 1);
+                    c.Line(at(len * 0.55f), at(len), P.Wood[2], ww);   // tapering
+                    c.Polygon(new[] { at(len, -X(0.9f)), at(len + X(2.5f), 0), at(len, X(0.9f)) }, _ => P.Steel[3]);
+                    c.Polygon(new[] { at(X(1), -X(2)), at(X(3), 0), at(X(1), X(2)) }, _ => Trim(GearSlot.Weapon, P.Steel[2]));   // vamplate
+                    // a pennant in the team colour just behind the tip
+                    Vector2 pen = at(len - X(2.5f));
+                    c.Polygon(new[] { pen, pen + V(X(-4), X(-1.2f)), pen + V(X(-4), X(1.6f)) }, l => team[2]);
+                    break;
+                }
+                case GearLook.Mace:
+                {
+                    float len = X(8);
+                    c.Line(at(-2), at(len), P.Wood[1], ww);
+                    c.Ellipse(at(len), X(1.6f), X(1.6f), P.Steel);
+                    for (int i = -1; i <= 1; i += 2)
+                    {
+                        c.Put(c.T(at(len, X(2.2f) * i)), Trim(GearSlot.Weapon, P.Steel[3]));
+                        c.Put(c.T(at(len + X(2.2f) * i * 0.6f)), P.Steel[3]);
+                    }
+                    break;
+                }
+                case GearLook.RuneStaff:
+                {
+                    float len = X(13);
+                    c.Line(at(-X(5)), at(len), P.Wood[1], ww);
+                    c.Line(at(len - X(2), -X(1)), at(len + X(1), -X(1)), P.Wood[2]);   // the crook holding the stone
+                    var stone = P.Rune;
+                    bool lit = p.loaded || !p.attack;
+                    c.Ellipse(at(len + X(1.5f)), X(1.6f), X(1.9f), lit ? stone : new[] { P.Coal[1], P.Coal[2], stone[1], stone[2] });
+                    if (p.loaded && p.attack)
+                        foreach (var (t, side) in new[] { (2.5f, 2.5f), (3.5f, -2f), (0.5f, -3f) })
+                            c.Put(c.T(at(len + X(t), X(side))), stone[3]);   // gathering sparks
+                    break;
+                }
                 case GearLook.Javelin:
                     if (!p.loaded && p.attack) break;     // thrown
                     if (p.attack)
@@ -752,6 +899,25 @@ public static class PixelFigure
             c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => skinRamp[2]);
         }
 
+        private void Crossbow()
+        {
+            // A crossbow held level at the shoulder: stock along the forearm, the bow across the front.
+            Vector2 back = hFar + V(X(-1.5f), 0), front = hNear + V(X(4), p.attack && p.hNear.y > -2 ? 0 : X(-1));
+            if (!p.attack || p.hNear.y < -2) front = hNear + V(X(4), X(2));   // lowered: pointing up a little
+            Vector2 d = (front - back).normalized, n = V(-d.y, d.x);
+            c.Line(back, front, P.Wood[2], limb + 1);
+            c.Line(back, back + d * X(2), P.Wood[1], limb + 1);
+            Vector2 bowAt = front - d * X(1);
+            float flex = p.loaded ? X(-1.2f) : X(0.6f);
+            Vector2 tipA = bowAt + n * X(4) + d * flex, tipB = bowAt - n * X(4) + d * flex;
+            c.Line(bowAt, tipA, Trim(GearSlot.Weapon, P.Steel[1]), 2);
+            c.Line(bowAt, tipB, Trim(GearSlot.Weapon, P.Steel[1]), 2);
+            Vector2 nut = p.loaded ? Vector2.Lerp(back, front, 0.45f) : bowAt;
+            c.Line(tipA, nut, P.Linen[3]);
+            c.Line(tipB, nut, P.Linen[3]);
+            if (p.loaded) { c.Line(nut, front + d * X(0.8f), P.Wood[3]); c.Put(c.T(front + d * X(1.3f)), P.Steel[3]); }
+        }
+
         private void Quiver()
         {
             Vector2 a = sh + V(X(-2.5f), X(-5)), b = sh + V(X(-1.8f), X(0.5f));
@@ -783,6 +949,22 @@ public static class PixelFigure
                         return d <= 1.05f && d > 0.75f ? (Color32?)(l.x + l.y < at.x + at.y ? rim : P.Gold[1]) : null;
                     });
                     c.Put(c.T(at), P.Steel[3]);
+                    break;
+                }
+                case GearLook.KiteShield:
+                {
+                    // a heater-shaped kite shield: flat top, coming to a point below, with a bend in the crest colour
+                    float hw = X(3.2f), top = at.y + X(4.5f), bottom = at.y - X(6);
+                    c.FillLocal(new Rect(at.x - hw - 1, bottom - 1, hw * 2 + 2, top - bottom + 2), l =>
+                    {
+                        if (l.y > top) return null;
+                        float t = Mathf.Clamp01((at.y - l.y) / (at.y - bottom));
+                        float half = l.y > at.y ? hw : hw * Mathf.Sqrt(1 - t * t);
+                        if (Mathf.Abs(l.x - at.x) > half) return null;
+                        if (Mathf.Abs(l.x - at.x) > half - 1 || l.y > top - 1) return rim;
+                        bool bend = Mathf.Abs((l.x - at.x) + (l.y - at.y) * 0.7f) < X(1.1f);
+                        return bend ? crest[2] : l.x < at.x ? ramp[1] : ramp[2];
+                    });
                     break;
                 }
                 case GearLook.OvalShield:
@@ -968,6 +1150,20 @@ public static class PixelFigure
                 c.Capsule(body + V(X(8), X(2)), body + V(X(15), X(-1)), X(2.4f), coat);   // head on the ground
                 for (int i = 0; i < 2; i++)
                     c.Line(body + V(X(-2 + i * 6), X(-3)), body + V(X(1 + i * 6), X(-6)), coat[1], 2);
+            }
+            if (s.barding && drop < 2)
+            {
+                // a caparison in the team colour down to the knees, and a steel chanfron on the face
+                c.FillLocal(new Rect(body.x - X(12), body.y - X(6), X(22), X(10.5f)), l =>
+                {
+                    float dx = (l.x - body.x) / X(10), dy = (l.y - (body.y + X(0.5f))) / X(5);
+                    if (dx * dx + dy * dy > 1.25f || l.y > body.y + X(4.4f)) return null;
+                    if (l.y < body.y - X(5)) return Trim(GearSlot.Body, P.Gold[2]);   // fringe
+                    var cloth = string.IsNullOrEmpty(s.cape) ? team : P.Named(s.cape);   // a cloaked rider's horse matches the cloak
+                    return ((int)(l.x - body.x) / 4) % 2 == 0 ? cloth[2] : cloth[1];
+                });
+                Vector2 face = body + V(X(13.5f), X(8));
+                c.Line(face + V(X(-2), X(1)), face + V(X(1.5f), X(-1)), P.Steel[2], 2);
             }
             // saddle cloth in the team colour
             if (s.mount == MountKind.Horse)

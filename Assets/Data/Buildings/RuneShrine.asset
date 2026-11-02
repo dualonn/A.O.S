@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RuneShrine
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RuneShrine
+  displayName: Rune Shrine
+  description: A ring of carved stones. Trains Rune Wardens, who loose bolts of rune-light
+    from their staves.
+  icon: {fileID: 21300000, guid: 9fdf7afc8fc168c4a888f72db2cfcc6b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 9fdf7afc8fc168c4a888f72db2cfcc6b, type: 3}
+    - {fileID: 21300000, guid: 0e51f258d28048f4da5b4f3d002db7d7, type: 3}
+    - {fileID: 21300000, guid: 778990a2d41e1ec4b9dd27b8b1101998, type: 3}
+    - {fileID: 21300000, guid: 930fd9e4e77cbf647a7dff83dd8b5af5, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 4e472f8016dfb524f8abf1b2659a9d2e, type: 3}
+    - {fileID: 21300000, guid: b407a444e2cd9c749b3a7f416d658c43, type: 3}
+    - {fileID: 21300000, guid: 5d6e9f38050c6dc4d828d355aec45bf8, type: 3}
+    - {fileID: 21300000, guid: b18670ae60353d84ebbbc0904bd05d47, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: bd3e4b33b9aa4404aa8319b261f2c396, type: 3}
+    - {fileID: 21300000, guid: af17878c8977ef246aa32a3071d560f0, type: 3}
+    - {fileID: 21300000, guid: 09c5472785f18c5449a7f61ba1c97907, type: 3}
+    - {fileID: 21300000, guid: 114626f15b1ab4345825b89c06a2374c, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2baa32fd4baa26542adc0a0d184fd839, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 60
+  upgrades:
+  - name: Deeper Carvings
+    description: +1 warden.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Ley Line
+    description: Wardens hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 480
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 3834f7f9f21b3134b86c5c41d979a698, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

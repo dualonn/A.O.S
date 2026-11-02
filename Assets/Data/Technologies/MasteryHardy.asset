@@ -43,5 +43,6 @@ MonoBehaviour:
   coinPerPersonPerSecond: 0
   researchSpeedMultiplier: 1
   maxLevel: 5
+  extraLevelsPerAge: 2
   levelCostGrowth: 1.5
   levelTimeGrowth: 1.25

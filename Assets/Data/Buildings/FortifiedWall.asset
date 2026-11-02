@@ -32,14 +32,17 @@ MonoBehaviour:
     - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
       amount: 18
   upgrades: []
-  rankUpTo: {fileID: 0}
+  rankUpTo: {fileID: 11400000, guid: f3c874fc01d344d498ff35b7a47ae0d0, type: 2}
   rankUpRequirements:
     minimumAge: {fileID: 0}
-    technologies: []
+    technologies:
+    - {fileID: 11400000, guid: 7bb0cc08edb72584c88cc1f8a7c30ea7, type: 2}
     buildings: []
     population: 0
-    cost: []
-  rankUpTime: 30
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 20
+  rankUpTime: 40
   isTownCenter: 0
   wallKind: 1
   pieces:

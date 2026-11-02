@@ -198,7 +198,7 @@ public abstract class Unit : MonoBehaviour
 
     /// <summary>Fire this unit's projectile at a point; 'onArrive' runs when it lands.</summary>
     protected void Shoot(Vector3 at, System.Action onArrive) =>
-        Projectile.FireAt(definition.projectile, LaunchPoint, at, definition.projectileSpeed, onArrive);
+        Projectile.FireAt(definition.projectile, LaunchPoint, at, definition.projectileSpeed, onArrive, definition.projectileArc);
 
     /// <summary>The nearest living unit of another team within 'range' of 'position', or null.</summary>
     public static Unit FindNearestEnemy(Team ofTeam, Vector3 position, float range)
@@ -497,7 +497,7 @@ public abstract class Unit : MonoBehaviour
         if (IsRanged)
         {
             // Loose an arrow: it does the damage when it lands.
-            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this);
+            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this, definition.projectileArc);
             return;
         }
         // Melee: missed if the target stepped well out of reach during the wind-up.

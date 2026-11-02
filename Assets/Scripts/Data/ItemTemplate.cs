@@ -18,7 +18,9 @@ public enum GearLook
     // Trinket
     Charm, Horn, Amulet, Ring, Wreath,
     // Unit kits only (no items use these yet)
-    Headband, Feather, BearPelt, Crown, PlumedHelm, Sling, Javelin, Ballista, OvalShield, Bare
+    Headband, Feather, BearPelt, Crown, PlumedHelm, Sling, Javelin, Ballista, OvalShield, Bare,
+    // Medieval
+    GreatHelm, KettleHat, Cowl, Robe, Surcoat, Crossbow, Pike, Lance, Mace, RuneStaff, KiteShield
 }
 
 /// <summary>

@@ -144,6 +144,11 @@ MonoBehaviour:
     necklace: 0
     warpaint: 0
     coat: Horse
+    skin: 
+    undead: 0
+    beast: 0
+    medic: 0
+    barding: 0
   pixelsPerUnit: 32
   weaponClass: 2
 --- !u!58 &1463582601884303270

@@ -59,6 +59,7 @@ public static partial class PlaceholderArt
         tech.maxLevel = MasteryLevels;
         tech.levelCostGrowth = 1.5f;
         tech.levelTimeGrowth = 1.25f;
+        tech.extraLevelsPerAge = 2;   // 5 now, 7 in the next age, 9 after...
         tech.requirements.minimumAge = age;
         tech.unitModifiers = new List<UnitStatModifier>();
         tech.productionModifiers = new List<ProductionModifier>();

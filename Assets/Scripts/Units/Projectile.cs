@@ -1,7 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// An arrow (or any thrown thing) flying in a shallow arc to a unit or point.
+/// An arrow, bolt or anything thrown, flying to a unit or point. Each kind has its own arc:
+/// arrows and javelins are lobbed, crossbow and rune bolts fly dead straight.
 /// Damage is dealt when it arrives, to whoever it was aimed at if they're still alive.
 /// </summary>
 public class Projectile : MonoBehaviour
@@ -14,11 +15,15 @@ public class Projectile : MonoBehaviour
     private int damage;
     private Unit source;
     private System.Action onArrive;
+    private float arc;
+
+    /// <summary>A bow's arc: the height of the flight as a share of its length.</summary>
+    public const float BowArc = 0.15f;
 
     /// <summary>Fire at a unit (tracks it in flight).</summary>
-    public static Projectile Fire(Sprite sprite, Vector3 from, Unit target, float speed, int damage, Unit source)
+    public static Projectile Fire(Sprite sprite, Vector3 from, Unit target, float speed, int damage, Unit source, float arc = BowArc)
     {
-        var p = Create(sprite, from, target.transform.position + Vector3.up * 0.4f, speed);
+        var p = Create(sprite, from, target.transform.position + Vector3.up * 0.4f, speed, arc);
         p.target = target;
         p.damage = damage;
         p.source = source;
@@ -26,14 +31,14 @@ public class Projectile : MonoBehaviour
     }
 
     /// <summary>Fire at a point; 'onArrive' runs when it lands (e.g. hitting a building).</summary>
-    public static Projectile FireAt(Sprite sprite, Vector3 from, Vector3 to, float speed, System.Action onArrive)
+    public static Projectile FireAt(Sprite sprite, Vector3 from, Vector3 to, float speed, System.Action onArrive, float arc = BowArc)
     {
-        var p = Create(sprite, from, to, speed);
+        var p = Create(sprite, from, to, speed, arc);
         p.onArrive = onArrive;
         return p;
     }
 
-    private static Projectile Create(Sprite sprite, Vector3 from, Vector3 to, float speed)
+    private static Projectile Create(Sprite sprite, Vector3 from, Vector3 to, float speed, float arc)
     {
         var go = new GameObject("Projectile");
         var sr = go.AddComponent<SpriteRenderer>();
@@ -42,6 +47,7 @@ public class Projectile : MonoBehaviour
         var p = go.AddComponent<Projectile>();
         p.start = from;
         p.end = to;
+        p.arc = Mathf.Max(0f, arc);
         p.duration = Mathf.Max(0.12f, Vector2.Distance(from, to) / Mathf.Max(0.1f, speed));
         go.transform.position = from;
         return p;
@@ -55,9 +61,10 @@ public class Projectile : MonoBehaviour
         }
         elapsed += Time.deltaTime;
         float t = Mathf.Clamp01(elapsed / duration);
-        float arc = Mathf.Sin(t * Mathf.PI) * Vector2.Distance(start, end) * 0.15f;
-        Vector3 pos = Vector3.Lerp(start, end, t) + Vector3.up * arc;
-        Vector3 ahead = Vector3.Lerp(start, end, Mathf.Min(1f, t + 0.05f)) + Vector3.up * Mathf.Sin(Mathf.Min(1f, t + 0.05f) * Mathf.PI) * Vector2.Distance(start, end) * 0.15f;
+        float length = Vector2.Distance(start, end);
+        Vector3 pos = Vector3.Lerp(start, end, t) + Vector3.up * (Mathf.Sin(t * Mathf.PI) * length * arc);
+        float t2 = Mathf.Min(1f, t + 0.05f);
+        Vector3 ahead = Vector3.Lerp(start, end, t2) + Vector3.up * (Mathf.Sin(t2 * Mathf.PI) * length * arc);
         Vector3 dir = ahead - pos;
         if (dir.sqrMagnitude > 1e-6f)
         {
