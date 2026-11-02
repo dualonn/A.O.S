@@ -27,6 +27,9 @@ public class SettlementState
     public float secondsUntilWave;
     public int wavesSurvived;
     public int nextBuildingId = 1;
+
+    [Tooltip("New buildings start with auto-repair on.")]
+    public bool autoRepairNew;
 }
 
 /// <summary>How a building's troops behave.</summary>
@@ -73,6 +76,17 @@ public class BuildingState
 
     [Tooltip("For buildings that train troops: what those troops do.")]
     public TroopStance stance = TroopStance.Defend;
+
+    [Tooltip("Who gets workers first when people run short: -1 paused, 0 normal, 1 high.")]
+    public int priority;
+
+    [Tooltip("Repair damage (and ruins) automatically when no raid is on and it's affordable.")]
+    public bool autoRepair;
+
+    [Tooltip("Start the next upgrade, then the rank up, as soon as they're affordable.")]
+    public bool queueUpgrades;
+
+    public bool Paused => priority < 0;
 
     public bool IsBuilt => buildProgress >= 1f;
 }

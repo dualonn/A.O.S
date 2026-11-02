@@ -144,9 +144,10 @@ public class BuildingView : MonoBehaviour
         }
     }
 
-    public void SetSelected(bool isSelected)
+    /// <summary>Highlight as selected. 'showName' is off in a group, so many labels don't clutter the view.</summary>
+    public void SetSelected(bool isSelected, bool showName = true)
     {
-        selected = isSelected;
+        selected = isSelected && showName;
         selectionOutline.enabled = isSelected;
     }
 
@@ -156,9 +157,118 @@ public class BuildingView : MonoBehaviour
                   Contains(controller.Grid.WorldToCell(SettlementGrid.MouseWorld()));
         Refresh();
         Animate();
+        UpdateWallPiece();
         UpdateShake();
         TrainTroops();
         TowerAttack();
+    }
+
+    // ---------- Walls and gates ----------
+
+    private int wallMask = -1;
+    private bool gateOpen;
+    private float nextGateCheck;
+
+    /// <summary>Which sides join other walls (N=1, E=2, S=4, W=8); picks the matching piece.</summary>
+    public void SetWallMask(int mask)
+    {
+        wallMask = mask;
+        UpdateWallPiece(true);
+    }
+
+    private void UpdateWallPiece(bool force = false)
+    {
+        if (!Definition.IsWall || body == null || wallMask < 0 || Definition.pieces.Count == 0)
+        {
+            return;
+        }
+        if (Definition.wallKind == WallTile.Gate && Time.time >= nextGateCheck)
+        {
+            // Open for any of your units close by (and always shown open once ruined).
+            nextGateCheck = Time.time + 0.2f;
+            Vector3 centre = controller.Grid.AreaCenter(State.cell, Definition.size);
+            bool open = State.health <= 0 || Unit.FindNearestEnemy(Team.Enemy, centre, 1.6f) != null;
+            if (open != gateOpen)
+            {
+                gateOpen = open;
+                force = true;
+            }
+        }
+        foreach (var run in backRuns)
+        {
+            if (run != null) run.color = body.color;
+        }
+        if (!force)
+        {
+            return;
+        }
+        if (Definition.wallKind == WallTile.Gate)
+        {
+            // Pieces: east-west closed, east-west open, north-south closed, north-south open.
+            bool eastWest = (wallMask & (2 | 8)) != 0 || (wallMask & (1 | 4)) == 0;
+            int index = (eastWest ? 0 : 2) + (gateOpen ? 1 : 0);
+            var piece = Definition.pieces[Mathf.Min(index, Definition.pieces.Count - 1)];
+            if (piece != null) body.sprite = piece;
+            return;
+        }
+        // Wall: a front piece (post, east end, west end or east-west run) plus runs going back.
+        bool east = (wallMask & 2) != 0, west = (wallMask & 8) != 0;
+        bool ne = (wallMask & 16) != 0, se = (wallMask & 32) != 0, sw = (wallMask & 64) != 0, nw = (wallMask & 128) != 0;
+        if (east && west)
+        {
+            body.sprite = WallPart(3);
+        }
+        else if (east)
+        {
+            // Carries on into a diagonal from the middle: open there so they join flush.
+            body.sprite = WallPart(nw || sw ? 8 : 1);
+        }
+        else if (west)
+        {
+            body.sprite = WallPart(ne || se ? 7 : 2);
+        }
+        else
+        {
+            // Middle of a north-south or diagonal run: no post, so the run stays one piece.
+            int links = 0;
+            foreach (int bit in new[] { 1, 4, 16, 32, 64, 128 })
+            {
+                if ((wallMask & bit) != 0) links++;
+            }
+            body.sprite = links >= 2 ? null : WallPart(0);
+        }
+        // Runs: north (back), and diagonals dropping to the tiles in front.
+        // At the top end of a slanted run the slope comes towards the viewer, so it's drawn
+        // in front of the end post rather than behind it.
+        bool endPost = body.sprite == WallPart(0);
+        SetBackRun(0, (wallMask & 1) != 0 ? WallPart(4) : null);
+        SetBackRun(1, se ? WallPart(5) : null, endPost);
+        SetBackRun(2, sw ? WallPart(6) : null, endPost);
+    }
+
+    private readonly SpriteRenderer[] backRuns = new SpriteRenderer[3];
+
+    private Sprite WallPart(int part) => part < Definition.pieces.Count ? Definition.pieces[part] : null;
+
+    /// <summary>The runs back to the next tiles: drawn just behind this tile's front piece.</summary>
+    private void SetBackRun(int slot, Sprite sprite, bool inFront = false)
+    {
+        if (sprite == null)
+        {
+            if (backRuns[slot] != null) backRuns[slot].enabled = false;
+            return;
+        }
+        if (backRuns[slot] == null)
+        {
+            backRuns[slot] = new GameObject("WallRun").AddComponent<SpriteRenderer>();
+            backRuns[slot].transform.SetParent(body.transform, false);
+            backRuns[slot].transform.localPosition = new Vector3(0, 0, 0.002f);
+            backRuns[slot].sortingOrder = SortingOrder;
+        }
+        backRuns[slot].transform.localPosition = new Vector3(0, 0, inFront ? -0.002f : 0.002f);
+        backRuns[slot].sprite = sprite;
+        backRuns[slot].enabled = true;
+        backRuns[slot].color = body.color;
     }
 
     // ---------- Animation and looks ----------
@@ -279,13 +389,20 @@ public class BuildingView : MonoBehaviour
         {
             return;
         }
+        // Short-handed towers shoot slower; paused ones not at all.
+        float staff = controller.Settlement.StaffingOf(State);
+        if (staff <= 0f)
+        {
+            nextTowerShot = Time.time + 0.5f;
+            return;
+        }
         var target = Unit.FindNearestEnemy(Team.Player, launch, stats.towerRange);
         if (target == null)
         {
             nextTowerShot = Time.time + 0.25f; // look again shortly
             return;
         }
-        nextTowerShot = Time.time + Definition.towerCooldown;
+        nextTowerShot = Time.time + Definition.towerCooldown / Mathf.Max(0.25f, staff);
         pendingTarget = target;
         releasePending = true;
         shootStart = Time.time;
@@ -331,6 +448,11 @@ public class BuildingView : MonoBehaviour
         bool damaged = built && State.health < stats.maxHealth;
         float fill = !built ? State.buildProgress : damaged ? healthShare : State.upgradeProgress;
         bool showBar = !built || damaged || State.upgrading;
+        if (Definition.IsWall)
+        {
+            // Walls come in dozens: only show a bar when damaged or pointed at.
+            showBar = damaged || ((!built || State.upgrading) && (selected || hovered));
+        }
         barBack.enabled = barFill.enabled = showBar;
         barFill.transform.localScale = new Vector3(barBack.transform.localScale.x * Mathf.Clamp01(fill), barFill.transform.localScale.y, 1);
         barFill.color = !built ? new Color(0.4f, 0.7f, 1f)
@@ -342,23 +464,56 @@ public class BuildingView : MonoBehaviour
             : ruined ? "<color=#ff7070>Ruined</color>"
             : State.rankingUp ? "<color=#fd6>Ranking up</color>"
             : State.upgrading ? "<color=#fd6>Upgrading</color>"
-            : "";
+            : State.Paused ? "<color=#aaa>Paused</color>"
+            : ProblemText();
         string name = State.upgradeLevel > 0 ? $"{Definition.displayName} <size=75%>Lv {State.upgradeLevel + 1}</size>" : Definition.displayName;
         bool showName = selected || hovered;
+        if (Definition.IsWall && !showName)
+        {
+            status = ""; // no "Building" over every wall piece
+        }
         label.text = showName && status.Length > 0 ? $"{name}\n<size=75%>{status}</size>"
             : showName ? name
             : status.Length > 0 ? $"<size=75%>{status}</size>"
             : "";
     }
 
+    /// <summary>Short of workers or inputs (shown on the label even when not hovered).</summary>
+    private string ProblemText()
+    {
+        var settlement = controller.Settlement;
+        if (Definition.workers > 0 && settlement.StaffingOf(State) < 0.999f)
+        {
+            return "<color=#fc6>Short of workers</color>";
+        }
+        if (Definition.inputs.Count > 0 && settlement.InputSupplyOf(State) < 0.999f)
+        {
+            foreach (var input in Definition.inputs)
+            {
+                if (input.resource != null && settlement.GetAmount(input.resource) < 1f)
+                {
+                    return $"<color=#fc6>Needs {input.resource.displayName}</color>";
+                }
+            }
+            return "<color=#fc6>Low on inputs</color>";
+        }
+        return "";
+    }
+
     private void TrainTroops()
     {
         troops.RemoveAll(t => t == null || !t.IsAlive);
+        if (Definition.trainsUnit != null)
+        {
+            controller.Settlement.ReportLiveTroops(State, troops.Count);
+        }
         var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
         // Keep the troops' orders, upgrades and home settlement's bounds in line with this building.
         if (troops.Count > 0)
         {
             var zone = controller.TownZoneFor(transform.position);
+            var defendArea = controller.SettlementFor(transform.position);
+            float alertRange = controller.Settlement.Database.defendAlertRange;
             foreach (var t in troops)
             {
                 if (t.Stance != State.stance)
@@ -366,6 +521,7 @@ public class BuildingView : MonoBehaviour
                     t.SetStance(State.stance, zone, controller.SightRange);
                 }
                 t.SetDefendZone(zone);
+                t.SetDefendArea(defendArea, alertRange);
                 t.SetBuildingModifier(stats.trainedUnits);
             }
         }
@@ -379,7 +535,12 @@ public class BuildingView : MonoBehaviour
             trainTimer = 0;
             return;
         }
-        trainTimer += Time.deltaTime;
+        // Training needs the upkeep paid, and goes as fast as the building is staffed.
+        if (controller.Settlement.UpkeepShort)
+        {
+            return;
+        }
+        trainTimer += Time.deltaTime * controller.Settlement.StaffingOf(State);
         if (trainTimer < controller.troopTrainSeconds)
         {
             return;

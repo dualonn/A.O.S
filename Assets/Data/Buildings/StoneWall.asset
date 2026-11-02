@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: StoneWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: StoneWall
+  displayName: Stone Wall
+  description: Drag out a line to build it. Blocks everyone; raiders have to smash
+    through it.
+  icon: {fileID: 21300000, guid: 12c11607851bd0a479490d54ee434622, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 12
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 4d02822ea2ea2c6449ad626c349d63be, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: ec93168471c329d48afb5bae9f25688a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 14
+  rankUpTime: 6
+  isTownCenter: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: a140954141f3c7543809931f10623f1a, type: 3}
+  - {fileID: 21300000, guid: 2000489e442fb0e4c97234199c588c7e, type: 3}
+  - {fileID: 21300000, guid: bd8b4a78b2dcda54c96e199d44bf5715, type: 3}
+  - {fileID: 21300000, guid: 12c11607851bd0a479490d54ee434622, type: 3}
+  - {fileID: 21300000, guid: 49fef9230ec1a1d44b9531fdab5c6aa9, type: 3}
+  - {fileID: 21300000, guid: f3b59b542e73c8b4ead5f146b1f1e2c7, type: 3}
+  - {fileID: 21300000, guid: 2cc2b7f83acee9c4398283b2a7e7cc5b, type: 3}
+  - {fileID: 21300000, guid: 3a94cfaf43681544bada1982c90344fa, type: 3}
+  - {fileID: 21300000, guid: c323e00b7a0ee094ba4cd26f6c93957b, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 6
+  maxCount: 0
+  maxHealth: 650
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.1
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

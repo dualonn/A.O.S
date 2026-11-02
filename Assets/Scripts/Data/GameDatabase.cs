@@ -52,6 +52,12 @@ public class GameDatabase : ScriptableObject
 
     [Header("Free mode: population")]
     public ResourceType food;
+
+    [Tooltip("The Coin resource (taxes pay into it).")]
+    public ResourceType coin;
+
+    [Tooltip("Basic taxes: once Coin is unlocked, every person pays this much per second (research adds more).")]
+    public float taxPerPersonPerSecond = 0.004f;
     public float foodPerPersonPerSecond = 0.02f;
 
     [Tooltip("Seconds for one new person to arrive while there is food and housing.")]
@@ -88,6 +94,9 @@ public class GameDatabase : ScriptableObject
 
     [Tooltip("Safe zone round an outpost: buildings off on their own with no housing or town centre.")]
     public float outpostSafeRadius = 12f;
+
+    [Tooltip("Defending troops go after any raider that comes within this many tiles of their settlement's buildings.")]
+    public float defendAlertRange = 14f;
 
     [Tooltip("Raiders spawn in a band this many tiles wide just outside a settlement's safe zone.")]
     public float raidSpawnBand = 12f;

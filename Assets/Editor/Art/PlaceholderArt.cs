@@ -63,6 +63,7 @@ public static partial class PlaceholderArt
             {
                 { "Food", DrawFoodIcon }, { "Wood", DrawWoodIcon }, { "Stone", DrawStoneIcon }, { "Bronze", DrawBronzeIcon },
                 { "Iron", DrawIronIcon }, { "Gold", DrawGoldIcon },
+                { "Charcoal", DrawCharcoalIcon }, { "Tools", DrawToolsIcon }, { "Coin", DrawCoinIcon },
             };
             foreach (var res in database.resources)
             {

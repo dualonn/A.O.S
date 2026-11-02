@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: MudBrickGate
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: MudBrickGate
+  displayName: Mud-brick Gate
+  description: 'Put it in a wall: your people and troops walk through, raiders have
+    to break it down.'
+  icon: {fileID: 21300000, guid: 56c6ca4ae1c22fa4692b3d3ecfa89f71, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 10
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 16
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 662b3883c6dde704bb6ee46303ebd669, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 24
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 8
+  rankUpTime: 6
+  isTownCenter: 0
+  wallKind: 2
+  pieces:
+  - {fileID: 21300000, guid: 56c6ca4ae1c22fa4692b3d3ecfa89f71, type: 3}
+  - {fileID: 21300000, guid: 869ada882aa789240911a2934576f557, type: 3}
+  - {fileID: 21300000, guid: ff39c383b7e415d4890bb2012368e4b0, type: 3}
+  - {fileID: 21300000, guid: 7544a0303cad25d4ca2e7ecb4e4365de, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 10
+  maxCount: 0
+  maxHealth: 448
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.089999996
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

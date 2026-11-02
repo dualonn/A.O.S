@@ -8,6 +8,16 @@ public enum TerrainType : byte
     Hill
 }
 
+/// <summary>What a placed wall piece does to movement on its tile.</summary>
+public enum WallTile : byte
+{
+    None,
+    /// <summary>Blocks everyone.</summary>
+    Wall,
+    /// <summary>Lets your units through; blocks raiders.</summary>
+    Gate
+}
+
 /// <summary>
 /// The free mode map: terrain and natural deposits per tile. Tile (x, y) covers world
 /// x..x+1, y..y+1. The arrays cover the whole size limit (Width x Height), but only the
@@ -36,6 +46,11 @@ public class MapData
     private readonly byte[] deposit; // 0 = none, otherwise index + 1 into Deposits
     private readonly bool[] chunkDone;
     private readonly bool[] zoneRevealed;
+    private readonly byte[] wall;
+    private readonly List<int> wallCells = new List<int>();
+
+    /// <summary>Goes up whenever walls change, so units re-plan their routes.</summary>
+    public int WallVersion { get; private set; }
 
     public MapData(int width, int height, int seed, int chunkSize, List<DepositType> deposits)
     {
@@ -48,7 +63,37 @@ public class MapData
         deposit = new byte[width * height];
         chunkDone = new bool[ChunksX * ChunksY];
         zoneRevealed = new bool[ChunksX * ChunksY];
+        wall = new byte[width * height];
     }
+
+    // ---------- Walls and gates ----------
+
+    public WallTile WallAt(int x, int y) => InArray(x, y) ? (WallTile)wall[y * Width + x] : WallTile.None;
+
+    /// <summary>Replace every wall tile with these (standing walls and gates).</summary>
+    public void SetWalls(IEnumerable<(Vector2Int cell, WallTile kind)> pieces)
+    {
+        foreach (int i in wallCells) wall[i] = 0;
+        wallCells.Clear();
+        foreach (var (cell, kind) in pieces)
+        {
+            if (!InArray(cell.x, cell.y) || kind == WallTile.None) continue;
+            int i = cell.y * Width + cell.x;
+            wall[i] = (byte)kind;
+            wallCells.Add(i);
+        }
+        WallVersion++;
+    }
+
+    /// <summary>Walkable terrain, and no wall in this team's way (gates open for the player).</summary>
+    public bool Passable(int x, int y, Team team)
+    {
+        if (!IsWalkable(x, y)) return false;
+        var w = (WallTile)wall[y * Width + x];
+        return w == WallTile.None || (w == WallTile.Gate && team == Team.Player);
+    }
+
+    public bool Passable(Vector3 world, Team team) => Passable(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y), team);
 
     // ---------- Zones (the map grows one zone = one chunk at a time) ----------
 

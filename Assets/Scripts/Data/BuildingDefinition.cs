@@ -96,6 +96,16 @@ public class BuildingDefinition : GameData
     [Tooltip("The settlement's founding building (Campfire). Nothing else can be built until one exists.")]
     public bool isTownCenter;
 
+    [Header("Walls and gates (1x1, placed in lines)")]
+    [Tooltip("Wall: blocks everyone. Gate: lets your units through, blocks raiders.")]
+    public WallTile wallKind;
+
+    [Tooltip("Wall: post, east end, west end, east-west run, north run, south-east run, south-west run, west half, east half. " +
+             "Gate: east-west closed, east-west open, north-south closed, north-south open.")]
+    public List<Sprite> pieces = new List<Sprite>();
+
+    public bool IsWall => wallKind != WallTile.None;
+
     [Tooltip("Tiles up the footprint where the building stands up from the ground: units further forward draw " +
              "over it, units behind it draw under. 0 = the usual front wall. Flat buildings like farm fields use " +
              "a high value, so figures walk over the field.")]
@@ -136,6 +146,12 @@ public class BuildingDefinition : GameData
     public int workers;
 
     public List<ResourceRate> production = new List<ResourceRate>();
+
+    [Tooltip("Used up while it works, per second at full output (e.g. a foundry burning Charcoal).")]
+    public List<ResourceRate> inputs = new List<ResourceRate>();
+
+    [Tooltip("Share of its output it still makes when its inputs run out (0 = stops completely).")]
+    [Range(0, 1)] public float runsWithoutInputs;
 
     [Header("Defence")]
     [Tooltip("Strength added to the settlement's defence when waves are auto-resolved.")]

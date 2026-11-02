@@ -61,7 +61,7 @@ public abstract class Unit : MonoBehaviour
     public Unit currentTarget;
 
     private const float ScanInterval = 0.1f;
-    private static readonly ContactFilter2D ScanFilter = new ContactFilter2D().NoFilter();
+    private static readonly ContactFilter2D ScanFilter = ContactFilter2D.noFilter;
 
     protected readonly List<Unit> targetsInRange = new List<Unit>();
     private readonly List<Collider2D> overlapResults = new List<Collider2D>();
@@ -359,15 +359,15 @@ public abstract class Unit : MonoBehaviour
         {
             transform.position = nudged;
         }
-        else if (!nav.IsWalkable(pos))
+        else if (!nav.IsWalkable(pos, Team))
         {
-            // Ended up in water somehow: wade back to dry land.
-            transform.position = nav.Step(pos, pos, moveSpeed * Time.deltaTime);
+            // Ended up in water (or a wall) somehow: get back out.
+            transform.position = nav.Step(pos, pos, moveSpeed * Time.deltaTime, Team);
         }
         else
         {
-            // Never get shoved into water; slide along the shore instead.
-            transform.position = nav.Step(pos, nudged, step.magnitude);
+            // Never get shoved into water or through walls; slide along instead.
+            transform.position = nav.Step(pos, nudged, step.magnitude, Team);
         }
         knockVelocity = Vector2.MoveTowards(knockVelocity, Vector2.zero, KnockbackDrag * Time.deltaTime);
     }
@@ -438,23 +438,37 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Set by MoveTowards when a wall (one this unit can't pass) is right in its way.
+    /// Raiders use it to know what to smash.
+    /// </summary>
+    protected Vector2Int? BlockingWall { get; private set; }
+
     /// <summary>Step towards a point. Returns true once the point is reached.</summary>
     protected bool MoveTowards(Vector3 destination, float speed, bool faceMovement = true)
     {
         var nav = MapNavigator.Current;
         // Can't stand in water: aim for the nearest dry spot instead.
-        if (nav != null && !nav.IsWalkable(destination))
+        if (nav != null && !nav.IsWalkable(destination, Team))
         {
-            destination = nav.NearestWalkable(destination);
+            destination = nav.NearestWalkable(destination, Team);
         }
         destination.z = transform.position.z;
-        // On the free mode map, route around water and slow down on hills.
-        Vector3 next = pathFollower.NextPoint(transform.position, destination);
+        // On the free mode map, route around water and walls, and slow down on hills.
+        Vector3 next = pathFollower.NextPoint(transform.position, destination, Team);
         next.z = transform.position.z;
+        BlockingWall = null;
         if (nav != null)
         {
             speed *= nav.SpeedFactor(transform.position);
-            transform.position = nav.Step(transform.position, next, speed * Time.deltaTime);
+            Vector3 before = transform.position;
+            transform.position = nav.Step(transform.position, next, speed * Time.deltaTime, Team);
+            // Barely moved and a wall is right ahead: report it.
+            if ((transform.position - before).sqrMagnitude < (speed * Time.deltaTime * 0.5f) * (speed * Time.deltaTime * 0.5f)
+                && nav.WallAhead(before, next, 0.8f, Team, out var wall))
+            {
+                BlockingWall = wall;
+            }
         }
         else
         {

@@ -34,6 +34,11 @@ public class FreeModeHUD : MonoBehaviour
     private RectTransform buildContent, researchContent;
     private LayoutElement buildScroll, researchScroll;
     private readonly Dictionary<Age, CollapsibleSection> buildSections = new Dictionary<Age, CollapsibleSection>();
+    private readonly Dictionary<BuildCategory, CollapsibleSection> categorySections = new Dictionary<BuildCategory, CollapsibleSection>();
+    private TMP_InputField buildSearch, researchSearch;
+    private string buildFilter = "", researchFilter = "";
+    private bool groupByType = true;
+    private TextMeshProUGUI groupLabel;
     private readonly Dictionary<Age, CollapsibleSection> researchSections = new Dictionary<Age, CollapsibleSection>();
     private int sectionsAge = -1;
     private Button upgradeButton;
@@ -43,6 +48,13 @@ public class FreeModeHUD : MonoBehaviour
     private Button allStanceButton;
     private TextMeshProUGUI allStanceLabel;
     private TextMeshProUGUI repairLabel;
+    private Button selectTypeButton;
+    private RectTransform automationRow;
+    private Button priorityButton, autoRepairButton, queueButton, autoRepairNewButton;
+    private TextMeshProUGUI priorityLabel, autoRepairLabel, queueLabel, autoRepairNewLabel;
+    private TextMeshProUGUI selectTypeLabel;
+    private TextMeshProUGUI demolishLabel;
+    private float demolishArmedUntil = -1f;
     private TextMeshProUGUI speedLabel;
     private Button advanceButton;
     private TextMeshProUGUI advanceLabel;
@@ -154,27 +166,39 @@ public class FreeModeHUD : MonoBehaviour
         canvasRect = (RectTransform)root;
         var db = settlement.Database;
 
-        // Build menu (left): one folding section per age, in a scroll list.
+        // Build menu (left): search, then folding sections by type (or by age), in a scroll list.
         buildPanel = SidePanel("BuildPanel", root, left: true);
-        UIBuilder.Text("Title", buildPanel, "<b>Build</b>", 24);
+        var buildHeader = UIBuilder.Row("Header", buildPanel, 8);
+        UIBuilder.Text("Title", buildHeader, "<b>Build</b>", 24).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        var groupButton = UIBuilder.Button("Grouping", buildHeader, ToggleGrouping, out groupLabel, 30, 14);
+        groupButton.GetComponent<LayoutElement>().preferredWidth = 120;
+        groupLabel.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(groupButton.gameObject, () => tooltipSource = () => "<b>Grouping</b>\nBy type: housing, food, industry, military... Older versions you've outgrown are tucked away (search still finds them).\nBy age: everything, age by age.", HideTooltip);
+        buildSearch = UIBuilder.SearchField("Search", buildPanel, "Search buildings...", text => { buildFilter = text.Trim(); RefreshBuildButtons(); });
         buildContent = UIBuilder.ScrollList("Buildings", buildPanel, out buildScroll);
+        groupByType = PlayerPrefs.GetInt("AOS.BuildGroupByType", 1) == 1;
+        foreach (BuildCategory category in System.Enum.GetValues(typeof(BuildCategory)))
+        {
+            var section = new CollapsibleSection(category.ToString(), buildContent, CategoryName(category), CategoryAccent(category));
+            section.Toggled += _ => FitSidePanels();
+            categorySections[category] = section;
+        }
         foreach (var age in db.ages)
         {
-            var section = AgeSection(age, buildContent);
-            buildSections[age] = section;
-            foreach (var def in db.buildings)
-            {
-                if (def == null || (def.age != null ? def.age : db.ages[0]) != age)
-                {
-                    continue;
-                }
-                var d = def;
-                var button = UIBuilder.Button(def.id, section.Body, () => controller.Placer.Begin(d), out var label, 56, 18, def.icon);
-                UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
-                buildButtons.Add((def, button, label));
-            }
+            buildSections[age] = AgeSection(age, buildContent);
         }
+        foreach (var def in db.buildings)
+        {
+            if (def == null) continue;
+            var d = def;
+            var button = UIBuilder.Button(def.id, buildContent, () => controller.Placer.Begin(d), out var label, 56, 18, def.icon);
+            UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
+            buildButtons.Add((def, button, label));
+        }
+        ApplyGrouping();
         UIBuilder.Text("Hint", buildPanel, "<size=80%><color=#aaa>Click to place. Shift keeps placing.\nRight click / Esc cancels.</color></size>", 16);
+        autoRepairNewButton = UIBuilder.Button("AutoRepairNew", buildPanel, ToggleAutoRepairNew, out autoRepairNewLabel, 34, 15);
+        UIBuilder.OnHover(autoRepairNewButton.gameObject, () => tooltipSource = AutomationHelp, HideTooltip);
 
         // Ages and research (right): advancing stays on top, research folds by age below.
         researchPanel = SidePanel("ResearchPanel", root, left: false);
@@ -182,6 +206,7 @@ public class FreeModeHUD : MonoBehaviour
         advanceButton = UIBuilder.Button("Advance", researchPanel, TryAdvance, out advanceLabel, 60);
         UIBuilder.OnHover(advanceButton.gameObject, () => tooltipSource = AgeTooltip, HideTooltip);
         UIBuilder.Text("Title", researchPanel, "<b>Research</b>", 24);
+        researchSearch = UIBuilder.SearchField("Search", researchPanel, "Search research...", text => { researchFilter = text.Trim(); RefreshResearchButtons(); });
         researchContent = UIBuilder.ScrollList("Research", researchPanel, out researchScroll);
         foreach (var age in db.ages)
         {
@@ -210,7 +235,15 @@ public class FreeModeHUD : MonoBehaviour
         stanceButton = UIBuilder.Button("Stance", selectionPanel, ToggleSelectedStance, out stanceLabel, 50);
         UIBuilder.OnHover(stanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
         repairButton = UIBuilder.Button("Repair", selectionPanel, RepairSelected, out repairLabel, 44);
-        UIBuilder.Button("Demolish", selectionPanel, DemolishSelected, out var demolishLabel, 44).image.color = new Color(0.45f, 0.18f, 0.18f);
+        // Priority and automation: small toggles side by side.
+        automationRow = UIBuilder.Row("Automation", selectionPanel, 6);
+        automationRow.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
+        priorityButton = SmallToggle("Priority", CyclePriority, out priorityLabel, PriorityHelp);
+        autoRepairButton = SmallToggle("AutoRepair", ToggleAutoRepair, out autoRepairLabel, AutomationHelp);
+        queueButton = SmallToggle("Queue", ToggleQueue, out queueLabel, AutomationHelp);
+        selectTypeButton = UIBuilder.Button("SelectType", selectionPanel, SelectAllOfType, out selectTypeLabel, 40);
+        UIBuilder.OnHover(selectTypeButton.gameObject, () => tooltipSource = SelectionHelp, HideTooltip);
+        UIBuilder.Button("Demolish", selectionPanel, DemolishSelected, out demolishLabel, 44).image.color = new Color(0.45f, 0.18f, 0.18f);
         demolishLabel.text = "Demolish (no refund)";
         selectionPanel.gameObject.SetActive(false);
 
@@ -266,6 +299,7 @@ public class FreeModeHUD : MonoBehaviour
         RefreshBuildButtons();
         RefreshResearchButtons();
         RefreshSelection();
+        RefreshAutoRepairNew();
     }
 
     private void TrackRates()
@@ -396,6 +430,7 @@ public class FreeModeHUD : MonoBehaviour
     private void RefreshBuildButtons()
     {
         SyncSectionsToAge();
+        bool searching = buildFilter.Length > 0;
         foreach (var (def, button, label) in buildButtons)
         {
             int ageOrder = def.age != null ? def.age.order : 0;
@@ -403,29 +438,131 @@ public class FreeModeHUD : MonoBehaviour
             // Before founding only the town center is offered; afterwards it's hidden once built.
             bool founded = settlement.IsFounded;
             bool hidden = locked || (founded ? def.isTownCenter && settlement.CountAll(def) > 0 : !def.isTownCenter);
+            if (searching)
+            {
+                hidden |= !Matches(def, buildFilter);
+            }
+            else if (groupByType)
+            {
+                hidden |= Outdated(def); // grouped by type, show only the newest version of each
+            }
             button.gameObject.SetActive(!hidden);
             bool can = settlement.CanBuild(def, out string missing);
             button.interactable = can;
             bool placingThis = controller.Placer.Current == def;
-            label.text = $"<b>{def.displayName}</b>{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
+            string ageTag = groupByType && def.age != null
+                ? $"  <size=70%><color=#{ColorUtility.ToHtmlStringRGB(AgeAccents[Mathf.Clamp(ageOrder, 0, AgeAccents.Length - 1)])}>{def.age.displayName.Replace(" Age", "")}</color></size>" : "";
+            label.text = $"<b>{def.displayName}</b>{ageTag}{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
                          $"<size=80%>{SubtitleFor(def.requirements.cost, can, missing)}</size>";
         }
 
-        // Section headers: hidden when empty, with how many can be built right now.
-        foreach (var pair in buildSections)
-        {
-            int shown = 0, ready = 0;
-            foreach (var (def, button, _) in buildButtons)
-            {
-                if (button.transform.parent != pair.Value.Body || !button.gameObject.activeSelf) continue;
-                shown++;
-                if (button.interactable) ready++;
-            }
-            bool next = pair.Key.order == settlement.State.ageIndex + 1;
-            pair.Value.SetVisible(shown > 0);
-            pair.Value.SetNote(next ? "next age" : ready > 0 ? $"{ready} ready" : $"{shown}");
-        }
+        // Section headers: only the current grouping's, hidden when empty, with how many can be built.
+        foreach (var pair in categorySections) RefreshBuildSection(pair.Value, groupByType, searching, null);
+        foreach (var pair in buildSections) RefreshBuildSection(pair.Value, !groupByType, searching, pair.Key);
         FitSidePanels();
+    }
+
+    private void RefreshBuildSection(CollapsibleSection section, bool active, bool searching, Age age)
+    {
+        if (!active)
+        {
+            section.SetVisible(false);
+            return;
+        }
+        int shown = 0, ready = 0;
+        foreach (var (_, button, _) in buildButtons)
+        {
+            if (button.transform.parent != section.Body || !button.gameObject.activeSelf) continue;
+            shown++;
+            if (button.interactable) ready++;
+        }
+        section.SetVisible(shown > 0);
+        if (searching && shown > 0 && !section.Open)
+        {
+            section.SetOpen(true); // show every match while searching
+        }
+        bool next = age != null && age.order == settlement.State.ageIndex + 1;
+        section.SetNote(next ? "next age" : ready > 0 ? $"{ready} ready" : $"{shown}");
+    }
+
+    // ---------- Build menu grouping and search ----------
+
+    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls }
+
+    private static string CategoryName(BuildCategory c) => c switch
+    {
+        BuildCategory.Walls => "Walls and Gates",
+        _ => c.ToString(),
+    };
+
+    private static Color CategoryAccent(BuildCategory c) => c switch
+    {
+        BuildCategory.Settlement => new Color(0.95f, 0.8f, 0.45f),
+        BuildCategory.Housing => new Color(0.9f, 0.7f, 0.55f),
+        BuildCategory.Food => new Color(0.65f, 0.85f, 0.45f),
+        BuildCategory.Materials => new Color(0.75f, 0.65f, 0.5f),
+        BuildCategory.Industry => new Color(0.95f, 0.6f, 0.35f),
+        BuildCategory.Military => new Color(0.95f, 0.45f, 0.4f),
+        BuildCategory.Defence => new Color(0.6f, 0.75f, 0.95f),
+        _ => new Color(0.75f, 0.75f, 0.78f),
+    };
+
+    /// <summary>What kind of building this is, worked out from what it does.</summary>
+    private static BuildCategory CategoryOf(BuildingDefinition def)
+    {
+        if (def.IsWall) return BuildCategory.Walls;
+        if (def.isTownCenter) return BuildCategory.Settlement;
+        if (def.trainsUnit != null) return BuildCategory.Military;
+        if (def.towerRange > 0) return BuildCategory.Defence;
+        if (def.production.Count == 0) return def.housing > 0 ? BuildCategory.Housing : BuildCategory.Settlement;
+        foreach (var rate in def.production)
+        {
+            if (rate.resource == null) continue;
+            if (rate.resource.id == "Food") return BuildCategory.Food;
+            if (rate.resource.id == "Wood" || rate.resource.id == "Stone") return BuildCategory.Materials;
+        }
+        return BuildCategory.Industry;
+    }
+
+    /// <summary>An older version you've outgrown: it ranks up into something you can already build.</summary>
+    private bool Outdated(BuildingDefinition def)
+    {
+        var next = def.rankUpTo;
+        return next != null && (next.age == null || next.age.order <= settlement.State.ageIndex);
+    }
+
+    private static bool Matches(BuildingDefinition def, string filter)
+    {
+        var c = System.StringComparison.OrdinalIgnoreCase;
+        return def.displayName.IndexOf(filter, c) >= 0
+               || (def.description != null && def.description.IndexOf(filter, c) >= 0)
+               || CategoryName(CategoryOf(def)).IndexOf(filter, c) >= 0
+               || def.production.Exists(r => r.resource != null && r.resource.displayName.IndexOf(filter, c) >= 0);
+    }
+
+    /// <summary>Move every build button into the sections of the current grouping.</summary>
+    private void ApplyGrouping()
+    {
+        groupLabel.text = groupByType ? "By type" : "By age";
+        var db = settlement.Database;
+        var ordered = buildButtons.OrderBy(b => groupByType ? (int)CategoryOf(b.def) : 0)
+            .ThenBy(b => b.def.age != null ? b.def.age.order : 0)
+            .ThenBy(b => db.buildings.IndexOf(b.def));
+        foreach (var (def, button, _) in ordered)
+        {
+            var section = groupByType ? categorySections[CategoryOf(def)]
+                : buildSections[def.age != null ? def.age : db.ages[0]];
+            button.transform.SetParent(section.Body, false);
+            button.transform.SetAsLastSibling();
+        }
+    }
+
+    private void ToggleGrouping()
+    {
+        groupByType = !groupByType;
+        PlayerPrefs.SetInt("AOS.BuildGroupByType", groupByType ? 1 : 0);
+        ApplyGrouping();
+        RefreshBuildButtons();
     }
 
     private void RefreshResearchButtons()
@@ -434,7 +571,10 @@ public class FreeModeHUD : MonoBehaviour
         {
             bool done = settlement.HasResearched(tech);
             bool locked = tech.age != null && tech.age.order > settlement.State.ageIndex;
-            button.gameObject.SetActive(!done && !locked);
+            bool match = researchFilter.Length == 0
+                || tech.displayName.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0
+                || (tech.description != null && tech.description.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0);
+            button.gameObject.SetActive(!done && !locked && match);
             bool current = settlement.State.researchingId == tech.id;
             bool can = settlement.CanResearch(tech, out string missing);
             button.interactable = can;
@@ -484,8 +624,22 @@ public class FreeModeHUD : MonoBehaviour
             return;
         }
         selectionPanel.gameObject.SetActive(true);
+        if (Time.unscaledTime > demolishArmedUntil)
+        {
+            demolishLabel.text = controller.Selection.Count > 1 ? $"Demolish all {controller.Selection.Count} (no refund)" : "Demolish (no refund)";
+        }
+        RefreshAutomationRow();
+        if (controller.Selection.Count > 1)
+        {
+            RefreshGroupSelection();
+            return;
+        }
         var state = view.State;
         var def = view.Definition;
+
+        int sameType = controller.AllOfType(def, false).Count;
+        selectTypeButton.gameObject.SetActive(sameType > 1);
+        selectTypeLabel.text = $"Select all {def.displayName} ({sameType})";
 
         var sb = new StringBuilder($"<b>{def.displayName}</b>\n");
         if (!state.IsBuilt)
@@ -502,6 +656,26 @@ public class FreeModeHUD : MonoBehaviour
         {
             string color = state.siteQuality >= 0.99f ? "#8f8" : state.siteQuality >= 0.5f ? "#fe8" : "#fb7";
             sb.Append($"Site output: <color={color}>{state.siteQuality:P0}</color>\n");
+        }
+        if (state.IsBuilt && state.health > 0)
+        {
+            var live = settlement.StatsOf(state);
+            if (live.workers > 0)
+            {
+                int filled = Mathf.RoundToInt(settlement.StaffingOf(state) * live.workers);
+                string color = filled >= live.workers ? "#8f8" : filled > 0 ? "#fe8" : "#f88";
+                sb.Append(state.Paused ? "<color=#aaa>Paused: no workers, does nothing</color>\n"
+                    : $"Workers: <color={color}>{filled}/{live.workers}</color>\n");
+            }
+            if (def.inputs.Count > 0 && !state.Paused)
+            {
+                float supply = settlement.InputSupplyOf(state);
+                if (supply < 0.999f)
+                {
+                    float run = Mathf.Lerp(def.runsWithoutInputs, 1f, supply);
+                    sb.Append($"<color=#fc6>Short of inputs: running at {run:P0}</color>\n");
+                }
+            }
         }
         selectionText.text = sb.ToString().TrimEnd();
 
@@ -586,6 +760,11 @@ public class FreeModeHUD : MonoBehaviour
 
     private void RepairSelected()
     {
+        if (controller.Selection.Count > 1)
+        {
+            RepairGroup();
+            return;
+        }
         var view = controller.Selected;
         if (view != null && !settlement.TryRepair(view.State, out string reason))
         {
@@ -596,11 +775,230 @@ public class FreeModeHUD : MonoBehaviour
 
     private void DemolishSelected()
     {
-        var view = controller.Selected;
-        if (view != null)
+        var picked = new List<BuildingView>(controller.Selection);
+        if (picked.Count == 0)
+        {
+            return;
+        }
+        if (picked.Count > 1 && Time.unscaledTime > demolishArmedUntil)
+        {
+            // Two clicks for a whole group, so a stray click can't flatten the town.
+            demolishArmedUntil = Time.unscaledTime + 3f;
+            demolishLabel.text = $"<color=#fc8>Click again to demolish all {picked.Count}</color>";
+            return;
+        }
+        demolishArmedUntil = -1f;
+        foreach (var view in picked)
         {
             settlement.Demolish(view.State);
         }
+    }
+
+    private void SelectAllOfType()
+    {
+        var view = controller.Selected;
+        if (view != null)
+        {
+            controller.SetSelection(controller.AllOfType(view.Definition, false));
+        }
+    }
+
+    private static string SelectionHelp() =>
+        "<b>Selecting buildings</b>\n" +
+        "Drag on the ground to box-select.\n" +
+        "Shift + click adds or removes one. Shift + drag adds a box.\n" +
+        "Double-click selects every one of that type on screen; Ctrl + double-click, on the whole map.";
+
+    // ---------- Group selection ----------
+
+    private enum Step { None, Upgrade, RankUp }
+
+    /// <summary>A building's next upgrade step (an upgrade tier, or ranking up) and its cost.</summary>
+    private Step NextStep(BuildingState state, out List<ResourceAmount> cost)
+    {
+        var next = settlement.NextUpgrade(state);
+        if (next != null)
+        {
+            cost = next.requirements.cost;
+            return Step.Upgrade;
+        }
+        var def = settlement.Database.GetBuilding(state.definitionId);
+        if (def != null && settlement.RankUpTarget(state) != null)
+        {
+            cost = def.rankUpRequirements.cost;
+            return Step.RankUp;
+        }
+        cost = null;
+        return Step.None;
+    }
+
+    private bool CanStep(BuildingState state, Step step, out string why) =>
+        step == Step.Upgrade ? settlement.CanUpgrade(state, out why) : settlement.CanRankUp(state, out why);
+
+    private bool StartStep(BuildingState state, Step step, out string why) =>
+        step == Step.Upgrade ? settlement.TryStartUpgrade(state, out why) : settlement.TryStartRankUp(state, out why);
+
+    private static int CostSize(List<ResourceAmount> cost)
+    {
+        int total = 0;
+        if (cost != null) foreach (var c in cost) total += c.amount;
+        return total;
+    }
+
+    /// <summary>Selected buildings that could take their next step, cheapest first.</summary>
+    private List<(BuildingState state, Step step, List<ResourceAmount> cost)> UpgradeCandidates(out int busy, out int done)
+    {
+        busy = done = 0;
+        var list = new List<(BuildingState, Step, List<ResourceAmount>)>();
+        foreach (var view in controller.Selection)
+        {
+            var step = NextStep(view.State, out var cost);
+            if (step == Step.None) done++;
+            else if (view.State.upgrading) busy++;
+            else list.Add((view.State, step, cost));
+        }
+        list.Sort((a, b) => CostSize(a.Item3).CompareTo(CostSize(b.Item3)));
+        return list;
+    }
+
+    private void RefreshGroupSelection()
+    {
+        var picked = controller.Selection;
+        selectTypeButton.gameObject.SetActive(false);
+
+        // Header: how many of what, and what state they're in.
+        var counts = new Dictionary<string, int>();
+        int building = 0, damaged = 0, ruined = 0;
+        foreach (var view in picked)
+        {
+            counts.TryGetValue(view.Definition.displayName, out int n);
+            counts[view.Definition.displayName] = n + 1;
+            if (!view.State.IsBuilt) building++;
+            else if (view.State.health <= 0) ruined++;
+            else if (view.State.health < settlement.StatsOf(view.State).maxHealth) damaged++;
+        }
+        var kinds = counts.OrderByDescending(p => p.Value).Select(p => $"{p.Value} {p.Key}");
+        var sb = new StringBuilder($"<b>{picked.Count} buildings</b>\n<size=85%>{string.Join(", ", kinds)}</size>");
+        var notes = new List<string>();
+        if (building > 0) notes.Add($"{building} being built");
+        if (damaged > 0) notes.Add($"<color=#fe8>{damaged} damaged</color>");
+        if (ruined > 0) notes.Add($"<color=#f77>{ruined} ruined</color>");
+        if (notes.Count > 0) sb.Append($"\n<size=85%>{string.Join(", ", notes)}</size>");
+        selectionText.text = sb.ToString();
+
+        // Upgrade all: the next step of each, cheapest first, as far as resources go.
+        var candidates = UpgradeCandidates(out int busy, out int done);
+        upgradeButton.gameObject.SetActive(candidates.Count + busy > 0);
+        if (candidates.Count + busy > 0)
+        {
+            var ready = candidates.FindAll(c => CanStep(c.state, c.step, out _));
+            var total = Settlement.SumCost(ready.Select(c => c.cost));
+            int affordable = 0;
+            var running = new List<List<ResourceAmount>>();
+            foreach (var c in ready)
+            {
+                running.Add(c.cost);
+                if (!settlement.CanAfford(Settlement.SumCost(running))) break;
+                affordable++;
+            }
+            upgradeButton.interactable = ready.Count > 0;
+            string title = ready.Count > 0 ? $"<b>Upgrade all</b>  <size=75%>({ready.Count} of {picked.Count} ready)</size>" : "<b>Upgrade all</b>";
+            string sub;
+            if (ready.Count == 0)
+            {
+                string why = "";
+                if (candidates.Count > 0) CanStep(candidates[0].state, candidates[0].step, out why);
+                sub = busy > 0 && candidates.Count == 0 ? $"<color=#fd6>{busy} upgrading</color>"
+                    : $"<color=#f88>{FirstLine(why)}</color>";
+            }
+            else
+            {
+                sub = CostText(total) + (affordable < ready.Count ? $"  <color=#fd6>(enough for {affordable})</color>" : "");
+                if (busy > 0) sub += $"  <color=#aaa>{busy} busy</color>";
+            }
+            upgradeLabel.text = $"{title}\n<size=80%>{sub}</size>";
+        }
+
+        // Stance: shared if they all agree.
+        TroopStance? common = null;
+        bool mixed = false, anyTrains = false;
+        foreach (var view in picked)
+        {
+            if (view.Definition.trainsUnit == null) continue;
+            anyTrains = true;
+            if (common == null) common = view.State.stance;
+            else if (common != view.State.stance) mixed = true;
+        }
+        stanceButton.gameObject.SetActive(anyTrains);
+        if (anyTrains)
+        {
+            stanceLabel.text = (mixed ? "<b>Stance:</b> Mixed" : StanceText(common.Value)) + "\n<size=75%><color=#aaa>Click to switch them all</color></size>";
+        }
+
+        // Repair all damaged ones.
+        var repairs = new List<List<ResourceAmount>>();
+        foreach (var view in picked)
+        {
+            if (view.State.IsBuilt && view.State.health < settlement.StatsOf(view.State).maxHealth)
+            {
+                repairs.Add(settlement.RepairCost(view.State));
+            }
+        }
+        repairButton.gameObject.SetActive(repairs.Count > 0);
+        if (repairs.Count > 0)
+        {
+            var cost = Settlement.SumCost(repairs);
+            repairButton.interactable = repairs.Exists(settlement.CanAfford);
+            repairLabel.text = $"Repair all {repairs.Count} ({CostText(cost)})";
+        }
+    }
+
+    private static string FirstLine(string text) => string.IsNullOrEmpty(text) ? "" : text.Split('\n')[0];
+
+    private void UpgradeGroup()
+    {
+        var candidates = UpgradeCandidates(out _, out _);
+        int started = 0, tried = 0;
+        string firstProblem = null;
+        foreach (var c in candidates)
+        {
+            if (!CanStep(c.state, c.step, out string why))
+            {
+                firstProblem ??= why;
+                continue;
+            }
+            tried++;
+            if (StartStep(c.state, c.step, out why)) started++;
+            else firstProblem ??= why;
+        }
+        if (started > 0)
+        {
+            string rest = started < candidates.Count && firstProblem != null ? $" The rest: {FirstLine(firstProblem)}" : "";
+            AddMessage($"Started {started} of {candidates.Count} upgrades.{rest}");
+        }
+        else if (firstProblem != null)
+        {
+            AddMessage(FirstLine(firstProblem));
+        }
+        RefreshAll();
+    }
+
+    private void RepairGroup()
+    {
+        int repaired = 0, damaged = 0;
+        string problem = null;
+        var picked = new List<BuildingView>(controller.Selection);
+        // Ruins first: they produce nothing until fixed.
+        picked.Sort((a, b) => a.State.health.CompareTo(b.State.health));
+        foreach (var view in picked)
+        {
+            if (!view.State.IsBuilt || view.State.health >= settlement.StatsOf(view.State).maxHealth) continue;
+            damaged++;
+            if (settlement.TryRepair(view.State, out string why)) repaired++;
+            else problem ??= why;
+        }
+        AddMessage(repaired == damaged ? $"Repaired {repaired} buildings." : $"Repaired {repaired} of {damaged}. {FirstLine(problem)}");
+        RefreshAll();
     }
 
     // ---------- Troop stances ----------
@@ -621,7 +1019,21 @@ public class FreeModeHUD : MonoBehaviour
         {
             return;
         }
-        view.State.stance = view.State.stance == TroopStance.Defend ? TroopStance.Attack : TroopStance.Defend;
+        // A group follows the first troop building: if it defends, they all attack, and back.
+        TroopStance? first = null;
+        foreach (var v in controller.Selection)
+        {
+            if (v.Definition.trainsUnit != null) { first = v.State.stance; break; }
+        }
+        if (first == null)
+        {
+            return;
+        }
+        var next = first == TroopStance.Defend ? TroopStance.Attack : TroopStance.Defend;
+        foreach (var v in controller.Selection)
+        {
+            if (v.Definition.trainsUnit != null) v.State.stance = next;
+        }
         RefreshAll();
     }
 
@@ -715,6 +1127,27 @@ public class FreeModeHUD : MonoBehaviour
         if (jobs > people)
         {
             sb.Append($"\n<color=#fc6>{jobs - people} jobs unfilled: buildings run at {settlement.WorkerEfficiency:P0}</color>");
+        }
+        int understaffed = 0, paused = 0;
+        foreach (var view in controller.Buildings)
+        {
+            if (!settlement.IsWorking(view.State, view.Definition) || view.Definition.workers <= 0) continue;
+            if (view.State.Paused) paused++;
+            else if (settlement.StaffingOf(view.State) < 0.999f) understaffed++;
+        }
+        if (understaffed > 0) sb.Append($"\n<color=#fc6>{understaffed} buildings short of workers</color> <size=80%>(high priority ones fill first)</size>");
+        if (paused > 0) sb.Append($"\n<color=#aaa>{paused} paused</color>");
+        var due = settlement.UpkeepPerSecond(out int troops);
+        if (troops > 0)
+        {
+            var parts = due.Where(d => d.Value > 0).Select(d => $"{d.Value:0.##} {d.Key.displayName}/s");
+            sb.Append($"\nArmy: {troops} troops, upkeep {string.Join(", ", parts)}");
+            if (settlement.UpkeepShort) sb.Append("\n<color=#f88>Upkeep unpaid: troops aren't training</color>");
+        }
+        float tax = settlement.TaxPerPersonPerSecond;
+        if (tax > 0 && settlement.Database.coin != null)
+        {
+            sb.Append($"\nTaxes: +{people * tax:0.##} Coin/s");
         }
         sb.Append(people < room
             ? $"\n<size=80%><color=#aaa>Someone new arrives every {settlement.Database.secondsPerNewPerson:0}s while there's food.</color></size>"
@@ -849,6 +1282,13 @@ public class FreeModeHUD : MonoBehaviour
                 sb.Append($"Produces {rate.perSecond * s.output:0.##} {rate.resource.displayName}/s\n");
             }
         }
+        foreach (var input in def.inputs)
+        {
+            if (input.resource != null)
+            {
+                sb.Append($"Uses {input.perSecond * s.output:0.##} {input.resource.displayName}/s\n");
+            }
+        }
         if (s.housing > 0)
         {
             sb.Append($"Houses {s.housing} people\n");
@@ -860,6 +1300,12 @@ public class FreeModeHUD : MonoBehaviour
         if (def.trainsUnit != null)
         {
             sb.Append($"Trains up to {s.maxUnits} {def.trainsUnit.displayName}\n");
+            var upkeep = def.trainsUnit.upkeep.FindAll(u => u.resource != null && u.perSecond > 0)
+                .Select(u => $"{u.perSecond:0.###} {u.resource.displayName}/s");
+            if (upkeep.Any())
+            {
+                sb.Append($"Upkeep per troop: {string.Join(", ", upkeep)}\n");
+            }
             var m = s.trainedUnits;
             var bonus = new List<string>();
             if (m.speedMultiplier != 1) bonus.Add($"speed {m.speedMultiplier - 1:+0%;-0%}");
@@ -945,6 +1391,11 @@ public class FreeModeHUD : MonoBehaviour
 
     private void UpgradeSelected()
     {
+        if (controller.Selection.Count > 1)
+        {
+            UpgradeGroup();
+            return;
+        }
         var view = controller.Selected;
         if (view == null)
         {
@@ -988,4 +1439,109 @@ public class FreeModeHUD : MonoBehaviour
         seconds = Mathf.Max(0, seconds);
         return $"{(int)(seconds / 60)}:{(int)(seconds % 60):00}";
     }
+
+    // ---------- Priority and automation ----------
+
+    private Button SmallToggle(string name, UnityEngine.Events.UnityAction onClick, out TextMeshProUGUI label, System.Func<string> help)
+    {
+        var button = UIBuilder.Button(name, automationRow, onClick, out label, 40, 15);
+        button.GetComponent<LayoutElement>().flexibleWidth = 1;
+        label.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(button.gameObject, () => tooltipSource = help, HideTooltip);
+        return button;
+    }
+
+    private static string OnOff(int on, int total) =>
+        on == total ? "<color=#8f8>On</color>" : on == 0 ? "<color=#aaa>Off</color>" : "<color=#fe8>Mixed</color>";
+
+    private static string PriorityName(int priority) =>
+        priority < 0 ? "<color=#aaa>Paused</color>" : priority > 0 ? "<color=#8cf>High</color>" : "Normal";
+
+    private void RefreshAutomationRow()
+    {
+        var picked = controller.Selection;
+        int built = 0, workers = 0, repairOn = 0, queueable = 0, queueOn = 0;
+        int? priority = null;
+        bool mixedPriority = false;
+        foreach (var view in picked)
+        {
+            var state = view.State;
+            if (!state.IsBuilt) continue;
+            built++;
+            if (state.autoRepair) repairOn++;
+            bool hasMore = settlement.NextUpgrade(state) != null || settlement.RankUpTarget(state) != null;
+            if (hasMore)
+            {
+                queueable++;
+                if (state.queueUpgrades) queueOn++;
+            }
+            if (view.Definition.workers > 0)
+            {
+                workers++;
+                if (priority == null) priority = state.priority;
+                else if (priority != state.priority) mixedPriority = true;
+            }
+        }
+        automationRow.gameObject.SetActive(built > 0);
+        priorityButton.gameObject.SetActive(workers > 0);
+        priorityLabel.text = $"Priority: {(mixedPriority ? "Mixed" : PriorityName(priority ?? 0))}";
+        autoRepairLabel.text = $"Auto-repair: {OnOff(repairOn, built)}";
+        queueButton.gameObject.SetActive(queueable > 0);
+        queueLabel.text = $"Auto-upgrade: {OnOff(queueOn, queueable)}";
+    }
+
+    private void CyclePriority()
+    {
+        var first = controller.Selection.FirstOrDefault(v => v.Definition.workers > 0);
+        if (first == null) return;
+        // Normal -> High -> Paused -> Normal
+        int next = first.State.priority == 0 ? 1 : first.State.priority > 0 ? -1 : 0;
+        foreach (var view in controller.Selection)
+        {
+            if (view.Definition.workers > 0) view.State.priority = next;
+        }
+        RefreshAll();
+    }
+
+    private void ToggleAutoRepair()
+    {
+        bool allOn = controller.Selection.Where(v => v.State.IsBuilt).All(v => v.State.autoRepair);
+        foreach (var view in controller.Selection) view.State.autoRepair = !allOn;
+        RefreshAll();
+    }
+
+    private void ToggleQueue()
+    {
+        var queueable = controller.Selection.Where(v => v.State.IsBuilt &&
+            (settlement.NextUpgrade(v.State) != null || settlement.RankUpTarget(v.State) != null)).ToList();
+        bool allOn = queueable.All(v => v.State.queueUpgrades);
+        foreach (var view in queueable) view.State.queueUpgrades = !allOn;
+        if (!allOn) AddMessage($"Auto-upgrade on for {queueable.Count}: each starts its next upgrade as soon as you can afford it.");
+        RefreshAll();
+    }
+
+    private void ToggleAutoRepairNew()
+    {
+        settlement.State.autoRepairNew = !settlement.State.autoRepairNew;
+        RefreshAll();
+    }
+
+    private void RefreshAutoRepairNew()
+    {
+        if (autoRepairNewLabel != null)
+        {
+            autoRepairNewLabel.text = $"<size=90%>New buildings auto-repair: {(settlement.State.autoRepairNew ? "<color=#8f8>On</color>" : "<color=#aaa>Off</color>")}</size>";
+        }
+    }
+
+    private static string PriorityHelp() =>
+        "<b>Worker priority</b>\n" +
+        "When people run short, <color=#8cf>High</color> buildings get workers first, then Normal ones in the order you built them.\n" +
+        "<color=#aaa>Paused</color> buildings use no workers and do nothing.\n" +
+        "<size=80%><color=#aaa>Click to cycle Normal, High, Paused.</color></size>";
+
+    private static string AutomationHelp() =>
+        "<b>Automation</b>\n" +
+        "<b>Auto-repair</b>: fixes damage (and ruins) by itself once raiders have gone, if you can afford it.\n" +
+        "<b>Auto-upgrade</b>: starts the next upgrade, then the rank up, as soon as you can afford them.";
 }

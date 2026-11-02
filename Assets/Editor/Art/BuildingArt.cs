@@ -46,6 +46,10 @@ public static partial class PlaceholderArt
             { "ArcherAcademy", (DrawArcherAcademy, 4, 3f) },
             { "Stables", (DrawStables, 4, 3f) },
             { "BallistaTower", (DrawBallistaTower, 4, 4f) },
+            // Production chains (EconomyArt.cs)
+            { "CharcoalKiln", (DrawCharcoalKiln, 4, 4f) },
+            { "Smithy", (DrawSmithy, 4, 6f) },
+            { "Mint", (DrawMint, 4, 5f) },
         };
 
     private static readonly Color Bronze2 = new Color(0.86f, 0.6f, 0.28f);

@@ -4,6 +4,8 @@ using UnityEngine;
 /// <summary>
 /// Pathfinding over the free mode map: A* on tiles, 8 directions, water blocked,
 /// hills cost more. Paths are smoothed so units walk in straight lines where they can.
+/// Walls block everyone and gates block raiders. Raiders still plan through walls at a high
+/// cost: they go round through any gap, and only break through when there's no way round.
 /// </summary>
 public class MapNavigator
 {
@@ -15,6 +17,9 @@ public class MapNavigator
     private static void ResetStatics() => Current = null;
 
     private const int MaxExpansions = 12000;
+
+    /// <summary>Extra path cost for a raider to go through a wall tile (it has to smash it).</summary>
+    private const float WallBreakCost = 30f;
 
     private readonly MapData map;
     private readonly float hillSpeed;
@@ -35,7 +40,40 @@ public class MapNavigator
         stamp = new int[n];
     }
 
-    public bool IsWalkable(Vector3 world) => map.IsWalkable(world);
+    public bool IsWalkable(Vector3 world, Team team = Team.Player) => map.Passable(world, team);
+
+    private bool Passable(int x, int y, Team team) => map.Passable(x, y, team);
+
+    private bool Passable(Vector2 p, Team team) => map.Passable(Mathf.FloorToInt(p.x), Mathf.FloorToInt(p.y), team);
+
+    public int WallVersion => map.WallVersion;
+
+    /// <summary>
+    /// The first wall tile (blocking this team) on the way from 'from' towards 'to', within
+    /// 'reach'. For raiders deciding what to smash.
+    /// </summary>
+    public bool WallAhead(Vector3 from, Vector3 to, float reach, Team team, out Vector2Int cell)
+    {
+        Vector2 dir = to - from;
+        float length = Mathf.Min(reach, dir.magnitude);
+        cell = default;
+        if (length < 0.001f)
+        {
+            return false;
+        }
+        dir.Normalize();
+        for (float d = 0.1f; d <= length; d += 0.1f)
+        {
+            Vector2 p = (Vector2)from + dir * d;
+            int x = Mathf.FloorToInt(p.x), y = Mathf.FloorToInt(p.y);
+            if (map.IsWalkable(x, y) && !map.Passable(x, y, team))
+            {
+                cell = new Vector2Int(x, y);
+                return true;
+            }
+        }
+        return false;
+    }
 
     /// <summary>Movement speed multiplier at a position (slower on hills).</summary>
     public float SpeedFactor(Vector3 world) =>
@@ -45,13 +83,13 @@ public class MapNavigator
     /// True if a straight walk from a to b never crosses water. Away from the two ends it also
     /// checks a strip either side of the line, so units don't clip the corners of water tiles.
     /// </summary>
-    public bool ClearLine(Vector3 a, Vector3 b)
+    public bool ClearLine(Vector3 a, Vector3 b, Team team = Team.Player)
     {
         Vector2 delta = b - a;
         float distance = delta.magnitude;
         if (distance < 0.0001f)
         {
-            return map.IsWalkable(b);
+            return Passable(b, team);
         }
         Vector2 side = new Vector2(-delta.y, delta.x) / distance * 0.25f;
         int steps = Mathf.CeilToInt(distance / 0.15f);
@@ -59,13 +97,13 @@ public class MapNavigator
         {
             float t = i / (float)steps;
             Vector2 p = Vector2.Lerp(a, b, t);
-            if (!map.IsWalkable(p))
+            if (!Passable(p, team))
             {
                 return false;
             }
             float along = t * distance;
             if (along > 0.35f && distance - along > 0.35f
-                && (!map.IsWalkable(p + side) || !map.IsWalkable(p - side)))
+                && (!Passable(p + side, team) || !Passable(p - side, team)))
             {
                 return false;
             }
@@ -77,16 +115,16 @@ public class MapNavigator
     /// Move from 'from' towards 'to' by up to 'maxDelta' without stepping into water: blocked
     /// steps slide along the shore instead. A unit already in water heads for the nearest dry land.
     /// </summary>
-    public Vector3 Step(Vector3 from, Vector3 to, float maxDelta)
+    public Vector3 Step(Vector3 from, Vector3 to, float maxDelta, Team team = Team.Player)
     {
-        if (!map.IsWalkable(from))
+        if (!Passable(from, team))
         {
-            Vector3 dry = NearestWalkable(from);
+            Vector3 dry = NearestWalkable(from, team);
             dry.z = from.z;
             return Vector3.MoveTowards(from, dry, Mathf.Max(maxDelta, 0.02f));
         }
         Vector3 next = Vector3.MoveTowards(from, to, maxDelta);
-        if (map.IsWalkable(next))
+        if (Passable(next, team) && !CutsCorner(from, next, team))
         {
             return next;
         }
@@ -96,23 +134,33 @@ public class MapNavigator
         var slideY = new Vector3(from.x, from.y + move.y, from.z);
         bool xFirst = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
         Vector3 first = xFirst ? slideX : slideY, second = xFirst ? slideY : slideX;
-        if (map.IsWalkable(first))
+        if (Passable(first, team))
         {
             return first;
         }
-        return map.IsWalkable(second) ? second : from;
+        return Passable(second, team) ? second : from;
+    }
+
+    /// <summary>Stepping diagonally into the next tile between two blocked ones (a diagonal wall).</summary>
+    private bool CutsCorner(Vector3 from, Vector3 next, Team team)
+    {
+        int fx = Mathf.FloorToInt(from.x), fy = Mathf.FloorToInt(from.y);
+        int nx = Mathf.FloorToInt(next.x), ny = Mathf.FloorToInt(next.y);
+        return fx != nx && fy != ny && !Passable(nx, fy, team) && !Passable(fx, ny, team);
     }
 
     /// <summary>
     /// World-space waypoints from 'from' to 'to' (the last one is 'to' itself, or the nearest
     /// reachable tile to it). Empty if no route was found.
     /// </summary>
-    public List<Vector3> FindPath(Vector3 from, Vector3 to)
+    public List<Vector3> FindPath(Vector3 from, Vector3 to, Team team = Team.Player)
     {
         var result = new List<Vector3>();
         int w = map.Width;
         int start = TileIndex(from);
-        int goal = TileIndex(NearestWalkable(to));
+        int goal = TileIndex(NearestWalkable(to, team));
+        // Raiders may plan through walls (at a cost); everyone else goes round them.
+        bool breaksWalls = team == Team.Enemy;
         if (start < 0 || goal < 0)
         {
             return result;
@@ -155,17 +203,18 @@ public class MapNavigator
                         continue;
                     }
                     int nx = cx + dx, ny = cy + dy;
-                    if (!map.IsWalkable(nx, ny))
+                    bool clear = Passable(nx, ny, team);
+                    if (!clear && !(breaksWalls && map.IsWalkable(nx, ny)))
                     {
                         continue;
                     }
-                    // No cutting corners past water.
-                    if (dx != 0 && dy != 0 && (!map.IsWalkable(cx + dx, cy) || !map.IsWalkable(cx, cy + dy)))
+                    // No cutting corners past water or walls.
+                    if (dx != 0 && dy != 0 && (!Passable(cx + dx, cy, team) || !Passable(cx, cy + dy, team)))
                     {
                         continue;
                     }
                     int next = ny * w + nx;
-                    float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * map.MoveCost(nx, ny);
+                    float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * map.MoveCost(nx, ny) + (clear ? 0f : WallBreakCost);
                     float newCost = cost[current] + step;
                     if (stamp[next] != searchId || newCost < cost[next])
                     {
@@ -193,21 +242,21 @@ public class MapNavigator
         for (int i = 1; i < tiles.Count; i++)
         {
             Vector3 candidate = Center(tiles[i]);
-            if (!ClearLine(anchor, candidate))
+            if (!ClearLine(anchor, candidate, team))
             {
                 Vector3 previous = Center(tiles[i - 1]);
                 result.Add(previous);
                 anchor = previous;
             }
         }
-        result.Add(found && map.IsWalkable(to) ? new Vector3(to.x, to.y, 0) : Center(tiles[tiles.Count - 1]));
+        result.Add(found && Passable(to, team) ? new Vector3(to.x, to.y, 0) : Center(tiles[tiles.Count - 1]));
         return result;
     }
 
     /// <summary>'p' if it's dry, otherwise the centre of the nearest dry tile.</summary>
-    public Vector3 NearestWalkable(Vector3 p)
+    public Vector3 NearestWalkable(Vector3 p, Team team = Team.Player)
     {
-        if (map.IsWalkable(p))
+        if (Passable(p, team))
         {
             return p;
         }
@@ -218,7 +267,7 @@ public class MapNavigator
             {
                 for (int x = -r; x <= r; x++)
                 {
-                    if (Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) == r && map.IsWalkable(px + x, py + y))
+                    if (Mathf.Max(Mathf.Abs(x), Mathf.Abs(y)) == r && Passable(px + x, py + y, team))
                     {
                         return new Vector3(px + x + 0.5f, py + y + 0.5f, 0);
                     }
@@ -292,9 +341,10 @@ public class PathFollower
     private List<Vector3> path = new List<Vector3>();
     private Vector3 plannedGoal;
     private float plannedAt = -99f;
+    private int plannedWalls = -1;
 
     /// <summary>Where to head next. Without a navigator (levels), that's simply the goal.</summary>
-    public Vector3 NextPoint(Vector3 position, Vector3 goal)
+    public Vector3 NextPoint(Vector3 position, Vector3 goal, Team team = Team.Player)
     {
         var nav = MapNavigator.Current;
         if (nav == null)
@@ -302,17 +352,18 @@ public class PathFollower
             return goal;
         }
         // Straight shot available: no need to plan.
-        if (nav.ClearLine(position, goal))
+        if (nav.ClearLine(position, goal, team))
         {
             path.Clear();
             return goal;
         }
-        bool stale = Time.time - plannedAt > 2f;
+        bool stale = Time.time - plannedAt > 2f || plannedWalls != nav.WallVersion;
         if (path.Count == 0 || stale || Vector2.Distance(plannedGoal, goal) > 1.5f)
         {
-            path = nav.FindPath(position, goal);
+            path = nav.FindPath(position, goal, team);
             plannedGoal = goal;
             plannedAt = Time.time;
+            plannedWalls = nav.WallVersion;
         }
         while (path.Count > 1 && Vector2.Distance(position, path[0]) < 0.3f)
         {

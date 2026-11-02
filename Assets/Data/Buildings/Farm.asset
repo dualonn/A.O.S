@@ -133,6 +133,8 @@ MonoBehaviour:
   production:
   - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
     perSecond: 1
+  inputs: []
+  runsWithoutInputs: 0
   defensePower: 0
   trainsUnit: {fileID: 0}
   maxUnits: 0

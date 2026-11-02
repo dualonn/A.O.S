@@ -8,7 +8,9 @@ public static class SettlementTools
     {
         if (EditorUtility.DisplayDialog(
                 "Reset free mode save",
-                "Delete the free mode settlement save? The settlement starts fresh next time free mode is entered.",
+                Settlement.UsingTestSave
+                    ? "Delete the TEST save (settlement_test.json)? Your real save is not touched."
+                    : "Delete your REAL free mode save (settlement.json)? The settlement starts fresh next time free mode is entered.",
                 "Delete",
                 "Cancel"))
         {

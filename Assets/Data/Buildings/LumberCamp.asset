@@ -117,6 +117,7 @@ MonoBehaviour:
     cost: []
   rankUpTime: 30
   isTownCenter: 0
+  sortLine: 0
   requiredDeposit: {fileID: 11400000, guid: a8f92a5f3043afa409d059f969e6c070, type: 2}
   catchmentRadius: 3
   minDepositTiles: 3
@@ -131,6 +132,8 @@ MonoBehaviour:
   production:
   - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
     perSecond: 0.5
+  inputs: []
+  runsWithoutInputs: 0
   defensePower: 0
   trainsUnit: {fileID: 0}
   maxUnits: 0

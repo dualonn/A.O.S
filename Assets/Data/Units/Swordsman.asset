@@ -19,6 +19,9 @@ MonoBehaviour:
   prefab: {fileID: 4518451014112562092, guid: e525405a58c9ca54dbd2bba740695287, type: 3}
   cost: 0
   populationCost: 1
+  upkeep:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.01
   maxHealth: 220
   moveSpeed: 0.9
   attackPower: 20

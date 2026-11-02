@@ -18,6 +18,9 @@ public class UnitDefinition : ScriptableObject
     public int cost;
     public int populationCost = 1;
 
+    [Tooltip("Paid per second for each of these troops alive (Food, later Coin too). Unpaid upkeep stops training.")]
+    public System.Collections.Generic.List<ResourceRate> upkeep = new System.Collections.Generic.List<ResourceRate>();
+
     [Header("Stats")]
     public int maxHealth = 100;
 

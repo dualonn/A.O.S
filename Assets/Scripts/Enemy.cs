@@ -19,6 +19,9 @@ public interface IRaidTargets
     /// <summary>A raider's swing connects with a building.</summary>
     void HitBuilding(BuildingView building, Enemy raider);
 
+    /// <summary>The wall or gate standing on this tile, if any (raiders smash what blocks them).</summary>
+    BuildingView WallAt(Vector2Int cell);
+
     /// <summary>Where a raider at 'from' leaves the map.</summary>
     Vector3 ExitPointFor(Vector3 from);
 
@@ -148,6 +151,15 @@ public class Enemy : Unit
         if (distance > attackRange * 0.6f)
         {
             MoveTowards(point, moveSpeed);
+            // Walled out: smash whatever wall is in the way, then carry on.
+            if (BlockingWall != null)
+            {
+                var wall = raid.WallAt(BlockingWall.Value);
+                if (wall != null && raid.IsStanding(wall))
+                {
+                    buildingTarget = wall;
+                }
+            }
             return;
         }
 

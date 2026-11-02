@@ -152,6 +152,41 @@ public static class UIBuilder
         hover.exit = exit;
     }
 
+    /// <summary>A one-line text box with grey hint text; 'onChanged' runs on every keystroke.</summary>
+    public static TMP_InputField SearchField(string name, Transform parent, string hint, UnityAction<string> onChanged, float height = 34)
+    {
+        var image = Panel(name, parent, new Color(0f, 0f, 0f, 0.4f));
+        var element = image.gameObject.AddComponent<LayoutElement>();
+        element.preferredHeight = element.minHeight = height;
+        var area = Rect("TextArea", image.transform);
+        Stretch(area, 8);
+        area.gameObject.AddComponent<RectMask2D>();
+        var placeholder = Text("Hint", area, hint, 16, TextAlignmentOptions.MidlineLeft);
+        Stretch(placeholder.rectTransform);
+        placeholder.color = new Color(1, 1, 1, 0.4f);
+        placeholder.fontStyle = FontStyles.Italic;
+        var text = Text("Text", area, "", 16, TextAlignmentOptions.MidlineLeft);
+        Stretch(text.rectTransform);
+        var field = image.gameObject.AddComponent<TMP_InputField>();
+        field.textViewport = area;
+        field.textComponent = text;
+        field.placeholder = placeholder;
+        field.lineType = TMP_InputField.LineType.SingleLine;
+        field.onValueChanged.AddListener(onChanged);
+        return field;
+    }
+
+    /// <summary>True while the player is typing in a text box (so keys don't move the camera).</summary>
+    public static bool Typing
+    {
+        get
+        {
+            var selected = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+            var field = selected != null ? selected.GetComponent<TMP_InputField>() : null;
+            return field != null && field.isFocused;
+        }
+    }
+
     /// <summary>
     /// A vertical scroll list: a masked viewport, a slim scrollbar that hides when not needed and a
     /// content area that stacks its children. Returns the content; size the list through 'element'.

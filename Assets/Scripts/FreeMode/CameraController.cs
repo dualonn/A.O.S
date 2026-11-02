@@ -38,16 +38,17 @@ public class CameraController : MonoBehaviour
             float step = cam.orthographicSize > 60f ? Mathf.Pow(zoomStep, farZoomBoost) : zoomStep;
             ZoomAt(Input.mousePosition, Mathf.Pow(step, -scroll));
         }
-        if (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus))
+        bool typing = UIBuilder.Typing; // keys go to the text box, not the camera
+        if (!typing && (Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.KeypadPlus)))
         {
             ZoomIn();
         }
-        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+        if (!typing && (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus)))
         {
             ZoomOut();
         }
 
-        Vector3 move = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+        Vector3 move = typing ? Vector3.zero : new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
         if (move.sqrMagnitude > 0)
         {
             transform.position += move.normalized * panSpeed * cam.orthographicSize * 2f * Time.unscaledDeltaTime;

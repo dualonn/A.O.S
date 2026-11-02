@@ -159,8 +159,11 @@ MonoBehaviour:
       amount: 60
     - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
       amount: 30
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 10
   rankUpTime: 35
   isTownCenter: 0
+  sortLine: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
   minDepositTiles: 2
@@ -173,6 +176,8 @@ MonoBehaviour:
   housing: 0
   workers: 3
   production: []
+  inputs: []
+  runsWithoutInputs: 0
   defensePower: 2
   trainsUnit: {fileID: 11400000, guid: 2d0ce34e6a5ac874cae229262380d6d5, type: 2}
   maxUnits: 2

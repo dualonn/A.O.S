@@ -22,16 +22,28 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
   - {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
   - {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+  - {fileID: 11400000, guid: 42962b0715678174991ce10c616995c0, type: 2}
   - {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+  - {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
   - {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+  - {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
   buildings:
   - {fileID: 11400000, guid: d3ff3402c09c6dd41944fff8bfc9b7c1, type: 2}
   - {fileID: 11400000, guid: a01eb155babc08847b5b74db3b2051ba, type: 2}
   - {fileID: 11400000, guid: 7654ac0a21fb9904f837073029632c34, type: 2}
   - {fileID: 11400000, guid: c1d74b413012c4240b048fb9214b0a70, type: 2}
   - {fileID: 11400000, guid: 1541f213eb13ed74789de6010715aeb1, type: 2}
+  - {fileID: 11400000, guid: 1ff92736cf74c614abb76a69d2704283, type: 2}
+  - {fileID: 11400000, guid: a53f8ef488294e148934ec98eaa8b8da, type: 2}
+  - {fileID: 11400000, guid: 25e891fb3a9c32b45aa54578370b7f57, type: 2}
+  - {fileID: 11400000, guid: b0a9c50d28f604045bae4da5f483856c, type: 2}
+  - {fileID: 11400000, guid: d8a851fb5658d1548b3e51db98399b03, type: 2}
+  - {fileID: 11400000, guid: 662b3883c6dde704bb6ee46303ebd669, type: 2}
+  - {fileID: 11400000, guid: 4d02822ea2ea2c6449ad626c349d63be, type: 2}
+  - {fileID: 11400000, guid: 224a036f8b9ffb943a6e71927096bbfe, type: 2}
   - {fileID: 11400000, guid: e69220c9ffb340c438e2971f6189fef1, type: 2}
   - {fileID: 11400000, guid: 78f92c662a35c324f886d3ee392e1e73, type: 2}
+  - {fileID: 11400000, guid: aaa1e6c489a186445b5f4cb5275cfe80, type: 2}
   - {fileID: 11400000, guid: 05b52b464aef59544a9e2194253128d9, type: 2}
   - {fileID: 11400000, guid: b72bfbf5eb9df3a40b406806b18a29b7, type: 2}
   - {fileID: 11400000, guid: f7bfc11e8906da44f8d120f50d6b8a56, type: 2}
@@ -39,12 +51,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3ee6a3e929f19444bb8c8e033f8732cc, type: 2}
   - {fileID: 11400000, guid: be129eb766d487f438e74ac6f2f8f61c, type: 2}
   - {fileID: 11400000, guid: c9f159d502340d3448d1201aa7fefcb3, type: 2}
+  - {fileID: 11400000, guid: 523283d5d7a1a6346b68198c81d3699a, type: 2}
   - {fileID: 11400000, guid: cc516d6c404cbd34792522dc3b973493, type: 2}
   - {fileID: 11400000, guid: 89da67498dc334e4c93fedc8397e52c3, type: 2}
   - {fileID: 11400000, guid: df2e740af3a892343aba016287f7afd0, type: 2}
   - {fileID: 11400000, guid: 595f3f59efb258c43a63d4b2116bca73, type: 2}
   - {fileID: 11400000, guid: 8fc4c7c92d290f54b86e8034cb0f74b0, type: 2}
   - {fileID: 11400000, guid: 8293f6fd7e64bd242a8e93081ddfe7cb, type: 2}
+  - {fileID: 11400000, guid: 785e3c4e575fb0e42b71ef980418d5ec, type: 2}
   - {fileID: 11400000, guid: 91807f902d8f18b439df8c5a3df4ad99, type: 2}
   - {fileID: 11400000, guid: 43836dcacbb08bc4e9b7a46ab05421af, type: 2}
   - {fileID: 11400000, guid: ec0b24dcda4169d47925d8085b3b8236, type: 2}
@@ -54,6 +68,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c7ff4aae2c325ff498679cb06c007d37, type: 2}
   technologies:
   - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
+  - {fileID: 11400000, guid: 765d6fe896291f843b5e32d94575c018, type: 2}
   - {fileID: 11400000, guid: 53c62db14bf15104a8b3276f2156db9d, type: 2}
   - {fileID: 11400000, guid: 9c92e89968ceb5044bdf08fb2723be88, type: 2}
   - {fileID: 11400000, guid: b1f9b14cc7bcbce43b1ce9b8709d7ab7, type: 2}
@@ -62,13 +77,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
   - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
   - {fileID: 11400000, guid: 0eebb2033cd874541b56fedfdf32f9cf, type: 2}
+  - {fileID: 11400000, guid: a036e558d474e6043b2c948a7ff5c446, type: 2}
   - {fileID: 11400000, guid: 1d64b8f3f5598cc48a5b9f9eb4be76cc, type: 2}
   - {fileID: 11400000, guid: 4cb0cfe0a25fbff4888008b9dab8a8cf, type: 2}
   - {fileID: 11400000, guid: f9368dac430ebd2479fba2d787cfb6ef, type: 2}
+  - {fileID: 11400000, guid: 24feb0b7e3b5c5f4096f51e9ef5202ca, type: 2}
   - {fileID: 11400000, guid: 77d56e7b2263255479c59d8722198b29, type: 2}
   - {fileID: 11400000, guid: 749d5961029920640b839f0f0b9c6c82, type: 2}
   - {fileID: 11400000, guid: c4e55103c9ccc2d42be7c5afbf9616e8, type: 2}
   - {fileID: 11400000, guid: b77bb3a29fafc9c459614cca442fceea, type: 2}
+  - {fileID: 11400000, guid: c3fc3cce0e74ebc4a8e8c388e1d71c97, type: 2}
   - {fileID: 11400000, guid: 63f4b8aee345c9349a5f0156198bed96, type: 2}
   - {fileID: 11400000, guid: ec93168471c329d48afb5bae9f25688a, type: 2}
   - {fileID: 11400000, guid: a4c9b1b1079646e4ab259aee60ab9446, type: 2}
@@ -95,6 +113,8 @@ MonoBehaviour:
   riverCount: 3
   hillSpeed: 0.5
   food: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+  coin: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+  taxPerPersonPerSecond: 0.004
   foodPerPersonPerSecond: 0.02
   secondsPerNewPerson: 8
   firstWaveDelay: 180
@@ -108,6 +128,7 @@ MonoBehaviour:
   settlementSafeRadiusPerBuilding: 0.25
   settlementSafeRadiusGrowthMax: 10
   outpostSafeRadius: 12
+  defendAlertRange: 14
   raidSpawnBand: 12
   maxResourceLossShare: 0.3
   maxBuildingDamageShare: 0.4

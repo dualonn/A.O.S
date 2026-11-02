@@ -29,7 +29,11 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public Settlement Settlement { get; private set; }
     public SettlementGrid Grid => grid;
     public BuildingPlacer Placer { get; private set; }
-    public BuildingView Selected { get; private set; }
+    /// <summary>The first selected building (the one the single-building panel shows).</summary>
+    public BuildingView Selected => selection.Count > 0 ? selection[0] : null;
+
+    /// <summary>Every selected building, in the order they were picked.</summary>
+    public IReadOnlyList<BuildingView> Selection => selection;
     public IEnumerable<BuildingView> Buildings => views.Values;
     public bool WaveInProgress => waveInProgress;
 
@@ -38,6 +42,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public event Action<string> MessageShown;
 
     private readonly Dictionary<int, BuildingView> views = new Dictionary<int, BuildingView>();
+    private readonly List<BuildingView> selection = new List<BuildingView>();
 
     // Live wave tracking
     private readonly List<Enemy> liveEnemies = new List<Enemy>();
@@ -71,6 +76,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         Settlement.Message += ShowMessage;
         Settlement.MapGrown += OnMapGrown;
         Settlement.Waves.LiveBattlefield = this;
+        Settlement.RaidUnderway = () => waveInProgress;
         SyncViews();
     }
 
@@ -88,6 +94,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             Settlement.Waves.LiveBattlefield = null;
         }
         MapNavigator.Current = null;
+        Settlement.RaidUnderway = null;
+        Settlement.ClearLiveTroops();
         ResolveUnfinishedWave();
     }
 
@@ -324,11 +332,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     private void Update()
     {
-        if (!Placer.IsPlacing && Input.GetMouseButtonDown(0) && !BuildingPlacer.IsPointerOverUI())
-        {
-            Vector2Int cell = grid.WorldToCell(SettlementGrid.MouseWorld());
-            Select(BuildingAt(cell));
-        }
+        UpdateSelectionInput();
         if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing)
         {
             Select(null);
@@ -354,11 +358,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
                     continue;
                 }
                 // Ranked up into a different building: rebuild its view in place.
-                bool wasSelected = Selected == existing;
-                if (wasSelected)
-                {
-                    Select(null);
-                }
+                int selectedAt = selection.IndexOf(existing);
                 Destroy(existing.gameObject);
                 views.Remove(state.instanceId);
                 var rankedDef = Settlement.Database.GetBuilding(state.definitionId);
@@ -368,10 +368,17 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
                     ranked.transform.SetParent(grid.transform, true);
                     ranked.Init(this, state, rankedDef);
                     views.Add(state.instanceId, ranked);
-                    if (wasSelected)
+                    if (selectedAt >= 0)
                     {
-                        Select(ranked);
+                        selection[selectedAt] = ranked;
+                        ranked.SetSelected(true, selection.Count == 1);
+                        selectionDirty = true;
                     }
+                }
+                else if (selectedAt >= 0)
+                {
+                    selection.RemoveAt(selectedAt);
+                    selectionDirty = true;
                 }
                 continue;
             }
@@ -397,9 +404,9 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
         foreach (int id in removed)
         {
-            if (Selected == views[id])
+            if (selection.Remove(views[id]))
             {
-                Select(null);
+                selectionDirty = true;
             }
             Destroy(views[id].gameObject);
             views.Remove(id);
@@ -411,36 +418,240 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             areas.Add(new RectInt(view.State.cell, view.Definition.size));
         }
         grid.RefreshCoverage(areas);
+        cellIndexDirty = true;
+        foreach (var view in views.Values)
+        {
+            if (view.Definition.IsWall) view.SetWallMask(WallMask(view.State.cell));
+        }
+        if (selectionDirty)
+        {
+            selectionDirty = false;
+            SelectionChanged?.Invoke(Selected);
+        }
     }
+
+    private bool selectionDirty;
 
     public BuildingView BuildingAt(Vector2Int cell)
     {
-        foreach (var view in views.Values)
+        if (cellIndexDirty)
         {
-            if (view.Contains(cell))
-            {
-                return view;
-            }
+            RebuildCellIndex();
         }
-        return null;
+        return byCell.TryGetValue(cell, out var view) && view != null ? view : null;
     }
 
-    public void Select(BuildingView view)
+    // Every footprint tile -> its building (walls make for hundreds of small buildings).
+    private readonly Dictionary<Vector2Int, BuildingView> byCell = new Dictionary<Vector2Int, BuildingView>();
+    private bool cellIndexDirty = true;
+
+    private void RebuildCellIndex()
     {
-        if (Selected == view)
+        cellIndexDirty = false;
+        byCell.Clear();
+        foreach (var view in views.Values)
+        {
+            var area = new RectInt(view.State.cell, view.Definition.size);
+            foreach (var c in area.allPositionsWithin) byCell[c] = view;
+        }
+    }
+
+    // ---------- Selection ----------
+
+    /// <summary>Select one building (or nothing).</summary>
+    public void Select(BuildingView view) => SetSelection(view != null ? new[] { view } : null);
+
+    /// <summary>Replace the selection with these buildings.</summary>
+    public void SetSelection(IEnumerable<BuildingView> picked)
+    {
+        var next = new List<BuildingView>();
+        if (picked != null)
+        {
+            foreach (var view in picked)
+            {
+                if (view != null && !next.Contains(view)) next.Add(view);
+            }
+        }
+        if (next.Count == selection.Count && next.TrueForAll(selection.Contains))
         {
             return;
         }
-        if (Selected != null)
+        foreach (var view in selection)
         {
-            Selected.SetSelected(false);
+            if (view != null) view.SetSelected(false);
         }
-        Selected = view;
-        if (Selected != null)
+        selection.Clear();
+        selection.AddRange(next);
+        foreach (var view in selection)
         {
-            Selected.SetSelected(true);
+            view.SetSelected(true, selection.Count == 1);
         }
         SelectionChanged?.Invoke(Selected);
+    }
+
+    /// <summary>Add these buildings to the selection.</summary>
+    public void AddToSelection(IEnumerable<BuildingView> picked)
+    {
+        var next = new List<BuildingView>(selection);
+        next.AddRange(picked);
+        SetSelection(next);
+    }
+
+    /// <summary>Add a building to the selection, or take it out if it's already in.</summary>
+    public void ToggleSelected(BuildingView view)
+    {
+        if (view == null)
+        {
+            return;
+        }
+        var next = new List<BuildingView>(selection);
+        if (!next.Remove(view)) next.Add(view);
+        SetSelection(next);
+    }
+
+    /// <summary>Every building of this type: on screen, or anywhere on the map.</summary>
+    public List<BuildingView> AllOfType(BuildingDefinition def, bool onScreenOnly)
+    {
+        var list = new List<BuildingView>();
+        var cam = Camera.main;
+        Rect view = default;
+        if (cam != null)
+        {
+            float h = cam.orthographicSize, w = h * cam.aspect;
+            view = new Rect(cam.transform.position.x - w, cam.transform.position.y - h, w * 2, h * 2);
+        }
+        foreach (var v in views.Values)
+        {
+            if (v.Definition != def) continue;
+            if (onScreenOnly && cam != null && !view.Contains(grid.AreaCenter(v.State.cell, v.Definition.size))) continue;
+            list.Add(v);
+        }
+        return list;
+    }
+
+    // Box select: press on the ground, drag past a few pixels, release.
+    private const float DragThresholdPixels = 8f;
+    private bool pressing, dragging;
+    private Vector2 pressScreen;
+    private Vector3 pressWorld;
+    private float lastClickTime = -1f;
+    private BuildingView lastClicked;
+    private LineRenderer boxOutline;
+    private SpriteRenderer boxFill;
+
+    private static bool ShiftHeld => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+    private static bool CtrlHeld => Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+
+    private void UpdateSelectionInput()
+    {
+        if (Placer.IsPlacing)
+        {
+            pressing = dragging = false;
+            ShowBox(false);
+            return;
+        }
+        if (Input.GetMouseButtonDown(0) && !BuildingPlacer.IsPointerOverUI())
+        {
+            pressing = true;
+            dragging = false;
+            pressScreen = Input.mousePosition;
+            pressWorld = SettlementGrid.MouseWorld();
+        }
+        if (!pressing)
+        {
+            return;
+        }
+        if (!dragging && ((Vector2)Input.mousePosition - pressScreen).magnitude > DragThresholdPixels)
+        {
+            dragging = true;
+        }
+        Vector3 now = SettlementGrid.MouseWorld();
+        if (dragging)
+        {
+            DrawBox(pressWorld, now);
+        }
+        if (!Input.GetMouseButtonUp(0))
+        {
+            return;
+        }
+        pressing = false;
+        if (dragging)
+        {
+            dragging = false;
+            ShowBox(false);
+            var picked = BuildingsInBox(pressWorld, now);
+            if (ShiftHeld) AddToSelection(picked);
+            else SetSelection(picked);
+            return;
+        }
+
+        var clicked = BuildingAt(grid.WorldToCell(now));
+        bool doubleClick = clicked != null && clicked == lastClicked && Time.unscaledTime - lastClickTime < 0.35f;
+        lastClicked = clicked;
+        lastClickTime = Time.unscaledTime;
+        if (doubleClick)
+        {
+            // Double-click: every building of that type on screen (Ctrl: on the whole map).
+            var same = AllOfType(clicked.Definition, !CtrlHeld);
+            if (ShiftHeld) AddToSelection(same);
+            else SetSelection(same);
+            lastClicked = null;
+        }
+        else if (ShiftHeld)
+        {
+            ToggleSelected(clicked);
+        }
+        else
+        {
+            Select(clicked);
+        }
+    }
+
+    private List<BuildingView> BuildingsInBox(Vector3 a, Vector3 b)
+    {
+        Vector2Int c0 = grid.WorldToCell(Vector3.Min(a, b));
+        Vector2Int c1 = grid.WorldToCell(Vector3.Max(a, b));
+        var box = new RectInt(c0, c1 - c0 + Vector2Int.one);
+        var list = new List<BuildingView>();
+        foreach (var v in views.Values)
+        {
+            if (new RectInt(v.State.cell, v.Definition.size).Overlaps(box)) list.Add(v);
+        }
+        return list;
+    }
+
+    private void DrawBox(Vector3 a, Vector3 b)
+    {
+        if (boxOutline == null)
+        {
+            boxOutline = new GameObject("SelectionBox").AddComponent<LineRenderer>();
+            boxOutline.transform.SetParent(transform, false);
+            boxOutline.loop = true;
+            boxOutline.positionCount = 4;
+            boxOutline.useWorldSpace = true;
+            boxOutline.material = new Material(Shader.Find("Sprites/Default"));
+            boxOutline.startColor = boxOutline.endColor = new Color(1f, 0.92f, 0.3f, 0.95f);
+            boxOutline.sortingOrder = 20;
+            boxFill = new GameObject("Fill").AddComponent<SpriteRenderer>();
+            boxFill.transform.SetParent(boxOutline.transform, false);
+            var tex = Texture2D.whiteTexture;
+            boxFill.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, tex.width);
+            boxFill.color = new Color(1f, 0.92f, 0.3f, 0.12f);
+            boxFill.sortingOrder = 19;
+        }
+        ShowBox(true);
+        Vector3 min = Vector3.Min(a, b), max = Vector3.Max(a, b);
+        min.z = max.z = -2f;
+        boxOutline.SetPositions(new[] { min, new Vector3(min.x, max.y, -2f), max, new Vector3(max.x, min.y, -2f) });
+        var cam = Camera.main;
+        boxOutline.startWidth = boxOutline.endWidth = cam != null ? cam.orthographicSize * 0.006f : 0.08f;
+        boxFill.transform.position = min;
+        boxFill.transform.localScale = new Vector3(max.x - min.x, max.y - min.y, 1);
+    }
+
+    private void ShowBox(bool on)
+    {
+        if (boxOutline != null) boxOutline.gameObject.SetActive(on);
     }
 
     /// <summary>Troops idle around the building that trained them.</summary>
@@ -511,6 +722,9 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// The area troops from a building at 'home' defend: the buildings of that one settlement
     /// (plus a margin), so a second settlement far away doesn't stretch it across the map.
     /// </summary>
+    /// <summary>The settlement a building at 'home' belongs to (null before there is one).</summary>
+    public Settlement.SettlementZone SettlementFor(Vector3 home) => Settlement.NearestZone(CurrentZones, home);
+
     public Rect TownZoneFor(Vector3 home)
     {
         var zone = Settlement.NearestZone(CurrentZones, home);
@@ -664,7 +878,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         float bestDistance = float.MaxValue;
         foreach (var view in views.Values)
         {
-            if (!IsStanding(view))
+            // Walls aren't worth raiding: raiders only smash the ones in their way.
+            if (!IsStanding(view) || view.Definition.IsWall)
             {
                 continue;
             }
@@ -692,8 +907,34 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     {
         Settlement.DamageBuilding(building.State, raider.attackPower);
         building.Shake();
+        if (building.Definition.IsWall)
+        {
+            return; // nothing to loot in a wall
+        }
         var stolen = Settlement.Steal(raider.lootPerHit);
         raider.Carry(stolen);
+    }
+
+    public BuildingView WallAt(Vector2Int cell)
+    {
+        var view = BuildingAt(cell);
+        return view != null && view.Definition.IsWall ? view : null;
+    }
+
+    /// <summary>
+    /// How this wall tile joins its neighbours: N=1, E=2, S=4, W=8, and diagonally NE=16, SE=32,
+    /// SW=64, NW=128 (a diagonal only counts when no straight join already connects that way).
+    /// </summary>
+    public int WallMask(Vector2Int cell)
+    {
+        bool n = WallAt(cell + Vector2Int.up) != null, e = WallAt(cell + Vector2Int.right) != null;
+        bool sth = WallAt(cell + Vector2Int.down) != null, w = WallAt(cell + Vector2Int.left) != null;
+        int mask = (n ? 1 : 0) | (e ? 2 : 0) | (sth ? 4 : 0) | (w ? 8 : 0);
+        if (!n && !e && WallAt(cell + new Vector2Int(1, 1)) != null) mask |= 16;
+        if (!n && !w && WallAt(cell + new Vector2Int(-1, 1)) != null) mask |= 128;
+        if (!sth && !e && WallAt(cell + new Vector2Int(1, -1)) != null) mask |= 32;
+        if (!sth && !w && WallAt(cell + new Vector2Int(-1, -1)) != null) mask |= 64;
+        return mask;
     }
 
     /// <summary>Raiders flee straight out of the settlement they hit, to just past its safe zone.</summary>
@@ -799,7 +1040,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
                 fallback = p;
             }
             // Skip islands and pockets the raiders couldn't walk out of.
-            var path = MapNavigator.Current?.FindPath(p, zone.centre);
+            var path = MapNavigator.Current?.FindPath(p, zone.centre, Team.Enemy);
             if (path == null || (path.Count > 0 && zone.Contains(path[path.Count - 1])))
             {
                 return p;

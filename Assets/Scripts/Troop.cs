@@ -40,6 +40,8 @@ public class Troop : Unit
     private bool hasMoveOrder;
     private Rect defendZone;
     private bool hasDefendZone;
+    private Settlement.SettlementZone defendArea;
+    private float alertRange;
 
     /// <summary>
     /// Set how this troop behaves (free mode). 'townZone' is the area Defend troops hold;
@@ -58,6 +60,19 @@ public class Troop : Unit
     {
         defendZone = townZone;
     }
+
+    /// <summary>
+    /// Free mode: defend this settlement, going after any raider within 'range' tiles of its
+    /// buildings (so the alarm goes up at the edge of town, not when raiders reach the troops).
+    /// </summary>
+    public void SetDefendArea(Settlement.SettlementZone settlement, float range)
+    {
+        defendArea = settlement;
+        alertRange = range;
+    }
+
+    private bool InDefendArea(Vector3 p) =>
+        defendArea != null ? defendArea.DistanceTo(p) <= alertRange : defendZone.Contains(p);
 
     protected override void Awake()
     {
@@ -129,7 +144,7 @@ public class Troop : Unit
         // Defending: ignore raiders outside the town; return home once they leave it.
         if (hasDefendZone && Stance == TroopStance.Defend)
         {
-            candidates = candidates.FindAll(u => defendZone.Contains(u.transform.position));
+            candidates = candidates.FindAll(u => InDefendArea(u.transform.position));
             if (candidates.Count == 0)
             {
                 return null;

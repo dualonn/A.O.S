@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Palisade
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Palisade
+  displayName: Palisade
+  description: Drag out a line to build it. Blocks everyone; raiders have to smash
+    through it.
+  icon: {fileID: 21300000, guid: 7ca21f9c6098e134987ae8b3c5eb0b52, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 765d6fe896291f843b5e32d94575c018, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 6
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 25e891fb3a9c32b45aa54578370b7f57, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 2
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 5
+  rankUpTime: 6
+  isTownCenter: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: 2667b2f0852ac984488840c3f4a8f685, type: 3}
+  - {fileID: 21300000, guid: 8a1e73a21445f7f4db2f7346ca70fff8, type: 3}
+  - {fileID: 21300000, guid: 3351d1137cbc0a5478650b93be069c4e, type: 3}
+  - {fileID: 21300000, guid: 7ca21f9c6098e134987ae8b3c5eb0b52, type: 3}
+  - {fileID: 21300000, guid: 5118a0c57459e9342b290efa340c9c24, type: 3}
+  - {fileID: 21300000, guid: 5f501a2d17e28684283b48b56bd79e04, type: 3}
+  - {fileID: 21300000, guid: f4dedfbbef8edb84884529b2c6b37de9, type: 3}
+  - {fileID: 21300000, guid: 566be8e7d7b3ccb44b94051ba25465d6, type: 3}
+  - {fileID: 21300000, guid: 006f3a4d645cb874eb7dbbdb06c4acc7, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 4
+  maxCount: 0
+  maxHealth: 150
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.04
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

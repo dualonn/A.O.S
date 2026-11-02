@@ -35,8 +35,36 @@ public class Settlement : MonoBehaviour
     public int Housing { get; private set; }
     public int WorkersNeeded { get; private set; }
 
-    /// <summary>0 to 1. Buildings run slower when there aren't enough people to work them.</summary>
-    public float WorkerEfficiency => WorkersNeeded == 0 ? 1f : Mathf.Min(1f, State.population / WorkersNeeded);
+    /// <summary>People actually at work (jobs are filled by priority, then in build order).</summary>
+    public int WorkersAssigned { get; private set; }
+
+    /// <summary>0 to 1: share of all jobs filled.</summary>
+    public float WorkerEfficiency => WorkersNeeded == 0 ? 1f : Mathf.Min(1f, (float)WorkersAssigned / WorkersNeeded);
+
+    // Per building (by instance id), worked out each tick; not saved.
+    private readonly Dictionary<int, float> staffing = new Dictionary<int, float>();
+    private readonly Dictionary<int, float> inputSupply = new Dictionary<int, float>();
+    private readonly Dictionary<int, int> liveTroops = new Dictionary<int, int>();
+
+    /// <summary>0 to 1: share of this building's jobs that are filled (0 when paused).</summary>
+    public float StaffingOf(BuildingState building) =>
+        building.Paused ? 0f : staffing.TryGetValue(building.instanceId, out float s) ? s : 1f;
+
+    /// <summary>0 to 1: how much of its inputs this building got last tick (1 if it needs none).</summary>
+    public float InputSupplyOf(BuildingState building) =>
+        inputSupply.TryGetValue(building.instanceId, out float s) ? s : 1f;
+
+    /// <summary>The live scene reports how many troops a building really has (for upkeep).</summary>
+    public void ReportLiveTroops(BuildingState building, int count) => liveTroops[building.instanceId] = count;
+
+    /// <summary>Leaving the live scene: upkeep goes back to assuming full garrisons.</summary>
+    public void ClearLiveTroops() => liveTroops.Clear();
+
+    /// <summary>True while the army's upkeep can't be paid: troops stop training.</summary>
+    public bool UpkeepShort { get; private set; }
+
+    /// <summary>Set by the live scene: true while raiders are about (auto-repair waits).</summary>
+    public Func<bool> RaidUnderway;
 
     /// <summary>How advanced the player is. Drives wave strength.</summary>
     /// <summary>How many current-age enemies' worth the next wave brings (grows with research and survival).</summary>
@@ -48,7 +76,26 @@ public class Settlement : MonoBehaviour
     private float autosaveTimer;
     private float populationTimer;
 
-    private static string SavePath => Path.Combine(Application.persistentDataPath, "settlement.json");
+    private static string SavePath => Path.Combine(Application.persistentDataPath, SaveFileName);
+
+    /// <summary>EditorPrefs key: when set, the editor plays on a separate test save.</summary>
+    public const string TestSaveKey = "AOS.TestSave";
+
+    public static bool UsingTestSave
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return UnityEditor.EditorPrefs.GetBool(TestSaveKey, false);
+#else
+            return false;
+#endif
+        }
+    }
+
+    private string loadedFrom;
+
+    private static string SaveFileName => UsingTestSave ? "settlement_test.json" : "settlement.json";
     public static bool HasSave => File.Exists(SavePath);
 
     // ---------- Lifetime ----------
@@ -87,13 +134,44 @@ public class Settlement : MonoBehaviour
         DontDestroyOnLoad(go);
         var settlement = go.AddComponent<Settlement>();
         settlement.Initialise(database);
+        settlement.Changed += () => settlement.wallsDirty = true;
         return settlement;
+    }
+
+    // ---------- Walls ----------
+
+    private bool wallsDirty = true;
+
+    /// <summary>Put every standing, finished wall and gate on the map so units path around them.</summary>
+    private void UpdateWallLayer()
+    {
+        if (!wallsDirty || Map == null)
+        {
+            return;
+        }
+        wallsDirty = false;
+        var pieces = new List<(Vector2Int, WallTile)>();
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def != null && def.IsWall && IsWorking(building, def))
+            {
+                pieces.Add((building.cell, def.wallKind));
+            }
+        }
+        Map.SetWalls(pieces);
     }
 
     private void Initialise(GameDatabase database)
     {
         Instance = this;
         Database = database;
+        // Save back to the file we loaded from, even if the test-save switch changes meanwhile.
+        loadedFrom = SavePath;
+        if (UsingTestSave)
+        {
+            Debug.Log("[Settlement] Playing on the TEST save (settlement_test.json). Your real save is untouched.");
+        }
         State = LoadState() ?? NewState();
         if (State.mapSeed == 0)
         {
@@ -193,6 +271,7 @@ public class Settlement : MonoBehaviour
 
     public void Tick(float dt)
     {
+        UpdateWallLayer();
         if (!IsFounded)
         {
             return; // nothing happens until the player picks a spot
@@ -201,8 +280,10 @@ public class Settlement : MonoBehaviour
         TickUpgrades(dt);
         RecalculateDerived();
         TickProduction(dt);
+        TickUpkeep(dt);
         TickPopulation(dt);
         TickResearch(dt);
+        TickAutomation(dt);
     }
 
     // ---------- Building stats and upgrades ----------
@@ -498,7 +579,10 @@ public class Settlement : MonoBehaviour
             if (building.IsBuilt)
             {
                 building.buildProgress = 1f;
-                Notify($"{Name(def)} finished building.");
+                if (def == null || !def.IsWall)
+                {
+                    Notify($"{Name(def)} finished building."); // walls go up in dozens: no message each
+                }
                 Changed?.Invoke();
             }
         }
@@ -506,22 +590,167 @@ public class Settlement : MonoBehaviour
 
     private void TickProduction(float dt)
     {
-        float efficiency = WorkerEfficiency;
         foreach (var building in State.buildings)
         {
             var def = Database.GetBuilding(building.definitionId);
-            if (def == null || !IsWorking(building, def))
+            if (def == null || !IsWorking(building, def) || def.production.Count == 0)
+            {
+                continue;
+            }
+            float staff = StaffingOf(building);
+            if (staff <= 0)
             {
                 continue;
             }
             var stats = StatsOf(def, building.upgradeLevel);
-            float healthFactor = building.health / stats.maxHealth;
+            float activity = staff * (building.health / stats.maxHealth) * stats.output;
+
+            // Inputs: take what's needed; short of any one, the whole building slows to match.
+            float run = 1f;
+            if (def.inputs.Count > 0)
+            {
+                float supply = 1f;
+                foreach (var input in def.inputs)
+                {
+                    float need = input.perSecond * dt * activity;
+                    if (input.resource != null && need > 0)
+                    {
+                        supply = Mathf.Min(supply, GetAmount(input.resource) / need);
+                    }
+                }
+                supply = Mathf.Clamp01(supply);
+                foreach (var input in def.inputs)
+                {
+                    if (input.resource != null)
+                    {
+                        AddResource(input.resource, -input.perSecond * dt * activity * supply);
+                    }
+                }
+                inputSupply[building.instanceId] = supply;
+                run = Mathf.Lerp(def.runsWithoutInputs, 1f, supply);
+            }
+
             foreach (var rate in def.production)
             {
                 if (rate.resource != null)
                 {
-                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * stats.output;
-                    AddResource(rate.resource, rate.perSecond * dt * efficiency * healthFactor * multiplier);
+                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality;
+                    AddResource(rate.resource, rate.perSecond * dt * activity * run * multiplier);
+                }
+            }
+        }
+
+        // Taxes: every person pays a little Coin once the right research is done.
+        float tax = TaxPerPersonPerSecond;
+        if (tax > 0 && Database.coin != null)
+        {
+            AddResource(Database.coin, Population * tax * dt);
+        }
+    }
+
+    /// <summary>Coin each person pays per second: basic taxes once Coin is unlocked, plus research.</summary>
+    public float TaxPerPersonPerSecond
+    {
+        get
+        {
+            var coin = Database.coin;
+            bool unlocked = coin != null && (coin.unlockedIn == null || coin.unlockedIn.order <= State.ageIndex);
+            if (!unlocked)
+            {
+                return 0f;
+            }
+            float tax = Database.taxPerPersonPerSecond;
+            foreach (var id in State.researched)
+            {
+                var tech = Database.GetTechnology(id);
+                if (tech != null) tax += tech.coinPerPersonPerSecond;
+            }
+            return tax;
+        }
+    }
+
+    /// <summary>How many troops a working troop building has (live count if known, else a full garrison).</summary>
+    public int TroopsOf(BuildingState building, BuildingDefinition def) =>
+        liveTroops.TryGetValue(building.instanceId, out int n) ? n : StatsOf(def, building.upgradeLevel).maxUnits;
+
+    /// <summary>The army's upkeep per second, by resource.</summary>
+    public Dictionary<ResourceType, float> UpkeepPerSecond(out int troops)
+    {
+        troops = 0;
+        var due = new Dictionary<ResourceType, float>();
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def == null || def.trainsUnit == null || !building.IsBuilt)
+            {
+                continue;
+            }
+            int count = TroopsOf(building, def);
+            troops += count;
+            foreach (var rate in def.trainsUnit.upkeep)
+            {
+                if (rate.resource == null) continue;
+                due.TryGetValue(rate.resource, out float sum);
+                due[rate.resource] = sum + rate.perSecond * count;
+            }
+        }
+        return due;
+    }
+
+    private void TickUpkeep(float dt)
+    {
+        bool shortNow = false;
+        foreach (var pair in UpkeepPerSecond(out _))
+        {
+            float amount = pair.Value * dt;
+            float have = GetAmount(pair.Key);
+            if (have < amount) shortNow = true;
+            AddResource(pair.Key, -Mathf.Min(have, amount));
+        }
+        if (shortNow && !UpkeepShort)
+        {
+            Notify("You can't pay your army's upkeep. Troops stop training until you can.");
+        }
+        UpkeepShort = shortNow;
+    }
+
+    // ---------- Automation ----------
+
+    private float automationTimer;
+
+    /// <summary>Once a second: auto-repair and queued upgrades.</summary>
+    private void TickAutomation(float dt)
+    {
+        automationTimer += dt;
+        if (automationTimer < 1f)
+        {
+            return;
+        }
+        automationTimer = 0f;
+        bool raid = RaidUnderway != null && RaidUnderway();
+        foreach (var building in State.buildings.ToArray())
+        {
+            if (!building.IsBuilt)
+            {
+                continue;
+            }
+            if (building.autoRepair && !raid && building.health < StatsOf(building).maxHealth && CanAfford(RepairCost(building)))
+            {
+                TryRepair(building, out _);
+            }
+            if (building.queueUpgrades && !building.upgrading)
+            {
+                if (NextUpgrade(building) != null)
+                {
+                    if (CanUpgrade(building, out _)) TryStartUpgrade(building, out _);
+                }
+                else if (RankUpTarget(building) != null)
+                {
+                    if (CanRankUp(building, out _)) TryStartRankUp(building, out _);
+                }
+                else
+                {
+                    building.queueUpgrades = false; // nothing left to do
                 }
             }
         }
@@ -655,9 +884,9 @@ public class Settlement : MonoBehaviour
         foreach (var building in State.buildings)
         {
             var def = Database.GetBuilding(building.definitionId);
-            if (def == null)
+            if (def == null || def.IsWall)
             {
-                continue;
+                continue; // walls don't make a settlement bigger
             }
             rects.Add(new Rect(building.cell, def.size));
             bool home = StatsOf(def, building.upgradeLevel).housing > 0;
@@ -760,8 +989,10 @@ public class Settlement : MonoBehaviour
     {
         int housing = 0;
         int workers = 0;
-        foreach (var building in State.buildings)
+        var jobs = new List<(BuildingState building, int workers, int order)>();
+        for (int i = 0; i < State.buildings.Count; i++)
         {
+            var building = State.buildings[i];
             var def = Database.GetBuilding(building.definitionId);
             if (def == null || !IsWorking(building, def))
             {
@@ -769,10 +1000,35 @@ public class Settlement : MonoBehaviour
             }
             var stats = StatsOf(def, building.upgradeLevel);
             housing += stats.housing;
+            if (building.Paused)
+            {
+                staffing[building.instanceId] = 0f;
+                continue;
+            }
+            if (stats.workers <= 0)
+            {
+                staffing[building.instanceId] = 1f;
+                continue;
+            }
             workers += stats.workers;
+            jobs.Add((building, stats.workers, i));
         }
         Housing = housing;
         WorkersNeeded = workers;
+
+        // Fill jobs: high priority first, then in the order buildings were placed.
+        jobs.Sort((a, b) => a.building.priority != b.building.priority
+            ? b.building.priority.CompareTo(a.building.priority)
+            : a.order.CompareTo(b.order));
+        int pool = Population, assigned = 0;
+        foreach (var job in jobs)
+        {
+            int take = Mathf.Min(job.workers, pool);
+            pool -= take;
+            assigned += take;
+            staffing[job.building.instanceId] = take / (float)job.workers;
+        }
+        WorkersAssigned = assigned;
     }
 
     /// <summary>Finished and not ruined.</summary>
@@ -796,6 +1052,24 @@ public class Settlement : MonoBehaviour
             State.resources.Add(stock);
         }
         stock.amount = Mathf.Max(0, stock.amount + amount);
+    }
+
+    /// <summary>Several costs added together (for group actions).</summary>
+    public static List<ResourceAmount> SumCost(IEnumerable<List<ResourceAmount>> costs)
+    {
+        var total = new List<ResourceAmount>();
+        foreach (var cost in costs)
+        {
+            if (cost == null) continue;
+            foreach (var item in cost)
+            {
+                if (item.resource == null || item.amount <= 0) continue;
+                int i = total.FindIndex(t => t.resource == item.resource);
+                if (i < 0) total.Add(item);
+                else total[i] = new ResourceAmount { resource = item.resource, amount = total[i].amount + item.amount };
+            }
+        }
+        return total;
     }
 
     public bool CanAfford(List<ResourceAmount> cost)
@@ -982,7 +1256,8 @@ public class Settlement : MonoBehaviour
             cell = cell,
             health = StatsOf(def, 0).maxHealth,   // includes research bonuses, so it starts full
             buildProgress = def.buildTime > 0 ? 0 : 1,
-            siteQuality = quality
+            siteQuality = quality,
+            autoRepair = State.autoRepairNew
         };
         State.buildings.Add(placed);
         if (founding)
@@ -1191,7 +1466,7 @@ public class Settlement : MonoBehaviour
                 if (stats.towerRange > 0)
                 {
                     // A tower counts like a few troops, scaled by its damage rate.
-                    total += stats.towerDamage / 10f / Mathf.Max(0.2f, def.towerCooldown) * 1.5f * healthFactor;
+                    total += stats.towerDamage / 10f / Mathf.Max(0.2f, def.towerCooldown) * 1.5f * healthFactor * StaffingOf(building);
                 }
                 if (def.trainsUnit != null)
                 {
@@ -1336,7 +1611,7 @@ public class Settlement : MonoBehaviour
         }
         try
         {
-            File.WriteAllText(SavePath, JsonUtility.ToJson(State, true));
+            File.WriteAllText(loadedFrom ?? SavePath, JsonUtility.ToJson(State, true));
         }
         catch (Exception e)
         {

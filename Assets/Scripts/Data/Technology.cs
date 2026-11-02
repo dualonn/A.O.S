@@ -58,4 +58,7 @@ public class Technology : GameData
 
     [Tooltip("Multiplies every building's health (1.08 = +8%).")]
     public float buildingHealthMultiplier = 1f;
+
+    [Tooltip("Taxes: every person pays this much Coin per second (adds up across techs).")]
+    public float coinPerPersonPerSecond;
 }

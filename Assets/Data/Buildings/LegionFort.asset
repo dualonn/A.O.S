@@ -72,6 +72,8 @@ MonoBehaviour:
         amount: 60
       - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
         amount: 120
+      - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+        amount: 5
     upgradeTime: 30
     productionMultiplier: 1
     extraHousing: 0
@@ -101,6 +103,8 @@ MonoBehaviour:
         amount: 80
       - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
         amount: 20
+      - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+        amount: 5
     upgradeTime: 30
     productionMultiplier: 1
     extraHousing: 0
@@ -130,6 +134,8 @@ MonoBehaviour:
         amount: 160
       - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
         amount: 30
+      - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+        amount: 10
     upgradeTime: 35
     productionMultiplier: 1
     extraHousing: 0
@@ -156,6 +162,7 @@ MonoBehaviour:
     cost: []
   rankUpTime: 30
   isTownCenter: 0
+  sortLine: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
   minDepositTiles: 2
@@ -168,6 +175,8 @@ MonoBehaviour:
   housing: 0
   workers: 4
   production: []
+  inputs: []
+  runsWithoutInputs: 0
   defensePower: 4
   trainsUnit: {fileID: 11400000, guid: 1a71abb3b6961e64e8f9d679d0f12b76, type: 2}
   maxUnits: 4
