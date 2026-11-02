@@ -40,6 +40,7 @@ public class FreeModeHUD : MonoBehaviour
     private bool groupByType = true;
     private TextMeshProUGUI groupLabel;
     private readonly Dictionary<Age, CollapsibleSection> researchSections = new Dictionary<Age, CollapsibleSection>();
+    private CollapsibleSection masterySection;
     private int sectionsAge = -1;
     private Button upgradeButton;
     private TextMeshProUGUI upgradeLabel;
@@ -217,15 +218,19 @@ public class FreeModeHUD : MonoBehaviour
             researchSections[age] = section;
             foreach (var tech in db.technologies)
             {
-                if (tech == null || (tech.age != null ? tech.age : db.ages[0]) != age)
+                if (tech == null || tech.IsLevelled || (tech.age != null ? tech.age : db.ages[0]) != age)
                 {
                     continue;
                 }
-                var t = tech;
-                var button = UIBuilder.Button(tech.id, section.Body, () => TryResearch(t), out var label);
-                UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => TechTooltip(t), HideTooltip);
-                researchButtons.Add((tech, button, label));
+                AddResearchButton(tech, section.Body);
             }
+        }
+        // Mastery: research taken in levels, for small steady gains once the ages' research runs out.
+        masterySection = new CollapsibleSection("Mastery", researchContent, "Mastery", new Color(0.55f, 0.85f, 0.95f));
+        masterySection.Toggled += _ => FitSidePanels();
+        foreach (var tech in db.technologies)
+        {
+            if (tech != null && tech.IsLevelled) AddResearchButton(tech, masterySection.Body);
         }
         // The journal: lore from lore stones and blessings from shrines, folded away under research.
         journalSection = new CollapsibleSection("Journal", researchContent, "Journal", new Color(0.95f, 0.82f, 0.5f));
@@ -657,11 +662,19 @@ public class FreeModeHUD : MonoBehaviour
         RefreshBuildButtons();
     }
 
+    private void AddResearchButton(Technology tech, Transform parent)
+    {
+        var button = UIBuilder.Button(tech.id, parent, () => TryResearch(tech), out var label);
+        UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => TechTooltip(tech), HideTooltip);
+        researchButtons.Add((tech, button, label));
+    }
+
     private void RefreshResearchButtons()
     {
+        int levels = 0, maxLevels = 0, masteryShown = 0;
         foreach (var (tech, button, label) in researchButtons)
         {
-            bool done = settlement.HasResearched(tech);
+            bool done = settlement.IsFullyResearched(tech);
             bool locked = tech.age != null && tech.age.order > settlement.State.ageIndex;
             bool match = researchFilter.Length == 0
                 || tech.displayName.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0
@@ -672,9 +685,20 @@ public class FreeModeHUD : MonoBehaviour
             button.interactable = can;
             string sub = current
                 ? $"<color=#8cf>Researching {settlement.State.researchProgress:P0}</color>"
-                : SubtitleFor(tech.requirements.cost, can, missing) + $" <color=#aaa>({tech.researchTime:0}s)</color>";
-            label.text = $"<b>{tech.displayName}</b>\n<size=80%>{sub}</size>";
+                : SubtitleFor(settlement.ResearchCost(tech), can, missing) + $" <color=#aaa>({settlement.ResearchTime(tech):0}s)</color>";
+            string level = "";
+            if (tech.IsLevelled)
+            {
+                int at = settlement.ResearchLevel(tech);
+                level = $"  <size=80%><color=#9df>Lv {at}/{tech.maxLevel}</color></size>";
+                levels += at;
+                maxLevels += tech.maxLevel;
+                if (button.gameObject.activeSelf) masteryShown++;
+            }
+            label.text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
         }
+        masterySection.SetVisible(masteryShown > 0 || levels > 0);
+        masterySection.SetNote(levels >= maxLevels ? "all done" : $"{levels}/{maxLevels} levels");
         foreach (var pair in researchSections)
         {
             int total = 0, done = 0, shown = 0;
@@ -1304,7 +1328,11 @@ public class FreeModeHUD : MonoBehaviour
         {
             sb.Append($"<color=#ccc>{tech.description}</color>\n");
         }
-        sb.Append($"Cost: {CostText(tech.requirements.cost)}   Time: {tech.researchTime:0}s\n");
+        if (tech.IsLevelled)
+        {
+            sb.Append($"<color=#9df>Level {settlement.ResearchLevel(tech)} of {tech.maxLevel}</color> <size=85%><color=#aaa>(each level adds the bonus again, and costs more)</color></size>\n");
+        }
+        sb.Append($"Cost: {CostText(settlement.ResearchCost(tech))}   Time: {settlement.ResearchTime(tech):0}s\n");
         AppendMissing(sb, settlement.CanResearch(tech, out string missing), missing);
         return sb.ToString().TrimEnd();
     }

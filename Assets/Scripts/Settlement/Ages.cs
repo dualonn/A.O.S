@@ -34,7 +34,7 @@ public partial class Settlement
 
         foreach (var tech in Database.technologies)
         {
-            if (tech == null) continue;
+            if (tech == null || tech.IsLevelled) continue;   // Mastery research sits outside the ages
             var techAge = tech.age != null ? tech.age : Database.GetAge(0);
             if (techAge != age) continue;
             info.researchTotal++;

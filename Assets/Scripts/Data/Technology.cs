@@ -61,4 +61,20 @@ public class Technology : GameData
 
     [Tooltip("Taxes: every person pays this much Coin per second (adds up across techs).")]
     public float coinPerPersonPerSecond;
+
+    [Tooltip("Research goes this many times as fast (1.03 = 3% faster).")]
+    public float researchSpeedMultiplier = 1f;
+
+    [Header("Levels (Mastery research you can take more than once)")]
+    [Tooltip("How many times this can be researched. Each level adds its effects again.")]
+    public int maxLevel = 1;
+
+    [Tooltip("Each level costs this many times the one before.")]
+    public float levelCostGrowth = 1.5f;
+
+    [Tooltip("Each level takes this many times as long as the one before.")]
+    public float levelTimeGrowth = 1.25f;
+
+    /// <summary>Researched in levels (Mastery), rather than once.</summary>
+    public bool IsLevelled => maxLevel > 1;
 }

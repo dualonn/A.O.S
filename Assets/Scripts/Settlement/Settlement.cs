@@ -1016,9 +1016,11 @@ public partial class Settlement : MonoBehaviour
             State.researchingId = null;
             return;
         }
-        State.researchProgress += tech.researchTime > 0 ? dt / tech.researchTime : 1f;
+        float time = ResearchTime(tech);
+        State.researchProgress += time > 0 ? dt / time : 1f;
         if (State.researchProgress >= 1f)
         {
+            // A levelled (Mastery) tech is listed once per level, so its effects stack.
             State.researched.Add(tech.id);
             if (tech.buildingHealthMultiplier != 1f)
             {
@@ -1033,7 +1035,9 @@ public partial class Settlement : MonoBehaviour
             }
             State.researchingId = null;
             State.researchProgress = 0;
-            Notify($"Research complete: {tech.displayName}.");
+            Notify(tech.IsLevelled
+                ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{tech.maxLevel})."
+                : $"Research complete: {tech.displayName}.");
             Changed?.Invoke();
         }
     }
@@ -1308,6 +1312,51 @@ public partial class Settlement : MonoBehaviour
 
     public bool HasResearched(Technology tech) => tech != null && State.researched.Contains(tech.id);
 
+    /// <summary>How many levels of this tech are done (0 or 1 for ordinary research).</summary>
+    public int ResearchLevel(Technology tech)
+    {
+        if (tech == null) return 0;
+        int n = 0;
+        foreach (var id in State.researched)
+            if (id == tech.id) n++;
+        return n;
+    }
+
+    /// <summary>Nothing more to research here (every level done, for Mastery research).</summary>
+    public bool IsFullyResearched(Technology tech) => ResearchLevel(tech) >= Mathf.Max(1, tech.maxLevel);
+
+    /// <summary>What the next level of this tech costs (each Mastery level costs more).</summary>
+    public List<ResourceAmount> ResearchCost(Technology tech)
+    {
+        float scale = Mathf.Pow(tech.levelCostGrowth, ResearchLevel(tech));
+        var cost = new List<ResourceAmount>();
+        foreach (var item in tech.requirements.cost)
+            cost.Add(new ResourceAmount { resource = item.resource, amount = Mathf.RoundToInt(item.amount * scale) });
+        return cost;
+    }
+
+    /// <summary>Seconds the next level of this tech takes, after research-speed bonuses.</summary>
+    public float ResearchTime(Technology tech)
+    {
+        float time = tech.researchTime * Mathf.Pow(tech.levelTimeGrowth, ResearchLevel(tech));
+        return time / ResearchSpeed;
+    }
+
+    /// <summary>How fast research goes, from research that speeds it up.</summary>
+    public float ResearchSpeed
+    {
+        get
+        {
+            float speed = 1f;
+            foreach (var id in State.researched)
+            {
+                var tech = Database.GetTechnology(id);
+                if (tech != null) speed *= tech.researchSpeedMultiplier;
+            }
+            return speed;
+        }
+    }
+
     public int CountBuilt(BuildingDefinition def) =>
         State.buildings.FindAll(b => b.definitionId == def.id && b.IsBuilt).Count;
 
@@ -1539,9 +1588,9 @@ public partial class Settlement : MonoBehaviour
 
     public bool CanResearch(Technology tech, out string missing)
     {
-        if (HasResearched(tech))
+        if (IsFullyResearched(tech))
         {
-            missing = "Already researched";
+            missing = tech.IsLevelled ? "Every level researched" : "Already researched";
             return false;
         }
         if (!string.IsNullOrEmpty(State.researchingId))
@@ -1549,7 +1598,16 @@ public partial class Settlement : MonoBehaviour
             missing = "Already researching something";
             return false;
         }
-        return Meets(tech.requirements, out missing);
+        var req = tech.requirements;
+        var scaled = new Requirements
+        {
+            minimumAge = req.minimumAge,
+            technologies = req.technologies,
+            buildings = req.buildings,
+            population = req.population,
+            cost = ResearchCost(tech),
+        };
+        return Meets(scaled, out missing);
     }
 
     public bool TryStartResearch(Technology tech, out string reason)
@@ -1558,7 +1616,7 @@ public partial class Settlement : MonoBehaviour
         {
             return false;
         }
-        Spend(tech.requirements.cost);
+        Spend(ResearchCost(tech));
         State.researchingId = tech.id;
         State.researchProgress = 0;
         Changed?.Invoke();
