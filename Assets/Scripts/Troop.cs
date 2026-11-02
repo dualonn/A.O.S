@@ -263,22 +263,56 @@ public class Troop : Unit
         Troop patient = null, company = null;
         float worst = 0.999f, nearest = 20f;
         float range = definition.healRange;
+        // At home, a medic looks after the whole settlement; out with a party (or sent somewhere,
+        // or underground) only the troops around it.
+        bool atHome = Dungeon == null && !HasOrder && defendArea != null && InDefendArea(transform.position);
         foreach (var u in Living)
         {
             if (!(u is Troop t) || t == this || !t.IsAlive || t.Dungeon != Dungeon) continue;
             float d = Vector2.Distance(t.transform.position, transform.position);
-            float share = t.health / (float)Mathf.Max(1, t.maxHealth);
-            if (d <= range && share < worst) { worst = share; patient = t; }
             if (!t.IsHealer && d < nearest) { nearest = d; company = t; }
+            float share = t.health / (float)Mathf.Max(1, t.maxHealth);
+            if (share >= 0.999f || (t == unreachable && Time.time < unreachableUntil)) continue;
+            if (d > range && !(atHome && InDefendArea(t.transform.position))) continue;
+            // Spread out: leave someone another medic is already seeing to, unless they're far worse off.
+            if (t != tending && TendedByAnother(t)) share += 0.3f;
+            // And finish with someone before going off to another who's only a little worse.
+            if (t == tending) share -= 0.2f;
+            if (share < worst)
+            {
+                worst = share;
+                patient = t;
+            }
+        }
+        if (patient != tending)
+        {
+            tending = patient;
+            crowded = false;
+            progressCheckAt = 0;
         }
         if (patient != null)
         {
             Vector3 at = patient.transform.position;
-            if (Vector2.Distance(at, transform.position) > HealReach)   // units keep a little personal space
+            float gap = Vector2.Distance(at, transform.position);
+            // Units keep a little personal space; in a crowd, a few steps off is close enough.
+            if (gap > (crowded ? CrowdedReach : HealReach))
             {
-                MoveTowards(at, moveSpeed);
-                return true;
+                if (!Stuck(gap))
+                {
+                    MoveTowards(at, moveSpeed);
+                    return true;
+                }
+                if (gap > CrowdedReach)
+                {
+                    // Can't get there (water, a building in the way): leave them for a while.
+                    unreachable = patient;
+                    unreachableUntil = Time.time + 8f;
+                    tending = null;
+                    return TendWounded();
+                }
+                crowded = true;
             }
+            progressCheckAt = 0;
             SetMoving(false);
             Face(at);
             if (CanSwing)
@@ -295,12 +329,40 @@ public class Troop : Unit
             return true;
         }
         // Nobody hurt: stay with the troops (out in the field, or down a dungeon), a step behind.
-        if (company != null && nearest > 2.5f && (Dungeon != null || company.HasOrder || company.TargetCamp != null || Stance == TroopStance.Attack))
+        // Once close, wait there: walking back to the rally point would just pull us away again.
+        if (company != null && (Dungeon != null || company.HasOrder || company.TargetCamp != null || Stance == TroopStance.Attack))
         {
-            MoveTowards(company.transform.position + (company.transform.position - transform.position).normalized * -1.5f, moveSpeed);
+            if (nearest > 2.5f)
+                MoveTowards(company.transform.position + (company.transform.position - transform.position).normalized * -1.5f, moveSpeed);
+            else
+                SetMoving(false);
             return true;
         }
         return false;
+    }
+
+    /// <summary>How close a medic gets to bandage someone stood in a crowd it can't push through.</summary>
+    private const float CrowdedReach = 3f;
+
+    private Troop tending, unreachable;
+    private bool crowded;
+    private float progressCheckAt, progressGap, unreachableUntil;
+
+    private bool TendedByAnother(Troop patient)
+    {
+        foreach (var u in Living)
+            if (u is Troop m && m != this && m.IsHealer && m.IsAlive && m.tending == patient) return true;
+        return false;
+    }
+
+    /// <summary>No closer to the patient than a couple of seconds ago?</summary>
+    private bool Stuck(float gap)
+    {
+        if (Time.time < progressCheckAt) return false;
+        bool stuck = progressCheckAt > 0 && gap > progressGap - 0.3f;
+        progressGap = gap;
+        progressCheckAt = Time.time + 2f;
+        return stuck;
     }
 
     /// <summary>Troops you've sent somewhere take on enemies within this many tiles of themselves.</summary>
