@@ -41,6 +41,8 @@ public class FigureStyle
     public bool undead;
     [Tooltip("A beast instead of a person (wolf, spider): drawn by its own rig.")]
     public Beast beast;
+    [Tooltip("A medic: satchel of bandages on the hip and a white armband.")]
+    public bool medic;
 
     /// <summary>Rarity of the gear in each slot (Head, Body, Weapon, Shield, Trinket): sets its trim colour. Runtime only.</summary>
     [NonSerialized] public Rarity[] trims;
@@ -196,7 +198,7 @@ public static class PixelFigure
         // Swung weapons: up behind the head, over, and down in front.
         p.hFar = i == 0 ? V(-2, 3) : i == 1 ? V(0, 5) : i == 2 ? V(6, 0) : V(5, -4);
         p.wa = i == 0 ? 150 : i == 1 ? 110 : i == 2 ? -10 : -55;
-        p.smear = i == 2;
+        p.smear = i == 2 && s.weapon != GearLook.None;   // no swoosh without a weapon (medics bandaging)
     }
 
     // ---------- Drawing ----------
@@ -410,6 +412,18 @@ public static class PixelFigure
                 c.Put(c.T(V(sh.x + 1.5f, sh.y - 3.5f)), Trim(GearSlot.Trinket, P.Bone[3]));
                 c.Put(c.T(V(sh.x + 1.5f, sh.y - 4.5f)), P.Bone[2]);
             }
+            if (s.medic)
+            {
+                // a strap across the chest to a satchel on the hip, marked with a red cross
+                c.Line(V(sh.x - X(1.5f), sh.y - 1), V(hip.x + X(2), hip.y + X(1)), P.Leather[1]);
+                Vector2 bag = hip + V(X(2.2f), X(-0.5f));
+                c.FillLocal(new Rect(bag.x - X(1.6f), bag.y - X(1.2f), X(3.2f), X(2.6f)), _ => P.Linen[3]);
+                c.Put(c.T(bag + V(0, 0.3f)), P.Red[2]);
+                c.Put(c.T(bag + V(-1, 0.3f)), P.Red[2]);
+                c.Put(c.T(bag + V(1, 0.3f)), P.Red[2]);
+                c.Put(c.T(bag + V(0, 1.3f)), P.Red[2]);
+                c.Put(c.T(bag + V(0, -0.7f)), P.Red[2]);
+            }
             if (s.trinket == GearLook.Amulet)
             {
                 c.Line(V(sh.x - 1, sh.y - 1), V(sh.x + 1, sh.y - 2.5f), P.Gold[2]);
@@ -619,6 +633,11 @@ public static class PixelFigure
             bool sleeve = s.body != GearLook.Bare;
             Color32 skinCol = far ? skin[1] : skin[2];
             c.Line(from, hand, skinCol, limb);
+            if (s.medic && !far)
+            {
+                Vector2 band = Vector2.Lerp(from, hand, 0.55f);
+                c.Line(band + V(-0.5f, 0), band + V(0.5f, 0), P.White, limb);   // white armband
+            }
             if (sleeve)
             {
                 var sl = s.body == GearLook.Mail || s.body == GearLook.Plate ? P.Steel : s.body == GearLook.Scale ? P.Bronze : s.body == GearLook.Jerkin ? P.Linen : team;

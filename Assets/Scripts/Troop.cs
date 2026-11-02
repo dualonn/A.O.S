@@ -247,6 +247,62 @@ public class Troop : Unit
     /// <summary>Troops on Attack go for raider camps within this many tiles once no raiders are about.</summary>
     public const float CampHuntRange = 60f;
 
+    // ---------- Medics ----------
+
+    public bool IsHealer => definition != null && definition.healer;
+
+    /// <summary>How close a medic needs to be to bandage someone.</summary>
+    private const float HealReach = 1.4f;
+
+    /// <summary>
+    /// A medic's work: go to the most badly hurt troop nearby and bandage them (each go heals the
+    /// medic's attack power); with nobody hurt, keep close to the nearest troops. True while busy.
+    /// </summary>
+    private bool TendWounded()
+    {
+        Troop patient = null, company = null;
+        float worst = 0.999f, nearest = 20f;
+        float range = definition.healRange;
+        foreach (var u in Living)
+        {
+            if (!(u is Troop t) || t == this || !t.IsAlive || t.Dungeon != Dungeon) continue;
+            float d = Vector2.Distance(t.transform.position, transform.position);
+            float share = t.health / (float)Mathf.Max(1, t.maxHealth);
+            if (d <= range && share < worst) { worst = share; patient = t; }
+            if (!t.IsHealer && d < nearest) { nearest = d; company = t; }
+        }
+        if (patient != null)
+        {
+            Vector3 at = patient.transform.position;
+            if (Vector2.Distance(at, transform.position) > HealReach)   // units keep a little personal space
+            {
+                MoveTowards(at, moveSpeed);
+                return true;
+            }
+            SetMoving(false);
+            Face(at);
+            if (CanSwing)
+            {
+                var p = patient;
+                int amount = Mathf.Max(1, attackPower);
+                StartSwingAt(() =>
+                {
+                    if (p == null || !p.IsAlive) return;
+                    p.Heal(amount);
+                    RingPulse.Spawn(p.transform.position, 0.45f, new Color(0.45f, 1f, 0.5f, 0.85f));
+                });
+            }
+            return true;
+        }
+        // Nobody hurt: stay with the troops (out in the field, or down a dungeon), a step behind.
+        if (company != null && nearest > 2.5f && (Dungeon != null || company.HasOrder || company.TargetCamp != null || Stance == TroopStance.Attack))
+        {
+            MoveTowards(company.transform.position + (company.transform.position - transform.position).normalized * -1.5f, moveSpeed);
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>Troops you've sent somewhere take on enemies within this many tiles of themselves.</summary>
     public const float OrderFightRange = 10f;
 
@@ -280,6 +336,7 @@ public class Troop : Unit
 
     protected override void Idle()
     {
+        if (IsHealer && TendWounded()) return;
         if (Dungeon != null)
         {
             MoveTowards(rallyPoint, moveSpeed);
@@ -293,7 +350,7 @@ public class Troop : Unit
             TargetCamp = null;
             HasOrder = false; // back to its usual rally point
         }
-        if (TargetCamp != null && TargetCamp.IsStanding)
+        if (TargetCamp != null && TargetCamp.IsStanding && !IsHealer)
         {
             // Raiders at home come first for a camp we took on ourselves (one you ordered stays).
             if (!campOrder && HomeUnderRaid()) TargetCamp = null;
@@ -305,7 +362,7 @@ public class Troop : Unit
         }
         // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach):
         // burn it down and stick to it, unless home is being raided or you've sent us elsewhere.
-        if (!hasMoveOrder && !HomeUnderRaid())
+        if (!IsHealer && !hasMoveOrder && !HomeUnderRaid())
         {
             float range = hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
             var camp = CampView.Nearest(transform.position, range);
@@ -348,6 +405,7 @@ public class Troop : Unit
 
     protected override Unit SelectTarget(List<Unit> candidates)
     {
+        if (IsHealer) return null;   // medics don't fight
         // Underground: fight what's in this room, not through the walls.
         if (Dungeon != null)
         {

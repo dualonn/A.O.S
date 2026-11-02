@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Valetudinarium
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Valetudinarium
+  displayName: Valetudinarium
+  description: 'A hospital. Trains Capsarii: medics who follow your troops and heal
+    the wounded (there''s no other healing in the field).'
+  icon: {fileID: 21300000, guid: eb2f10db09814034083824c1f9329e87, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: eb2f10db09814034083824c1f9329e87, type: 3}
+    - {fileID: 21300000, guid: a8b0b7f5e9eb9bd4284973ca0c74dd62, type: 3}
+    - {fileID: 21300000, guid: f4bbd2c33735c884c93d21e62e51d82d, type: 3}
+    - {fileID: 21300000, guid: 8af62b6b4dd2c72489ebf40a4b4df978, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 32fc9432439231f47afbed9660436da1, type: 3}
+    - {fileID: 21300000, guid: 996a6ac4d40cfa54eabe2831988d37c0, type: 3}
+    - {fileID: 21300000, guid: 5353e2b9c2103544cba560688f6cdeb7, type: 3}
+    - {fileID: 21300000, guid: 89003c661d824664d8a1746ada66cdf7, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 9722617dbee2785439f96eb1c38775ab, type: 3}
+    - {fileID: 21300000, guid: 4f2c62e962a7f914eb8e17183656429d, type: 3}
+    - {fileID: 21300000, guid: 3fe71b849c03d5e44ac395a7549bfaf4, type: 3}
+    - {fileID: 21300000, guid: f12485376e4f89c45ba43c292cbbca6d, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e8393a62182b899418057a3b2e9d333b, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 250
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 40
+  upgrades:
+  - name: Herb Garden
+    description: 'Fresh herbs and more hands: +1 medic.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Surgeons' Tools
+    description: 'Iron probes and clean linen: medics heal 30% more and are 20% tougher.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.3
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 450
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 97f07f6e46ee6dc4ca36e7294fefb8ac, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

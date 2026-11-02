@@ -47,6 +47,12 @@ public class UnitDefinition : ScriptableObject
 
     public float projectileSpeed = 9f;
 
+    [Header("Healer (medics)")]
+    [Tooltip("Never fights: tends wounded troops instead, healing its attack power with each go.")]
+    public bool healer;
+    [Tooltip("How far (tiles) a healer looks for wounded troops.")]
+    public float healRange = 8f;
+
     [Header("Boss (raider chiefs only)")]
     public bool isBoss;
     public BossAbility bossAbility;

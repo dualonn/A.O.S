@@ -28,6 +28,7 @@ public static partial class PlaceholderArt
             { "GoldMine", (PxGoldMine, 4, 5f) }, { "Mint", (PxMint, 4, 4f) }, { "Insula", (PxInsula, 4, 4f) },
             { "LegionFort", (PxLegionFort, 4, 4f) }, { "ArcherAcademy", (PxArcherAcademy, 4, 3f) }, { "Stables", (PxStables, 4, 3f) },
             { "BallistaTower", (PxBallistaTower, 4, 4f) }, { "SkirmisherCamp", (PxSkirmisherCamp, 4, 4f) }, { "ElephantPen", (PxElephantPen, 4, 3f) },
+            { "Valetudinarium", (PxValetudinarium, 4, 3f) },
         };
 
     // Room round the art box for smoke, flags and overhangs.
@@ -669,6 +670,35 @@ public static partial class PlaceholderArt
         if (k.Level >= 1) k.Banner(4, 24, 22);
         k.Finish();
         k.Smoke(13, 14, 0.7f, 120);
+    }
+
+    private static void PxValetudinarium(K k)
+    {
+        // A Roman hospital: a plastered hall with a red-tiled roof and a shady colonnade, herb beds
+        // out front, and the healer's staff with its snake on the banner.
+        k.Ground(4, 2, 92, 26, P.Dirt);
+        int top = Hall(k, 8, 88, 22, 20, K.Mat.Plaster, K.RoofType.Tile, 18, 10, windows: 4, arched: true);
+        // colonnade along the front
+        k.Rect(8, 20, 88, 22, P.Marble[2]);
+        for (int i = 0; i < 6; i++) k.Column(10 + i * 15, 22, 14);
+        // herb garden beds (more with each level)
+        for (int i = 0; i < 2 + k.Level; i++)
+        {
+            int x = 6 + i * 16;
+            k.Rect(x, 4, x + 11, 9, P.Dirt[1]);
+            for (int j = 0; j < 6; j++) k.Px(x + 1 + j * 2, 7 + (j % 2), j % 3 == 0 ? P.Flower[3] : P.Leaf[3]);
+        }
+        // a stretcher and a basin
+        k.Rect(64, 6, 78, 8, P.Linen[3]); k.HLine(64, 78, 5, P.Wood[1]);
+        k.Pot(82, 4, P.Stone);
+        // the staff of the healer on a white banner
+        k.VLine(46, 44, 62, P.Wood[2]);
+        k.Rect(40, 46, 52, 60, P.Linen[3]);
+        k.VLine(46, 48, 58, P.Wood[1]);
+        for (int y = 49; y < 58; y++) k.Px(45 + (y % 3 == 0 ? 0 : y % 3 == 1 ? 2 : 1), y, P.Green[2]);
+        if (k.Level >= 1) k.Banner(90, 4, 22, P.Red);
+        if (k.Level >= 2) k.HLine(8, 88, 22, P.Gold[2]);
+        k.Finish();
     }
 
     private static void PxElephantPen(K k)

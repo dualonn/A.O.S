@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: Medicine
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: Medicine
+  displayName: Medicine
+  description: Physicians, herbs and clean bandages. Unlocks the Valetudinarium,
+    which trains medics who heal your troops in the field.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 60
+  researchTime: 45
+  unitModifiers: []
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
