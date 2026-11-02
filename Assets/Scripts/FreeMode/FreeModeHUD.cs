@@ -50,6 +50,7 @@ public class FreeModeHUD : MonoBehaviour
     private TextMeshProUGUI repairLabel;
     private Button selectTypeButton;
     private RectTransform automationRow;
+    private UnitPanel unitPanel;
     private Button priorityButton, autoRepairButton, queueButton, autoRepairNewButton;
     private TextMeshProUGUI priorityLabel, autoRepairLabel, queueLabel, autoRepairNewLabel;
     private TextMeshProUGUI selectTypeLabel;
@@ -84,6 +85,7 @@ public class FreeModeHUD : MonoBehaviour
         }
         BuildCanvas();
         controller.SelectionChanged += _ => RefreshSelection();
+        controller.UnitSelectionChanged += () => unitPanel.Refresh();
         controller.MessageShown += AddMessage;
         RefreshAll();
     }
@@ -247,6 +249,9 @@ public class FreeModeHUD : MonoBehaviour
         demolishLabel.text = "Demolish (no refund)";
         selectionPanel.gameObject.SetActive(false);
 
+        // Selected troops (same spot as the building panel; only one shows at a time)
+        unitPanel = new UnitPanel(controller, root, source => tooltipSource = source, HideTooltip);
+
         // Founding banner (top centre, until the Campfire is placed)
         foundingBanner = UIBuilder.Panel("FoundingBanner", root, new Color(0.1f, 0.08f, 0.02f, 0.9f)).rectTransform;
         UIBuilder.Anchor(foundingBanner, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -70), new Vector2(760, 74));
@@ -299,6 +304,7 @@ public class FreeModeHUD : MonoBehaviour
         RefreshBuildButtons();
         RefreshResearchButtons();
         RefreshSelection();
+        unitPanel.Refresh();
         RefreshAutoRepairNew();
     }
 

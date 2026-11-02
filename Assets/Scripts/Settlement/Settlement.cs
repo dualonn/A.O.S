@@ -143,11 +143,11 @@ public class Settlement : MonoBehaviour
     /// <summary>Raised when raiders move back into a cleared camp.</summary>
     public event Action<CampState> CampReoccupied;
 
-    private float CampHash(int zone, int salt)
+    private float CampHash(Vector2Int zone, int salt)
     {
         unchecked
         {
-            int h = State.mapSeed * 73856093 ^ zone * 19349663 ^ salt * 83492791;
+            int h = State.mapSeed * 73856093 ^ zone.x * 19349663 ^ zone.y * 49979693 ^ salt * 83492791;
             h = (h ^ (h >> 13)) * 1274126177;
             return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
         }
@@ -157,20 +157,20 @@ public class Settlement : MonoBehaviour
     /// Give these explored zones their camps. Each zone's roll comes from the map seed, so the same
     /// zones always hold camps; zones near your buildings never do.
     /// </summary>
-    public void RollCamps(IEnumerable<int> zones)
+    public void RollCamps(IEnumerable<Vector2Int> zones)
     {
         if (!IsFounded || Map == null)
         {
             return; // nothing to raid yet
         }
         var settlements = SettlementZones();
-        foreach (int zone in zones)
+        foreach (var zone in zones)
         {
-            if (State.camps.Exists(c => c.zone == zone) || CampHash(zone, 1) >= Database.campChance)
+            if (State.camps.Exists(c => c.zoneXY == zone) || CampHash(zone, 1) >= Database.campChance)
             {
                 continue;
             }
-            int zx = zone % Map.ChunksX, zy = zone / Map.ChunksX;
+            int zx = zone.x, zy = zone.y;
             if (!Map.IsZoneRevealed(zx, zy))
             {
                 continue;
@@ -197,7 +197,7 @@ public class Settlement : MonoBehaviour
                 {
                     break; // this zone is too near home: no camp
                 }
-                State.camps.Add(new CampState { zone = zone, cell = cell });
+                State.camps.Add(new CampState { zoneXY = zone, cell = cell });
                 break;
             }
         }
@@ -341,8 +341,9 @@ public class Settlement : MonoBehaviour
         {
             State.mapSeed = NewSeed();
         }
-        Map = MapGenerator.Create(State.mapSeed, Database, State.exploredZones);
-        State.exploredZones = Map.RevealedZoneIndices();
+        UpgradeOldSave();
+        Map = MapGenerator.Create(State.mapSeed, Database, State.explored);
+        State.explored = Map.RevealedZones();
         // Older saves could hold fractional building health; snap it to whole points.
         foreach (var building in State.buildings)
         {
@@ -352,7 +353,36 @@ public class Settlement : MonoBehaviour
         RepairUnderfilledHealth();
         Waves = gameObject.AddComponent<WaveDirector>();
         Waves.Initialise(this);
-        RollCamps(Map.RevealedZoneIndices());
+        RollCamps(Map.RevealedZones());
+    }
+
+    /// <summary>The save format this build writes.</summary>
+    private const int CurrentSaveVersion = 1;
+
+    /// <summary>
+    /// Bring an older save up to date. Version 0 stored zones as a single number from when the
+    /// map had an edge (row * zones-per-row + column); now they're (column, row) so the map can
+    /// grow forever. Every building, explored zone and camp stays exactly where it was.
+    /// </summary>
+    private void UpgradeOldSave()
+    {
+        if (State.saveVersion >= CurrentSaveVersion)
+        {
+            return;
+        }
+        int perRow = MapGenerator.LegacyZonesPerRow(Database);
+        foreach (int index in State.exploredZones)
+        {
+            var zone = new Vector2Int(index % perRow, index / perRow);
+            if (!State.explored.Contains(zone)) State.explored.Add(zone);
+        }
+        State.exploredZones.Clear();
+        int size = Mathf.Max(4, Database.chunkSize);
+        foreach (var camp in State.camps)
+        {
+            camp.zoneXY = new Vector2Int(MapData.FloorDiv(camp.cell.x, size), MapData.FloorDiv(camp.cell.y, size));
+        }
+        State.saveVersion = CurrentSaveVersion;
     }
 
     private SettlementState NewState()
@@ -361,7 +391,8 @@ public class Settlement : MonoBehaviour
         {
             population = Database.startingPopulation,
             secondsUntilWave = Database.firstWaveDelay,
-            mapSeed = NewSeed()
+            mapSeed = NewSeed(),
+            saveVersion = CurrentSaveVersion
         };
         foreach (var start in Database.startingResources)
         {
@@ -379,7 +410,7 @@ public class Settlement : MonoBehaviour
     public event Action<List<RectInt>> MapGrown;
 
     /// <summary>
-    /// Explore new zones (only ones bordering explored land, inside the size limit).
+    /// Explore new zones (ones bordering explored land; the map has no edge).
     /// Returns how many were added.
     /// </summary>
     public int ExploreZones(IEnumerable<Vector2Int> zones)
@@ -389,18 +420,12 @@ public class Settlement : MonoBehaviour
         {
             return 0;
         }
+        var newZones = new List<Vector2Int>();
         foreach (var rect in shown)
         {
-            int index = Map.ZoneIndex(rect.x / Map.ChunkSize, rect.y / Map.ChunkSize);
-            if (!State.exploredZones.Contains(index))
-            {
-                State.exploredZones.Add(index);
-            }
-        }
-        var newZones = new List<int>();
-        foreach (var rect in shown)
-        {
-            newZones.Add(Map.ZoneIndex(rect.x / Map.ChunkSize, rect.y / Map.ChunkSize));
+            var zone = Map.ZoneOf(rect.x, rect.y);
+            newZones.Add(zone);
+            State.explored.Add(zone);
         }
         RollCamps(newZones);
         MapGrown?.Invoke(shown);
@@ -1442,7 +1467,7 @@ public class Settlement : MonoBehaviour
             // Raiders only start coming once there's something to raid.
             State.secondsUntilWave = Database.firstWaveDelay;
             Notify("Your settlement is founded! Build huts and camps near food and wood.");
-            RollCamps(Map.RevealedZoneIndices());
+            RollCamps(Map.RevealedZones());
         }
         Changed?.Invoke();
         return true;
@@ -1786,6 +1811,10 @@ public class Settlement : MonoBehaviour
         if (State == null)
         {
             return;
+        }
+        if (Map != null)
+        {
+            State.explored = Map.RevealedZones();
         }
         try
         {

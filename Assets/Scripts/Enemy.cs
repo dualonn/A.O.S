@@ -31,23 +31,12 @@ public interface IRaidTargets
 }
 
 /// <summary>
-/// An enemy unit. Two ways to move:
-/// - Path mode (levels): walks the waypoint path, stops to fight troops it meets.
-/// - Raid mode (free mode): roams in, fights troops, smashes and loots buildings,
-///   then runs off once it can't carry more. Killing it recovers the loot.
+/// An enemy unit. Raid mode: roams in, fights troops, smashes and loots buildings, then runs
+/// off once it can't carry more (killing it recovers the loot). Guard mode: stays around a
+/// camp and fights anyone who comes near.
 /// </summary>
 public class Enemy : Unit
 {
-    /// <summary>Raised when an enemy reaches the end of a level path (hook lives/damage here later).</summary>
-    public static event Action<Enemy> ReachedEnd;
-
-    // Domain reload is off in this project, so clear statics at each Play.
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatics() => ReachedEnd = null;
-
-    [Tooltip("Optional. Defaults to the scene object named \"Path\".")]
-    public WayPoints path;
-
     [Header("Raiding (free mode)")]
     [Tooltip("Resources stolen with each hit on a building.")]
     public int lootPerHit = 4;
@@ -60,23 +49,6 @@ public class Enemy : Unit
     public bool IsRaider => raid != null;
     public List<ResourceAmount> Loot { get; } = new List<ResourceAmount>();
     public int LootCarried { get; private set; }
-
-    /// <summary>How far along the path this enemy is. Higher is closer to the end.</summary>
-    public float PathProgress
-    {
-        get
-        {
-            if (waypoints == null || waypointIndex >= waypoints.Count)
-            {
-                return float.MaxValue;
-            }
-            float toNext = Vector2.Distance(transform.position, waypoints[waypointIndex]);
-            return waypointIndex * 1000f - toNext;
-        }
-    }
-
-    private List<Vector3> waypoints;
-    private int waypointIndex;
 
     private IRaidTargets raid;
     private BuildingView buildingTarget;
@@ -138,27 +110,6 @@ public class Enemy : Unit
         return base.SelectTarget(candidates);
     }
 
-    private void Start()
-    {
-        if (raid != null || guarding)
-        {
-            return;
-        }
-        if (path == null)
-        {
-            var pathObject = GameObject.Find("Path");
-            if (pathObject != null)
-            {
-                path = pathObject.GetComponent<WayPoints>();
-            }
-        }
-        waypoints = path != null ? path.positions : new List<Vector3>();
-        if (waypoints.Count == 0)
-        {
-            Debug.LogWarning($"{name}: no waypoints found, enemy will stand still.", this);
-        }
-    }
-
     protected override void Idle()
     {
         if (guarding)
@@ -171,7 +122,7 @@ public class Enemy : Unit
         }
         else
         {
-            FollowPath();
+            SetMoving(false); // spawned without orders: stand by
         }
     }
 
@@ -274,26 +225,5 @@ public class Enemy : Unit
     {
         base.Die();
         raid?.RaiderKilled(this);
-    }
-
-    // ---------- Path mode (levels) ----------
-
-    private void FollowPath()
-    {
-        if (waypoints == null || waypoints.Count == 0)
-        {
-            SetMoving(false);
-            return;
-        }
-
-        if (MoveTowards(waypoints[waypointIndex], moveSpeed))
-        {
-            waypointIndex++;
-            if (waypointIndex >= waypoints.Count)
-            {
-                ReachedEnd?.Invoke(this);
-                Destroy(gameObject);
-            }
-        }
     }
 }

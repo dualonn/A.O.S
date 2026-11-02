@@ -73,8 +73,14 @@ public class SettlementGrid : MonoBehaviour
     private readonly HashSet<Vector2Int> hiddenDeposits = new HashSet<Vector2Int>();
     private readonly List<TileChangeData> depositChanges = new List<TileChangeData>();
 
-    private Texture2D strategyTexture;
-    private SpriteRenderer strategy;
+    // Strategy map: one pixel per zone, in square pages made as the explored land grows.
+    private const int StrategyPage = 64; // zones per page side
+    private readonly Dictionary<Vector2Int, Texture2D> strategyPages = new Dictionary<Vector2Int, Texture2D>();
+    private readonly List<SpriteRenderer> strategyRenderers = new List<SpriteRenderer>();
+    private readonly HashSet<Texture2D> strategyDirty = new HashSet<Texture2D>();
+    private bool strategyShown;
+    private SpriteRenderer fog;
+    private List<(Vector3 a, Vector3 b)> frontier;
 
     // ---------- Building ----------
 
@@ -83,14 +89,19 @@ public class SettlementGrid : MonoBehaviour
         Map = map;
         var art = ArtLibrary.Load();
 
-        // Unexplored land: plain fog colour under everything (stretched, not tiled).
-        var fog = new GameObject("Fog").AddComponent<SpriteRenderer>();
+        // Unexplored land: plain fog colour under everything, sized to the explored land plus a
+        // wide margin (resized as the map grows).
+        fog = new GameObject("Fog").AddComponent<SpriteRenderer>();
         fog.transform.SetParent(transform, false);
         fog.sprite = SimpleSprites.Square;
         fog.color = FogColor;
         fog.sortingOrder = -28;
-        fog.transform.localPosition = new Vector3(-200, -200, 0);
-        fog.transform.localScale = new Vector3(map.Width + 400, map.Height + 400, 1);
+        if (Camera.main != null)
+        {
+            // Beyond the fog quad (the map has no edge) the view shows the same unexplored colour.
+            Camera.main.backgroundColor = FogColor;
+            Camera.main.clearFlags = CameraClearFlags.SolidColor;
+        }
 
         tileGrid = new GameObject("TileGrid");
         tileGrid.transform.SetParent(transform, false);
@@ -105,24 +116,6 @@ public class SettlementGrid : MonoBehaviour
         hillTile = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
         BuildSmoothTerrain(art);
 
-        // Strategy map: one pixel per zone, point-filtered into crisp squares.
-        strategyTexture = new Texture2D(map.ChunksX, map.ChunksY, TextureFormat.RGBA32, false)
-        {
-            filterMode = FilterMode.Point,
-            wrapMode = TextureWrapMode.Clamp
-        };
-        var fogPixels = new Color32[map.ChunksX * map.ChunksY];
-        for (int i = 0; i < fogPixels.Length; i++)
-        {
-            fogPixels[i] = FogColor;
-        }
-        strategyTexture.SetPixels32(fogPixels);
-        strategy = new GameObject("StrategyMap").AddComponent<SpriteRenderer>();
-        strategy.transform.SetParent(transform, false);
-        strategy.sprite = Sprite.Create(strategyTexture, new Rect(0, 0, map.ChunksX, map.ChunksY), Vector2.zero, 1f / (map.ChunkSize * cellSize));
-        strategy.sortingOrder = -20;
-        strategy.enabled = false;
-
         // Grid lines over the explored map; 8x8-cell tiles keep the tile count low.
         gridLines = new GameObject("GridLines").AddComponent<SpriteRenderer>();
         gridLines.transform.SetParent(transform, false);
@@ -133,9 +126,9 @@ public class SettlementGrid : MonoBehaviour
         SetPlacing(false);
 
         var all = new List<RectInt>();
-        foreach (int index in map.RevealedZoneIndices())
+        foreach (var zone in map.RevealedZones())
         {
-            all.Add(map.ZoneRect(index % map.ChunksX, index / map.ChunksX));
+            all.Add(map.ZoneRect(zone.x, zone.y));
         }
         OnMapGrown(all);
     }
@@ -156,7 +149,9 @@ public class SettlementGrid : MonoBehaviour
                 region.overviewDirty = false;
             }
         }
-        strategyTexture.Apply();
+        foreach (var page in strategyDirty) page.Apply();
+        strategyDirty.Clear();
+        frontier = null; // edges of the explored land moved
         UpdateBounds();
         ApplyDetail(CurrentDetail, force: true);
     }
@@ -165,16 +160,37 @@ public class SettlementGrid : MonoBehaviour
     {
         var r = Map.Revealed;
         MapRect = new Rect((Vector2)transform.position + new Vector2(r.x, r.y) * cellSize, new Vector2(r.width, r.height) * cellSize);
-        var r8 = new Vector2Int(r.xMin - r.xMin % 8, r.yMin - r.yMin % 8);
+        const int FogMargin = 400;
+        fog.transform.localPosition = new Vector3(r.xMin - FogMargin, r.yMin - FogMargin, 0) * cellSize;
+        fog.transform.localScale = new Vector3(r.width + FogMargin * 2, r.height + FogMargin * 2, 1) * cellSize;
+    }
+
+    /// <summary>Grid lines cover just the view (the map is endless), snapped to the 8-cell pattern.</summary>
+    private void FitGridLinesToView(Camera cam)
+    {
+        if (gridLines == null)
+        {
+            return;
+        }
+        // Only on the detailed map: zoomed out they'd be invisible anyway, and far too many.
+        gridLines.enabled = CurrentDetail == Detail.Tiles;
+        if (!gridLines.enabled)
+        {
+            return;
+        }
+        float h = cam.orthographicSize, w = h * cam.aspect;
+        Vector2Int min = WorldToCell(cam.transform.position - new Vector3(w, h, 0));
+        Vector2Int max = WorldToCell(cam.transform.position + new Vector3(w, h, 0));
+        var r8 = new Vector2Int(MapData.FloorDiv(min.x, 8) * 8, MapData.FloorDiv(min.y, 8) * 8);
         gridLines.transform.position = CellToWorld(r8);
-        gridLines.size = new Vector2(Mathf.Ceil((r.xMax - r8.x) / 8f) * 8, Mathf.Ceil((r.yMax - r8.y) / 8f) * 8);
+        gridLines.size = new Vector2(Mathf.Ceil((max.x + 1 - r8.x) / 8f) * 8, Mathf.Ceil((max.y + 1 - r8.y) / 8f) * 8);
     }
 
     // ---------- Regions ----------
 
     private Region RegionAt(int x, int y)
     {
-        var key = new Vector2Int(x / RegionTiles, y / RegionTiles);
+        var key = new Vector2Int(MapData.FloorDiv(x, RegionTiles), MapData.FloorDiv(y, RegionTiles));
         if (regions.TryGetValue(key, out var region))
         {
             return region;
@@ -222,7 +238,7 @@ public class SettlementGrid : MonoBehaviour
         int px = OverviewPixelsPerTile;
         var block = new Color32[px * px];
         var region = RegionAt(area.xMin, area.yMin);
-        int baseX = (area.xMin / RegionTiles) * RegionTiles, baseY = (area.yMin / RegionTiles) * RegionTiles;
+        int baseX = MapData.FloorDiv(area.xMin, RegionTiles) * RegionTiles, baseY = MapData.FloorDiv(area.yMin, RegionTiles) * RegionTiles;
         int i = 0;
         for (int y = area.yMin; y < area.yMax; y++)
         {
@@ -272,7 +288,36 @@ public class SettlementGrid : MonoBehaviour
             : hill >= grass && hill >= forest ? HillColor
             : forest >= grass ? new Color32(46, 98, 48, 255)
             : GrassColor;
-        strategyTexture.SetPixel(area.xMin / Map.ChunkSize, area.yMin / Map.ChunkSize, c);
+        var zone = Map.ZoneOf(area.xMin, area.yMin);
+        var pageKey = new Vector2Int(MapData.FloorDiv(zone.x, StrategyPage), MapData.FloorDiv(zone.y, StrategyPage));
+        var page = StrategyPageAt(pageKey);
+        page.SetPixel(zone.x - pageKey.x * StrategyPage, zone.y - pageKey.y * StrategyPage, c);
+        strategyDirty.Add(page);
+    }
+
+    private Texture2D StrategyPageAt(Vector2Int key)
+    {
+        if (strategyPages.TryGetValue(key, out var page))
+        {
+            return page;
+        }
+        page = new Texture2D(StrategyPage, StrategyPage, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
+        var fill = new Color32[StrategyPage * StrategyPage];
+        for (int i = 0; i < fill.Length; i++) fill[i] = FogColor;
+        page.SetPixels32(fill);
+        var sr = new GameObject($"StrategyMap {key.x},{key.y}").AddComponent<SpriteRenderer>();
+        sr.transform.SetParent(transform, false);
+        sr.transform.localPosition = new Vector3(key.x, key.y, 0) * StrategyPage * Map.ChunkSize * cellSize;
+        sr.sprite = Sprite.Create(page, new Rect(0, 0, StrategyPage, StrategyPage), Vector2.zero, 1f / (Map.ChunkSize * cellSize));
+        sr.sortingOrder = -20;
+        sr.enabled = strategyShown;
+        strategyRenderers.Add(sr);
+        strategyPages[key] = page;
+        return page;
     }
 
     /// <summary>One deposit sprite with a stable per-tile jitter, size and mirroring.</summary>
@@ -365,6 +410,7 @@ public class SettlementGrid : MonoBehaviour
         {
             return;
         }
+        FitGridLinesToView(cam);
         float size = cam.orthographicSize;
         // A little hysteresis so it doesn't flicker right at a threshold.
         Detail want = CurrentDetail;
@@ -396,7 +442,8 @@ public class SettlementGrid : MonoBehaviour
             region.depositRenderer.enabled = tiles;
             region.overviewRenderer.enabled = detail == Detail.Overview;
         }
-        strategy.enabled = detail == Detail.Strategy;
+        strategyShown = detail == Detail.Strategy;
+        foreach (var sr in strategyRenderers) sr.enabled = strategyShown;
     }
 
     // ---------- Smooth terrain ----------
@@ -626,14 +673,18 @@ public class SettlementGrid : MonoBehaviour
         }
     }
 
-    /// <summary>All zone edges where explored land meets unexplored land (or the limit), in world space.</summary>
+    /// <summary>All zone edges where explored land meets unexplored land, in world space (cached until the map grows).</summary>
     private List<(Vector3 a, Vector3 b)> FrontierEdges()
     {
+        if (frontier != null)
+        {
+            return frontier;
+        }
         var edges = new List<(Vector3, Vector3)>();
         int c = Map.ChunkSize;
-        foreach (int index in Map.RevealedZoneIndices())
+        foreach (var zone in Map.RevealedZones())
         {
-            int zx = index % Map.ChunksX, zy = index / Map.ChunksX;
+            int zx = zone.x, zy = zone.y;
             Vector3 min = CellToWorld(new Vector2Int(zx * c, zy * c));
             Vector3 max = min + new Vector3(c, c, 0) * cellSize;
             if (Map.IsFrontier(zx, zy, -1, 0)) edges.Add((new Vector3(min.x + 0.5f, min.y), new Vector3(min.x + 0.5f, max.y)));
@@ -641,6 +692,7 @@ public class SettlementGrid : MonoBehaviour
             if (Map.IsFrontier(zx, zy, 0, -1)) edges.Add((new Vector3(min.x, min.y + 0.5f), new Vector3(max.x, min.y + 0.5f)));
             if (Map.IsFrontier(zx, zy, 0, 1)) edges.Add((new Vector3(min.x, max.y - 0.5f), new Vector3(max.x, max.y - 0.5f)));
         }
+        frontier = edges;
         return edges;
     }
 

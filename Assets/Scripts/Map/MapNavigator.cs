@@ -24,20 +24,20 @@ public class MapNavigator
     private readonly MapData map;
     private readonly float hillSpeed;
 
-    // Reused search buffers
-    private readonly float[] cost;
-    private readonly int[] parent;
-    private readonly int[] stamp;
+    // Searches run in a fixed window of tiles around the trip (the map itself has no edge).
+    private const int Window = 512;
+    private int originX, originY;
+
+    // Reused search buffers, one entry per tile of the window
+    private readonly float[] cost = new float[Window * Window];
+    private readonly int[] parent = new int[Window * Window];
+    private readonly int[] stamp = new int[Window * Window];
     private int searchId;
 
     public MapNavigator(MapData map, float hillSpeed)
     {
         this.map = map;
         this.hillSpeed = hillSpeed;
-        int n = map.Width * map.Height;
-        cost = new float[n];
-        parent = new int[n];
-        stamp = new int[n];
     }
 
     public bool IsWalkable(Vector3 world, Team team = Team.Player) => map.Passable(world, team);
@@ -156,9 +156,21 @@ public class MapNavigator
     public List<Vector3> FindPath(Vector3 from, Vector3 to, Team team = Team.Player)
     {
         var result = new List<Vector3>();
-        int w = map.Width;
+        const int w = Window;
+        // Centre the window on the trip; a goal beyond it is approached as far as the window goes.
+        Vector3 goalPoint = NearestWalkable(to, team);
+        Vector2 reach = goalPoint - from;
+        float limit = Window * 0.5f - 4f;
+        if (Mathf.Abs(reach.x) > limit * 2f || Mathf.Abs(reach.y) > limit * 2f)
+        {
+            float k = limit * 2f / Mathf.Max(Mathf.Abs(reach.x), Mathf.Abs(reach.y));
+            goalPoint = NearestWalkable(from + (Vector3)(reach * k), team);
+        }
+        Vector3 mid = (from + goalPoint) * 0.5f;
+        originX = Mathf.FloorToInt(mid.x) - Window / 2;
+        originY = Mathf.FloorToInt(mid.y) - Window / 2;
         int start = TileIndex(from);
-        int goal = TileIndex(NearestWalkable(to, team));
+        int goal = TileIndex(goalPoint);
         // Raiders may plan through walls (at a cost); everyone else goes round them.
         bool breaksWalls = team == Team.Enemy;
         if (start < 0 || goal < 0)
@@ -203,18 +215,23 @@ public class MapNavigator
                         continue;
                     }
                     int nx = cx + dx, ny = cy + dy;
-                    bool clear = Passable(nx, ny, team);
-                    if (!clear && !(breaksWalls && map.IsWalkable(nx, ny)))
+                    if (nx < 0 || ny < 0 || nx >= Window || ny >= Window)
+                    {
+                        continue;
+                    }
+                    int wx = nx + originX, wy = ny + originY;
+                    bool clear = Passable(wx, wy, team);
+                    if (!clear && !(breaksWalls && map.IsWalkable(wx, wy)))
                     {
                         continue;
                     }
                     // No cutting corners past water or walls.
-                    if (dx != 0 && dy != 0 && (!Passable(cx + dx, cy, team) || !Passable(cx, cy + dy, team)))
+                    if (dx != 0 && dy != 0 && (!Passable(wx, cy + originY, team) || !Passable(cx + originX, wy, team)))
                     {
                         continue;
                     }
                     int next = ny * w + nx;
-                    float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * map.MoveCost(nx, ny) + (clear ? 0f : WallBreakCost);
+                    float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * map.MoveCost(wx, wy) + (clear ? 0f : WallBreakCost);
                     float newCost = cost[current] + step;
                     if (stamp[next] != searchId || newCost < cost[next])
                     {
@@ -249,7 +266,7 @@ public class MapNavigator
                 anchor = previous;
             }
         }
-        result.Add(found && Passable(to, team) ? new Vector3(to.x, to.y, 0) : Center(tiles[tiles.Count - 1]));
+        result.Add(found && Passable(goalPoint, team) ? new Vector3(goalPoint.x, goalPoint.y, 0) : Center(tiles[tiles.Count - 1]));
         return result;
     }
 
@@ -277,17 +294,23 @@ public class MapNavigator
         return p;
     }
 
+    /// <summary>Index of a world tile inside the search window (-1 if outside it or unexplored).</summary>
     private int TileIndex(Vector3 p)
     {
         int x = Mathf.FloorToInt(p.x), y = Mathf.FloorToInt(p.y);
-        return map.InBounds(x, y) ? y * map.Width + x : -1;
+        int lx = x - originX, ly = y - originY;
+        if (lx < 0 || ly < 0 || lx >= Window || ly >= Window || !map.InBounds(x, y))
+        {
+            return -1;
+        }
+        return ly * Window + lx;
     }
 
-    private Vector3 Center(int index) => new Vector3(index % map.Width + 0.5f, index / map.Width + 0.5f, 0);
+    private Vector3 Center(int index) => new Vector3(index % Window + originX + 0.5f, index / Window + originY + 0.5f, 0);
 
     private float Heuristic(int a, int b)
     {
-        int ax = a % map.Width, ay = a / map.Width, bx = b % map.Width, by = b / map.Width;
+        int ax = a % Window, ay = a / Window, bx = b % Window, by = b / Window;
         int dx = Mathf.Abs(ax - bx), dy = Mathf.Abs(ay - by);
         return Mathf.Max(dx, dy) + 0.414f * Mathf.Min(dx, dy);
     }

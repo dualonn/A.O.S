@@ -19,16 +19,13 @@ public enum WallTile : byte
 }
 
 /// <summary>
-/// The free mode map: terrain and natural deposits per tile. Tile (x, y) covers world
-/// x..x+1, y..y+1. The arrays cover the whole size limit (Width x Height), but only the
-/// Revealed area exists in play; it grows chunk by chunk as the player explores.
-/// Generated from a seed by MapGenerator, so tiles are never saved, only the seed and Revealed.
+/// The free mode map: terrain, natural deposits and walls per tile. Tile (x, y) covers world
+/// x..x+1, y..y+1. The map has no edge: it is stored as sparse square chunks (zones) that are
+/// generated from the seed as they're explored, so only explored land costs memory.
+/// Tiles are never saved, only the seed and which zones have been explored.
 /// </summary>
 public class MapData
 {
-    /// <summary>Size of the whole map limit, in tiles.</summary>
-    public readonly int Width;
-    public readonly int Height;
     public readonly int Seed;
     public readonly int ChunkSize;
     public readonly List<DepositType> Deposits;
@@ -42,45 +39,90 @@ public class MapData
     /// <summary>Generation settings fixed when the map was created, reused for every new chunk.</summary>
     public MapGenerator.Settings Settings { get; set; }
 
-    private readonly TerrainType[] terrain;
-    private readonly byte[] deposit; // 0 = none, otherwise index + 1 into Deposits
-    private readonly bool[] chunkDone;
-    private readonly bool[] zoneRevealed;
-    private readonly byte[] wall;
-    private readonly List<int> wallCells = new List<int>();
-
     /// <summary>Goes up whenever walls change, so units re-plan their routes.</summary>
     public int WallVersion { get; private set; }
 
-    public MapData(int width, int height, int seed, int chunkSize, List<DepositType> deposits)
+    private class Chunk
     {
-        Width = width;
-        Height = height;
+        public TerrainType[] terrain;
+        public byte[] deposit; // 0 = none, otherwise index + 1 into Deposits
+        public byte[] wall;    // made when the first wall goes up here
+        public bool generated, revealed;
+    }
+
+    private readonly Dictionary<Vector2Int, Chunk> chunks = new Dictionary<Vector2Int, Chunk>();
+    private readonly List<Vector2Int> revealedZones = new List<Vector2Int>();
+    private readonly List<Vector2Int> wallCells = new List<Vector2Int>();
+
+    // The last chunk looked up: most lookups land in the same chunk as the one before.
+    private Vector2Int lastKey = new Vector2Int(int.MinValue, int.MinValue);
+    private Chunk lastChunk;
+
+    public MapData(int seed, int chunkSize, List<DepositType> deposits)
+    {
         Seed = seed;
         ChunkSize = chunkSize;
         Deposits = deposits;
-        terrain = new TerrainType[width * height];
-        deposit = new byte[width * height];
-        chunkDone = new bool[ChunksX * ChunksY];
-        zoneRevealed = new bool[ChunksX * ChunksY];
-        wall = new byte[width * height];
     }
+
+    // ---------- Chunks ----------
+
+    /// <summary>Division that rounds down for negative numbers too.</summary>
+    public static int FloorDiv(int a, int b) => a >= 0 ? a / b : -((-a + b - 1) / b);
+
+    private Chunk Find(int x, int y)
+    {
+        var key = new Vector2Int(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize));
+        if (key == lastKey)
+        {
+            return lastChunk;
+        }
+        chunks.TryGetValue(key, out var chunk);
+        lastKey = key;
+        lastChunk = chunk;
+        return chunk;
+    }
+
+    private Chunk FindOrMake(int cx, int cy)
+    {
+        var key = new Vector2Int(cx, cy);
+        if (!chunks.TryGetValue(key, out var chunk))
+        {
+            int n = ChunkSize * ChunkSize;
+            chunk = new Chunk { terrain = new TerrainType[n], deposit = new byte[n] };
+            chunks[key] = chunk;
+            if (key == lastKey) lastChunk = chunk;
+        }
+        return chunk;
+    }
+
+    private int Local(int x, int y) =>
+        (y - FloorDiv(y, ChunkSize) * ChunkSize) * ChunkSize + (x - FloorDiv(x, ChunkSize) * ChunkSize);
 
     // ---------- Walls and gates ----------
 
-    public WallTile WallAt(int x, int y) => InArray(x, y) ? (WallTile)wall[y * Width + x] : WallTile.None;
+    public WallTile WallAt(int x, int y)
+    {
+        var chunk = Find(x, y);
+        return chunk?.wall != null ? (WallTile)chunk.wall[Local(x, y)] : WallTile.None;
+    }
 
     /// <summary>Replace every wall tile with these (standing walls and gates).</summary>
     public void SetWalls(IEnumerable<(Vector2Int cell, WallTile kind)> pieces)
     {
-        foreach (int i in wallCells) wall[i] = 0;
+        foreach (var c in wallCells)
+        {
+            var chunk = Find(c.x, c.y);
+            if (chunk?.wall != null) chunk.wall[Local(c.x, c.y)] = 0;
+        }
         wallCells.Clear();
         foreach (var (cell, kind) in pieces)
         {
-            if (!InArray(cell.x, cell.y) || kind == WallTile.None) continue;
-            int i = cell.y * Width + cell.x;
-            wall[i] = (byte)kind;
-            wallCells.Add(i);
+            if (kind == WallTile.None) continue;
+            var chunk = FindOrMake(FloorDiv(cell.x, ChunkSize), FloorDiv(cell.y, ChunkSize));
+            chunk.wall ??= new byte[ChunkSize * ChunkSize];
+            chunk.wall[Local(cell.x, cell.y)] = (byte)kind;
+            wallCells.Add(cell);
         }
         WallVersion++;
     }
@@ -88,8 +130,11 @@ public class MapData
     /// <summary>Walkable terrain, and no wall in this team's way (gates open for the player).</summary>
     public bool Passable(int x, int y, Team team)
     {
-        if (!IsWalkable(x, y)) return false;
-        var w = (WallTile)wall[y * Width + x];
+        var chunk = Find(x, y);
+        if (chunk == null || !chunk.revealed) return false;
+        int i = Local(x, y);
+        if (chunk.terrain[i] == TerrainType.Water) return false;
+        var w = chunk.wall != null ? (WallTile)chunk.wall[i] : WallTile.None;
         return w == WallTile.None || (w == WallTile.Gate && team == Team.Player);
     }
 
@@ -97,25 +142,26 @@ public class MapData
 
     // ---------- Zones (the map grows one zone = one chunk at a time) ----------
 
-    public bool ZoneInLimit(int cx, int cy) => cx >= 0 && cy >= 0 && cx < ChunksX && cy < ChunksY;
+    /// <summary>The map has no edge: every zone can be explored.</summary>
+    public bool ZoneInLimit(int cx, int cy) => true;
 
-    public bool IsZoneRevealed(int cx, int cy) => ZoneInLimit(cx, cy) && zoneRevealed[cy * ChunksX + cx];
+    public bool IsZoneRevealed(int cx, int cy) =>
+        chunks.TryGetValue(new Vector2Int(cx, cy), out var chunk) && chunk.revealed;
 
-    public int ZoneIndex(int cx, int cy) => cy * ChunksX + cx;
+    public Vector2Int ZoneOf(int x, int y) => new Vector2Int(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize));
 
-    public Vector2Int ZoneOf(int x, int y) => new Vector2Int(Mathf.FloorToInt(x / (float)ChunkSize), Mathf.FloorToInt(y / (float)ChunkSize));
-
-    public RectInt ZoneRect(int cx, int cy) =>
-        new RectInt(cx * ChunkSize, cy * ChunkSize, Mathf.Min(ChunkSize, Width - cx * ChunkSize), Mathf.Min(ChunkSize, Height - cy * ChunkSize));
+    public RectInt ZoneRect(int cx, int cy) => new RectInt(cx * ChunkSize, cy * ChunkSize, ChunkSize, ChunkSize);
 
     /// <summary>Mark a (generated) zone as explored and widen the bounding box.</summary>
     public void SetZoneRevealed(int cx, int cy)
     {
-        if (!ZoneInLimit(cx, cy) || zoneRevealed[ZoneIndex(cx, cy)])
+        var chunk = FindOrMake(cx, cy);
+        if (chunk.revealed)
         {
             return;
         }
-        zoneRevealed[ZoneIndex(cx, cy)] = true;
+        chunk.revealed = true;
+        revealedZones.Add(new Vector2Int(cx, cy));
         var z = ZoneRect(cx, cy);
         if (Revealed.width == 0)
         {
@@ -129,78 +175,61 @@ public class MapData
         }
     }
 
-    /// <summary>Explored zones, as indices (for saving).</summary>
-    public List<int> RevealedZoneIndices()
-    {
-        var list = new List<int>();
-        for (int i = 0; i < zoneRevealed.Length; i++)
-        {
-            if (zoneRevealed[i])
-            {
-                list.Add(i);
-            }
-        }
-        return list;
-    }
+    /// <summary>Explored zones (for saving), in the order they were explored.</summary>
+    public List<Vector2Int> RevealedZones() => new List<Vector2Int>(revealedZones);
 
-    /// <summary>True if an explored zone touches unexplored land (or the limit) on that side.</summary>
+    public int RevealedZoneCount => revealedZones.Count;
+
+    /// <summary>True if an explored zone touches unexplored land on that side.</summary>
     public bool IsFrontier(int cx, int cy, int dx, int dy) => IsZoneRevealed(cx, cy) && !IsZoneRevealed(cx + dx, cy + dy);
 
-    public int ChunksX => Mathf.CeilToInt(Width / (float)ChunkSize);
-    public int ChunksY => Mathf.CeilToInt(Height / (float)ChunkSize);
-
     public RectInt Bounds => Revealed;
-    public RectInt Limit => new RectInt(0, 0, Width, Height);
 
     /// <summary>True for tiles that exist in play (in an explored zone).</summary>
-    public bool InBounds(int x, int y) => InArray(x, y) && zoneRevealed[(y / ChunkSize) * ChunksX + x / ChunkSize];
+    public bool InBounds(int x, int y)
+    {
+        var chunk = Find(x, y);
+        return chunk != null && chunk.revealed;
+    }
 
-    private bool InArray(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
+    public bool IsChunkGenerated(int cx, int cy) =>
+        chunks.TryGetValue(new Vector2Int(cx, cy), out var chunk) && chunk.generated;
 
-    public bool IsChunkGenerated(int cx, int cy) => chunkDone[cy * ChunksX + cx];
+    public void MarkChunkGenerated(int cx, int cy) => FindOrMake(cx, cy).generated = true;
 
-    public void MarkChunkGenerated(int cx, int cy) => chunkDone[cy * ChunksX + cx] = true;
-
-    /// <summary>Terrain of a tile. Unrevealed tiles read as water (impassable).</summary>
-    public TerrainType GetTerrain(int x, int y) => InBounds(x, y) ? terrain[y * Width + x] : TerrainType.Water;
+    /// <summary>Terrain of a tile. Unexplored tiles read as water (impassable).</summary>
+    public TerrainType GetTerrain(int x, int y)
+    {
+        var chunk = Find(x, y);
+        return chunk != null && chunk.revealed ? chunk.terrain[Local(x, y)] : TerrainType.Water;
+    }
 
     /// <summary>Terrain whether or not it is revealed yet (for drawing freshly generated chunks).</summary>
-    public TerrainType RawTerrain(int x, int y) => InArray(x, y) ? terrain[y * Width + x] : TerrainType.Water;
-
-    public void SetTerrain(int x, int y, TerrainType t)
+    public TerrainType RawTerrain(int x, int y)
     {
-        if (InArray(x, y))
-        {
-            terrain[y * Width + x] = t;
-        }
+        var chunk = Find(x, y);
+        return chunk != null && chunk.generated ? chunk.terrain[Local(x, y)] : TerrainType.Water;
     }
 
-    public DepositType GetDeposit(int x, int y)
-    {
-        if (!InBounds(x, y))
-        {
-            return null;
-        }
-        return RawDeposit(x, y);
-    }
+    public void SetTerrain(int x, int y, TerrainType t) =>
+        FindOrMake(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize)).terrain[Local(x, y)] = t;
+
+    public DepositType GetDeposit(int x, int y) => InBounds(x, y) ? RawDeposit(x, y) : null;
 
     public DepositType RawDeposit(int x, int y)
     {
-        if (!InArray(x, y))
+        var chunk = Find(x, y);
+        if (chunk == null || !chunk.generated)
         {
             return null;
         }
-        int d = deposit[y * Width + x];
+        int d = chunk.deposit[Local(x, y)];
         return d == 0 ? null : Deposits[d - 1];
     }
 
-    public void SetDeposit(int x, int y, DepositType type)
-    {
-        if (InArray(x, y))
-        {
-            deposit[y * Width + x] = (byte)(type == null ? 0 : Deposits.IndexOf(type) + 1);
-        }
-    }
+    public void SetDeposit(int x, int y, DepositType type) =>
+        FindOrMake(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize)).deposit[Local(x, y)] =
+            (byte)(type == null ? 0 : Deposits.IndexOf(type) + 1);
 
     public bool IsWalkable(int x, int y) => InBounds(x, y) && GetTerrain(x, y) != TerrainType.Water;
 

@@ -38,6 +38,36 @@ public static class SimpleSprites
     }
 
     /// <summary>A white 1x1 world-unit square, pivot bottom-left.</summary>
+    private static Sprite ring;
+
+    /// <summary>A soft ellipse outline (1 unit wide), for selection rings under units' feet.</summary>
+    public static Sprite Ring
+    {
+        get
+        {
+            if (ring == null)
+            {
+                const int w = 64, h = 32;
+                var tex = new Texture2D(w, h, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear };
+                var px = new Color32[w * h];
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        float dx = (x + 0.5f - w / 2f) / (w / 2f), dy = (y + 0.5f - h / 2f) / (h / 2f);
+                        float d = Mathf.Abs(Mathf.Sqrt(dx * dx + dy * dy) - 0.8f);
+                        byte a = (byte)(Mathf.Clamp01(1f - d / 0.14f) * 255);
+                        px[y * w + x] = new Color32(255, 255, 255, a);
+                    }
+                }
+                tex.SetPixels32(px);
+                tex.Apply();
+                ring = Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), w);
+            }
+            return ring;
+        }
+    }
+
     public static Sprite Square
     {
         get

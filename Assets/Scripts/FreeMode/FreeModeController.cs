@@ -34,6 +34,14 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     /// <summary>Every selected building, in the order they were picked.</summary>
     public IReadOnlyList<BuildingView> Selection => selection;
+
+    /// <summary>Selected troops (buildings and troops are never selected together).</summary>
+    public IReadOnlyList<Troop> SelectedUnits => unitSelection;
+
+    /// <summary>Raised when the selected troops change.</summary>
+    public event Action UnitSelectionChanged;
+
+    private readonly List<Troop> unitSelection = new List<Troop>();
     public IEnumerable<BuildingView> Buildings => views.Values;
     public bool WaveInProgress => waveInProgress;
 
@@ -350,7 +358,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             {
                 for (int zx = min.x; zx <= max.x; zx++)
                 {
-                    if (!map.ZoneInLimit(zx, zy) || map.IsZoneRevealed(zx, zy))
+                    if (map.IsZoneRevealed(zx, zy))
                     {
                         continue;
                     }
@@ -429,9 +437,11 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private void Update()
     {
         UpdateSelectionInput();
+        UpdateUnitOrders();
         if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing)
         {
             Select(null);
+            SetUnitSelection(null);
         }
         SyncCamps();
 
@@ -583,6 +593,10 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         {
             view.SetSelected(true, selection.Count == 1);
         }
+        if (selection.Count > 0)
+        {
+            SetUnitSelection(null);
+        }
         SelectionChanged?.Invoke(Selected);
     }
 
@@ -676,13 +690,31 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         {
             dragging = false;
             ShowBox(false);
+            // Troops in the box win over buildings.
+            var troops = TroopsInBox(pressWorld, now);
+            if (troops.Count > 0)
+            {
+                if (ShiftHeld) troops.InsertRange(0, unitSelection);
+                SetUnitSelection(troops);
+                return;
+            }
             var picked = BuildingsInBox(pressWorld, now);
             if (ShiftHeld) AddToSelection(picked);
             else SetSelection(picked);
             return;
         }
 
+        var troop = TroopAt(now);
+        if (troop != null)
+        {
+            ClickTroop(troop);
+            return;
+        }
         var clicked = BuildingAt(grid.WorldToCell(now));
+        if (clicked == null && unitSelection.Count > 0 && !ShiftHeld)
+        {
+            SetUnitSelection(null);
+        }
         bool doubleClick = clicked != null && clicked == lastClicked && Time.unscaledTime - lastClickTime < 0.35f;
         lastClicked = clicked;
         lastClickTime = Time.unscaledTime;
@@ -701,6 +733,165 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         else
         {
             Select(clicked);
+        }
+    }
+
+    // ---------- Troop selection and orders ----------
+
+    private Troop lastClickedTroop;
+    private float lastTroopClickTime = -1f;
+
+    /// <summary>Your troop nearest the point, if one is close enough to have been clicked.</summary>
+    private Troop TroopAt(Vector3 world)
+    {
+        Troop best = null;
+        float bestDistance = 0.45f;
+        foreach (var unit in Unit.Living)
+        {
+            if (unit is Troop t && t.IsAlive)
+            {
+                // Aim at the body, a little above the feet.
+                float d = Vector2.Distance(world, t.transform.position + Vector3.up * 0.25f);
+                if (d < bestDistance)
+                {
+                    bestDistance = d;
+                    best = t;
+                }
+            }
+        }
+        return best;
+    }
+
+    private List<Troop> TroopsInBox(Vector3 a, Vector3 b)
+    {
+        var box = Rect.MinMaxRect(Mathf.Min(a.x, b.x), Mathf.Min(a.y, b.y), Mathf.Max(a.x, b.x), Mathf.Max(a.y, b.y));
+        var list = new List<Troop>();
+        foreach (var unit in Unit.Living)
+        {
+            if (unit is Troop t && t.IsAlive && box.Contains(t.transform.position)) list.Add(t);
+        }
+        return list;
+    }
+
+    private void ClickTroop(Troop troop)
+    {
+        bool doubleClick = troop == lastClickedTroop && Time.unscaledTime - lastTroopClickTime < 0.35f;
+        lastClickedTroop = troop;
+        lastTroopClickTime = Time.unscaledTime;
+        if (doubleClick)
+        {
+            // Every troop of that kind on screen.
+            var cam = Camera.main;
+            float h = cam.orthographicSize, w = h * cam.aspect;
+            var view = new Rect(cam.transform.position.x - w, cam.transform.position.y - h, w * 2, h * 2);
+            var same = new List<Troop>();
+            foreach (var unit in Unit.Living)
+            {
+                if (unit is Troop t && t.IsAlive && t.definition == troop.definition && view.Contains(t.transform.position)) same.Add(t);
+            }
+            SetUnitSelection(same);
+            lastClickedTroop = null;
+        }
+        else if (ShiftHeld)
+        {
+            var next = new List<Troop>(unitSelection);
+            if (!next.Remove(troop)) next.Add(troop);
+            SetUnitSelection(next);
+        }
+        else
+        {
+            SetUnitSelection(new List<Troop> { troop });
+        }
+    }
+
+    /// <summary>Replace the selected troops (null or empty clears them).</summary>
+    public void SetUnitSelection(IEnumerable<Troop> troops)
+    {
+        var next = new List<Troop>();
+        if (troops != null)
+        {
+            foreach (var t in troops)
+            {
+                if (t != null && t.IsAlive && !next.Contains(t)) next.Add(t);
+            }
+        }
+        if (next.Count == unitSelection.Count && next.TrueForAll(unitSelection.Contains))
+        {
+            return;
+        }
+        foreach (var t in unitSelection)
+        {
+            if (t != null) t.SetSelected(false);
+        }
+        unitSelection.Clear();
+        unitSelection.AddRange(next);
+        foreach (var t in unitSelection) t.SetSelected(true);
+        if (unitSelection.Count > 0 && selection.Count > 0)
+        {
+            SetSelection(null);
+        }
+        UnitSelectionChanged?.Invoke();
+    }
+
+    /// <summary>Right-click sends the selected troops there, spread in a loose block; they hold that spot.</summary>
+    private void UpdateUnitOrders()
+    {
+        // Drop fallen troops from the selection.
+        if (unitSelection.RemoveAll(t => t == null || !t.IsAlive) > 0)
+        {
+            UnitSelectionChanged?.Invoke();
+        }
+        if (unitSelection.Count == 0 || Placer.IsPlacing || !Input.GetMouseButtonDown(1) || BuildingPlacer.IsPointerOverUI())
+        {
+            return;
+        }
+        Vector3 target = SettlementGrid.MouseWorld();
+        int n = unitSelection.Count;
+        int columns = Mathf.CeilToInt(Mathf.Sqrt(n));
+        float spacing = 0.7f;
+        for (int i = 0; i < n; i++)
+        {
+            int row = i / columns, col = i % columns;
+            Vector3 offset = new Vector3((col - (columns - 1) * 0.5f) * spacing, -(row - (n - 1) / columns * 0.5f) * spacing, 0);
+            unitSelection[i].OrderMoveTo(target + offset);
+        }
+        ShowOrderMarker(target);
+    }
+
+    /// <summary>Send the selected troops back to their buildings.</summary>
+    public void ReturnSelectedHome()
+    {
+        foreach (var t in unitSelection)
+        {
+            if (t != null && t.Home != null) t.ReturnHome(GetRallyPoint(t.Home));
+        }
+    }
+
+    private SpriteRenderer orderMarker;
+    private float orderMarkerUntil;
+
+    private void ShowOrderMarker(Vector3 at)
+    {
+        if (orderMarker == null)
+        {
+            orderMarker = new GameObject("OrderMarker").AddComponent<SpriteRenderer>();
+            orderMarker.transform.SetParent(transform, false);
+            orderMarker.sprite = SimpleSprites.Ring;
+            orderMarker.color = new Color(0.5f, 1f, 0.5f, 0.9f);
+            orderMarker.sortingOrder = 18;
+        }
+        orderMarker.transform.position = new Vector3(at.x, at.y, -1f);
+        orderMarker.enabled = true;
+        orderMarkerUntil = Time.unscaledTime + 0.6f;
+    }
+
+    private void LateUpdate()
+    {
+        if (orderMarker != null && orderMarker.enabled)
+        {
+            float left = orderMarkerUntil - Time.unscaledTime;
+            orderMarker.enabled = left > 0;
+            orderMarker.transform.localScale = Vector3.one * (0.6f + (0.6f - left) * 1.2f);
         }
     }
 
@@ -789,7 +980,6 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         // Troops go for the nearest raider; their building sets their stance.
         if (unit is Troop troop)
         {
-            troop.targetPriority = Troop.TargetPriority.Closest;
             troop.SetStance(TroopStance.Defend, TownZoneFor(position), SightRange);
         }
         return go;
@@ -856,8 +1046,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
     }
 
-    /// <summary>Troops can spot raiders anywhere on the map.</summary>
-    public float SightRange => grid.MapRect.size.magnitude;
+    /// <summary>How far troops spot raiders (the map is endless, so this is a fixed reach).</summary>
+    public float SightRange => 140f;
 
     /// <summary>Set the stance of every troop-training building at once.</summary>
     public void SetAllStances(TroopStance stance)

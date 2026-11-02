@@ -519,6 +519,7 @@ public class BuildingView : MonoBehaviour
                 if (t.Stance != State.stance)
                 {
                     t.SetStance(State.stance, zone, controller.SightRange);
+                    t.ReturnHome(controller.GetRallyPoint(this)); // a new stance replaces any order
                 }
                 t.SetDefendZone(zone);
                 t.SetDefendArea(defendArea, alertRange);
@@ -551,6 +552,7 @@ public class BuildingView : MonoBehaviour
         var troop = controller.SpawnUnit(unit.prefab, spawn).GetComponent<Troop>();
         if (troop != null)
         {
+            troop.Home = this;
             troop.SetRallyPoint(controller.GetRallyPoint(this));
             troop.SetStance(State.stance, controller.TownZoneFor(transform.position), controller.SightRange);
             troop.SetBuildingModifier(stats.trainedUnits);

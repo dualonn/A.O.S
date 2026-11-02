@@ -37,7 +37,7 @@ public class CampView : MonoBehaviour
         controller = owner;
         State = state;
         Tier = tier;
-        name = $"Raider camp {state.zone}";
+        name = $"Raider camp {state.zoneXY}";
         maxHealth = health = 400f + tier * 400f;
         guardCount = 3 + tier * 2;
 
@@ -129,7 +129,7 @@ public class CampView : MonoBehaviour
     {
         if (frames != null && frames.Count > 0)
         {
-            body.sprite = frames[(int)(Time.time * 6f + State.zone) % frames.Count];
+            body.sprite = frames[(int)(Time.time * 6f + (State.zoneXY.x * 7 + State.zoneXY.y * 13 & 15)) % frames.Count];
         }
         if (shake > 0)
         {

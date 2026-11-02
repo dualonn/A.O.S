@@ -22,7 +22,10 @@ public static class MapGenerator
 
     private const float RiverScale = 0.011f;
 
-    /// <summary>The starting area: the configured map size, centred in the size limit, on chunk lines.</summary>
+    /// <summary>
+    /// The starting area: the configured map size, on chunk lines. It sits where it always has
+    /// (centred in the old size limit), so existing saves keep their terrain and buildings.
+    /// </summary>
     public static RectInt InitialArea(GameDatabase db)
     {
         int c = Mathf.Max(4, db.chunkSize);
@@ -34,15 +37,18 @@ public static class MapGenerator
         return new RectInt(Mathf.Max(0, x), Mathf.Max(0, y), Mathf.Min(w, limit.x), Mathf.Min(h, limit.y));
     }
 
+    /// <summary>The old map size limit: only used to place the starting area and to read old saves.</summary>
     public static Vector2Int Limit(GameDatabase db) =>
         new Vector2Int(Mathf.Max(db.mapSize.x, db.mapMaxSize.x), Mathf.Max(db.mapSize.y, db.mapMaxSize.y));
 
+    /// <summary>Zones per row in the old fixed-size map (old saves stored zones as row * this + column).</summary>
+    public static int LegacyZonesPerRow(GameDatabase db) => Mathf.CeilToInt(Limit(db).x / (float)Mathf.Max(4, db.chunkSize));
+
     /// <summary>Create the map: the starting area plus any zones explored in a saved game.</summary>
-    public static MapData Create(int seed, GameDatabase db, List<int> savedZones)
+    public static MapData Create(int seed, GameDatabase db, List<Vector2Int> savedZones)
     {
-        Vector2Int limit = Limit(db);
         var deposits = new List<DepositType>(db.deposits.FindAll(d => d != null));
-        var map = new MapData(limit.x, limit.y, seed, Mathf.Max(4, db.chunkSize), deposits);
+        var map = new MapData(seed, Mathf.Max(4, db.chunkSize), deposits);
         var initial = InitialArea(db);
         map.Settings = BuildSettings(seed, db, initial, deposits.Count);
 
@@ -57,10 +63,7 @@ public static class MapGenerator
         }
         if (savedZones != null)
         {
-            foreach (int index in savedZones)
-            {
-                zones.Add(new Vector2Int(index % map.ChunksX, index / map.ChunksX));
-            }
+            zones.AddRange(savedZones);
         }
         RevealZones(map, zones);
         return map;

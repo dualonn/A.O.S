@@ -4,34 +4,41 @@ using UnityEngine;
 /// <summary>
 /// A player unit. Fights enemies near it, can be given move orders, and returns to its
 /// rally point (where it spawned or was last sent) when there is nothing to fight.
-/// Click a troop, then click the ground to send it there.
 /// </summary>
 public class Troop : Unit
 {
-    public enum TargetPriority
-    {
-        First, // the enemy furthest along the path
-        Last, // the enemy least far along the path
-        Closest
-    }
-
-    public TargetPriority targetPriority = TargetPriority.First;
-
-    [Tooltip("Index into UIManagement.images, used when the definition has no icon.")]
-    public int ID;
-
     [Tooltip("Move orders are walked at moveSpeed times this.")]
     public float moveOrderSpeedMultiplier = 1.5f;
 
-    /// <summary>The troop waiting for a destination click, if any.</summary>
-    public static Troop Selected { get; private set; }
-
-    // Domain reload is off in this project, so clear statics at each Play.
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatics() => Selected = null;
-
     public override Team Team => Team.Player;
     public bool IsHovered { get; private set; }
+
+    /// <summary>The building that trained this troop (free mode).</summary>
+    public BuildingView Home { get; set; }
+
+    /// <summary>Sent somewhere by the player, and holding there.</summary>
+    public bool HasOrder { get; private set; }
+
+    private SpriteRenderer selectionRing;
+
+    /// <summary>Show or hide the ring under this troop's feet.</summary>
+    public void SetSelected(bool selected)
+    {
+        if (selected && selectionRing == null)
+        {
+            selectionRing = new GameObject("SelectionRing").AddComponent<SpriteRenderer>();
+            selectionRing.transform.SetParent(transform, false);
+            selectionRing.sprite = SimpleSprites.Ring;
+            selectionRing.color = new Color(1f, 0.92f, 0.3f, 0.9f);
+            selectionRing.sortingOrder = BuildingView.SortingOrder - 1; // always under the body
+            selectionRing.transform.localPosition = new Vector3(0, 0.02f, 0f);
+            selectionRing.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
+        }
+        if (selectionRing != null)
+        {
+            selectionRing.enabled = selected;
+        }
+    }
 
     /// <summary>Free mode: Defend only fights inside the town zone; Attack fights anywhere.</summary>
     public TroopStance Stance { get; private set; } = TroopStance.Attack;
@@ -80,39 +87,6 @@ public class Troop : Unit
         rallyPoint = transform.position;
     }
 
-    protected override void Update()
-    {
-        HandleInput();
-        base.Update();
-    }
-
-    private void HandleInput()
-    {
-        if (!IsAlive)
-        {
-            return;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (IsHovered)
-            {
-                Selected = this;
-            }
-            else if (Selected == this)
-            {
-                OrderMoveTo(MouseWorldPosition());
-                Selected = null;
-            }
-        }
-
-        // Debug: send every troop to a random spot.
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            OrderMoveTo(new Vector3(Random.Range(-14f, 13f), Random.Range(-9f, 8f), 0));
-        }
-    }
-
     /// <summary>Where the troop returns to when idle. Unlike a move order, it still fights on the way.</summary>
     public void SetRallyPoint(Vector3 point)
     {
@@ -125,6 +99,15 @@ public class Troop : Unit
         destination.z = transform.position.z;
         rallyPoint = destination;
         hasMoveOrder = true;
+        HasOrder = true;
+    }
+
+    /// <summary>Drop the player's order: go back to the home building's rally point.</summary>
+    public void ReturnHome(Vector3 homeRally)
+    {
+        HasOrder = false;
+        hasMoveOrder = false;
+        SetRallyPoint(homeRally);
     }
 
     // While walking to a move order, ignore enemies.
@@ -184,61 +167,11 @@ public class Troop : Unit
             }
         }
 
-        if (targetPriority == TargetPriority.Closest)
-        {
-            return base.SelectTarget(candidates);
-        }
-
-        Unit best = null;
-        float bestProgress = 0;
-        foreach (var unit in candidates)
-        {
-            float progress = unit is Enemy enemy ? enemy.PathProgress : 0;
-            bool better =
-                targetPriority == TargetPriority.First ? progress > bestProgress : progress < bestProgress;
-            if (best == null || better)
-            {
-                best = unit;
-                bestProgress = progress;
-            }
-        }
-        return best;
+        return base.SelectTarget(candidates); // closest
     }
 
     public override void SetHovered(bool hovered)
     {
         IsHovered = hovered;
-        if (UIManagement.Instance == null)
-        {
-            return;
-        }
-        if (hovered)
-        {
-            UIManagement.Instance.ShowTroop(this);
-        }
-        else
-        {
-            UIManagement.Instance.HideTroop(this);
-        }
-    }
-
-    protected override void Die()
-    {
-        if (Selected == this)
-        {
-            Selected = null;
-        }
-        SetHovered(false);
-        base.Die();
-    }
-
-    private static Vector3 MouseWorldPosition()
-    {
-        Camera cam = Camera.main;
-        Vector3 mouse = Input.mousePosition;
-        mouse.z = -cam.transform.position.z;
-        Vector3 world = cam.ScreenToWorldPoint(mouse);
-        world.z = 0;
-        return world;
     }
 }

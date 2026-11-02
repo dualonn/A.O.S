@@ -15,7 +15,13 @@ public class SettlementState
     [Tooltip("The map is regenerated from this seed, so only the seed is saved.")]
     public int mapSeed;
 
-    [Tooltip("Explored zones of the map (zone indices); tiles are regenerated from the seed on load.")]
+    [Tooltip("Save format version (old saves are upgraded when loaded).")]
+    public int saveVersion;
+
+    [Tooltip("Explored zones of the map, as (column, row); tiles are regenerated from the seed on load.")]
+    public List<Vector2Int> explored = new List<Vector2Int>();
+
+    [Tooltip("Old saves only: explored zones as row * 128 + column, from when the map had an edge.")]
     public List<int> exploredZones = new List<int>();
     public List<ResourceStock> resources = new List<ResourceStock>();
     public List<BuildingState> buildings = new List<BuildingState>();
@@ -39,7 +45,10 @@ public class SettlementState
 [Serializable]
 public class CampState
 {
-    [Tooltip("The map zone it sits in (one camp per zone at most).")]
+    [Tooltip("The map zone it sits in, as (column, row) (one camp per zone at most).")]
+    public Vector2Int zoneXY;
+
+    [Tooltip("Old saves only: the zone as a single index.")]
     public int zone;
 
     [Tooltip("Bottom-left tile of its 3x3 footprint.")]
