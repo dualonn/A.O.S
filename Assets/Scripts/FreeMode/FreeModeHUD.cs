@@ -205,7 +205,8 @@ public class FreeModeHUD : MonoBehaviour
         // Ages and research (right): advancing stays on top, research folds by age below.
         researchPanel = SidePanel("ResearchPanel", root, left: false);
         UIBuilder.Text("AgeTitle", researchPanel, "<b>Age</b>", 24);
-        advanceButton = UIBuilder.Button("Advance", researchPanel, TryAdvance, out advanceLabel, 60);
+        // Progress through your age (ages are grown into, not bought: see the tooltip).
+        advanceButton = UIBuilder.Button("AgeProgress", researchPanel, () => { }, out advanceLabel, 60);
         UIBuilder.OnHover(advanceButton.gameObject, () => tooltipSource = AgeTooltip, HideTooltip);
         UIBuilder.Text("Title", researchPanel, "<b>Research</b>", 24);
         researchSearch = UIBuilder.SearchField("Search", researchPanel, "Search research...", text => { researchFilter = text.Trim(); RefreshResearchButtons(); });
@@ -425,7 +426,7 @@ public class FreeModeHUD : MonoBehaviour
 
     private void RefreshTopBar()
     {
-        ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b>";
+        ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b> <size=75%><color=#aaa>{settlement.CurrentAgeProgress:P0}</color></size>";
 
         var visible = new HashSet<ResourceType>(VisibleResources());
         foreach (var pair in resourceChips)
@@ -689,18 +690,11 @@ public class FreeModeHUD : MonoBehaviour
         }
 
         var next = settlement.NextAge;
-        if (next == null)
-        {
-            advanceButton.interactable = false;
-            advanceLabel.text = "<b>Latest age reached</b>";
-        }
-        else
-        {
-            bool can = settlement.CanAdvanceAge(out _);
-            advanceButton.interactable = can;
-            advanceLabel.text = $"<b>Advance to the {next.displayName}</b>\n<size=80%><color={(can ? "#8f8" : "#f99")}>" +
-                                $"{(can ? "Ready!" : "Hover to see what's needed")}</color></size>";
-        }
+        float progress = settlement.CurrentAgeProgress;
+        int filled = Mathf.RoundToInt(progress * 24);
+        string bar = $"<color=#8f8>{new string('|', filled)}</color><color=#555>{new string('|', 24 - filled)}</color>";
+        string after = next == null ? "the latest age" : $"next: the {next.displayName}";
+        advanceLabel.text = $"<b>{settlement.CurrentAge?.displayName}</b>  {progress:P0}\n<size=80%>{bar}  <color=#aaa>{after}</color></size>";
     }
 
     private void RefreshSelection()
@@ -834,15 +828,6 @@ public class FreeModeHUD : MonoBehaviour
     private void TryResearch(Technology tech)
     {
         if (!settlement.TryStartResearch(tech, out string reason))
-        {
-            AddMessage(reason.Split('\n')[0]);
-        }
-        RefreshAll();
-    }
-
-    private void TryAdvance()
-    {
-        if (!settlement.TryAdvanceAge(out string reason))
         {
             AddMessage(reason.Split('\n')[0]);
         }
@@ -1326,20 +1311,36 @@ public class FreeModeHUD : MonoBehaviour
 
     private string AgeTooltip()
     {
+        var age = settlement.CurrentAge;
+        var info = settlement.AgeProgress(settlement.State.ageIndex);
+        var sb = new StringBuilder($"<b>{age?.displayName}</b>  {info.total:P0} through\n");
+        sb.Append("<size=85%><color=#ccc>You grow into an age through its research, its buildings, your stores and your people.</color></size>\n");
+        sb.Append($"Research {info.researchDone}/{info.researchTotal}");
+        if (info.missingResearch.Count > 0) sb.Append($"  <color=#aaa>({Few(info.missingResearch)})</color>");
+        sb.Append($"\nBuildings {info.buildingsDone}/{info.buildingsTotal}");
+        if (info.missingBuildings.Count > 0) sb.Append($"  <color=#aaa>({Few(info.missingBuildings)})</color>");
+        sb.Append($"\nStores {info.resources:P0}");
+        if (info.resourceGoals.Count > 0) sb.Append($"  <color=#aaa>({string.Join(", ", info.resourceGoals)})</color>");
+        sb.Append($"\nPeople {settlement.Population}/{info.populationGoal}\n");
         var next = settlement.NextAge;
         if (next == null)
         {
-            return "You have reached the latest age.";
+            sb.Append("<color=#8f8>This is the latest age.</color>");
+            return sb.ToString();
         }
-        var sb = new StringBuilder($"<b>{next.displayName}</b>\n");
-        if (!string.IsNullOrEmpty(next.description))
+        sb.Append($"\n<b>The {next.displayName}</b>");
+        if (!string.IsNullOrEmpty(next.description)) sb.Append($"\n<size=85%><color=#ccc>{next.description}</color></size>");
+        if (settlement.CanAdvanceAge(out string missing)) sb.Append("\n<color=#8f8>On its way!</color>");
+        else
         {
-            sb.Append($"<color=#ccc>{next.description}</color>\n");
+            sb.Append("\n<color=#f99>To enter it:</color>");
+            foreach (var line in missing.Split('\n')) sb.Append($"\n<color=#f99>  - {line.Trim()}</color>");
         }
-        sb.Append($"Cost: {CostText(next.advanceRequirements.cost)}\n");
-        AppendMissing(sb, settlement.CanAdvanceAge(out string missing), missing);
-        return sb.ToString().TrimEnd();
+        return sb.ToString();
     }
+
+    private static string Few(System.Collections.Generic.List<string> names) =>
+        string.Join(", ", names.GetRange(0, Mathf.Min(3, names.Count))) + (names.Count > 3 ? "..." : "");
 
     private static void AppendMissing(StringBuilder sb, bool ok, string missing)
     {

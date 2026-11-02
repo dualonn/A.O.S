@@ -492,6 +492,7 @@ public partial class Settlement : MonoBehaviour
         TickAutomation(dt);
         TickCamps(dt);
         TickSites(dt);
+        TickAges();
     }
 
     // ---------- Building stats and upgrades ----------
@@ -1566,28 +1567,7 @@ public partial class Settlement : MonoBehaviour
 
     // ---------- Ages ----------
 
-    public bool CanAdvanceAge(out string missing)
-    {
-        if (NextAge == null)
-        {
-            missing = "This is the latest age";
-            return false;
-        }
-        return Meets(NextAge.advanceRequirements, out missing);
-    }
-
-    public bool TryAdvanceAge(out string reason)
-    {
-        if (!CanAdvanceAge(out reason))
-        {
-            return false;
-        }
-        Spend(NextAge.advanceRequirements.cost);
-        State.ageIndex++;
-        Notify($"Your civilisation has entered the {CurrentAge.displayName}!");
-        Changed?.Invoke();
-        return true;
-    }
+    // Entering ages: see Ages.cs (they're grown into through research, buildings and resources).
 
     // ---------- Upgrades ----------
 
