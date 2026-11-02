@@ -74,6 +74,35 @@ public static class Items
 
     public static string RarityHex(Rarity r) => ColorUtility.ToHtmlStringRGB(RarityColors[(int)r]);
 
+    /// <summary>
+    /// Can a hero of this unit type use this gear? A hero keeps their unit's way of fighting:
+    /// bows are for archers, swords, axes, clubs and spears for fighters, and an archer needs
+    /// both hands for the bow. Slingers and javelin throwers keep their own weapon.
+    /// </summary>
+    public static bool Fits(ItemTemplate template, UnitDefinition unit, out string why)
+    {
+        why = null;
+        var rig = unit != null && unit.prefab != null ? unit.prefab.GetComponent<SpriteUnitVisual>() : null;
+        if (template == null || rig == null || !rig.HasHeroRig)
+        {
+            return true;
+        }
+        string who = unit.displayName;
+        var kind = rig.weaponClass;
+        if (template.slot == GearSlot.Weapon)
+        {
+            bool bow = template.look == GearLook.Bow;
+            if (kind == WeaponClass.Bow && !bow) why = $"A {who} fights with a bow";
+            else if (kind == WeaponClass.Melee && bow) why = $"A {who} fights hand to hand";
+            else if (kind == WeaponClass.Thrown || kind == WeaponClass.None) why = $"A {who} keeps their own weapon";
+        }
+        else if (template.slot == GearSlot.Shield && kind == WeaponClass.Bow)
+        {
+            why = $"A {who} needs both hands for the bow";
+        }
+        return why == null;
+    }
+
     private static readonly float[] RarityStrength = { 1f, 1.2f, 1.45f, 1.8f, 2.3f };
     private static readonly int[] RarityTraits = { 0, 1, 1, 2, 3 };
 

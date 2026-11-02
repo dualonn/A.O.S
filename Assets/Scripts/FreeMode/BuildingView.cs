@@ -551,6 +551,7 @@ public class BuildingView : MonoBehaviour
             }
             troop.SetGear(settlement.HeroStats(hero));
             troop.SetBuildingModifier(stats.trainedUnits);
+            troop.ShowHeroGear(settlement);
         }
     }
 

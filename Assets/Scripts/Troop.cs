@@ -59,6 +59,19 @@ public class Troop : Unit
         RefreshHeroTag();
     }
 
+    private static readonly GearLook[] wornLooks = new GearLook[5];
+    private static readonly Rarity[] wornRarities = new Rarity[5];
+
+    /// <summary>Draw this hero's equipped gear on them (cheap to call often: nothing changes unless the gear did).</summary>
+    public void ShowHeroGear(Settlement settlement)
+    {
+        if (Hero == null || settlement == null) return;
+        var look = GetComponent<SpriteUnitVisual>();
+        if (look == null) return;
+        settlement.WornLooks(Hero, wornLooks, wornRarities);
+        look.ShowGear(wornLooks, wornRarities);
+    }
+
     public void RefreshHeroTag()
     {
         if (nameTag != null && Hero != null)

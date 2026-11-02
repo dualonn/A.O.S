@@ -201,11 +201,32 @@ public static partial class PlaceholderArt
 
     // ---------- Prefabs ----------
 
-    private static Painter WarriorCanvas(WarriorStyle style) =>
-        !style.mounted ? new Painter(1.6f, 1.2f, 160) { Outline = 0.018f }
-        : style.mount == Mount.Elephant ? new Painter(2.6f, 2.2f, 160) { Outline = 0.018f }
-        : style.mount == Mount.Chariot ? new Painter(2.6f, 1.6f, 160) { Outline = 0.018f }
-        : new Painter(2.0f, 1.6f, 160) { Outline = 0.018f };
+    // Room round each figure's drawing area, so a spear thrust or a raised lance is never cut
+    // off at the sprite's edge. The figure is drawn exactly as before, just on a bigger canvas.
+    private const float PadSide = 0.45f, PadBottom = 0.1f, PadTop = 0.45f;
+
+    private static Painter WarriorCanvas(WarriorStyle style)
+    {
+        Vector2 area = WarriorArea(style);
+        return new Painter(area.x + 2 * PadSide, area.y + PadBottom + PadTop, 160) { Outline = 0.018f, Origin = V(PadSide, PadBottom) };
+    }
+
+    /// <summary>The drawing area a figure is designed in (feet at its bottom centre).</summary>
+    private static Vector2 WarriorArea(WarriorStyle style) =>
+        !style.mounted ? V(1.6f, 1.2f)
+        : style.mount == Mount.Elephant ? V(2.6f, 2.2f)
+        : style.mount == Mount.Chariot ? V(2.6f, 1.6f)
+        : V(2.0f, 1.6f);
+
+    /// <summary>Where the feet are, in the figure's drawing coordinates.</summary>
+    private static Vector2 WarriorFeet(WarriorStyle style) => new Vector2(WarriorArea(style).x * 0.5f, WarriorArea(style).y * 0.05f);
+
+    /// <summary>The sprite pivot (normalised) that puts the feet on the unit's position.</summary>
+    private static Vector2 WarriorPivot(WarriorStyle style)
+    {
+        Vector2 area = WarriorArea(style), feet = WarriorFeet(style);
+        return new Vector2((feet.x + PadSide) / (area.x + 2 * PadSide), (feet.y + PadBottom) / (area.y + PadBottom + PadTop));
+    }
 
     /// <summary>Where the figure (designed around x = 0.5) sits on its canvas, so the unit's feet are the pivot.</summary>
     private static float CanvasShift(WarriorStyle s) =>
@@ -221,7 +242,7 @@ public static partial class PlaceholderArt
             // Wide canvas so swings and falling bodies aren't clipped; feet stay at the centre.
             var p = WarriorCanvas(style);
             DrawWarrior(p, pose, style);
-            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, new Vector2(0.5f, 0.05f));
+            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, WarriorPivot(style));
         }
 
         var idle = Frame("Idle", WarPose.Idle);
@@ -240,6 +261,10 @@ public static partial class PlaceholderArt
         visual.attack = attack;
         visual.death = death;
         visual.impactFrame = 2;
+        if (!isEnemy)
+        {
+            BuildHeroRig(style, visual);
+        }
         bool elephant = style.mounted && style.mount == Mount.Elephant;
         visual.barHeight = elephant ? 1.95f : style.mounted ? 1.3f : 0.95f;
         var col = go.AddComponent<CircleCollider2D>();
@@ -318,7 +343,11 @@ public static partial class PlaceholderArt
 
     // ---------- Drawing ----------
 
-    private static void DrawWarrior(Painter p, WarPose pose, WarriorStyle s)
+    /// <summary>
+    /// Draw one frame of a warrior. 'bare' leaves off the helmet, shield and melee weapon (a hero
+    /// wears their own, drawn on top); 'anchors' receives where that gear goes on this frame.
+    /// </summary>
+    private static void DrawWarrior(Painter p, WarPose pose, WarriorStyle s, bool bare = false, System.Action<GearAnchor> anchors = null)
     {
         const float limb = 0.042f;
         // Death frames lean the whole figure (and horse) back around the feet.
@@ -416,13 +445,15 @@ public static partial class PlaceholderArt
         }
 
         // Feather behind the head (drawn first so the head overlaps it)
-        if (s.feather && s.helm == Helm.None)
+        var helm = bare ? Helm.None : s.helm;
+        bool bareWeapon = bare && ClassOf(s.weapon) == WeaponClass.Melee;
+        if (s.feather && helm == Helm.None && !bare)
         {
             p.OutlinedLine(R(V(0.45f, 0.82f)), R(V(0.36f, 0.98f)), 0.03f, new Color(0.95f, 0.92f, 0.85f));
             p.Line(R(V(0.37f, 0.96f)), R(V(0.355f, 0.99f)), 0.03f, new Color(0.15f, 0.12f, 0.1f));
         }
         // Headband tails flowing behind
-        if (s.helm == Helm.None || s.helm == Helm.BronzeDome)
+        if (helm == Helm.None || helm == Helm.BronzeDome)
         {
             p.Line(R(V(0.43f, 0.79f)), R(V(0.33f, 0.74f)), 0.022f, s.gear);
             p.Line(R(V(0.43f, 0.79f)), R(V(0.35f, 0.7f)), 0.022f, s.gear);
@@ -440,7 +471,8 @@ public static partial class PlaceholderArt
             DrawChariotCar(p, pose, s, Rot); // the car's front hides the charioteer's legs
         }
         // A shield stays braced in front of the chest, so it never covers the face mid-swing.
-        if (s.shield != ShieldType.None && pose != WarPose.Down && pose != WarPose.Falling)
+        bool holdsShield = bare ? HeroTakesShield(s) : s.shield != ShieldType.None;
+        if (holdsShield && pose != WarPose.Down && pose != WarPose.Falling)
         {
             handL = new Vector2(Mathf.Clamp(handL.x, 0.54f, 0.6f), Mathf.Min(handL.y, 0.5f));
         }
@@ -457,7 +489,7 @@ public static partial class PlaceholderArt
         p.Circle(R(head), 0.085f, s.ink);
 
         // Gear
-        if (s.helm == Helm.None)
+        if (helm == Helm.None)
         {
             p.Line(R(V(0.425f, 0.785f)), R(V(0.575f, 0.785f)), 0.026f, s.gear); // headband
         }
@@ -481,16 +513,42 @@ public static partial class PlaceholderArt
         }
 
         bool dead = pose == WarPose.Down || pose == WarPose.Falling;
-        DrawHelm(p, s, head, R);
-        if (!dead)
+        if (anchors != null)
+        {
+            // Where a hero's gear goes on this frame, in sprite units from the feet.
+            Vector2 feet = WarriorFeet(s);
+            Vector2 L(Vector2 v) => R(v) - feet;
+            Vector2 grip = handR, dir = clubTip - handR;
+            if (s.weapon == Weapon.Spear) SpearHold(pose, ref grip, out dir);
+            var a = new GearAnchor
+            {
+                head = L(head), neck = L(V(0.5f, 0.64f)), torso = L(V(0.5f, 0.52f)), hip = L(V(0.5f, 0.385f)),
+                shield = L(handL + V(0.03f, 0.02f)), handL = L(handL), lean = lean, shieldShown = !dead,
+                grip = dead ? T(V(0.3f, 0.09f)) - feet : L(grip),
+                weaponAngle = dead ? 0f : Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + lean,
+            };
+            anchors(a);
+        }
+        if (!bare)
+        {
+            DrawHelm(p, s, head, R);
+        }
+        if (!dead && !bare)
         {
             DrawShield(p, s, handL + V(0.03f, 0.02f), R);
         }
 
         if (dead)
         {
-            DrawDroppedWeapon(p, s, T);
+            if (!bareWeapon)
+            {
+                DrawDroppedWeapon(p, s, T);
+            }
             return;
+        }
+        if (bareWeapon && s.weapon != Weapon.Spear)
+        {
+            return; // the hero's own weapon is drawn on top
         }
 
         switch (s.weapon)
@@ -583,17 +641,12 @@ public static partial class PlaceholderArt
             case Weapon.Spear:
             {
                 // Spear: held level for the thrust, upright when idle or walking
-                Vector2 dir;
-                switch (pose)
-                {
-                    case WarPose.Windup: dir = V(1f, 0.05f); handR = V(0.4f, 0.55f); break;
-                    case WarPose.Raised: dir = V(1f, 0.1f); handR = V(0.45f, 0.6f); break;
-                    case WarPose.Strike: dir = V(1f, -0.05f); handR = V(0.78f, 0.55f); break;
-                    case WarPose.Recover: dir = V(1f, -0.15f); handR = V(0.65f, 0.5f); break;
-                    default: dir = V(0.15f, 1f); break;
-                }
-                dir.Normalize();
+                SpearHold(pose, ref handR, out var dir);
                 p.Line(R(shoulder), R(handR), limb, s.ink); // the arm reaching the spear
+                if (bareWeapon)
+                {
+                    break;
+                }
                 float length = s.mounted ? 0.75f : 0.55f;   // cavalry carry longer lances
                 Vector2 butt = handR - dir * 0.3f, tip = handR + dir * length;
                 p.OutlinedLine(R(butt), R(tip), 0.03f, WoodLight);
@@ -648,6 +701,27 @@ public static partial class PlaceholderArt
                 break;
         }
     }
+
+    /// <summary>Spears are held level for the thrust and upright when idle or walking.</summary>
+    private static void SpearHold(WarPose pose, ref Vector2 hand, out Vector2 dir)
+    {
+        switch (pose)
+        {
+            case WarPose.Windup: dir = V(1f, 0.05f); hand = V(0.4f, 0.55f); break;
+            case WarPose.Raised: dir = V(1f, 0.1f); hand = V(0.45f, 0.6f); break;
+            case WarPose.Strike: dir = V(1f, -0.05f); hand = V(0.78f, 0.55f); break;
+            case WarPose.Recover: dir = V(1f, -0.15f); hand = V(0.65f, 0.5f); break;
+            default: dir = V(0.15f, 1f); break;
+        }
+        dir.Normalize();
+    }
+
+    private static WeaponClass ClassOf(Weapon w) =>
+        w == Weapon.Bow ? WeaponClass.Bow : w == Weapon.Sling || w == Weapon.Javelin ? WeaponClass.Thrown
+        : w == Weapon.Ballista ? WeaponClass.None : WeaponClass.Melee;
+
+    /// <summary>Archers need both hands for the bow; everyone else can carry a shield.</summary>
+    private static bool HeroTakesShield(WarriorStyle s) => ClassOf(s.weapon) == WeaponClass.Melee || ClassOf(s.weapon) == WeaponClass.Thrown;
 
     private static void DrawHelm(Painter p, WarriorStyle s, Vector2 head, System.Func<Vector2, Vector2> R)
     {

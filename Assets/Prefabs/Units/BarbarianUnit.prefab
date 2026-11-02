@@ -90,7 +90,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.6, y: 1.2}
+  m_Size: {x: 2.5, y: 1.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -126,6 +126,15 @@ MonoBehaviour:
   walkFps: 9
   deathFrameTime: 0.14
   barHeight: 0.95
+  heroIdle: {fileID: 0}
+  heroWalk: []
+  heroAttack: []
+  heroDeath: []
+  anchors: []
+  weaponClass: 0
+  defaultHead: 0
+  defaultShield: 0
+  defaultWeapon: 0
 --- !u!58 &1370660427560384420
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -196,12 +205,17 @@ MonoBehaviour:
   hitDelay: 0.58
   detectionRange: 2.5
   knockback: 2.5
+  armour: 0
+  lifeSteal: 0
+  cleave: 0
+  thorns: 0
+  mending: 0
+  rallying: 0
   corpseTime: 2
   fadeTime: 0.8
   anim: {fileID: 0}
   healthSlider: {fileID: 0}
   personalSpace: 0.38
   currentTarget: {fileID: 0}
-  path: {fileID: 0}
   lootPerHit: 4
   lootCapacity: 20

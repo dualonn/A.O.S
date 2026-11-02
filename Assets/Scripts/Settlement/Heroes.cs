@@ -142,7 +142,7 @@ public partial class Settlement
     public void Equip(HeroState hero, ItemInstance item)
     {
         var template = GetTemplate(item?.template);
-        if (hero == null || template == null)
+        if (hero == null || template == null || !Items.Fits(template, FindUnit(hero.unitId), out _))
         {
             return;
         }
@@ -164,6 +164,23 @@ public partial class Settlement
         while (hero.equipped.Count < 5) hero.equipped.Add(0);
         hero.equipped[(int)slot] = 0;
         HeroChanged?.Invoke(hero);
+    }
+
+    /// <summary>What a hero has on, slot by slot, for drawing it on them (None = nothing there).</summary>
+    public void WornLooks(HeroState hero, GearLook[] looks, Rarity[] rarities)
+    {
+        for (int i = 0; i < looks.Length; i++)
+        {
+            looks[i] = GearLook.None;
+            rarities[i] = Rarity.Common;
+            var item = hero != null && i < hero.equipped.Count ? GetItem(hero.equipped[i]) : null;
+            var template = item != null ? GetTemplate(item.template) : null;
+            if (template != null)
+            {
+                looks[i] = template.look;
+                rarities[i] = item.rarity;
+            }
+        }
     }
 
     /// <summary>A hero's bonuses: every equipped item, plus +5% health and attack per level.</summary>

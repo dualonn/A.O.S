@@ -90,7 +90,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.6, y: 1.2}
+  m_Size: {x: 2.5, y: 1.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -126,6 +126,146 @@ MonoBehaviour:
   walkFps: 9
   deathFrameTime: 0.14
   barHeight: 0.95
+  heroIdle: {fileID: 21300000, guid: 5a3254013833a8a4ca842d663332b9e6, type: 3}
+  heroWalk:
+  - {fileID: 21300000, guid: bab0b6d4d42539c4f801f115938f2cfd, type: 3}
+  - {fileID: 21300000, guid: dbc70cd485dd33a45ab1af1241c67c14, type: 3}
+  - {fileID: 21300000, guid: 3a47ca1f7cf15d34a87b96141488ce5b, type: 3}
+  - {fileID: 21300000, guid: af873129f9f65dc4a8c2948907ef5070, type: 3}
+  heroAttack:
+  - {fileID: 21300000, guid: ab376869ba868e44681d9f81da7fe52c, type: 3}
+  - {fileID: 21300000, guid: 43f79159bc442534aa110602897d7ea8, type: 3}
+  - {fileID: 21300000, guid: bf7e243d56ec70047b1ecf6ff5b8ae27, type: 3}
+  - {fileID: 21300000, guid: 59fa312408fd87f49bcc419b330ea28e, type: 3}
+  heroDeath:
+  - {fileID: 21300000, guid: 65d34df87b71e2848bfcdbb7efff95af, type: 3}
+  - {fileID: 21300000, guid: e8f398ee802048f40872ec1f3c886541, type: 3}
+  - {fileID: 21300000, guid: 6395b670c9362584a91565714f890345, type: 3}
+  anchors:
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.4}
+    grip: {x: 0.13, y: 0.41}
+    handL: {x: 0.04000002, y: 0.38}
+    lean: 0
+    weaponAngle: 68.83874
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.42000002}
+    grip: {x: 0.13999999, y: 0.44}
+    handL: {x: 0.04000002, y: 0.4}
+    lean: 0
+    weaponAngle: 63.43495
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.4}
+    grip: {x: 0.120000005, y: 0.42}
+    handL: {x: 0.04000002, y: 0.38}
+    lean: 0
+    weaponAngle: 65.69546
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.13, y: 0.42000002}
+    grip: {x: 0.07999998, y: 0.42}
+    handL: {x: 0.100000024, y: 0.4}
+    lean: 0
+    weaponAngle: 66.37061
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.4}
+    grip: {x: 0.120000005, y: 0.42}
+    handL: {x: 0.04000002, y: 0.38}
+    lean: 0
+    weaponAngle: 65.69546
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.45999998}
+    grip: {x: -0.099999964, y: 0.56}
+    handL: {x: 0.04000002, y: 0.44}
+    lean: 0
+    weaponAngle: 157.38013
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.06999999, y: 0.45999998}
+    grip: {x: 0.029999971, y: 0.82}
+    handL: {x: 0.04000002, y: 0.44}
+    lean: 0
+    weaponAngle: 150.25513
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.13, y: 0.45999998}
+    grip: {x: 0.21999997, y: 0.5}
+    handL: {x: 0.100000024, y: 0.44}
+    lean: 0
+    weaponAngle: -48.503536
+    shieldShown: 1
+  - head: {x: 0, y: 0.71}
+    neck: {x: 0, y: 0.58}
+    torso: {x: 0, y: 0.45999998}
+    hip: {x: 0, y: 0.325}
+    shield: {x: 0.13, y: 0.42000002}
+    grip: {x: 0.16000003, y: 0.39}
+    handL: {x: 0.100000024, y: 0.4}
+    lean: 0
+    weaponAngle: -51.340195
+    shieldShown: 1
+  - head: {x: 0.21940202, y: 0.6752501}
+    neck: {x: 0.17922986, y: 0.5516128}
+    torso: {x: 0.14214784, y: 0.437486}
+    hip: {x: 0.10043055, y: 0.30909336}
+    shield: {x: 0.19018072, y: 0.35879144}
+    grip: {x: 0.25033432, y: 0.34976098}
+    handL: {x: 0.15546876, y: 0.3490408}
+    lean: -18
+    weaponAngle: 50.838737
+    shieldShown: 1
+  - head: {x: 0.46159786, y: 0.40723926}
+    neck: {x: 0.3551082, y: 0.33267432}
+    torso: {x: 0.2568099, y: 0.26384515}
+    hip: {x: 0.14622444, y: 0.18641233}
+    shield: {x: 0.15603894, y: 0.30315426}
+    grip: {x: -0.32, y: 0.030000001}
+    handL: {x: 0.12244862, y: 0.3162573}
+    lean: -55
+    weaponAngle: 0
+    shieldShown: 0
+  - head: {x: 0.529604, y: 0.082684666}
+    neck: {x: 0.39968318, y: 0.07814774}
+    torso: {x: 0.27975625, y: 0.0739598}
+    hip: {x: 0.14483851, y: 0.06924836}
+    shield: {x: 0.21665186, y: 0.161811}
+    grip: {x: -0.32, y: 0.030000001}
+    handL: {x: 0.19561714, y: 0.19109473}
+    lean: -88
+    weaponAngle: 0
+    shieldShown: 0
+  weaponClass: 0
+  defaultHead: 0
+  defaultShield: 0
+  defaultWeapon: 11
 --- !u!58 &2837771001058410423
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -196,12 +336,16 @@ MonoBehaviour:
   hitDelay: 0.58
   detectionRange: 2.5
   knockback: 2.5
+  armour: 0
+  lifeSteal: 0
+  cleave: 0
+  thorns: 0
+  mending: 0
+  rallying: 0
   corpseTime: 2
   fadeTime: 0.8
   anim: {fileID: 0}
   healthSlider: {fileID: 0}
   personalSpace: 0.38
   currentTarget: {fileID: 0}
-  targetPriority: 0
-  ID: 0
   moveOrderSpeedMultiplier: 1.5

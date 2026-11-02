@@ -137,3 +137,57 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e959f7adea49c3848b9d35ca9eff7555, type: 3}
   - {fileID: 21300000, guid: 81baabc355638ba4f86f1c2707d78133, type: 3}
   researchIcon: {fileID: 21300000, guid: 05123ad631ca9144aa42ffc3c0349727, type: 3}
+  wornGear:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 1cd0061e04665374485addfb5fc7d425, type: 3}
+  - {fileID: 21300000, guid: 6dc2956a6cbf75d41ae3a91ec78759fe, type: 3}
+  - {fileID: 21300000, guid: 29c0a63024c6e4748864c386b786df5b, type: 3}
+  - {fileID: 21300000, guid: 11e31a374e356e24aaf1b3685416a9be, type: 3}
+  - {fileID: 21300000, guid: 0730d6f0fd0091c46a73973710a4294f, type: 3}
+  - {fileID: 21300000, guid: b41c252931411414d97ff14bba6b36ff, type: 3}
+  - {fileID: 21300000, guid: a11f150c2793b0e4897fa848cf4ef19d, type: 3}
+  - {fileID: 21300000, guid: 469ae8da989146d49aafbb02358427b7, type: 3}
+  - {fileID: 21300000, guid: 512b5f13503702748b9c9be21c1e183f, type: 3}
+  - {fileID: 21300000, guid: 1f8b0444bf4d3c248a3dad551d70078f, type: 3}
+  - {fileID: 21300000, guid: 306330b9221230e48a64cb6621ae8aca, type: 3}
+  - {fileID: 21300000, guid: 2d7f5c53dd99e124f8288b1586dd9e9a, type: 3}
+  - {fileID: 21300000, guid: fcc5df39fbf15004197c2fceaf068f38, type: 3}
+  - {fileID: 21300000, guid: 073974446edc7654fb6206cc939505c7, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: ef5a61fd85453074cb192e0bece81013, type: 3}
+  - {fileID: 21300000, guid: af7cd5fc5ea0a294fb98635eb6d22e24, type: 3}
+  - {fileID: 21300000, guid: de330d5a4a823ae49b2a52a0a99ba74c, type: 3}
+  - {fileID: 21300000, guid: 03037410b958c464eb12f665ac4e428a, type: 3}
+  - {fileID: 21300000, guid: b2c5c923f5b3e0442b6a89fc06ea96f9, type: 3}
+  - {fileID: 21300000, guid: 5ff94ef91e5344f47b7c88c2a58b2c54, type: 3}
+  - {fileID: 21300000, guid: 41a89380e1330de4998a528f188c5589, type: 3}
+  - {fileID: 21300000, guid: 60ec3a0d0c95ea240a885eb8bb764088, type: 3}
+  - {fileID: 21300000, guid: 20e866aa9fc239a43a0c531e274d4ad6, type: 3}
+  - {fileID: 21300000, guid: a52a60f609c51d4458e2cea8abbafba7, type: 3}
+  wornGearTrim:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: c97c3b47e4e87b24a88f50e820a53f10, type: 3}
+  - {fileID: 21300000, guid: 9faff5f7c74c9c94cb9643894d158dfd, type: 3}
+  - {fileID: 21300000, guid: 33df0854895159540992de1196a19518, type: 3}
+  - {fileID: 21300000, guid: ae0ef1add6df0c149a8fb66207b76f68, type: 3}
+  - {fileID: 21300000, guid: 968af6fb22ca7ba45b8a0446aa05fd52, type: 3}
+  - {fileID: 21300000, guid: c8f6022e294a0ae4b9d765e7829c0300, type: 3}
+  - {fileID: 21300000, guid: 113e91eb5698c76419b2a4b6f29d49d3, type: 3}
+  - {fileID: 21300000, guid: 697fefa154706054d830afdeedff6496, type: 3}
+  - {fileID: 21300000, guid: d366c3b1edf71db4cbb4015c271e9970, type: 3}
+  - {fileID: 21300000, guid: 3560c4fe4c3fcd347a6343183c7b5c69, type: 3}
+  - {fileID: 21300000, guid: c90d93e95451d834e9ec7fac1d0bd78e, type: 3}
+  - {fileID: 21300000, guid: afe47ae118f1ed948a8e82f6a6345174, type: 3}
+  - {fileID: 21300000, guid: d6aa0a17cb8082a4d945a51e96915acf, type: 3}
+  - {fileID: 21300000, guid: 0f2123bb2a72e394a94df058458b2716, type: 3}
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 6d640392fe02264438b74d053aa14a85, type: 3}
+  - {fileID: 21300000, guid: db65e6a7943385344bfc1df683d6e34c, type: 3}
+  - {fileID: 21300000, guid: 8d079ff0b5d03aa4195fc04b2e9eda00, type: 3}
+  - {fileID: 21300000, guid: 1b6799aefcc028848a9aa65450525372, type: 3}
+  - {fileID: 21300000, guid: 089b3c5ef91301e42a7e9c2af18229f8, type: 3}
+  - {fileID: 21300000, guid: a078637ea295b1b4498c202cc49dc51a, type: 3}
+  - {fileID: 21300000, guid: de22e40afafc2e442979f12dc7db4d07, type: 3}
+  - {fileID: 21300000, guid: 442b472b17319b94e9a406483490e41d, type: 3}
+  - {fileID: 21300000, guid: 9c9c0095a873ed2429408a0c7eff4fb9, type: 3}
+  - {fileID: 21300000, guid: 29184efc5e07ef040865f8c9ef72cacf, type: 3}

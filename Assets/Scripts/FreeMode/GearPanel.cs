@@ -115,10 +115,15 @@ public class GearPanel
 
         // Items that fit the chosen slot, best first.
         shownItems.Clear();
+        int unfit = 0;
+        string unfitWhy = null;
+        var unit = Settlement.FindUnit(hero.unitId);
         foreach (var item in Settlement.State.inventory)
         {
             var t = Settlement.GetTemplate(item.template);
-            if (t != null && t.slot == activeSlot) shownItems.Add(item);
+            if (t == null || t.slot != activeSlot) continue;
+            if (Items.Fits(t, unit, out string why)) shownItems.Add(item);
+            else { unfit++; unfitWhy = why; }
         }
         shownItems.Sort((a, b) => Items.Score(Stats(b)).CompareTo(Items.Score(Stats(a))));
         while (itemRows.Count < shownItems.Count)
@@ -140,8 +145,10 @@ public class GearPanel
         }
         itemListElement.gameObject.SetActive(shownItems.Count > 0);
         itemListElement.preferredHeight = Mathf.Min(shownItems.Count, 5) * 33f;
-        emptyNote.gameObject.SetActive(shownItems.Count == 0);
-        emptyNote.text = $"<color=#aaa>No {activeSlot.ToString().ToLower()} gear yet. Burn down raider camps (and soon, ruins and dungeons) to find some.</color>";
+        emptyNote.gameObject.SetActive(shownItems.Count == 0 || unfit > 0);
+        emptyNote.text = unfit > 0
+            ? $"<size=85%><color=#aaa>{unfit} more {(unfit == 1 ? "piece doesn't" : "don't")} fit: {unfitWhy.ToLower()}.</color></size>"
+            : $"<color=#aaa>No {activeSlot.ToString().ToLower()} gear yet. Burn down raider camps (and soon, ruins and dungeons) to find some.</color>";
         removeButton.gameObject.SetActive(hero.equipped[(int)activeSlot] != 0);
     }
 

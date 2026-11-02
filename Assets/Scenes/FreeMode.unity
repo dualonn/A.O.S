@@ -294,6 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   minZoom: 4
   maxZoom: 18
+  farZoomBoost: 1.6
   zoomStep: 1.15
   panSpeed: 0.9
   bounds:
@@ -396,8 +397,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SettlementGrid
   cellSize: 1
-  sceneryBeyondEdge: 25
   overviewZoom: 26
+  strategyZoom: 90
 --- !u!4 &1772890885
 Transform:
   m_ObjectHideFlags: 0
