@@ -58,6 +58,10 @@ public class ArtLibrary : ScriptableObject
     public Sprite panel;
     public Sprite peopleIcon;
     public Sprite enemyIcon;
+
+    [Header("Raider camps")]
+    [Tooltip("Animated frames of a raider camp (3x3 tiles, pivot on the footprint corner).")]
+    public List<Sprite> campFrames = new List<Sprite>();
     public Sprite researchIcon;
 
     private static ArtLibrary cached;

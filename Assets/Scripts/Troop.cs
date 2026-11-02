@@ -130,12 +130,45 @@ public class Troop : Unit
     // While walking to a move order, ignore enemies.
     protected override bool ShouldEngage() => !hasMoveOrder;
 
+    /// <summary>Troops on Attack go for raider camps within this many tiles once no raiders are about.</summary>
+    public const float CampHuntRange = 60f;
+
     protected override void Idle()
     {
+        // Advancing troops with nothing to fight go and burn down nearby raider camps.
+        if (!hasMoveOrder && hasDefendZone && Stance == TroopStance.Attack)
+        {
+            var camp = CampView.Nearest(transform.position, CampHuntRange);
+            if (camp != null)
+            {
+                AttackCamp(camp);
+                return;
+            }
+        }
         float speed = hasMoveOrder ? moveSpeed * moveOrderSpeedMultiplier : moveSpeed;
         if (MoveTowards(rallyPoint, speed))
         {
             hasMoveOrder = false;
+        }
+    }
+
+    private void AttackCamp(CampView camp)
+    {
+        Vector3 point = camp.ClosestPoint(transform.position);
+        if (Vector2.Distance(transform.position, point) > attackRange * 0.6f)
+        {
+            MoveTowards(point, moveSpeed);
+            return;
+        }
+        SetMoving(false);
+        Face(point);
+        if (CanSwing)
+        {
+            System.Action hit = () =>
+            {
+                if (camp != null) camp.TakeHit(attackPower);
+            };
+            StartSwingAt(IsRanged ? () => Shoot(point, hit) : hit);
         }
     }
 

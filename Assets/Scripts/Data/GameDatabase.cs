@@ -98,6 +98,22 @@ public class GameDatabase : ScriptableObject
     [Tooltip("Defending troops go after any raider that comes within this many tiles of their settlement's buildings.")]
     public float defendAlertRange = 14f;
 
+    [Header("Free mode: raider camps")]
+    [Tooltip("Chance that a newly explored zone holds a raider camp.")]
+    [Range(0, 1)] public float campChance = 0.14f;
+
+    [Tooltip("Camps never sit closer than this many tiles to your buildings.")]
+    public float campMinDistance = 44f;
+
+    [Tooltip("A camp sends the raids at any settlement within this many tiles of it.")]
+    public float campRaidRange = 110f;
+
+    [Tooltip("Seconds of play before raiders move back into a cleared camp (a little stronger).")]
+    public float campReoccupySeconds = 1800f;
+
+    [Tooltip("Camps get one age tougher every this many tiles from your town (never more than one age ahead of you).")]
+    public float campTierDistance = 45f;
+
     [Tooltip("Raiders spawn in a band this many tiles wide just outside a settlement's safe zone.")]
     public float raidSpawnBand = 12f;
 

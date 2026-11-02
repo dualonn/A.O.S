@@ -30,6 +30,32 @@ public class SettlementState
 
     [Tooltip("New buildings start with auto-repair on.")]
     public bool autoRepairNew;
+
+    [Tooltip("Raider camps found on the map (generated from the seed; saved so cleared ones stay cleared).")]
+    public List<CampState> camps = new List<CampState>();
+}
+
+/// <summary>A raider camp out on the map: where raids come from, and somewhere to send your army.</summary>
+[Serializable]
+public class CampState
+{
+    [Tooltip("The map zone it sits in (one camp per zone at most).")]
+    public int zone;
+
+    [Tooltip("Bottom-left tile of its 3x3 footprint.")]
+    public Vector2Int cell;
+
+    [Tooltip("Stronger each time raiders move back in after it was cleared.")]
+    public int extraTier;
+
+    public bool cleared;
+
+    [Tooltip("Seconds until raiders move back into a cleared camp.")]
+    public float reoccupyIn;
+
+    public const int Size = 3;
+
+    public Vector2 Centre => cell + Vector2.one * (Size * 0.5f);
 }
 
 /// <summary>How a building's troops behave.</summary>

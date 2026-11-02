@@ -89,9 +89,58 @@ public class Enemy : Unit
         raid = targets;
     }
 
+    // ---------- Guard mode (free mode raider camps) ----------
+
+    private bool guarding;
+    private Vector3 guardHome;
+    private float guardRadius;
+    private Vector3 wanderTarget;
+    private float nextWander;
+
+    public bool IsGuard => guarding;
+
+    /// <summary>Stay around 'home', fighting anyone who comes within 'radius' of it.</summary>
+    public void StartGuard(Vector3 home, float radius)
+    {
+        guarding = true;
+        guardHome = home;
+        guardRadius = radius;
+        detectionRange = Mathf.Max(detectionRange, radius * 1.6f);
+        wanderTarget = transform.position;
+    }
+
+    private void Guard()
+    {
+        if (Time.time >= nextWander)
+        {
+            nextWander = Time.time + UnityEngine.Random.Range(3f, 7f);
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * guardRadius * 0.45f;
+            wanderTarget = guardHome + new Vector3(offset.x, offset.y, 0);
+        }
+        if (Vector2.Distance(transform.position, wanderTarget) > 0.2f)
+        {
+            MoveTowards(wanderTarget, moveSpeed * 0.5f);
+        }
+        else
+        {
+            SetMoving(false);
+        }
+    }
+
+    protected override Unit SelectTarget(List<Unit> candidates)
+    {
+        if (guarding)
+        {
+            // Only see off intruders near the camp; don't chase them across the map.
+            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, guardHome) <= guardRadius * 1.6f);
+            if (candidates.Count == 0) return null;
+        }
+        return base.SelectTarget(candidates);
+    }
+
     private void Start()
     {
-        if (raid != null)
+        if (raid != null || guarding)
         {
             return;
         }
@@ -112,7 +161,11 @@ public class Enemy : Unit
 
     protected override void Idle()
     {
-        if (raid != null)
+        if (guarding)
+        {
+            Guard();
+        }
+        else if (raid != null)
         {
             Raid();
         }

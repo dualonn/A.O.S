@@ -188,6 +188,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             settlementMarker.transform.localScale = Vector3.one * screenSize / Mathf.Max(0.01f, h);
         }
 
+        UpdateCampMarkers(zoomedOut, screenSize, raidMarker.sprite);
+
         liveEnemies.RemoveAll(e => e == null);
         raidMarker.enabled = zoomedOut && waveInProgress && liveEnemies.Count > 0 && raidMarker.sprite != null;
         if (raidMarker.enabled)
@@ -202,6 +204,100 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             float h = raidMarker.sprite.bounds.size.y;
             raidMarker.transform.localScale = Vector3.one * screenSize / Mathf.Max(0.01f, h);
         }
+    }
+
+    // ---------- Raider camps ----------
+
+    private readonly Dictionary<CampState, CampView> campViews = new Dictionary<CampState, CampView>();
+    private float nextCampSync;
+    private readonly List<SpriteRenderer> campMarkers = new List<SpriteRenderer>();
+
+    /// <summary>A view (and guards) for every live camp; cleared ones are taken down.</summary>
+    private void SyncCamps()
+    {
+        if (Time.unscaledTime < nextCampSync)
+        {
+            return;
+        }
+        nextCampSync = Time.unscaledTime + 1f;
+        foreach (var camp in Settlement.State.camps)
+        {
+            bool has = campViews.TryGetValue(camp, out var view);
+            if (!camp.cleared && !has)
+            {
+                view = new GameObject().AddComponent<CampView>();
+                view.transform.SetParent(grid.transform, true);
+                view.Init(this, camp, Settlement.CampTier(camp));
+                campViews[camp] = view;
+            }
+            else if (camp.cleared && has)
+            {
+                if (view != null) view.Remove();
+                campViews.Remove(camp);
+            }
+        }
+    }
+
+    /// <summary>Troops burnt a camp down.</summary>
+    public void CampDestroyed(CampView view)
+    {
+        Settlement.ClearCamp(view.State);
+        campViews.Remove(view.State);
+        view.Remove();
+    }
+
+    /// <summary>The nearest live camp within raiding range of 'from', if any.</summary>
+    private CampState NearestCamp(Vector3 from)
+    {
+        CampState best = null;
+        float bestDistance = Settlement.Database.campRaidRange;
+        foreach (var camp in Settlement.State.camps)
+        {
+            if (camp.cleared) continue;
+            float d = Vector2.Distance(from, camp.Centre);
+            if (d < bestDistance)
+            {
+                bestDistance = d;
+                best = camp;
+            }
+        }
+        return best;
+    }
+
+    /// <summary>A walkable spot just outside a camp, for raiders setting out or coming home.</summary>
+    private Vector3 BesideCamp(CampState camp)
+    {
+        var map = Settlement.Map;
+        for (int i = 0; i < 16; i++)
+        {
+            float angle = i * Mathf.PI * 2f / 16f + UnityEngine.Random.value * 0.3f;
+            Vector3 p = (Vector3)camp.Centre + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * (CampState.Size * 0.5f + 1.2f);
+            if (map.IsWalkable(p)) return p;
+        }
+        return camp.Centre;
+    }
+
+    private void UpdateCampMarkers(bool zoomedOut, float screenSize, Sprite icon)
+    {
+        int i = 0;
+        if (zoomedOut && icon != null)
+        {
+            foreach (var camp in Settlement.State.camps)
+            {
+                if (camp.cleared) continue;
+                if (campMarkers.Count <= i)
+                {
+                    var marker = MakeMarker("CampMarker", icon);
+                    marker.color = new Color(1f, 0.75f, 0.7f);
+                    campMarkers.Add(marker);
+                }
+                var m = campMarkers[i++];
+                m.enabled = true;
+                m.transform.position = new Vector3(camp.Centre.x, camp.Centre.y, -1);
+                m.transform.localScale = Vector3.one * screenSize * 0.8f / Mathf.Max(0.01f, icon.bounds.size.y);
+            }
+        }
+        for (; i < campMarkers.Count; i++) campMarkers[i].enabled = false;
     }
 
     private void OnMapGrown(List<RectInt> newAreas)
@@ -337,6 +433,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         {
             Select(null);
         }
+        SyncCamps();
 
         TrackLiveWave();
         ExploreAroundUnitsAndBuildings();
@@ -779,15 +876,18 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     public void SpawnWave(Wave wave)
     {
-        // Raiders gather just outside a settlement's safe zone, on explored land.
-        raidOrigin = RaidSpawnPoint();
+        // Raiders set out from the nearest camp in range; with none, they gather just outside a
+        // settlement's safe zone, on explored land.
+        var camp = CampForRaid();
+        raidOrigin = camp != null ? BesideCamp(camp) : RaidSpawnPoint();
 
         unspawned.AddRange(wave.units);
         waveInProgress = true;
         string from = CompassName(raidOrigin - TownCenterPosition);
+        string where = camp != null ? $"the camp to the {from}" : $"the {from}";
         ShowMessage(wave.units.Count == 1
-            ? $"A raider is approaching from the {from}!"
-            : $"{wave.units.Count} raiders are approaching from the {from}!");
+            ? $"A raider is coming from {where}!"
+            : $"{wave.units.Count} raiders are coming from {where}!");
         StartCoroutine(SpawnRoutine());
     }
 
@@ -940,6 +1040,12 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// <summary>Raiders flee straight out of the settlement they hit, to just past its safe zone.</summary>
     public Vector3 ExitPointFor(Vector3 from)
     {
+        // Home to the nearest camp, if there is one.
+        var camp = NearestCamp(from);
+        if (camp != null)
+        {
+            return BesideCamp(camp);
+        }
         var zones = Settlement.SettlementZones();
         var zone = Settlement.NearestZone(zones, from);
         if (zone == null)
@@ -999,6 +1105,19 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// settlement's safe zone. If the explored land doesn't reach that far yet, the explored spot
     /// furthest from every settlement. Before there's any town, the edge of the explored land.
     /// </summary>
+    /// <summary>A live camp within raiding range of one of your towns (picked at random among towns), or null.</summary>
+    private CampState CampForRaid()
+    {
+        var targets = Settlement.SettlementZones().FindAll(z => !z.IsOutpost);
+        if (targets.Count == 0)
+        {
+            return null;
+        }
+        var target = targets[UnityEngine.Random.Range(0, targets.Count)];
+        var camps = Settlement.CampsNear(target);
+        return camps.Count > 0 ? camps[0] : null;
+    }
+
     public Vector3 RaidSpawnPoint()
     {
         var zones = Settlement.SettlementZones();

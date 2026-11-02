@@ -121,4 +121,9 @@ MonoBehaviour:
   panel: {fileID: 21300000, guid: 0ffd0ff1a5144004f8c6c2be6c51fab6, type: 3}
   peopleIcon: {fileID: 21300000, guid: c8675e67a1b024d44964981ffaf34bbb, type: 3}
   enemyIcon: {fileID: 21300000, guid: 88aa7de0adca4624d8b43948311c9c53, type: 3}
+  campFrames:
+  - {fileID: 21300000, guid: 119296709292447478213ef26b98b743, type: 3}
+  - {fileID: 21300000, guid: 3bba7f3758e4354479fed60df32423eb, type: 3}
+  - {fileID: 21300000, guid: c66231caba051254a9970f42ec9a851d, type: 3}
+  - {fileID: 21300000, guid: bf786960255d0e942ac6b8abf0f14563, type: 3}
   researchIcon: {fileID: 21300000, guid: 05123ad631ca9144aa42ffc3c0349727, type: 3}

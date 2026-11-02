@@ -138,6 +138,170 @@ public class Settlement : MonoBehaviour
         return settlement;
     }
 
+    // ---------- Raider camps ----------
+
+    /// <summary>Raised when raiders move back into a cleared camp.</summary>
+    public event Action<CampState> CampReoccupied;
+
+    private float CampHash(int zone, int salt)
+    {
+        unchecked
+        {
+            int h = State.mapSeed * 73856093 ^ zone * 19349663 ^ salt * 83492791;
+            h = (h ^ (h >> 13)) * 1274126177;
+            return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
+        }
+    }
+
+    /// <summary>
+    /// Give these explored zones their camps. Each zone's roll comes from the map seed, so the same
+    /// zones always hold camps; zones near your buildings never do.
+    /// </summary>
+    public void RollCamps(IEnumerable<int> zones)
+    {
+        if (!IsFounded || Map == null)
+        {
+            return; // nothing to raid yet
+        }
+        var settlements = SettlementZones();
+        foreach (int zone in zones)
+        {
+            if (State.camps.Exists(c => c.zone == zone) || CampHash(zone, 1) >= Database.campChance)
+            {
+                continue;
+            }
+            int zx = zone % Map.ChunksX, zy = zone / Map.ChunksX;
+            if (!Map.IsZoneRevealed(zx, zy))
+            {
+                continue;
+            }
+            var rect = Map.ZoneRect(zx, zy);
+            // Try a few spots in the zone (same ones every time) for open, flat, empty ground.
+            for (int attempt = 0; attempt < 24; attempt++)
+            {
+                int x = rect.x + 1 + (int)(CampHash(zone, 10 + attempt) * Mathf.Max(1, rect.width - CampState.Size - 2));
+                int y = rect.y + 1 + (int)(CampHash(zone, 50 + attempt) * Mathf.Max(1, rect.height - CampState.Size - 2));
+                var cell = new Vector2Int(x, y);
+                var area = new RectInt(cell, Vector2Int.one * CampState.Size);
+                if (!CampSiteClear(area))
+                {
+                    continue;
+                }
+                Vector2 centre = cell + Vector2.one * (CampState.Size * 0.5f);
+                bool tooClose = false;
+                foreach (var s in settlements)
+                {
+                    if (s.DistanceTo(centre) < Mathf.Max(Database.campMinDistance, s.safeDistance)) tooClose = true;
+                }
+                if (tooClose)
+                {
+                    break; // this zone is too near home: no camp
+                }
+                State.camps.Add(new CampState { zone = zone, cell = cell });
+                break;
+            }
+        }
+    }
+
+    private bool CampSiteClear(RectInt area)
+    {
+        for (int y = area.yMin - 1; y <= area.yMax; y++)
+        {
+            for (int x = area.xMin - 1; x <= area.xMax; x++)
+            {
+                if (!Map.InBounds(x, y) || Map.GetTerrain(x, y) != TerrainType.Grass || Map.GetDeposit(x, y) != null)
+                {
+                    return false;
+                }
+            }
+        }
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def != null && new RectInt(building.cell, def.size).Overlaps(area)) return false;
+        }
+        return true;
+    }
+
+    /// <summary>A live (not cleared) camp overlapping this area, if any.</summary>
+    public CampState CampAt(RectInt area)
+    {
+        foreach (var camp in State.camps)
+        {
+            if (!camp.cleared && new RectInt(camp.cell, Vector2Int.one * CampState.Size).Overlaps(area)) return camp;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// How tough a camp is, as an age index: further from your town is tougher, and each
+    /// reoccupation adds one, but never more than one age ahead of you.
+    /// </summary>
+    public int CampTier(CampState camp)
+    {
+        float best = float.MaxValue;
+        foreach (var s in SettlementZones())
+        {
+            if (!s.IsOutpost) best = Mathf.Min(best, s.DistanceTo(camp.Centre));
+        }
+        int byDistance = best == float.MaxValue ? 0 : Mathf.FloorToInt(Mathf.Max(0, best - Database.campMinDistance) / Mathf.Max(1f, Database.campTierDistance));
+        return Mathf.Clamp(byDistance + camp.extraTier, 0, Mathf.Min(Database.ages.Count - 1, State.ageIndex + 1));
+    }
+
+    /// <summary>A camp was destroyed: hand out its loot, put raids back a little, and start its comeback timer.</summary>
+    public List<ResourceAmount> ClearCamp(CampState camp)
+    {
+        var loot = new List<ResourceAmount>();
+        if (camp == null || camp.cleared)
+        {
+            return loot;
+        }
+        int t = CampTier(camp);
+        void Add(string id, int amount)
+        {
+            var res = Database.resources.Find(r => r != null && r.id == id);
+            if (res != null && amount > 0) loot.Add(new ResourceAmount { resource = res, amount = amount });
+        }
+        Add("Food", 100 * (t + 1));
+        Add("Wood", 100 * (t + 1));
+        Add("Stone", 60 * (t + 1));
+        if (t >= 1) Add("Bronze", 30 * t);
+        if (t >= 2) Add("Iron", 25 * t);
+        if (t >= 3) Add("Gold", 30);
+        foreach (var item in loot) AddResource(item.resource, item.amount);
+        camp.cleared = true;
+        camp.reoccupyIn = Database.campReoccupySeconds;
+        State.secondsUntilWave += 90f;
+        Notify($"Raider camp destroyed! You took {Describe(loot)}, and raids will hold off a while.");
+        Changed?.Invoke();
+        return loot;
+    }
+
+    private void TickCamps(float dt)
+    {
+        foreach (var camp in State.camps)
+        {
+            if (!camp.cleared) continue;
+            camp.reoccupyIn -= dt;
+            if (camp.reoccupyIn <= 0)
+            {
+                camp.cleared = false;
+                camp.extraTier++;
+                Notify("Raiders have moved back into one of the camps you cleared, stronger than before.");
+                CampReoccupied?.Invoke(camp);
+                Changed?.Invoke();
+            }
+        }
+    }
+
+    /// <summary>Live camps within raiding range of a settlement, nearest first.</summary>
+    public List<CampState> CampsNear(SettlementZone settlement)
+    {
+        var list = State.camps.FindAll(c => !c.cleared && settlement.DistanceTo(c.Centre) <= Database.campRaidRange);
+        list.Sort((a, b) => settlement.DistanceTo(a.Centre).CompareTo(settlement.DistanceTo(b.Centre)));
+        return list;
+    }
+
     // ---------- Walls ----------
 
     private bool wallsDirty = true;
@@ -188,6 +352,7 @@ public class Settlement : MonoBehaviour
         RepairUnderfilledHealth();
         Waves = gameObject.AddComponent<WaveDirector>();
         Waves.Initialise(this);
+        RollCamps(Map.RevealedZoneIndices());
     }
 
     private SettlementState NewState()
@@ -232,6 +397,12 @@ public class Settlement : MonoBehaviour
                 State.exploredZones.Add(index);
             }
         }
+        var newZones = new List<int>();
+        foreach (var rect in shown)
+        {
+            newZones.Add(Map.ZoneIndex(rect.x / Map.ChunkSize, rect.y / Map.ChunkSize));
+        }
+        RollCamps(newZones);
         MapGrown?.Invoke(shown);
         return shown.Count;
     }
@@ -284,6 +455,7 @@ public class Settlement : MonoBehaviour
         TickPopulation(dt);
         TickResearch(dt);
         TickAutomation(dt);
+        TickCamps(dt);
     }
 
     // ---------- Building stats and upgrades ----------
@@ -1165,6 +1337,11 @@ public class Settlement : MonoBehaviour
             reason = "Something is already built there";
             return false;
         }
+        if (CampAt(area) != null)
+        {
+            reason = "There's a raider camp here: clear it first";
+            return false;
+        }
         if (def.requiredDeposit != null)
         {
             int count = Map.CountDeposit(def.requiredDeposit, area, def.catchmentRadius);
@@ -1265,6 +1442,7 @@ public class Settlement : MonoBehaviour
             // Raiders only start coming once there's something to raid.
             State.secondsUntilWave = Database.firstWaveDelay;
             Notify("Your settlement is founded! Build huts and camps near food and wood.");
+            RollCamps(Map.RevealedZoneIndices());
         }
         Changed?.Invoke();
         return true;
