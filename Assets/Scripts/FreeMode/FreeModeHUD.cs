@@ -28,7 +28,14 @@ public class FreeModeHUD : MonoBehaviour
     private TextMeshProUGUI selectionText;
     private Button repairButton;
     private RectTransform foundingBanner;
-    private readonly List<(Age age, TextMeshProUGUI header)> ageHeaders = new List<(Age, TextMeshProUGUI)>();
+    private RectTransform canvasRect;
+    // Side panels: each a header, then a scroll list of age sections that fold open and shut.
+    private RectTransform buildPanel, researchPanel;
+    private RectTransform buildContent, researchContent;
+    private LayoutElement buildScroll, researchScroll;
+    private readonly Dictionary<Age, CollapsibleSection> buildSections = new Dictionary<Age, CollapsibleSection>();
+    private readonly Dictionary<Age, CollapsibleSection> researchSections = new Dictionary<Age, CollapsibleSection>();
+    private int sectionsAge = -1;
     private Button upgradeButton;
     private TextMeshProUGUI upgradeLabel;
     private Button stanceButton;
@@ -52,7 +59,7 @@ public class FreeModeHUD : MonoBehaviour
     private float refreshTimer;
     private System.Func<string> tooltipSource;
 
-    private static readonly float[] Speeds = { 1f, 2f, 5f, 10f };
+    private static readonly float[] Speeds = { 1f, 2f, 3f, 5f, 10f };
     private int speedIndex;
 
     private void Start()
@@ -112,6 +119,10 @@ public class FreeModeHUD : MonoBehaviour
             resourceChips[res] = Chip(chips, res.icon);
         }
         peopleText = Chip(chips, art != null ? art.peopleIcon : null);
+        // Hovering the people chip explains who's working; the bar itself stays short.
+        var peopleChip = peopleText.transform.parent.gameObject;
+        peopleChip.AddComponent<Image>().color = Color.clear;
+        UIBuilder.OnHover(peopleChip, () => tooltipSource = PeopleTooltip, HideTooltip);
         waveText = Chip(chips, art != null ? art.enemyIcon : null);
         researchText = Chip(chips, art != null ? art.researchIcon : null);
 
@@ -140,45 +151,54 @@ public class FreeModeHUD : MonoBehaviour
         speedLabel.alignment = TextAlignmentOptions.Center;
         speedLabel.text = "Speed x1";
 
-        // Build menu (left)
-        var build = UIBuilder.VerticalPanel("BuildPanel", root);
-        UIBuilder.Anchor(build, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(10, -66), new Vector2(300, 0));
-        UIBuilder.Text("Title", build, "<b>Build</b>", 24);
-        // Grouped by age: each age's buildings under its own heading.
+        canvasRect = (RectTransform)root;
         var db = settlement.Database;
+
+        // Build menu (left): one folding section per age, in a scroll list.
+        buildPanel = SidePanel("BuildPanel", root, left: true);
+        UIBuilder.Text("Title", buildPanel, "<b>Build</b>", 24);
+        buildContent = UIBuilder.ScrollList("Buildings", buildPanel, out buildScroll);
         foreach (var age in db.ages)
         {
-            var header = UIBuilder.Text("Age", build, $"<size=85%><color=#fd8>{age.displayName}</color></size>", 18);
-            ageHeaders.Add((age, header));
+            var section = AgeSection(age, buildContent);
+            buildSections[age] = section;
             foreach (var def in db.buildings)
             {
-                var defAge = def.age != null ? def.age : db.ages[0];
-                if (defAge != age)
+                if (def == null || (def.age != null ? def.age : db.ages[0]) != age)
                 {
                     continue;
                 }
                 var d = def;
-                var button = UIBuilder.Button(def.id, build, () => controller.Placer.Begin(d), out var label, 56, 18, def.icon);
+                var button = UIBuilder.Button(def.id, section.Body, () => controller.Placer.Begin(d), out var label, 56, 18, def.icon);
                 UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => BuildingTooltip(d), HideTooltip);
                 buildButtons.Add((def, button, label));
             }
         }
-        UIBuilder.Text("Hint", build, "<size=80%><color=#aaa>Click to place. Shift keeps placing.\nRight click / Esc cancels.</color></size>", 16);
+        UIBuilder.Text("Hint", buildPanel, "<size=80%><color=#aaa>Click to place. Shift keeps placing.\nRight click / Esc cancels.</color></size>", 16);
 
-        // Research + ages (right)
-        var research = UIBuilder.VerticalPanel("ResearchPanel", root);
-        UIBuilder.Anchor(research, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-10, -66), new Vector2(330, 0));
-        UIBuilder.Text("Title", research, "<b>Research</b>", 24);
-        foreach (var tech in settlement.Database.technologies)
-        {
-            var t = tech;
-            var button = UIBuilder.Button(tech.id, research, () => TryResearch(t), out var label);
-            UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => TechTooltip(t), HideTooltip);
-            researchButtons.Add((tech, button, label));
-        }
-        UIBuilder.Text("AgeTitle", research, "<b>Age</b>", 24);
-        advanceButton = UIBuilder.Button("Advance", research, TryAdvance, out advanceLabel, 60);
+        // Ages and research (right): advancing stays on top, research folds by age below.
+        researchPanel = SidePanel("ResearchPanel", root, left: false);
+        UIBuilder.Text("AgeTitle", researchPanel, "<b>Age</b>", 24);
+        advanceButton = UIBuilder.Button("Advance", researchPanel, TryAdvance, out advanceLabel, 60);
         UIBuilder.OnHover(advanceButton.gameObject, () => tooltipSource = AgeTooltip, HideTooltip);
+        UIBuilder.Text("Title", researchPanel, "<b>Research</b>", 24);
+        researchContent = UIBuilder.ScrollList("Research", researchPanel, out researchScroll);
+        foreach (var age in db.ages)
+        {
+            var section = AgeSection(age, researchContent);
+            researchSections[age] = section;
+            foreach (var tech in db.technologies)
+            {
+                if (tech == null || (tech.age != null ? tech.age : db.ages[0]) != age)
+                {
+                    continue;
+                }
+                var t = tech;
+                var button = UIBuilder.Button(tech.id, section.Body, () => TryResearch(t), out var label);
+                UIBuilder.OnHover(button.gameObject, () => tooltipSource = () => TechTooltip(t), HideTooltip);
+                researchButtons.Add((tech, button, label));
+            }
+        }
 
         // Selected building (bottom centre)
         selectionPanel = UIBuilder.VerticalPanel("SelectionPanel", root);
@@ -294,9 +314,11 @@ public class FreeModeHUD : MonoBehaviour
             pair.Value.text = $"{name}<b>{Mathf.FloorToInt(settlement.GetAmount(res))}</b>{rateText}";
         }
 
-        string workers = settlement.WorkersNeeded > settlement.Population
-            ? $" <color=#fc6><size=70%>({settlement.WorkersNeeded} jobs)</size></color>" : "";
-        peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{workers}";
+        // People / room, plus one small note: idle people, or how many jobs are going unfilled.
+        int idle = settlement.Population - settlement.WorkersNeeded;
+        string note = idle > 0 ? $" <size=70%><color=#9c9>{idle} idle</color></size>"
+            : idle < 0 ? $" <size=70%><color=#fc6>{-idle} short</color></size>" : "";
+        peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{note}";
         waveText.text = $"<b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>";
 
         var researching = settlement.Database.GetTechnology(settlement.State.researchingId ?? "");
@@ -310,13 +332,70 @@ public class FreeModeHUD : MonoBehaviour
     private static string ZoomHelp() =>
         "<b>View</b>\nMouse wheel or +/- to zoom\nWASD / arrow keys or middle-drag to move";
 
+    /// <summary>A side panel under the top bar: grows with its contents, up to the screen's height.</summary>
+    private static RectTransform SidePanel(string name, Transform root, bool left)
+    {
+        var panel = UIBuilder.VerticalPanel(name, root);
+        float x = left ? 0 : 1;
+        UIBuilder.Anchor(panel, new Vector2(x, 1), new Vector2(x, 1), new Vector2(x, 1), new Vector2(left ? 10 : -10, -66), new Vector2(left ? 310 : 330, 0));
+        return panel;
+    }
+
+    private static readonly Color[] AgeAccents =
+    {
+        new Color(0.85f, 0.75f, 0.55f), new Color(0.95f, 0.65f, 0.35f), new Color(0.75f, 0.8f, 0.9f),
+        new Color(0.95f, 0.85f, 0.45f), new Color(0.7f, 0.85f, 0.65f), new Color(0.8f, 0.7f, 0.95f),
+    };
+
+    private CollapsibleSection AgeSection(Age age, Transform parent)
+    {
+        var accent = AgeAccents[Mathf.Clamp(age.order, 0, AgeAccents.Length - 1)];
+        var section = new CollapsibleSection(age.name, parent, age.displayName, accent);
+        section.Toggled += _ => FitSidePanels();
+        return section;
+    }
+
+    /// <summary>Open the current age's sections and fold the rest, whenever the age changes.</summary>
+    private void SyncSectionsToAge()
+    {
+        if (sectionsAge == settlement.State.ageIndex)
+        {
+            return;
+        }
+        sectionsAge = settlement.State.ageIndex;
+        foreach (var sections in new[] { buildSections, researchSections })
+        {
+            foreach (var pair in sections)
+            {
+                pair.Value.SetOpen(pair.Key.order == sectionsAge);
+            }
+        }
+    }
+
+    /// <summary>Let each side panel grow with its list, but stop at the bottom of the screen (then it scrolls).</summary>
+    private void FitSidePanels()
+    {
+        FitSidePanel(buildPanel, buildScroll, buildContent);
+        FitSidePanel(researchPanel, researchScroll, researchContent);
+    }
+
+    private void FitSidePanel(RectTransform panel, LayoutElement scroll, RectTransform content)
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        float wanted = LayoutUtility.GetPreferredHeight(content);
+        float rest = LayoutUtility.GetPreferredHeight(panel) - scroll.preferredHeight;
+        float room = canvasRect.rect.height - 66 - 14 - rest;
+        float height = Mathf.Max(80, Mathf.Min(wanted, room));
+        if (!Mathf.Approximately(height, scroll.preferredHeight))
+        {
+            scroll.preferredHeight = height;
+            LayoutRebuilder.MarkLayoutForRebuild(panel);
+        }
+    }
+
     private void RefreshBuildButtons()
     {
-        // Show the current and earlier ages, plus a preview of the next one.
-        foreach (var (age, header) in ageHeaders)
-        {
-            header.gameObject.SetActive(settlement.IsFounded && age.order <= settlement.State.ageIndex + 1);
-        }
+        SyncSectionsToAge();
         foreach (var (def, button, label) in buildButtons)
         {
             int ageOrder = def.age != null ? def.age.order : 0;
@@ -331,6 +410,22 @@ public class FreeModeHUD : MonoBehaviour
             label.text = $"<b>{def.displayName}</b>{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
                          $"<size=80%>{SubtitleFor(def.requirements.cost, can, missing)}</size>";
         }
+
+        // Section headers: hidden when empty, with how many can be built right now.
+        foreach (var pair in buildSections)
+        {
+            int shown = 0, ready = 0;
+            foreach (var (def, button, _) in buildButtons)
+            {
+                if (button.transform.parent != pair.Value.Body || !button.gameObject.activeSelf) continue;
+                shown++;
+                if (button.interactable) ready++;
+            }
+            bool next = pair.Key.order == settlement.State.ageIndex + 1;
+            pair.Value.SetVisible(shown > 0);
+            pair.Value.SetNote(next ? "next age" : ready > 0 ? $"{ready} ready" : $"{shown}");
+        }
+        FitSidePanels();
     }
 
     private void RefreshResearchButtons()
@@ -347,6 +442,19 @@ public class FreeModeHUD : MonoBehaviour
                 ? $"<color=#8cf>Researching {settlement.State.researchProgress:P0}</color>"
                 : SubtitleFor(tech.requirements.cost, can, missing) + $" <color=#aaa>({tech.researchTime:0}s)</color>";
             label.text = $"<b>{tech.displayName}</b>\n<size=80%>{sub}</size>";
+        }
+        foreach (var pair in researchSections)
+        {
+            int total = 0, done = 0, shown = 0;
+            foreach (var (tech, button, _) in researchButtons)
+            {
+                if (button.transform.parent != pair.Value.Body) continue;
+                total++;
+                if (settlement.HasResearched(tech)) done++;
+                if (button.gameObject.activeSelf) shown++;
+            }
+            pair.Value.SetVisible(shown > 0 || (done > 0 && pair.Key.order <= settlement.State.ageIndex));
+            pair.Value.SetNote(shown == 0 ? "all done" : $"{done}/{total} done");
         }
 
         var next = settlement.NextAge;
@@ -596,6 +704,23 @@ public class FreeModeHUD : MonoBehaviour
     // ---------- Tooltips ----------
 
     private void HideTooltip() => tooltipSource = null;
+
+    private string PeopleTooltip()
+    {
+        int people = settlement.Population, room = settlement.Housing, jobs = settlement.WorkersNeeded;
+        int working = Mathf.Min(people, jobs);
+        var sb = new StringBuilder("<b>People</b>\n");
+        sb.Append($"{people} living here, room for {room}\n");
+        sb.Append($"{working} working, {people - working} idle");
+        if (jobs > people)
+        {
+            sb.Append($"\n<color=#fc6>{jobs - people} jobs unfilled: buildings run at {settlement.WorkerEfficiency:P0}</color>");
+        }
+        sb.Append(people < room
+            ? $"\n<size=80%><color=#aaa>Someone new arrives every {settlement.Database.secondsPerNewPerson:0}s while there's food.</color></size>"
+            : "\n<size=80%><color=#aaa>Houses are full. Build more housing to grow.</color></size>");
+        return sb.ToString();
+    }
 
     private void UpdateTooltip()
     {

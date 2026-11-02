@@ -16,8 +16,10 @@ MonoBehaviour:
   displayName: Stone
   resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
   sprites:
-  - {fileID: 21300000, guid: 07a850bebae54dd418f3d173c928bf23, type: 3}
-  - {fileID: 21300000, guid: c798c10300fc890408926f69e7ca6a5e, type: 3}
+  - {fileID: 21300000, guid: 8e91ca91f3d4b864682c8d8bcd64b33d, type: 3}
+  - {fileID: 21300000, guid: 0117a36b737430446a8c15c59667efed, type: 3}
+  - {fileID: 21300000, guid: f2002975ab6cede4e98c59f942d6f19e, type: 3}
+  - {fileID: 21300000, guid: dac09de30cf3dac46bcdb746fd504cfd, type: 3}
   onHills: 1
   patchScale: 0.14
   rarity: 0.42

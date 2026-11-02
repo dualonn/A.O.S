@@ -37,6 +37,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: c44b73b5df5553146bb17d4e088065b6, type: 3}
     fps: 6
   size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   requirements:
     minimumAge: {fileID: 0}

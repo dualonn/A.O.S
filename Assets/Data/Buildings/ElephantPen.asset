@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ElephantPen
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ElephantPen
+  displayName: Elephant Pen
+  description: 'Keeps a War Elephant: slow, enormous and almost unstoppable.'
+  icon: {fileID: 21300000, guid: f1175414aaa59e6469a7f07f330acb56, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f1175414aaa59e6469a7f07f330acb56, type: 3}
+    - {fileID: 21300000, guid: ab266cd794de9d542b73c40c6086997f, type: 3}
+    - {fileID: 21300000, guid: 358e56d10e09af946a92812a4024358d, type: 3}
+    - {fileID: 21300000, guid: 1e7181593e3f2ca41814ee817a9e6f15, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 557685ff1bc10cc4fbeb43735ea3aa01, type: 3}
+    - {fileID: 21300000, guid: f051a0443f495da4ab6ae621d1ebe953, type: 3}
+    - {fileID: 21300000, guid: 8024c4773812a2d4dac329779d5060d3, type: 3}
+    - {fileID: 21300000, guid: df6e38d203d137845b7858f5a79589f0, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 31cbec29dcb53e6429d0e5019592a681, type: 3}
+    - {fileID: 21300000, guid: 41eca06bc3de44e4daff6851db4f55a2, type: 3}
+    - {fileID: 21300000, guid: f8a4fdf23c3bfc34d94051c4d3cff4b7, type: 3}
+    - {fileID: 21300000, guid: 74ea669590bd9b94ea0b82fb5168e338, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 7e48aead93095d84e95917fdce4be5a1, type: 3}
+    - {fileID: 21300000, guid: 88abd16892bec4946811a199f7cdfd48, type: 3}
+    - {fileID: 21300000, guid: 18dcfbd703a909246a5359ef5008a858, type: 3}
+    - {fileID: 21300000, guid: 0adbb17faf3c54f4b9e98b8f729259b4, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 260
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 150
+  upgrades:
+  - name: Leather Barding
+    description: 'Thick leather armour: +25% health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Tusk Blades
+    description: 'Iron blades on the tusks: +20% attack.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 50
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Stall
+    description: Room for one more elephant.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 120
+    upgradeTime: 40
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 100
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 520
+  housing: 0
+  workers: 3
+  production: []
+  defensePower: 4
+  trainsUnit: {fileID: 11400000, guid: 4b9b3bb3eab84774994ac9437569ea84, type: 2}
+  maxUnits: 1
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

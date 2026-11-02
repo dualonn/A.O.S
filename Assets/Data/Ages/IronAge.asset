@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: IronAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Iron Age
+  order: 2
+  description: Iron tools and weapons. Swordsmen hold the line while the first archers
+    shoot from behind.
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 1d64b8f3f5598cc48a5b9f9eb4be76cc, type: 2}
+    buildings:
+    - building: {fileID: 11400000, guid: 05b52b464aef59544a9e2194253128d9, type: 2}
+      count: 3
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 150
+  playerUnits:
+  - {fileID: 11400000, guid: 08f5b130efed1c945a363c13ff88ac41, type: 2}
+  - {fileID: 11400000, guid: e8fb4e2e107726c478722734b6857046, type: 2}
+  - {fileID: 11400000, guid: 650a29bfd14b1424489e9f61b0146530, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 174f17cc2a1d4b74bb7fc83ae1f4ecba, type: 2}
+  - {fileID: 11400000, guid: 3cf39a19832baff43a6d6774b5956f3d, type: 2}

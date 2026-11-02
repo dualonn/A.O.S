@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: ClassicalAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Classical Age
+  order: 3
+  description: Legions, cavalry and engineering. Gold coin pays for the finest troops.
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c4e55103c9ccc2d42be7c5afbf9616e8, type: 2}
+    buildings:
+    - building: {fileID: 11400000, guid: cc516d6c404cbd34792522dc3b973493, type: 2}
+      count: 3
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 200
+  playerUnits:
+  - {fileID: 11400000, guid: 1a71abb3b6961e64e8f9d679d0f12b76, type: 2}
+  - {fileID: 11400000, guid: 273587af2990fbc4287223b4036f2160, type: 2}
+  - {fileID: 11400000, guid: d01def03e816aa141a385866170db336, type: 2}
+  - {fileID: 11400000, guid: 7d6155ca683158a4ab32208df7e4eb0f, type: 2}
+  - {fileID: 11400000, guid: 4b9b3bb3eab84774994ac9437569ea84, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: b453a588fe362ae4d9ef9ae0372923a0, type: 2}
+  - {fileID: 11400000, guid: b0a46612329356a4f96dff4b5b26666f, type: 2}

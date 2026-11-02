@@ -94,6 +94,9 @@ public abstract class Unit : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() => All.Clear();
 
+    /// <summary>Every living unit (read only).</summary>
+    public static IReadOnlyList<Unit> Living => All;
+
     protected virtual void OnEnable() => All.Add(this);
 
     protected virtual void OnDisable() => All.Remove(this);
@@ -351,10 +354,20 @@ public abstract class Unit : MonoBehaviour
         }
         Vector2 step = push * SeparationStrength * Time.deltaTime + knockVelocity * Time.deltaTime;
         Vector3 nudged = pos + new Vector3(step.x, step.y, 0);
-        // Never get shoved into water.
-        if (MapNavigator.Current == null || MapNavigator.Current.IsWalkable(nudged))
+        var nav = MapNavigator.Current;
+        if (nav == null)
         {
             transform.position = nudged;
+        }
+        else if (!nav.IsWalkable(pos))
+        {
+            // Ended up in water somehow: wade back to dry land.
+            transform.position = nav.Step(pos, pos, moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // Never get shoved into water; slide along the shore instead.
+            transform.position = nav.Step(pos, nudged, step.magnitude);
         }
         knockVelocity = Vector2.MoveTowards(knockVelocity, Vector2.zero, KnockbackDrag * Time.deltaTime);
     }
@@ -428,19 +441,25 @@ public abstract class Unit : MonoBehaviour
     /// <summary>Step towards a point. Returns true once the point is reached.</summary>
     protected bool MoveTowards(Vector3 destination, float speed, bool faceMovement = true)
     {
+        var nav = MapNavigator.Current;
+        // Can't stand in water: aim for the nearest dry spot instead.
+        if (nav != null && !nav.IsWalkable(destination))
+        {
+            destination = nav.NearestWalkable(destination);
+        }
         destination.z = transform.position.z;
         // On the free mode map, route around water and slow down on hills.
         Vector3 next = pathFollower.NextPoint(transform.position, destination);
         next.z = transform.position.z;
-        if (MapNavigator.Current != null)
+        if (nav != null)
         {
-            speed *= MapNavigator.Current.SpeedFactor(transform.position);
+            speed *= nav.SpeedFactor(transform.position);
+            transform.position = nav.Step(transform.position, next, speed * Time.deltaTime);
         }
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            next,
-            speed * Time.deltaTime
-        );
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, next, speed * Time.deltaTime);
+        }
         // Close enough counts as arrived (separation pushes can keep us a hair away).
         bool arrived = Vector2.Distance(transform.position, destination) < 0.05f;
         SetMoving(!arrived);

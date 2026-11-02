@@ -17,12 +17,94 @@ MonoBehaviour:
   pathTile: {fileID: 21300000, guid: 44813d148fca2d743b7c457fc305964f, type: 3}
   waterTile: {fileID: 21300000, guid: efa07fd4d4cf23c4c8317899b606e684, type: 3}
   hillTile: {fileID: 21300000, guid: 4fd14bd9b86c15b49842b986babfb442, type: 3}
+  grassVariants:
+  - {fileID: 21300000, guid: 5cf5fd615d64ec94e8a116791d8f167a, type: 3}
+  - {fileID: 21300000, guid: 9210ff574e9a2a446b758ec15f4c7bfa, type: 3}
+  - {fileID: 21300000, guid: bc739a2659b4a2043aa32a3e7c9552a4, type: 3}
+  - {fileID: 21300000, guid: d1745053006843d49b6d685a3af35865, type: 3}
+  - {fileID: 21300000, guid: ec220efa2262d5d42b7afc60d2f257f1, type: 3}
+  hillShapes:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 5b90ac31456372645a305f3b49fc7d3a, type: 3}
+  - {fileID: 21300000, guid: def06ab80fcbed149a8e88ecbfd23af9, type: 3}
+  - {fileID: 21300000, guid: 7048f42fdf12e7148b17544c9ac004e2, type: 3}
+  - {fileID: 21300000, guid: 66ee7cde156444b4b8e912793aadd484, type: 3}
+  - {fileID: 21300000, guid: 2abcefe0daa8df04d97b19a1a1ffb4d8, type: 3}
+  - {fileID: 21300000, guid: 3420a0152195d4c478d8727d7f745e2d, type: 3}
+  - {fileID: 21300000, guid: 65d460828050d2d4d963ccb580a66958, type: 3}
+  - {fileID: 21300000, guid: 635a9c23c96b66e4c9eb8e9a9af5b387, type: 3}
+  - {fileID: 21300000, guid: a5e16f4380624d84b8385f26f94e5d07, type: 3}
+  - {fileID: 21300000, guid: d4dae7b174effba4e9574bc66cee3009, type: 3}
+  - {fileID: 21300000, guid: a7e1e7bfcf542bb43800f31de02413a2, type: 3}
+  - {fileID: 21300000, guid: ca0d19fffe8bea141853ff38ffa833c5, type: 3}
+  - {fileID: 21300000, guid: ad8e41954832237469ce905593a3d07d, type: 3}
+  - {fileID: 21300000, guid: 04a0dc683a1d466439ee5ce9f7ad8028, type: 3}
+  - {fileID: 21300000, guid: 1fbf9cf878448aa49b49e76ef58575e4, type: 3}
+  hillShapes2:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: 5c4d6b86e369afa448ac511b535a025f, type: 3}
+  - {fileID: 21300000, guid: 7d8f900f9ce65bf4e957f2558003d28f, type: 3}
+  - {fileID: 21300000, guid: d2a386f0e95e4f14288435d04e2d933b, type: 3}
+  - {fileID: 21300000, guid: ce619c850664c3c45b0bfadbbac55b16, type: 3}
+  - {fileID: 21300000, guid: e2dc65fc9b2cd1844800edc31c300906, type: 3}
+  - {fileID: 21300000, guid: 95565ef3a3503e7429cef6406a59101a, type: 3}
+  - {fileID: 21300000, guid: b874152da8f4bb44aaab3b769096e950, type: 3}
+  - {fileID: 21300000, guid: 95b7ba5da45e962409175cdd175a4f9f, type: 3}
+  - {fileID: 21300000, guid: 9bfd4f72b05c79949950029ef4995b2a, type: 3}
+  - {fileID: 21300000, guid: 4f17f488d3a252543acfd471ddf78278, type: 3}
+  - {fileID: 21300000, guid: 0982ea9f83313a94bb1f3d734d5166f4, type: 3}
+  - {fileID: 21300000, guid: 8cea6eda84ec0174bbb0638d82de6476, type: 3}
+  - {fileID: 21300000, guid: 9d24dc8128f046c4f8b7680c2f9f5a11, type: 3}
+  - {fileID: 21300000, guid: 70cbde623f88e214f94f468a5faadbe7, type: 3}
+  - {fileID: 21300000, guid: 5f0f1435d5160134b95f1b6a3a16f98c, type: 3}
+  hillShapes3:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: afc666f251df6d44db721b810cace0e6, type: 3}
+  - {fileID: 21300000, guid: 621b489551933c74894916209401921d, type: 3}
+  - {fileID: 21300000, guid: 335254b99f3861d4ba28cf2d5e03dd3d, type: 3}
+  - {fileID: 21300000, guid: eee877a5033406e4f90f567bffc5b75d, type: 3}
+  - {fileID: 21300000, guid: fe965da37a9f7cf4f8f46f800613cdeb, type: 3}
+  - {fileID: 21300000, guid: 80f03a46525307546b41df0b32905cfb, type: 3}
+  - {fileID: 21300000, guid: 8a1b60d4377a42747bf4cbed8a81552b, type: 3}
+  - {fileID: 21300000, guid: f655d22a0c78196469d5f7c6e25286d7, type: 3}
+  - {fileID: 21300000, guid: 65dd7f7cf7d6004429fc4b8c2063f59b, type: 3}
+  - {fileID: 21300000, guid: e0296b456e6e8cd4e92d800fa6df4c2b, type: 3}
+  - {fileID: 21300000, guid: bdd5fd01c7e32d3439c8b57726b692d9, type: 3}
+  - {fileID: 21300000, guid: 45bfc258421ecd6489e02c7b408ad6c9, type: 3}
+  - {fileID: 21300000, guid: 04be39340cf15cb43842d9060b9a2bc1, type: 3}
+  - {fileID: 21300000, guid: f6eab5b5faee5ac46b9b88508b460547, type: 3}
+  - {fileID: 21300000, guid: ffce0b0f23462ea4797c655082c03ff5, type: 3}
+  hillFullVariants:
+  - {fileID: 21300000, guid: 75db2faa25b92d84a953fbff33c89d7e, type: 3}
+  - {fileID: 21300000, guid: 52fdce55a3d19de4b9fcb62d2674221e, type: 3}
+  waterFrames:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: d009ce1d1dfe53e43893d19137acaa1e, type: 3}
+  - {fileID: 21300000, guid: ca439952cfe867a4c832075590778cc0, type: 3}
+  - {fileID: 21300000, guid: 2ddd07b5111ec8148b113f147d0cadbd, type: 3}
+  - {fileID: 21300000, guid: bd184a25c1699c642bbb79155e7a6134, type: 3}
+  - {fileID: 21300000, guid: 80d12015198da8d4faeb2526ceafba2d, type: 3}
+  - {fileID: 21300000, guid: 7fd9efa13cbecb6469fc2839e7cc57ed, type: 3}
+  - {fileID: 21300000, guid: ccbb0817fe04840479f06d711ca40933, type: 3}
+  - {fileID: 21300000, guid: 607a27285b0483c48a8c758f48b06825, type: 3}
+  - {fileID: 21300000, guid: 98403156f0af12c4192fb324cecc7eca, type: 3}
+  - {fileID: 21300000, guid: b31604ea70b727b408983e9e7a0a056d, type: 3}
+  - {fileID: 21300000, guid: eed66e82e96fbd046bc1cfff5dcad2a3, type: 3}
+  - {fileID: 21300000, guid: 8a28c80211ee94b46b2dcd276248f301, type: 3}
+  - {fileID: 21300000, guid: dd95c60276a73e542845dfed9388c9ee, type: 3}
+  - {fileID: 21300000, guid: 2acc292a3ea092c449be8ece96daa46b, type: 3}
+  - {fileID: 21300000, guid: a0a42115ce5c86448b89147be2fa4f05, type: 3}
+  waterFrameCount: 1
+  waterFps: 3
+  waterMaterial: {fileID: 2100000, guid: 5558d2e262e814643b8d69fbe5359282, type: 2}
   trees:
   - {fileID: 21300000, guid: 46b8baee51dff3d438622d918c9020c6, type: 3}
   - {fileID: 21300000, guid: c06459b56106f044f99565423e485e63, type: 3}
   rocks:
-  - {fileID: 21300000, guid: 07a850bebae54dd418f3d173c928bf23, type: 3}
-  - {fileID: 21300000, guid: c798c10300fc890408926f69e7ca6a5e, type: 3}
+  - {fileID: 21300000, guid: 8e91ca91f3d4b864682c8d8bcd64b33d, type: 3}
+  - {fileID: 21300000, guid: 0117a36b737430446a8c15c59667efed, type: 3}
+  - {fileID: 21300000, guid: f2002975ab6cede4e98c59f942d6f19e, type: 3}
+  - {fileID: 21300000, guid: dac09de30cf3dac46bcdb746fd504cfd, type: 3}
   bushes:
   - {fileID: 21300000, guid: ca0259682ec7e384f9cd1dfa286caad6, type: 3}
   villagerIdle: {fileID: 21300000, guid: 711dab0c024751a4a9bacfaaddffeeef, type: 3}

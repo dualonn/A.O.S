@@ -1,0 +1,148 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: StoneHouse
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: StoneHouse
+  displayName: Stone House
+  description: Solid stone walls and a chimney. Houses more people.
+  icon: {fileID: 21300000, guid: d6f633cdbee3da2439c8e72c706a1751, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d6f633cdbee3da2439c8e72c706a1751, type: 3}
+    - {fileID: 21300000, guid: de83518174063d146a4eda0e1f175945, type: 3}
+    - {fileID: 21300000, guid: 8aa7bf9c5301dd447a189a8cbb971e74, type: 3}
+    - {fileID: 21300000, guid: c59aad62642637c4d88ecb49785f75df, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 576e1a7e2caabf94993aacadc96e804e, type: 3}
+    - {fileID: 21300000, guid: d05336353cbfae74f8586ea0be1526a8, type: 3}
+    - {fileID: 21300000, guid: bff662048e6357c439da00427efbed8d, type: 3}
+    - {fileID: 21300000, guid: 2dc65012b3901bc4baa96e95db3ee0b9, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 05b3efe69f6ccf44d9cd18811aa8b606, type: 3}
+    - {fileID: 21300000, guid: 601189487e3ad40469e0badbf77d8357, type: 3}
+    - {fileID: 21300000, guid: a81d3a42b2a55eb418ddde5c8a844181, type: 3}
+    - {fileID: 21300000, guid: 47a5dd1dda35e684a875c9725e723a5b, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 140
+  upgrades:
+  - name: Tiled Roof
+    description: 'Fired clay tiles: dry and fireproof.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 2
+    extraHealth: 60
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Courtyard
+    description: An enclosed yard with an olive tree.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 4
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 91807f902d8f18b439df8c5a3df4ad99, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 10
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 300
+  housing: 18
+  workers: 0
+  production: []
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

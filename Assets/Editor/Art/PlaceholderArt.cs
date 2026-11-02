@@ -62,6 +62,7 @@ public static partial class PlaceholderArt
             var resourceDrawers = new Dictionary<string, Action<Painter>>
             {
                 { "Food", DrawFoodIcon }, { "Wood", DrawWoodIcon }, { "Stone", DrawStoneIcon }, { "Bronze", DrawBronzeIcon },
+                { "Iron", DrawIronIcon }, { "Gold", DrawGoldIcon },
             };
             foreach (var res in database.resources)
             {
@@ -85,18 +86,14 @@ public static partial class PlaceholderArt
         art.pathTile = Tile("World/Path.png", 1, 1.6f, DrawPath);
         art.waterTile = Tile("World/Water.png", 1, 1, DrawWater);
         art.hillTile = Tile("World/Hill.png", 1, 1, DrawHill);
+        GenerateTerrain(art);
         var berryBush = Prop("World/BerryBush.png", 1f, 0.8f, DrawBerryBush);
-        var copperOre = Prop("World/CopperOre.png", 1f, 0.7f, DrawCopperOre);
         art.trees = new List<Sprite>
         {
             Prop("World/TreeRound.png", 1.4f, 2f, DrawRoundTree),
             Prop("World/TreePine.png", 1.2f, 2.2f, DrawPineTree),
         };
-        art.rocks = new List<Sprite>
-        {
-            Prop("World/RockA.png", 1f, 0.7f, p => DrawRock(p, 1)),
-            Prop("World/RockB.png", 0.8f, 0.6f, p => DrawRock(p, 2)),
-        };
+        GenerateDepositArt(art, database);   // stone and ores (DepositArt.cs)
         art.bushes = new List<Sprite> { Prop("World/Bush.png", 1f, 0.7f, DrawBush) };
 
         var scaffoldPainter = new Painter(1, 1, BuildingPPU);
@@ -125,48 +122,8 @@ public static partial class PlaceholderArt
         art.researchIcon = Icon("Icons/Research.png", DrawScrollIcon);
         EditorUtility.SetDirty(art);
 
-        // Troops and raiders in the same style and scale as everything else
-        var clubmanDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/Clubman.asset");
-        var raiderDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/EnemyClubman.asset");
-        if (clubmanDef != null)
-        {
-            clubmanDef.prefab = BuildWarrior(ClubmanStyle, false, clubmanDef);
-            clubmanDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Clubman/Clubman_Idle.png");
-            EditorUtility.SetDirty(clubmanDef);
-        }
-        if (raiderDef != null)
-        {
-            raiderDef.prefab = BuildWarrior(RaiderStyle, true, raiderDef);
-            raiderDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Raider/Raider_Idle.png");
-            EditorUtility.SetDirty(raiderDef);
-        }
-
-        // Bronze Age units, the Watchtower crew and its arrows
-        var spearmanDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/Spearman.asset");
-        var bronzeRaiderDef = AssetDatabase.LoadAssetAtPath<UnitDefinition>("Assets/Data/Units/BronzeRaider.asset");
-        if (spearmanDef != null)
-        {
-            spearmanDef.prefab = BuildWarrior(SpearmanStyle, false, spearmanDef);
-            spearmanDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Spearman/Spearman_Idle.png");
-            EditorUtility.SetDirty(spearmanDef);
-        }
-        if (bronzeRaiderDef != null)
-        {
-            bronzeRaiderDef.prefab = BuildWarrior(BronzeRaiderStyle, true, bronzeRaiderDef);
-            bronzeRaiderDef.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/BronzeRaider/BronzeRaider_Idle.png");
-            EditorUtility.SetDirty(bronzeRaiderDef);
-        }
-        var arrow = ArrowSprite();
-        var crew = BuildOperator(TowerArcherStyle);
-        var watchtower = database != null ? database.GetBuilding("Watchtower") : null;
-        if (watchtower != null)
-        {
-            watchtower.towerProjectile = arrow;
-            watchtower.operatorIdle = crew.idle;
-            watchtower.operatorShoot = crew.shoot;
-            watchtower.operatorReleaseFrame = 2;
-            EditorUtility.SetDirty(watchtower);
-        }
+        // Troops, raiders and tower crews for every age
+        GenerateWarriorsAndCrews(database);
 
         // Deposit sprites on the map
         if (database != null)
@@ -178,8 +135,6 @@ public static partial class PlaceholderArt
                 {
                     case "Forest": deposit.sprites = new List<Sprite>(art.trees); break;
                     case "Berries": deposit.sprites = new List<Sprite> { berryBush }; break;
-                    case "Stone": deposit.sprites = new List<Sprite>(art.rocks); break;
-                    case "CopperOre": deposit.sprites = new List<Sprite> { copperOre }; break;
                 }
                 EditorUtility.SetDirty(deposit);
             }
@@ -192,7 +147,7 @@ public static partial class PlaceholderArt
     // ---------- Saving ----------
 
     private static Sprite Save(Painter painter, string relativePath, float ppu, Vector2 pivot,
-        bool tile = false, Vector4 border = default)
+        bool tile = false, Vector4 border = default, bool clamp = false)
     {
         string path = $"{Root}/{relativePath}";
         File.WriteAllBytes(path, painter.ToTexture().EncodeToPNG());
@@ -206,7 +161,7 @@ public static partial class PlaceholderArt
         importer.alphaIsTransparency = true;
         importer.textureCompression = TextureImporterCompression.Uncompressed;
         importer.filterMode = FilterMode.Bilinear;
-        importer.wrapMode = tile ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
+        importer.wrapMode = tile && !clamp ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
 
         var settings = new TextureImporterSettings();
         importer.ReadTextureSettings(settings);
@@ -295,18 +250,6 @@ public static partial class PlaceholderArt
         }
     }
 
-    private static void DrawCopperOre(Painter p)
-    {
-        Color copper = new Color(0.85f, 0.5f, 0.25f);
-        Color verdigris = new Color(0.35f, 0.7f, 0.6f);
-        p.Ellipse(V(0.5f, 0.1f), V(0.45f, 0.08f), Shadow);
-        p.OutlinedPolygon(new[] { V(0.08f, 0.08f), V(0.16f, 0.45f), V(0.45f, 0.62f), V(0.8f, 0.5f), V(0.92f, 0.08f) }, StoneDark);
-        foreach (var (c, col) in new[] { (V(0.3f, 0.3f), copper), (V(0.55f, 0.42f), verdigris), (V(0.7f, 0.25f), copper), (V(0.42f, 0.18f), verdigris), (V(0.62f, 0.3f), copper) })
-        {
-            p.OutlinedCircle(c, 0.05f, col);
-        }
-    }
-
     private static void DrawGrass(Painter p, Color baseColor, int seed)
     {
         p.Box(V(0.5f, 0.5f), V(1, 1), 0, baseColor);
@@ -359,22 +302,6 @@ public static partial class PlaceholderArt
         p.OutlinedPolygon(new[] { V(0.32f, 1.45f), V(0.88f, 1.45f), V(0.6f, 2.12f) }, LeafLight);
     }
 
-    private static void DrawRock(Painter p, int variant)
-    {
-        if (variant == 1)
-        {
-            p.Ellipse(V(0.5f, 0.1f), V(0.45f, 0.08f), Shadow);
-            p.OutlinedPolygon(new[] { V(0.08f, 0.08f), V(0.18f, 0.42f), V(0.45f, 0.62f), V(0.78f, 0.52f), V(0.92f, 0.08f) }, Stone);
-            p.Polygon(new[] { V(0.25f, 0.42f), V(0.45f, 0.58f), V(0.6f, 0.52f), V(0.4f, 0.4f) }, StoneLight);
-        }
-        else
-        {
-            p.Ellipse(V(0.4f, 0.1f), V(0.36f, 0.07f), Shadow);
-            p.OutlinedPolygon(new[] { V(0.08f, 0.08f), V(0.2f, 0.4f), V(0.55f, 0.5f), V(0.72f, 0.08f) }, StoneDark);
-            p.Polygon(new[] { V(0.22f, 0.36f), V(0.5f, 0.45f), V(0.45f, 0.35f) }, Stone);
-        }
-    }
-
     private static void DrawBush(Painter p)
     {
         p.Ellipse(V(0.5f, 0.1f), V(0.42f, 0.07f), Shadow);
@@ -400,346 +327,6 @@ public static partial class PlaceholderArt
         p.Ellipse(V(0.35f, 0.08f), V(0.18f, 0.05f), Shadow);
         p.OutlinedLine(V(0.2f, 0.08f), V(0.2f, 1.25f), 0.04f, WoodDark);
         p.OutlinedPolygon(new[] { V(0.22f, 1.22f), V(0.62f, 1.08f), V(0.22f, 0.92f) }, Blue);
-    }
-
-    // ---------- Warriors (troops and raiders) ----------
-
-    private enum WarPose { Idle, StrideA, Pass, StrideB, Windup, Raised, Strike, Recover, Stagger, Falling, Down }
-
-    /// <summary>
-    /// A classic stick figure (line limbs, round head) in a team colour; all the detail is gear.
-    /// </summary>
-    private class WarriorStyle
-    {
-        public string name;
-        public Color ink;      // body colour = team colour
-        public Color gear;     // headband, wraps, belt
-        public bool feather;   // raider extras
-        public bool necklace;
-        public Weapon weapon = Weapon.Club;
-        public bool helmet;    // bronze helmet
-        public bool shield;    // round bronze shield
-        public Color crest = new Color(0, 0, 0, 0);
-    }
-
-    private enum Weapon { Club, Spear, Bow }
-
-    private static readonly WarriorStyle SpearmanStyle = new WarriorStyle
-    {
-        name = "Spearman", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f),
-        weapon = Weapon.Spear, helmet = true, shield = true, crest = new Color(0.22f, 0.45f, 0.9f)
-    };
-
-    private static readonly WarriorStyle BronzeRaiderStyle = new WarriorStyle
-    {
-        name = "BronzeRaider", ink = new Color(0.78f, 0.13f, 0.12f), gear = new Color(0.18f, 0.12f, 0.08f),
-        weapon = Weapon.Spear, helmet = true, shield = true, necklace = true, crest = new Color(0.15f, 0.1f, 0.08f)
-    };
-
-    private static readonly WarriorStyle TowerArcherStyle = new WarriorStyle
-    {
-        name = "TowerArcher", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f), weapon = Weapon.Bow
-    };
-
-    private static readonly WarriorStyle ClubmanStyle = new WarriorStyle
-    {
-        name = "Clubman", ink = new Color(0.08f, 0.07f, 0.07f), gear = new Color(0.22f, 0.45f, 0.9f)
-    };
-
-    private static readonly WarriorStyle RaiderStyle = new WarriorStyle
-    {
-        name = "Raider", ink = new Color(0.78f, 0.13f, 0.12f), gear = new Color(0.18f, 0.12f, 0.08f), feather = true, necklace = true
-    };
-
-    /// <summary>Generate a warrior's frames and build a prefab for it. Returns the prefab.</summary>
-    private static GameObject BuildWarrior(WarriorStyle style, bool isEnemy, UnitDefinition definition)
-    {
-        string dir = $"Units/{style.name}";
-        Directory.CreateDirectory(Path.Combine(Root, dir));
-        Sprite Frame(string frame, WarPose pose)
-        {
-            // Wide canvas so swings and falling bodies aren't clipped; feet stay at the centre.
-            var p = new Painter(1.6f, 1.2f, 160) { Outline = 0.018f };
-            DrawWarrior(p, pose, style);
-            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, new Vector2(0.5f, 0.05f));
-        }
-
-        var idle = Frame("Idle", WarPose.Idle);
-        var walk = new List<Sprite> { Frame("Walk0", WarPose.StrideA), Frame("Walk1", WarPose.Pass), Frame("Walk2", WarPose.StrideB), Frame("Walk3", WarPose.Pass) };
-        var attack = new List<Sprite> { Frame("Attack0", WarPose.Windup), Frame("Attack1", WarPose.Raised), Frame("Attack2", WarPose.Strike), Frame("Attack3", WarPose.Recover) };
-        var death = new List<Sprite> { Frame("Death0", WarPose.Stagger), Frame("Death1", WarPose.Falling), Frame("Death2", WarPose.Down) };
-
-        // Prefab: sprite + animation + combat + a small collider for targeting and hovering.
-        var go = new GameObject($"{style.name}Unit");
-        go.tag = isEnemy ? "enemy" : "troop";
-        var sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = idle;
-        var visual = go.AddComponent<SpriteUnitVisual>();
-        visual.idle = idle;
-        visual.walk = walk;
-        visual.attack = attack;
-        visual.death = death;
-        visual.impactFrame = 2;
-        visual.barHeight = 0.95f;
-        var col = go.AddComponent<CircleCollider2D>();
-        col.isTrigger = true;
-        col.radius = 0.25f;
-        col.offset = new Vector2(0, 0.4f);
-        go.AddComponent<MouseTouching>();
-        Unit unit = isEnemy ? go.AddComponent<Enemy>() : (Unit)go.AddComponent<Troop>();
-        unit.definition = definition;
-        unit.personalSpace = 0.38f;
-
-        string prefabPath = $"Assets/Prefabs/Units/{style.name}Unit.prefab";
-        Directory.CreateDirectory("Assets/Prefabs/Units");
-        var prefab = PrefabUtility.SaveAsPrefabAsset(go, prefabPath);
-        UnityEngine.Object.DestroyImmediate(go);
-        return prefab;
-    }
-
-    private static void DrawWarrior(Painter p, WarPose pose, WarriorStyle s)
-    {
-        const float limb = 0.042f;
-        // Death frames lean the whole figure back around the feet.
-        float lean = pose == WarPose.Stagger ? -18f : pose == WarPose.Falling ? -55f : pose == WarPose.Down ? -88f : 0f;
-        Vector2 pivot = V(0.5f, 0.06f);
-        float rad = lean * Mathf.Deg2Rad;
-        // The figure is designed around x = 0.5; shift it to the middle of the 1.6-wide canvas.
-        Vector2 shift = V(0.3f, 0f);
-        Vector2 T(Vector2 v) => v + shift;
-        Vector2 R(Vector2 v)
-        {
-            Vector2 d = v - pivot;
-            return shift + pivot + new Vector2(d.x * Mathf.Cos(rad) - d.y * Mathf.Sin(rad), d.x * Mathf.Sin(rad) + d.y * Mathf.Cos(rad));
-        }
-        if (pose == WarPose.Down)
-        {
-            pivot = V(0.5f, 0.12f); // lie a little above the ground line
-        }
-
-        Vector2 hip = V(0.5f, 0.38f), shoulder = V(0.5f, 0.63f), head = V(0.5f, 0.77f);
-        Vector2 footL, footR, handL, handR, clubTip;
-        switch (pose)
-        {
-            case WarPose.StrideA:
-                footL = V(0.37f, 0.06f); footR = V(0.63f, 0.06f); handL = V(0.38f, 0.46f); handR = V(0.64f, 0.5f); clubTip = V(0.78f, 0.78f); break;
-            case WarPose.StrideB:
-                footL = V(0.63f, 0.06f); footR = V(0.37f, 0.06f); handL = V(0.62f, 0.46f); handR = V(0.58f, 0.48f); clubTip = V(0.72f, 0.8f); break;
-            case WarPose.Pass:
-                footL = V(0.47f, 0.06f); footR = V(0.54f, 0.11f); handL = V(0.45f, 0.44f); handR = V(0.62f, 0.48f); clubTip = V(0.76f, 0.79f); break;
-            case WarPose.Windup:
-                footL = V(0.38f, 0.06f); footR = V(0.62f, 0.06f); handL = V(0.44f, 0.6f); handR = V(0.4f, 0.62f); clubTip = V(0.16f, 0.72f); break;
-            case WarPose.Raised:
-                footL = V(0.38f, 0.06f); footR = V(0.62f, 0.06f); handL = V(0.5f, 0.86f); handR = V(0.53f, 0.88f); clubTip = V(0.32f, 1.0f); break;
-            case WarPose.Strike:
-                footL = V(0.36f, 0.06f); footR = V(0.66f, 0.06f); handL = V(0.7f, 0.58f); handR = V(0.72f, 0.56f); clubTip = V(0.95f, 0.3f); break;
-            case WarPose.Recover:
-                footL = V(0.38f, 0.06f); footR = V(0.64f, 0.06f); handL = V(0.62f, 0.46f); handR = V(0.66f, 0.45f); clubTip = V(0.86f, 0.2f); break;
-            default: // Idle and death frames
-                footL = V(0.42f, 0.06f); footR = V(0.58f, 0.06f); handL = V(0.38f, 0.44f); handR = V(0.63f, 0.47f); clubTip = V(0.75f, 0.78f); break;
-        }
-
-        p.Ellipse(T(V(pose == WarPose.Down ? 0.8f : 0.5f, 0.06f)), V(pose == WarPose.Down ? 0.36f : 0.16f, 0.035f), Shadow);
-
-        // Feather behind the head (drawn first so the head overlaps it)
-        if (s.feather)
-        {
-            p.OutlinedLine(R(V(0.45f, 0.82f)), R(V(0.36f, 0.98f)), 0.03f, new Color(0.95f, 0.92f, 0.85f));
-            p.Line(R(V(0.37f, 0.96f)), R(V(0.355f, 0.99f)), 0.03f, new Color(0.15f, 0.12f, 0.1f));
-        }
-        // Headband tails flowing behind
-        p.Line(R(V(0.43f, 0.79f)), R(V(0.33f, 0.74f)), 0.022f, s.gear);
-        p.Line(R(V(0.43f, 0.79f)), R(V(0.35f, 0.7f)), 0.022f, s.gear);
-
-        // The stickman: legs, spine, arms, round head
-        p.Line(R(hip), R(footL), limb, s.ink);
-        p.Line(R(hip), R(footR), limb, s.ink);
-        p.Line(R(hip), R(V(0.5f, 0.69f)), limb, s.ink);
-        // A shield stays braced in front of the chest, so it never covers the face mid-thrust.
-        if (s.shield && pose != WarPose.Down && pose != WarPose.Falling)
-        {
-            handL = new Vector2(Mathf.Clamp(handL.x, 0.54f, 0.6f), Mathf.Min(handL.y, 0.5f));
-        }
-        // Arms: clubs use both pose hands; spears draw their own weapon arm; bows draw both their own.
-        if (s.weapon != Weapon.Bow)
-        {
-            p.Line(R(shoulder), R(handL), limb, s.ink);
-        }
-        if (s.weapon == Weapon.Club)
-        {
-            p.Line(R(shoulder), R(handR), limb, s.ink);
-        }
-        p.Circle(R(head), 0.085f, s.ink);
-
-        // Gear
-        p.Line(R(V(0.425f, 0.785f)), R(V(0.575f, 0.785f)), 0.026f, s.gear);          // headband
-        p.Line(R(V(0.455f, 0.385f)), R(V(0.545f, 0.385f)), 0.03f, s.gear);           // belt
-        p.Line(R(V(0.5f, 0.385f)), R(V(0.53f, 0.31f)), 0.022f, s.gear);              // belt tail
-        Vector2 Wrist(Vector2 hand) => Vector2.Lerp(shoulder, hand, 0.82f);
-        if (s.weapon == Weapon.Club)
-        {
-            p.Circle(R(Wrist(handL)), 0.022f, s.gear);                                // wrist wraps
-            p.Circle(R(Wrist(handR)), 0.022f, s.gear);
-        }
-        if (s.necklace)
-        {
-            // Bone teeth hanging on the chest
-            p.Line(R(V(0.455f, 0.64f)), R(V(0.545f, 0.64f)), 0.01f, s.gear);
-            for (int i = -1; i <= 1; i++)
-            {
-                Vector2 top = V(0.5f + i * 0.03f, 0.635f);
-                p.OutlinedLine(R(top), R(top + V(0, -0.035f)), 0.014f, new Color(0.96f, 0.94f, 0.86f));
-            }
-        }
-
-        bool dead = pose == WarPose.Down || pose == WarPose.Falling;
-        if (s.helmet)
-        {
-            // Bronze dome helmet with a crest
-            var dome = new List<Vector2>();
-            for (int i = 0; i <= 8; i++)
-            {
-                float a = Mathf.PI * i / 8f;
-                dome.Add(R(head + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 0.1f));
-            }
-            dome.Add(R(head + V(-0.1f, -0.02f)));
-            p.OutlinedPolygon(dome.ToArray(), Bronze2);
-            if (s.crest.a > 0)
-            {
-                p.OutlinedLine(R(head + V(-0.06f, 0.1f)), R(head + V(0.06f, 0.12f)), 0.04f, s.crest);
-            }
-        }
-        if (s.shield && !dead)
-        {
-            // Bronze Age shield: a tall wooden frame covered in spotted hide, with a rounded top
-            // (as carried by Egyptian and Sumerian spearmen), held in front of the body.
-            Vector2 c = handL + V(0.03f, 0.02f);
-            var outline = new List<Vector2>();
-            outline.Add(R(c + V(-0.085f, -0.19f)));
-            outline.Add(R(c + V(0.085f, -0.19f)));
-            for (int i = 0; i <= 6; i++)
-            {
-                float a = Mathf.PI * i / 6f;
-                outline.Add(R(c + V(0.085f * Mathf.Cos(a), 0.12f + 0.07f * Mathf.Sin(a))));
-            }
-            p.OutlinedPolygon(outline.ToArray(), Hide);
-            p.Circle(R(c + V(-0.03f, 0.08f)), 0.022f, WoodDark);
-            p.Circle(R(c + V(0.035f, -0.03f)), 0.026f, WoodDark);
-            p.Circle(R(c + V(-0.02f, -0.12f)), 0.018f, WoodDark);
-            p.Line(R(c + V(-0.085f, -0.19f)), R(c + V(-0.085f, 0.12f)), 0.012f, Wood);
-            p.Line(R(c + V(0.085f, -0.19f)), R(c + V(0.085f, 0.12f)), 0.012f, Wood);
-        }
-
-        if (dead)
-        {
-            // Dropped weapon on the ground
-            if (s.weapon == Weapon.Spear)
-            {
-                p.OutlinedLine(T(V(0.0f, 0.09f)), T(V(0.55f, 0.11f)), 0.03f, WoodLight);
-                p.OutlinedPolygon(new[] { T(V(0.55f, 0.07f)), T(V(0.68f, 0.11f)), T(V(0.55f, 0.15f)) }, Bronze2);
-            }
-            else if (s.weapon == Weapon.Club)
-            {
-                p.OutlinedLine(T(V(0.2f, 0.08f)), T(V(0.42f, 0.1f)), 0.035f, WoodLight);
-                p.OutlinedLine(T(V(0.38f, 0.1f)), T(V(0.55f, 0.12f)), 0.075f, Wood);
-            }
-            return;
-        }
-
-        if (s.weapon == Weapon.Club)
-        {
-            // Club: wrapped grip, then the knobbly head
-            Vector2 grip = Vector2.Lerp(handR, clubTip, 0.18f);
-            p.OutlinedLine(R(handR), R(Vector2.Lerp(handR, clubTip, 0.55f)), 0.035f, WoodLight);
-            p.Line(R(Vector2.Lerp(handR, clubTip, -0.04f)), R(grip), 0.045f, s.gear);
-            p.OutlinedLine(R(Vector2.Lerp(handR, clubTip, 0.5f)), R(clubTip), 0.075f, Wood);
-            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.78f)), 0.012f, WoodDark);
-            p.Circle(R(Vector2.Lerp(handR, clubTip, 0.9f)), 0.012f, WoodDark);
-        }
-        else if (s.weapon == Weapon.Spear)
-        {
-            // Spear: held level for the thrust, upright when idle or walking
-            Vector2 dir;
-            switch (pose)
-            {
-                case WarPose.Windup: dir = V(1f, 0.05f); handR = V(0.4f, 0.55f); break;
-                case WarPose.Raised: dir = V(1f, 0.1f); handR = V(0.45f, 0.6f); break;
-                case WarPose.Strike: dir = V(1f, -0.05f); handR = V(0.78f, 0.55f); break;
-                case WarPose.Recover: dir = V(1f, -0.15f); handR = V(0.65f, 0.5f); break;
-                default: dir = V(0.15f, 1f); break;
-            }
-            dir.Normalize();
-            p.Line(R(shoulder), R(handR), limb, s.ink); // the arm reaching the spear
-            Vector2 butt = handR - dir * 0.3f, tip = handR + dir * 0.55f;
-            p.OutlinedLine(R(butt), R(tip), 0.03f, WoodLight);
-            Vector2 side = new Vector2(-dir.y, dir.x);
-            p.OutlinedPolygon(new[] { R(tip - side * 0.05f), R(tip + dir * 0.14f), R(tip + side * 0.05f) }, Bronze2);
-            p.Circle(R(handR), 0.025f, s.gear);
-        }
-        else
-        {
-            // Bow (tower crews): aim forward, string drawn back on the draw frame
-            Vector2 bowHand, stringHand;
-            bool drawn = false, released = false;
-            switch (pose)
-            {
-                case WarPose.Windup: bowHand = V(0.68f, 0.6f); stringHand = V(0.6f, 0.62f); break;
-                case WarPose.Raised: bowHand = V(0.74f, 0.64f); stringHand = V(0.48f, 0.68f); drawn = true; break;
-                case WarPose.Strike: bowHand = V(0.74f, 0.64f); stringHand = V(0.42f, 0.7f); released = true; break;
-                case WarPose.Recover: bowHand = V(0.7f, 0.6f); stringHand = V(0.5f, 0.58f); break;
-                default: bowHand = V(0.62f, 0.5f); stringHand = V(0.4f, 0.45f); break;
-            }
-            p.Line(R(shoulder), R(bowHand), limb, s.ink);
-            p.Line(R(shoulder), R(stringHand), limb, s.ink);
-            Vector2 c = bowHand + V(-0.2f, 0);
-            Vector2 top = c + V(0.12f, 0.2f), bottom = c + V(0.12f, -0.2f);
-            Vector2 cw = R(c);
-            p.Draw(q => Mathf.Max(Mathf.Abs(SdCircle(q, cw, 0.23f)) - 0.016f, cw.x + 0.1f - q.x),
-                new Rect(cw.x - 0.3f, cw.y - 0.3f, 0.6f, 0.6f), WoodDark);
-            Vector2 nock = drawn ? stringHand : V(top.x, (top.y + bottom.y) / 2);
-            p.Line(R(top), R(nock), 0.008f, new Color(0.9f, 0.88f, 0.8f));
-            p.Line(R(nock), R(bottom), 0.008f, new Color(0.9f, 0.88f, 0.8f));
-            if (!released)
-            {
-                Vector2 from = drawn ? stringHand : nock;
-                p.Line(R(from), R(from + V(0.38f, 0)), 0.014f, WoodLight);
-                p.OutlinedPolygon(new[] { R(from + V(0.38f, -0.025f)), R(from + V(0.45f, 0)), R(from + V(0.38f, 0.025f)) }, Bronze2);
-            }
-            // Quiver on the back
-            p.OutlinedBox(0.36f + shift.x, 0.48f, 0.42f + shift.x, 0.66f, 0.01f, Hide);
-        }
-    }
-
-    /// <summary>Height (sprite units) where tower crew sprites are cut off, just under the hip.</summary>
-    private const float OperatorCut = 0.36f;
-
-    /// <summary>Frames for a tower crew member (idle + shoot), for a building to use.</summary>
-    private static (Sprite idle, List<Sprite> shoot) BuildOperator(WarriorStyle style)
-    {
-        string dir = $"Units/{style.name}";
-        Directory.CreateDirectory(Path.Combine(Root, dir));
-        Sprite Frame(string frame, WarPose pose)
-        {
-            var p = new Painter(1.6f, 1.2f, 160) { Outline = 0.018f };
-            DrawWarrior(p, pose, style);
-            // Crews stand behind a parapet: keep the waist up. The game draws them in front of the
-            // tower with this cut line on the parapet top, so roofs and posts can't hide them.
-            p.ClearBelow(OperatorCut);
-            return Save(p, $"{dir}/{style.name}_{frame}.png", 160, new Vector2(0.5f, 0.05f));
-        }
-        var idle = Frame("Idle", WarPose.Idle);
-        var shoot = new List<Sprite> { Frame("Shoot0", WarPose.Windup), Frame("Shoot1", WarPose.Raised), Frame("Shoot2", WarPose.Strike), Frame("Shoot3", WarPose.Recover) };
-        return (idle, shoot);
-    }
-
-    private static Sprite ArrowSprite()
-    {
-        var p = new Painter(0.6f, 0.14f, 160) { Outline = 0.012f };
-        p.Line(V(0.08f, 0.07f), V(0.48f, 0.07f), 0.016f, WoodLight);
-        p.OutlinedPolygon(new[] { V(0.48f, 0.035f), V(0.58f, 0.07f), V(0.48f, 0.105f) }, Bronze2);
-        p.Line(V(0.04f, 0.04f), V(0.14f, 0.07f), 0.02f, Color.white);
-        p.Line(V(0.04f, 0.1f), V(0.14f, 0.07f), 0.02f, Color.white);
-        return Save(p, "Units/Arrow.png", 160, new Vector2(0.5f, 0.5f));
     }
 
     // ---------- Villager (ambient townsfolk) ----------

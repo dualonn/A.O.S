@@ -31,7 +31,7 @@ public class GameDatabase : ScriptableObject
     [Tooltip("The map grows in square chunks of this many tiles.")]
     public int chunkSize = 16;
 
-    [Tooltip("Grow the map when the view gets this close (tiles) to its edge.")]
+    [Tooltip("Your units and buildings explore unexplored land within this many tiles of them.")]
     public int growWhenWithin = 12;
 
     public List<DepositType> deposits = new List<DepositType>();
@@ -61,9 +61,36 @@ public class GameDatabase : ScriptableObject
     public float firstWaveDelay = 180f;
     public Vector2 waveIntervalRange = new Vector2(150f, 240f);
 
-    [Tooltip("Wave strength = base + threat * perThreat.")]
-    public float waveBaseStrength = 2f;
-    public float waveStrengthPerThreat = 1f;
+    [Tooltip("Waves are sized in 'current-age enemies': this many, plus the bonuses below.")]
+    public float waveBaseUnits = 2f;
+
+    [Tooltip("Extra enemies (current-age worth) per technology researched.")]
+    public float waveUnitsPerTech = 0.3f;
+
+    [Tooltip("Extra enemies (current-age worth) per wave survived.")]
+    public float waveUnitsPerWaveSurvived = 0.2f;
+
+    [Tooltip("Waves never grow beyond this many current-age enemies' worth.")]
+    public float maxWaveUnits = 16f;
+
+    [Header("Free mode: raider spawning")]
+    [Tooltip("Buildings with at most this gap (tiles) between them belong to the same settlement.")]
+    public float settlementMergeDistance = 8f;
+
+    [Tooltip("Raiders never spawn within this many tiles of a settlement's buildings.")]
+    public float settlementSafeRadius = 34f;
+
+    [Tooltip("The safe zone grows this many tiles per building in the settlement...")]
+    public float settlementSafeRadiusPerBuilding = 0.25f;
+
+    [Tooltip("...up to this many extra tiles.")]
+    public float settlementSafeRadiusGrowthMax = 10f;
+
+    [Tooltip("Safe zone round an outpost: buildings off on their own with no housing or town centre.")]
+    public float outpostSafeRadius = 12f;
+
+    [Tooltip("Raiders spawn in a band this many tiles wide just outside a settlement's safe zone.")]
+    public float raidSpawnBand = 12f;
 
     [Header("Free mode: raids (enemies breaking through)")]
     [Tooltip("Share of each stockpile stolen by a full breakthrough.")]

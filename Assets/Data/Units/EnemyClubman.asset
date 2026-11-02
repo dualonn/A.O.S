@@ -20,11 +20,11 @@ MonoBehaviour:
   cost: 0
   populationCost: 1
   maxHealth: 100
-  moveSpeed: 0.9
-  attackPower: 20
+  moveSpeed: 0.8
+  attackPower: 12
   attackCooldown: 1
   attackRange: 0.55
   hitDelay: 0.3
   detectionRange: 2.5
   projectile: {fileID: 0}
-  projectileSpeed: 9
+  projectileSpeed: 10

@@ -145,12 +145,165 @@ public static class UIBuilder
     /// <summary>Call 'enter'/'exit' when the pointer moves over/off a UI element.</summary>
     public static void OnHover(GameObject target, UnityAction enter, UnityAction exit)
     {
-        var trigger = target.AddComponent<EventTrigger>();
-        var onEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        onEnter.callback.AddListener(_ => enter());
-        trigger.triggers.Add(onEnter);
-        var onExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
-        onExit.callback.AddListener(_ => exit());
-        trigger.triggers.Add(onExit);
+        // Only listens for enter/exit, so scroll and drag still reach a scroll list underneath
+        // (an EventTrigger would swallow them).
+        var hover = target.AddComponent<HoverHandler>();
+        hover.enter = enter;
+        hover.exit = exit;
+    }
+
+    /// <summary>
+    /// A vertical scroll list: a masked viewport, a slim scrollbar that hides when not needed and a
+    /// content area that stacks its children. Returns the content; size the list through 'element'.
+    /// </summary>
+    public static RectTransform ScrollList(string name, Transform parent, out LayoutElement element, float spacing = 6)
+    {
+        var root = Rect(name, parent);
+        element = root.gameObject.AddComponent<LayoutElement>();
+        element.preferredHeight = 200;
+        // An invisible backdrop so the wheel works over gaps between items too.
+        root.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, 0);
+
+        var viewport = Rect("Viewport", root);
+        Stretch(viewport);
+        viewport.gameObject.AddComponent<RectMask2D>();
+        viewport.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, 0);
+
+        var content = Rect("Content", viewport);
+        content.anchorMin = new Vector2(0, 1);
+        content.anchorMax = new Vector2(1, 1);
+        content.pivot = new Vector2(0.5f, 1);
+        content.anchoredPosition = Vector2.zero;
+        content.sizeDelta = Vector2.zero;
+        var layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
+        layout.spacing = spacing;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = true;
+        layout.childForceExpandHeight = false;
+        content.gameObject.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        var track = Panel("Scrollbar", root, new Color(1, 1, 1, 0.06f));
+        Anchor(track.rectTransform, new Vector2(1, 0), new Vector2(1, 1), new Vector2(1, 0.5f), Vector2.zero, new Vector2(8, 0));
+        var handle = Panel("Handle", track.transform, new Color(1, 1, 1, 0.35f));
+        Stretch(handle.rectTransform);
+        var bar = track.gameObject.AddComponent<Scrollbar>();
+        bar.handleRect = handle.rectTransform;
+        bar.targetGraphic = handle;
+        bar.direction = Scrollbar.Direction.BottomToTop;
+
+        var scroll = root.gameObject.AddComponent<ScrollRect>();
+        scroll.viewport = viewport;
+        scroll.content = content;
+        scroll.horizontal = false;
+        scroll.movementType = ScrollRect.MovementType.Clamped;
+        scroll.scrollSensitivity = 45;
+        scroll.verticalScrollbar = bar;
+        scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
+        scroll.verticalScrollbarSpacing = 4;
+        return content;
+    }
+}
+
+/// <summary>Pointer enter/exit callbacks without catching any other events.</summary>
+public class HoverHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
+    public UnityAction enter, exit;
+
+    private bool hovered;
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        hovered = true;
+        enter?.Invoke();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        hovered = false;
+        exit?.Invoke();
+    }
+
+    // Hidden while hovered (e.g. its section folded): drop the tooltip too.
+    private void OnDisable()
+    {
+        if (hovered)
+        {
+            hovered = false;
+            exit?.Invoke();
+        }
+    }
+}
+
+/// <summary>
+/// A titled section that folds open and shut: a header bar (arrow, title, a short note on the
+/// right) above a body that holds the section's items.
+/// </summary>
+public class CollapsibleSection
+{
+    public readonly RectTransform Root;
+    public readonly RectTransform Body;
+    public bool Open { get; private set; } = true;
+
+    /// <summary>Raised when the player clicks the header (not when the code sets it).</summary>
+    public event System.Action<bool> Toggled;
+
+    private readonly TextMeshProUGUI arrow;
+    private readonly TextMeshProUGUI note;
+
+    public CollapsibleSection(string name, Transform parent, string title, Color accent)
+    {
+        Root = UIBuilder.Rect(name, parent);
+        var layout = Root.gameObject.AddComponent<VerticalLayoutGroup>();
+        layout.spacing = 5;
+        layout.childControlWidth = true;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = true;
+        layout.childForceExpandHeight = false;
+
+        var header = UIBuilder.Button("Header", Root, () =>
+        {
+            SetOpen(!Open);
+            Toggled?.Invoke(Open);
+        }, out var titleLabel, 36, 19);
+        header.image.color = new Color(accent.r * 0.35f, accent.g * 0.35f, accent.b * 0.35f, 0.95f);
+        titleLabel.text = $"<b><color=#{ColorUtility.ToHtmlStringRGB(accent)}>{title}</color></b>";
+        titleLabel.rectTransform.offsetMin = new Vector2(30, titleLabel.rectTransform.offsetMin.y);
+
+        arrow = UIBuilder.Text("Arrow", header.transform, ">", 20, TextAlignmentOptions.Center);
+        UIBuilder.Anchor(arrow.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(16, 0), new Vector2(20, 20));
+        arrow.color = accent;
+
+        note = UIBuilder.Text("Note", header.transform, "", 15, TextAlignmentOptions.MidlineRight);
+        UIBuilder.Stretch(note.rectTransform, 10);
+        note.color = new Color(1, 1, 1, 0.65f);
+
+        Body = UIBuilder.Rect("Body", Root);
+        var bodyLayout = Body.gameObject.AddComponent<VerticalLayoutGroup>();
+        bodyLayout.spacing = 5;
+        bodyLayout.padding = new RectOffset(6, 0, 0, 4);
+        bodyLayout.childControlWidth = true;
+        bodyLayout.childControlHeight = true;
+        bodyLayout.childForceExpandWidth = true;
+        bodyLayout.childForceExpandHeight = false;
+        SetOpen(true);
+    }
+
+    public void SetOpen(bool open)
+    {
+        Open = open;
+        Body.gameObject.SetActive(open);
+        // The arrow points right when shut and down when open.
+        arrow.rectTransform.localEulerAngles = new Vector3(0, 0, open ? -90 : 0);
+    }
+
+    public void SetNote(string text) => note.text = text;
+
+    public void SetVisible(bool visible)
+    {
+        if (Root.gameObject.activeSelf != visible)
+        {
+            Root.gameObject.SetActive(visible);
+        }
     }
 }

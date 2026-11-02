@@ -18,6 +18,28 @@ public class ArtLibrary : ScriptableObject
     public Sprite pathTile;
     public Sprite waterTile;
     public Sprite hillTile;
+    [Header("Terrain (smooth edges)")]
+    [Tooltip("Plain ground variants, scattered at random. The first is the most common.")]
+    public List<Sprite> grassVariants = new List<Sprite>();
+
+    [Tooltip("16 hill shapes, by which corners are hill (1 = bottom-left, 2 = bottom-right, 4 = top-left, 8 = top-right). Drawn half a tile offset.")]
+    public List<Sprite> hillShapes = new List<Sprite>();
+
+    [Tooltip("Hill tiers 2 and 3 (same corner order): drawn over the middle of large hill areas for height.")]
+    public List<Sprite> hillShapes2 = new List<Sprite>();
+    public List<Sprite> hillShapes3 = new List<Sprite>();
+
+    [Tooltip("Extra versions of the all-hill shape, scattered at random.")]
+    public List<Sprite> hillFullVariants = new List<Sprite>();
+
+    [Tooltip("Water: 16 shapes (same corner order as hills), each with waterFrameCount animation frames in a row.")]
+    public List<Sprite> waterFrames = new List<Sprite>();
+    public int waterFrameCount = 6;
+    public float waterFps = 3f;
+
+    [Tooltip("Material for the water layer (adds moving ripples). Optional.")]
+    public Material waterMaterial;
+
     public List<Sprite> trees = new List<Sprite>();
     public List<Sprite> rocks = new List<Sprite>();
     public List<Sprite> bushes = new List<Sprite>();

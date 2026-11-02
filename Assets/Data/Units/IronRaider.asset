@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: IronRaider
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Iron Raider
+  icon: {fileID: 21300000, guid: ca8e94681893a1f44835aa9187d6f8d8, type: 3}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 973612655486840397, guid: 4eabece5d09e5404ab2d15f5a0703c3a, type: 3}
+  cost: 0
+  populationCost: 1
+  maxHealth: 240
+  moveSpeed: 0.9
+  attackPower: 22
+  attackCooldown: 1
+  attackRange: 0.6
+  hitDelay: 0.3
+  detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 10

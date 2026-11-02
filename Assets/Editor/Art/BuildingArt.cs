@@ -28,6 +28,24 @@ public static partial class PlaceholderArt
             { "Farm", (DrawFarm, 4, 3f) },
             { "WarriorLodge", (DrawWarriorLodge, 4, 5f) },
             { "Watchtower", (DrawWatchtower, 4, 4f) },
+            { "AxeHall", (DrawAxeHall, 4, 5f) },
+            { "ChariotYard", (DrawChariotYard, 4, 4f) },
+            { "SlingerCamp", (DrawSlingerCamp, 4, 4f) },
+            { "SkirmisherCamp", (DrawSkirmisherCamp, 4, 3f) },
+            { "ElephantPen", (DrawElephantPen, 4, 3f) },
+            // Iron Age
+            { "IronMine", (DrawIronMine, 4, 4f) },
+            { "StoneHouse", (DrawStoneHouse, 4, 4f) },
+            { "Garrison", (DrawGarrison, 4, 6f) },
+            { "ArcheryRange", (DrawArcheryRange, 4, 3f) },
+            { "StoneTower", (DrawStoneTower, 4, 6f) },
+            // Classical Age
+            { "GoldMine", (DrawGoldMine, 4, 4f) },
+            { "Insula", (DrawInsula, 4, 4f) },
+            { "LegionFort", (DrawLegionFort, 4, 4f) },
+            { "ArcherAcademy", (DrawArcherAcademy, 4, 3f) },
+            { "Stables", (DrawStables, 4, 3f) },
+            { "BallistaTower", (DrawBallistaTower, 4, 4f) },
         };
 
     private static readonly Color Bronze2 = new Color(0.86f, 0.6f, 0.28f);
@@ -38,6 +56,45 @@ public static partial class PlaceholderArt
     private static readonly Color WaterBlue = new Color(0.3f, 0.55f, 0.85f);
 
     /// <summary>Draw every level and frame of a building and store them as its looks.</summary>
+    [MenuItem("Tools/Age of Stickman/Generate Building Art")]
+    public static void GenerateBuildingsOnly()
+    {
+        var database = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
+        foreach (var def in database.buildings)
+        {
+            if (def != null)
+            {
+                GenerateBuildingLooks(def);
+            }
+        }
+        AssetDatabase.SaveAssets();
+        Debug.Log("Building art generated.");
+    }
+
+    /// <summary>Painted bounds of a building over every level and frame, in tiles from its footprint corner.</summary>
+    public static Rect? MeasureBuilding(BuildingDefinition def)
+    {
+        if (!BuildingArt.TryGetValue(def.id, out var art))
+        {
+            return null;
+        }
+        Rect? all = null;
+        for (int level = 0; level <= def.upgrades.Count; level++)
+        {
+            for (int f = 0; f < art.frames; f++)
+            {
+                var p = new Painter(def.ArtSize.x + 4, def.ArtSize.y + 5, 32f) { Origin = new Vector2(2, 2) };
+                art.draw(p, level, art.frames > 1 ? f / (float)art.frames : 0f);
+                var b = p.PaintedBounds();
+                if (b == null) continue;
+                var r = b.Value;
+                all = all == null ? r : Rect.MinMaxRect(Mathf.Min(all.Value.xMin, r.xMin), Mathf.Min(all.Value.yMin, r.yMin),
+                    Mathf.Max(all.Value.xMax, r.xMax), Mathf.Max(all.Value.yMax, r.yMax));
+            }
+        }
+        return all;
+    }
+
     private static void GenerateBuildingLooks(BuildingDefinition def)
     {
         if (!BuildingArt.TryGetValue(def.id, out var art))
@@ -48,14 +105,21 @@ public static partial class PlaceholderArt
         Directory.CreateDirectory(Path.Combine(Root, dir));
         def.looks = new List<BuildingLook>();
         int levels = def.upgrades.Count + 1;
+        // Canvas: the art area grown to fit everything any frame paints (smoke, flags, swinging
+        // tools), so animations never get cut off. The pivot sits on the footprint's corner.
+        var artBox = new Rect(Vector2.zero, def.ArtSize);
+        var painted = MeasureBuilding(def) ?? artBox;
+        var canvas = Rect.MinMaxRect(Mathf.Min(artBox.xMin, painted.xMin) - 0.06f, Mathf.Min(artBox.yMin, painted.yMin) - 0.06f,
+            Mathf.Max(artBox.xMax, painted.xMax) + 0.06f, Mathf.Max(artBox.yMax, painted.yMax) + 0.06f);
+        var pivot = new Vector2(-canvas.xMin / canvas.width, -canvas.yMin / canvas.height);
         for (int level = 0; level < levels; level++)
         {
             var look = new BuildingLook { fps = art.fps };
             for (int f = 0; f < art.frames; f++)
             {
-                var p = new Painter(def.size.x, def.size.y, BuildingPPU);
+                var p = new Painter(canvas.width, canvas.height, BuildingPPU) { Origin = -canvas.min };
                 art.draw(p, level, art.frames > 1 ? f / (float)art.frames : 0f);
-                look.frames.Add(Save(p, $"{dir}/{def.id}_L{level}_F{f}.png", BuildingPPU, Vector2.zero));
+                look.frames.Add(Save(p, $"{dir}/{def.id}_L{level}_F{f}.png", BuildingPPU, pivot));
             }
             def.looks.Add(look);
         }
@@ -519,18 +583,20 @@ public static partial class PlaceholderArt
         }
         p.OutlinedPolygon(new[] { V(0.1f, 1.5f), V(2.9f, 1.5f), V(2.5f, 2.3f), V(0.5f, 2.3f) }, Straw);
         p.OutlinedBox(1.25f, 0.3f, 1.75f, 1.0f, 0.2f, Dark);
-        // Bronze shields on the wall
+        // Tall hide shields on the wall (Bronze Age style)
         foreach (float x in new[] { 0.7f, 2.3f })
         {
-            p.OutlinedCircle(V(x, 1.05f), 0.18f, Bronze);
-            p.OutlinedCircle(V(x, 1.05f), 0.06f, BronzeLight);
+            p.OutlinedPolygon(new[] { V(x - 0.13f, 0.72f), V(x + 0.13f, 0.72f), V(x + 0.13f, 1.22f), V(x, 1.34f), V(x - 0.13f, 1.22f) }, Hide);
+            p.Circle(V(x - 0.04f, 1.12f), 0.03f, WoodDark);
+            p.Circle(V(x + 0.05f, 0.92f), 0.035f, WoodDark);
         }
         WavingFlag(p, V(2.75f, 1.6f), 1.25f, t, Flag);
         if (level >= 1)
         {
-            // Shield Wall Drills: a stack of shields
-            p.OutlinedEllipse(V(0.25f, 0.35f), V(0.16f, 0.1f), Bronze);
-            p.OutlinedEllipse(V(0.25f, 0.47f), V(0.16f, 0.1f), Bronze2);
+            // Shield Wall Drills: hide shields stacked against the wall
+            p.OutlinedPolygon(new[] { V(0.1f, 0.25f), V(0.32f, 0.25f), V(0.36f, 0.75f), V(0.14f, 0.75f) }, Hide);
+            p.OutlinedPolygon(new[] { V(0.22f, 0.25f), V(0.44f, 0.25f), V(0.46f, 0.72f), V(0.24f, 0.72f) }, Hide);
+            p.Circle(V(0.35f, 0.5f), 0.03f, WoodDark);
         }
         if (level >= 2)
         {

@@ -64,8 +64,8 @@ public class BuildingPlacer : MonoBehaviour
         if (def.icon != null)
         {
             ghostSprite.sprite = def.icon;
-            Vector2 s = def.icon.bounds.size;
-            ghostSprite.transform.localScale = new Vector3(def.size.x / s.x, def.size.y / s.y, 1);
+            // Same as the placed building: native size, pivot on the footprint corner.
+            ghostSprite.transform.localScale = Vector3.one * controller.Grid.cellSize;
         }
         ghostSprite.enabled = def.icon != null;
     }
@@ -120,7 +120,7 @@ public class BuildingPlacer : MonoBehaviour
         }
 
         info.enabled = true;
-        info.transform.position = corner + new Vector3(Current.size.x * 0.5f, Current.size.y + 0.3f, 0) * grid.cellSize;
+        info.transform.position = corner + new Vector3(Current.size.x * 0.5f, Current.ArtSize.y + 0.3f, 0) * grid.cellSize;
         info.text = !siteOk ? $"<color=#ff8080>{siteProblem}</color>"
             : !affordable ? $"<color=#ffb070>{missing.Split('\n')[0]}</color>"
             : SiteText(quality);

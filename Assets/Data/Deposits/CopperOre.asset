@@ -16,7 +16,9 @@ MonoBehaviour:
   displayName: Copper ore
   resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
   sprites:
-  - {fileID: 21300000, guid: 8e7089ad692fd084aa207b075817d3f2, type: 3}
+  - {fileID: 21300000, guid: 921ce952cf0dfab4b9a93b3acb280724, type: 3}
+  - {fileID: 21300000, guid: cfd4f908fbc764249b50d1f9fed119bd, type: 3}
+  - {fileID: 21300000, guid: ce3254b9c62e9854c95cf865b6afc049, type: 3}
   onHills: 1
   patchScale: 0.22
   rarity: 0.7

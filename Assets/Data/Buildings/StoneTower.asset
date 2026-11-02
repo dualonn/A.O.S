@@ -1,0 +1,185 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: StoneTower
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: StoneTower
+  displayName: Stone Tower
+  description: A stone tower; its archer shoots raiders in range.
+  icon: {fileID: 21300000, guid: 7746b1caa8d7abe438d7fc2186b79eda, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7746b1caa8d7abe438d7fc2186b79eda, type: 3}
+    - {fileID: 21300000, guid: 65d43239408c2d44c9d288df682b6b09, type: 3}
+    - {fileID: 21300000, guid: 8e3a079ce40fb414a9dc95976aefb24a, type: 3}
+    - {fileID: 21300000, guid: 4ddeafad3e6bc354ca603c449793ad3f, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: c203c0a2e95a2cb44991048480cf4e94, type: 3}
+    - {fileID: 21300000, guid: 24b4f37680754c84b86d92817f93c186, type: 3}
+    - {fileID: 21300000, guid: 40ec6c0e49f7a1f4ea85276a65e70150, type: 3}
+    - {fileID: 21300000, guid: 33c645c3124549941b5a93c08f1edc69, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 40664dcc7802a0a46a69ff8b20985f4e, type: 3}
+    - {fileID: 21300000, guid: 7d681a4d31598cc4f9debd20af86b830, type: 3}
+    - {fileID: 21300000, guid: 291ef60d9e43f4246bad6527506c013c, type: 3}
+    - {fileID: 21300000, guid: 448fb8d15115dfb4e83962fdf3a62b0e, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 0a39647c5f84499428b4a261218974ce, type: 3}
+    - {fileID: 21300000, guid: aa20896cfd5fbc14dad6a64b3b1b66fb, type: 3}
+    - {fileID: 21300000, guid: 77bc68d82de68bc47afa98f81fb19b09, type: 3}
+    - {fileID: 21300000, guid: 5bf558ad8a4cf3b42a4ba9d1c1e42419, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 160
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 20
+  upgrades:
+  - name: Higher Battlements
+    description: 'Taller merlons and a banner: +1.5 range.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Iron Arrowheads
+    description: 'Iron points pierce armour: +8 damage.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 8
+    operatorLift: 0
+  - name: Thick Walls
+    description: 'Buttressed walls: +150 health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 150
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 59083f302a65eea43a07524e657158fb, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: ec93168471c329d48afb5bae9f25688a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 40
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 10
+  rankUpTime: 35
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 320
+  housing: 0
+  workers: 1
+  production: []
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 7
+  towerDamage: 24
+  towerCooldown: 1.2
+  towerProjectile: {fileID: 21300000, guid: e564e8df4bd03384b8538f742e0443ac, type: 3}
+  operatorIdle: {fileID: 21300000, guid: 49364285e64a6e94f91e36c14d348f09, type: 3}
+  operatorShoot:
+  - {fileID: 21300000, guid: 10140992b8ed68f4f895b07b728f0f1f, type: 3}
+  - {fileID: 21300000, guid: b14dfded1e874c448be55485edc4a77b, type: 3}
+  - {fileID: 21300000, guid: 2420e0bfc42fd6147a6dee0d3d827a68, type: 3}
+  - {fileID: 21300000, guid: d9320b6da586396418d87a5d06f8ebf2, type: 3}
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.45}

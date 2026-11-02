@@ -37,6 +37,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: d23e3587ededb9b4bbe56f6ee6555cec, type: 3}
     fps: 3
   size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
   requirements:
     minimumAge: {fileID: 0}
@@ -117,6 +118,7 @@ MonoBehaviour:
     cost: []
   rankUpTime: 30
   isTownCenter: 0
+  sortLine: 2
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3
   minDepositTiles: 2

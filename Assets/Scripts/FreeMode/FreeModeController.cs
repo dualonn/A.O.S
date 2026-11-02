@@ -207,54 +207,78 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private const int MaxZonesPerCheck = 2;
 
     /// <summary>
-    /// The map is endless up to its size limit, growing in zones: unexplored zones near
-    /// what you're looking at (and touching explored land) get generated, a few at a time.
+    /// The map is endless up to its size limit, growing in zones. Your units and buildings do
+    /// the exploring: an unexplored zone (touching explored land) opens up once one of them gets
+    /// within sight of it. Moving the camera never explores anything.
     /// </summary>
-    private void GrowMapTowardView()
+    private void ExploreAroundUnitsAndBuildings()
     {
         if (Time.unscaledTime < nextGrowCheck)
         {
             return;
         }
-        nextGrowCheck = Time.unscaledTime + 0.12f;
-        var cam = Camera.main;
-        // Only explore at normal zoom; zoomed out, the view always reaches unexplored land.
-        if (cam == null || cam.orthographicSize > grid.overviewZoom)
-        {
-            return;
-        }
+        nextGrowCheck = Time.unscaledTime + 0.25f;
         var map = Settlement.Map;
-        float halfH = cam.orthographicSize, halfW = halfH * cam.aspect;
-        float near = Settlement.Database.growWhenWithin * grid.cellSize;
-        Vector3 c = cam.transform.position;
-        Vector2Int min = map.ZoneOf(Mathf.FloorToInt(c.x - halfW - near), Mathf.FloorToInt(c.y - halfH - near));
-        Vector2Int max = map.ZoneOf(Mathf.FloorToInt(c.x + halfW + near), Mathf.FloorToInt(c.y + halfH + near));
+        float sight = Settlement.Database.growWhenWithin * grid.cellSize;
 
-        var candidates = new List<Vector2Int>();
-        for (int zy = min.y; zy <= max.y; zy++)
+        // Who can see: every placed building, and every living unit of yours.
+        var eyes = new List<Rect>();
+        foreach (var view in views.Values)
         {
-            for (int zx = min.x; zx <= max.x; zx++)
+            Vector2 corner = grid.CellToWorld(view.State.cell);
+            eyes.Add(new Rect(corner, (Vector2)view.Definition.size * grid.cellSize));
+        }
+        foreach (var unit in Unit.Living)
+        {
+            if (unit != null && unit.Team == Team.Player && unit.IsAlive)
             {
-                if (!map.ZoneInLimit(zx, zy) || map.IsZoneRevealed(zx, zy))
+                eyes.Add(new Rect(unit.transform.position, Vector2.zero));
+            }
+        }
+
+        // Unexplored zones next to explored land, with how close the nearest eye is.
+        var closest = new Dictionary<Vector2Int, float>();
+        foreach (var eye in eyes)
+        {
+            Vector2Int min = map.ZoneOf(Mathf.FloorToInt(eye.xMin - sight), Mathf.FloorToInt(eye.yMin - sight));
+            Vector2Int max = map.ZoneOf(Mathf.FloorToInt(eye.xMax + sight), Mathf.FloorToInt(eye.yMax + sight));
+            for (int zy = min.y; zy <= max.y; zy++)
+            {
+                for (int zx = min.x; zx <= max.x; zx++)
                 {
-                    continue;
-                }
-                // Exploration spreads outward from known land.
-                if (map.IsZoneRevealed(zx - 1, zy) || map.IsZoneRevealed(zx + 1, zy) ||
-                    map.IsZoneRevealed(zx, zy - 1) || map.IsZoneRevealed(zx, zy + 1))
-                {
-                    candidates.Add(new Vector2Int(zx, zy));
+                    if (!map.ZoneInLimit(zx, zy) || map.IsZoneRevealed(zx, zy))
+                    {
+                        continue;
+                    }
+                    // Exploration spreads outward from known land.
+                    if (!map.IsZoneRevealed(zx - 1, zy) && !map.IsZoneRevealed(zx + 1, zy) &&
+                        !map.IsZoneRevealed(zx, zy - 1) && !map.IsZoneRevealed(zx, zy + 1))
+                    {
+                        continue;
+                    }
+                    var zr = map.ZoneRect(zx, zy);
+                    float dx = Mathf.Max(0, Mathf.Max(zr.xMin - eye.xMax, eye.xMin - zr.xMax));
+                    float dy = Mathf.Max(0, Mathf.Max(zr.yMin - eye.yMax, eye.yMin - zr.yMax));
+                    float d = Mathf.Sqrt(dx * dx + dy * dy);
+                    if (d > sight)
+                    {
+                        continue;
+                    }
+                    var key = new Vector2Int(zx, zy);
+                    if (!closest.TryGetValue(key, out float known) || d < known)
+                    {
+                        closest[key] = d;
+                    }
                 }
             }
         }
-        if (candidates.Count == 0)
+        if (closest.Count == 0)
         {
             return;
         }
-        // Nearest to the view centre first, a few per check so there's never a hitch.
-        Vector2 centreZone = new Vector2(c.x, c.y) / map.ChunkSize;
-        candidates.Sort((a, b) => (a + Vector2.one * 0.5f - centreZone).sqrMagnitude
-            .CompareTo((b + Vector2.one * 0.5f - centreZone).sqrMagnitude));
+        // Closest first, a few per check so there's never a hitch.
+        var candidates = new List<Vector2Int>(closest.Keys);
+        candidates.Sort((x, y) => closest[x].CompareTo(closest[y]));
         if (candidates.Count > MaxZonesPerCheck)
         {
             candidates.RemoveRange(MaxZonesPerCheck, candidates.Count - MaxZonesPerCheck);
@@ -311,7 +335,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         }
 
         TrackLiveWave();
-        GrowMapTowardView();
+        ExploreAroundUnitsAndBuildings();
         UpdateMarkers();
     }
 
@@ -458,7 +482,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         if (unit is Troop troop)
         {
             troop.targetPriority = Troop.TargetPriority.Closest;
-            troop.SetStance(TroopStance.Defend, TownZone, SightRange);
+            troop.SetStance(TroopStance.Defend, TownZoneFor(position), SightRange);
         }
         return go;
     }
@@ -466,6 +490,38 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private Vector3 SettlementCenter => grid.MapRect.center;
 
     /// <summary>The ground Defend troops hold: the area around all your buildings, plus a margin.</summary>
+    private List<Settlement.SettlementZone> zonesThisFrame;
+    private int zonesFrame = -1;
+
+    /// <summary>Settlement zones, worked out at most once per frame.</summary>
+    public List<Settlement.SettlementZone> CurrentZones
+    {
+        get
+        {
+            if (zonesFrame != Time.frameCount || zonesThisFrame == null)
+            {
+                zonesThisFrame = Settlement.SettlementZones();
+                zonesFrame = Time.frameCount;
+            }
+            return zonesThisFrame;
+        }
+    }
+
+    /// <summary>
+    /// The area troops from a building at 'home' defend: the buildings of that one settlement
+    /// (plus a margin), so a second settlement far away doesn't stretch it across the map.
+    /// </summary>
+    public Rect TownZoneFor(Vector3 home)
+    {
+        var zone = Settlement.NearestZone(CurrentZones, home);
+        if (zone == null)
+        {
+            return TownZone;
+        }
+        var b = zone.bounds;
+        return Rect.MinMaxRect(b.xMin - townGuardMargin, b.yMin - townGuardMargin, b.xMax + townGuardMargin, b.yMax + townGuardMargin);
+    }
+
     public Rect TownZone
     {
         get
@@ -509,8 +565,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     public void SpawnWave(Wave wave)
     {
-        // Raiders enter together from a random point on the map edge.
-        raidOrigin = grid.RandomEdgePoint();
+        // Raiders gather just outside a settlement's safe zone, on explored land.
+        raidOrigin = RaidSpawnPoint();
 
         unspawned.AddRange(wave.units);
         waveInProgress = true;
@@ -529,11 +585,19 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             unspawned.RemoveAt(0);
             if (unit.prefab != null)
             {
-                Vector2 jitter = UnityEngine.Random.insideUnitCircle * 2f;
-                Rect map = grid.MapRect;
-                Vector3 spawn = raidOrigin + new Vector3(jitter.x, jitter.y, 0);
-                spawn.x = Mathf.Clamp(spawn.x, map.xMin, map.xMax);
-                spawn.y = Mathf.Clamp(spawn.y, map.yMin, map.yMax);
+                // Spread the group out a little, never into water, unexplored land or a safe zone.
+                Vector3 spawn = raidOrigin;
+                var zones = Settlement.SettlementZones();
+                for (int attempt = 0; attempt < 8; attempt++)
+                {
+                    Vector2 jitter = UnityEngine.Random.insideUnitCircle * 2f;
+                    Vector3 p = raidOrigin + new Vector3(jitter.x, jitter.y, 0);
+                    if (Settlement.Map.IsWalkable(p) && !Settlement.InAnyZone(zones, p))
+                    {
+                        spawn = p;
+                        break;
+                    }
+                }
                 var enemy = SpawnUnit(unit.prefab, spawn).GetComponent<Enemy>();
                 if (enemy != null)
                 {
@@ -632,7 +696,119 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         raider.Carry(stolen);
     }
 
-    public Vector3 ExitPointFor(Vector3 from) => grid.NearestEdgePoint(from);
+    /// <summary>Raiders flee straight out of the settlement they hit, to just past its safe zone.</summary>
+    public Vector3 ExitPointFor(Vector3 from)
+    {
+        var zones = Settlement.SettlementZones();
+        var zone = Settlement.NearestZone(zones, from);
+        if (zone == null)
+        {
+            return grid.NearestEdgePoint(from);
+        }
+        Vector2 away = (Vector2)from - zone.centre;
+        float baseAngle = away.sqrMagnitude > 0.01f ? Mathf.Atan2(away.y, away.x) : UnityEngine.Random.value * Mathf.PI * 2f;
+        // Straight out if possible, otherwise swing round until there's open, explored land.
+        for (int i = 0; i < 24; i++)
+        {
+            float angle = baseAngle + (i % 2 == 0 ? 1 : -1) * (i / 2) * 0.26f;
+            var dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+            if (FirstClearPoint(zones, (Vector2)from, dir, out var p))
+            {
+                return p;
+            }
+        }
+        return Settlement.Map.IsWalkable(raidOrigin) ? raidOrigin : grid.NearestEdgePoint(from);
+    }
+
+    /// <summary>Walk from 'start' along 'dir' to the first open spot 3 tiles past every safe zone.</summary>
+    private bool FirstClearPoint(List<Settlement.SettlementZone> zones, Vector2 start, Vector2 dir, out Vector3 point)
+    {
+        for (float d = 0; d < 160f; d += 1f)
+        {
+            var p = start + dir * d;
+            if (!Settlement.Map.InBounds(Mathf.FloorToInt(p.x), Mathf.FloorToInt(p.y)))
+            {
+                break;
+            }
+            if (MinClearance(zones, p) >= 3f)
+            {
+                if (Settlement.Map.IsWalkable(p))
+                {
+                    point = p;
+                    return true;
+                }
+            }
+        }
+        point = default;
+        return false;
+    }
+
+    private static float MinClearance(List<Settlement.SettlementZone> zones, Vector2 p)
+    {
+        float c = float.MaxValue;
+        foreach (var zone in zones)
+        {
+            c = Mathf.Min(c, zone.Clearance(p));
+        }
+        return c;
+    }
+
+    /// <summary>
+    /// Where a raid starts: a walkable, explored, reachable spot in a band just outside a random
+    /// settlement's safe zone. If the explored land doesn't reach that far yet, the explored spot
+    /// furthest from every settlement. Before there's any town, the edge of the explored land.
+    /// </summary>
+    public Vector3 RaidSpawnPoint()
+    {
+        var zones = Settlement.SettlementZones();
+        var targets = zones.FindAll(z => !z.IsOutpost);
+        if (targets.Count == 0)
+        {
+            return grid.RandomEdgePoint();
+        }
+        var map = Settlement.Map;
+        float band = Settlement.Database.raidSpawnBand;
+        Vector3 fallback = Vector3.positiveInfinity;
+        Vector3 furthest = Vector3.positiveInfinity;
+        float furthestClearance = float.MinValue;
+        for (int attempt = 0; attempt < 160; attempt++)
+        {
+            // Set out from one of the town's buildings, so long towns get raided from any side.
+            var zone = targets[UnityEngine.Random.Range(0, targets.Count)];
+            var from = zone.buildings[UnityEngine.Random.Range(0, zone.buildings.Count)];
+            float angle = UnityEngine.Random.value * Mathf.PI * 2f;
+            var dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+            float distance = Mathf.Max(from.width, from.height) * 0.5f + zone.safeDistance + UnityEngine.Random.Range(2f, band);
+            Vector3 p = from.center + dir * distance;
+            if (!map.IsWalkable(p))
+            {
+                continue;
+            }
+            float clearance = MinClearance(zones, p);
+            if (clearance < 0)
+            {
+                if (clearance > furthestClearance)
+                {
+                    furthestClearance = clearance;
+                    furthest = p;
+                }
+                continue;
+            }
+            if (float.IsInfinity(fallback.x))
+            {
+                fallback = p;
+            }
+            // Skip islands and pockets the raiders couldn't walk out of.
+            var path = MapNavigator.Current?.FindPath(p, zone.centre);
+            if (path == null || (path.Count > 0 && zone.Contains(path[path.Count - 1])))
+            {
+                return p;
+            }
+        }
+        if (!float.IsInfinity(fallback.x)) return fallback;
+        if (!float.IsInfinity(furthest.x)) return furthest;
+        return grid.RandomEdgePoint();
+    }
 
     public void RaiderEscaped(Enemy raider)
     {

@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Insula
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Insula
+  displayName: Insula
+  description: A Roman apartment block. Houses many people.
+  icon: {fileID: 21300000, guid: c0bb0a090e6dcff4cb5a39a722e4b3f3, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: c0bb0a090e6dcff4cb5a39a722e4b3f3, type: 3}
+    - {fileID: 21300000, guid: 68ba7ce2453353a44838be057b4fdffc, type: 3}
+    - {fileID: 21300000, guid: ff4bffb865886df4b9a43ad8c6448d15, type: 3}
+    - {fileID: 21300000, guid: e009d152841cb84489fa06f2ffbbaa6b, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 2c4778efa8237604cbe9a5e8f263af88, type: 3}
+    - {fileID: 21300000, guid: 0e8289b023dbbac4bb3a7595cea20ef9, type: 3}
+    - {fileID: 21300000, guid: 4ca5c37eb111c1b49b9b071ba4ecf272, type: 3}
+    - {fileID: 21300000, guid: 379fb5dc3a6a86043be28e4807396a5c, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 4253f1f28cc66ab4bbd1ec20db070542, type: 3}
+    - {fileID: 21300000, guid: 3b316ef6c7a18434480a82320126da8e, type: 3}
+    - {fileID: 21300000, guid: 67573a504b85a004f88a20a0c2b9eb3e, type: 3}
+    - {fileID: 21300000, guid: eab4a19df4fb5bb46b93502a34dc1594, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 220
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 20
+  upgrades:
+  - name: Upper Storeys
+    description: Another floor of flats.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 80
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 6
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Fountain
+    description: Clean water at the door.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 20
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 4
+    extraHealth: 100
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 450
+  housing: 28
+  workers: 0
+  production: []
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

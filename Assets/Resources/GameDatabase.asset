@@ -15,11 +15,15 @@ MonoBehaviour:
   ages:
   - {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
   - {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  - {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  - {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
   resources:
   - {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
   - {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
   - {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
   - {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+  - {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+  - {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
   buildings:
   - {fileID: 11400000, guid: d3ff3402c09c6dd41944fff8bfc9b7c1, type: 2}
   - {fileID: 11400000, guid: a01eb155babc08847b5b74db3b2051ba, type: 2}
@@ -32,6 +36,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b72bfbf5eb9df3a40b406806b18a29b7, type: 2}
   - {fileID: 11400000, guid: f7bfc11e8906da44f8d120f50d6b8a56, type: 2}
   - {fileID: 11400000, guid: 242a84b775cd6784d8e8209474f4f171, type: 2}
+  - {fileID: 11400000, guid: 3ee6a3e929f19444bb8c8e033f8732cc, type: 2}
+  - {fileID: 11400000, guid: be129eb766d487f438e74ac6f2f8f61c, type: 2}
+  - {fileID: 11400000, guid: c9f159d502340d3448d1201aa7fefcb3, type: 2}
+  - {fileID: 11400000, guid: cc516d6c404cbd34792522dc3b973493, type: 2}
+  - {fileID: 11400000, guid: 89da67498dc334e4c93fedc8397e52c3, type: 2}
+  - {fileID: 11400000, guid: df2e740af3a892343aba016287f7afd0, type: 2}
+  - {fileID: 11400000, guid: 595f3f59efb258c43a63d4b2116bca73, type: 2}
+  - {fileID: 11400000, guid: 8fc4c7c92d290f54b86e8034cb0f74b0, type: 2}
+  - {fileID: 11400000, guid: 8293f6fd7e64bd242a8e93081ddfe7cb, type: 2}
+  - {fileID: 11400000, guid: 91807f902d8f18b439df8c5a3df4ad99, type: 2}
+  - {fileID: 11400000, guid: 43836dcacbb08bc4e9b7a46ab05421af, type: 2}
+  - {fileID: 11400000, guid: ec0b24dcda4169d47925d8085b3b8236, type: 2}
+  - {fileID: 11400000, guid: 8127bdb48bc673944904a4eabddc7c46, type: 2}
+  - {fileID: 11400000, guid: 59083f302a65eea43a07524e657158fb, type: 2}
+  - {fileID: 11400000, guid: f8d771ddef5d21a4ab38eb9d5083fede, type: 2}
+  - {fileID: 11400000, guid: c7ff4aae2c325ff498679cb06c007d37, type: 2}
   technologies:
   - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
   - {fileID: 11400000, guid: 53c62db14bf15104a8b3276f2156db9d, type: 2}
@@ -42,6 +62,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
   - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
   - {fileID: 11400000, guid: 0eebb2033cd874541b56fedfdf32f9cf, type: 2}
+  - {fileID: 11400000, guid: 1d64b8f3f5598cc48a5b9f9eb4be76cc, type: 2}
+  - {fileID: 11400000, guid: 4cb0cfe0a25fbff4888008b9dab8a8cf, type: 2}
+  - {fileID: 11400000, guid: f9368dac430ebd2479fba2d787cfb6ef, type: 2}
+  - {fileID: 11400000, guid: 77d56e7b2263255479c59d8722198b29, type: 2}
+  - {fileID: 11400000, guid: 749d5961029920640b839f0f0b9c6c82, type: 2}
+  - {fileID: 11400000, guid: c4e55103c9ccc2d42be7c5afbf9616e8, type: 2}
+  - {fileID: 11400000, guid: b77bb3a29fafc9c459614cca442fceea, type: 2}
+  - {fileID: 11400000, guid: 63f4b8aee345c9349a5f0156198bed96, type: 2}
+  - {fileID: 11400000, guid: ec93168471c329d48afb5bae9f25688a, type: 2}
+  - {fileID: 11400000, guid: a4c9b1b1079646e4ab259aee60ab9446, type: 2}
   startingResources:
   - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
     amount: 100
@@ -57,6 +87,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 882f1d4129e7b3c4f83d909ba36418da, type: 2}
   - {fileID: 11400000, guid: 99e73e782f5340e4b9aa7bda45c8b38e, type: 2}
   - {fileID: 11400000, guid: 7649324227f818f4b9c96ca6b1f9a2e8, type: 2}
+  - {fileID: 11400000, guid: 67c8994bc34ae1543b4d2b47e0666c81, type: 2}
+  - {fileID: 11400000, guid: 6c34a8446431c784092b23d70dfe9db7, type: 2}
   terrainScale: 0.03
   waterShare: 0.1
   hillShare: 0.12
@@ -67,8 +99,16 @@ MonoBehaviour:
   secondsPerNewPerson: 8
   firstWaveDelay: 180
   waveIntervalRange: {x: 150, y: 240}
-  waveBaseStrength: 2
-  waveStrengthPerThreat: 1
+  waveBaseUnits: 2
+  waveUnitsPerTech: 0.3
+  waveUnitsPerWaveSurvived: 0.2
+  maxWaveUnits: 16
+  settlementMergeDistance: 8
+  settlementSafeRadius: 34
+  settlementSafeRadiusPerBuilding: 0.25
+  settlementSafeRadiusGrowthMax: 10
+  outpostSafeRadius: 12
+  raidSpawnBand: 12
   maxResourceLossShare: 0.3
   maxBuildingDamageShare: 0.4
   repairCostShare: 0.5

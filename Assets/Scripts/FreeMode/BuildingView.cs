@@ -44,7 +44,11 @@ public class BuildingView : MonoBehaviour
         var grid = owner.Grid;
         Vector2 size = (Vector2)def.size * grid.cellSize;
         Vector3 corner = grid.CellToWorld(state.cell);
-        transform.position = new Vector3(corner.x, corner.y, DepthFor(corner.y));
+        // Sort by the foot of the front wall, a little way up the footprint in this 3/4 view, so a
+        // unit standing at the wall (feet in front of it) draws in front.
+        // Flat buildings (fields) set their own line further back.
+        float frontWall = (def.sortLine > 0 ? def.sortLine : Mathf.Min(0.5f, def.size.y * 0.25f)) * grid.cellSize;
+        transform.position = new Vector3(corner.x, corner.y, DepthFor(corner.y + frontWall));
 
         selectionOutline = MakeQuad("Selection", new Vector2(-Margin, -Margin), size + Vector2.one * Margin * 2,
             new Color(1f, 0.9f, 0.2f, 0.35f), -8);
@@ -61,12 +65,10 @@ public class BuildingView : MonoBehaviour
             body.transform.SetParent(transform, false);
             var first = CurrentFrame() ?? def.icon;
             body.sprite = first;
-            // Fit the sprite to the footprint whatever its pixels-per-unit.
-            Vector2 spriteSize = first.bounds.size;
-            body.transform.localScale = new Vector3(size.x / spriteSize.x, size.y / spriteSize.y, 1);
-            body.transform.localPosition = new Vector3(
-                -first.bounds.min.x * body.transform.localScale.x,
-                -first.bounds.min.y * body.transform.localScale.y, 0);
+            // Art is drawn one unit per tile with its pivot on the footprint's corner; it may
+            // reach past the footprint (roofs and flags over the tiles behind, smoke above).
+            body.transform.localScale = Vector3.one * grid.cellSize;
+            body.transform.localPosition = Vector3.zero;
             body.sortingOrder = SortingOrder;
             animationPhase = Random.Range(0f, 10f);
         }
@@ -89,12 +91,13 @@ public class BuildingView : MonoBehaviour
 
         float barWidth = Mathf.Min(size.x - 0.3f, 1.6f);
         float barX = (size.x - barWidth) / 2;
-        barBack = MakeQuad("BarBack", new Vector2(barX, size.y + 0.05f), new Vector2(barWidth, 0.16f), new Color(0, 0, 0, 0.6f), 6);
-        barFill = MakeQuad("BarFill", new Vector2(barX, size.y + 0.05f), new Vector2(barWidth, 0.16f), Color.green, 7);
+        float top = def.ArtSize.y * grid.cellSize;
+        barBack = MakeQuad("BarBack", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), new Color(0, 0, 0, 0.6f), 6);
+        barFill = MakeQuad("BarFill", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), Color.green, 7);
 
         var labelObject = new GameObject("Label");
         labelObject.transform.SetParent(transform, false);
-        labelObject.transform.localPosition = new Vector3(size.x / 2, size.y + 0.55f, 0);
+        labelObject.transform.localPosition = new Vector3(size.x / 2, top + 0.55f, 0);
         label = labelObject.AddComponent<TextMeshPro>();
         label.alignment = TextAlignmentOptions.Center;
         label.fontSize = 4f;
@@ -352,14 +355,19 @@ public class BuildingView : MonoBehaviour
     {
         troops.RemoveAll(t => t == null || !t.IsAlive);
         var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
-        // Keep the troops' orders and upgrades in line with this building.
-        foreach (var t in troops)
+        // Keep the troops' orders, upgrades and home settlement's bounds in line with this building.
+        if (troops.Count > 0)
         {
-            if (t.Stance != State.stance)
+            var zone = controller.TownZoneFor(transform.position);
+            foreach (var t in troops)
             {
-                t.SetStance(State.stance, controller.TownZone, controller.SightRange);
+                if (t.Stance != State.stance)
+                {
+                    t.SetStance(State.stance, zone, controller.SightRange);
+                }
+                t.SetDefendZone(zone);
+                t.SetBuildingModifier(stats.trainedUnits);
             }
-            t.SetBuildingModifier(stats.trainedUnits);
         }
         var unit = Definition.trainsUnit;
         if (unit == null || unit.prefab == null || !controller.Settlement.IsWorking(State, Definition))
@@ -383,7 +391,7 @@ public class BuildingView : MonoBehaviour
         if (troop != null)
         {
             troop.SetRallyPoint(controller.GetRallyPoint(this));
-            troop.SetStance(State.stance, controller.TownZone, controller.SightRange);
+            troop.SetStance(State.stance, controller.TownZoneFor(transform.position), controller.SightRange);
             troop.SetBuildingModifier(stats.trainedUnits);
             troops.Add(troop);
         }

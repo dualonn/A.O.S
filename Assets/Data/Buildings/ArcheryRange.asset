@@ -1,0 +1,184 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ArcheryRange
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ArcheryRange
+  displayName: Archery Range
+  description: Trains Archers, who shoot raiders from a distance.
+  icon: {fileID: 21300000, guid: 81b604587e8eb2841b93a01c5bcbe21a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 81b604587e8eb2841b93a01c5bcbe21a, type: 3}
+    - {fileID: 21300000, guid: 76c9725a19ff82943b6782fd417bf1c8, type: 3}
+    - {fileID: 21300000, guid: 0a6126fed140940499df228b90fb48f7, type: 3}
+    - {fileID: 21300000, guid: 1ab12870a28dfa941aa48cc7c643aaa4, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: f520dd41ad795da4b9fd75966db794bf, type: 3}
+    - {fileID: 21300000, guid: 1089bd4553911fc499390b3cc9e1bd45, type: 3}
+    - {fileID: 21300000, guid: 74f96e9753042ef468b5f7c681e511bd, type: 3}
+    - {fileID: 21300000, guid: baa1249d5f2699a4eb97a487d03c13b3, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 93494a7c5ff204d44ad38c85bde75383, type: 3}
+    - {fileID: 21300000, guid: 2ece13301a7818945a1e73cc9c89e341, type: 3}
+    - {fileID: 21300000, guid: c9065e4a5d9846345927b5d2225ac290, type: 3}
+    - {fileID: 21300000, guid: a1f3735ebb8eba443ab0ba9832fa298e, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 6452a77ac8f83af4398e72f5b8c9a168, type: 3}
+    - {fileID: 21300000, guid: 5657622074740ec45a67537054ad2692, type: 3}
+    - {fileID: 21300000, guid: 13f47384cdb1de343a78d7e17c7ccc34, type: 3}
+    - {fileID: 21300000, guid: fc1b64453e477734eb88237f5a6dfeb4, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4cb0cfe0a25fbff4888008b9dab8a8cf, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 160
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+  upgrades:
+  - name: Straw Targets
+    description: 'Long-distance practice: +15% range.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1.15
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Fletchers
+    description: 'Straighter, better-fletched arrows: +20% attack.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Longer Lines
+    description: Room for one more archer.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 60
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: ec0b24dcda4169d47925d8085b3b8236, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 30
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 15
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 260
+  housing: 0
+  workers: 3
+  production: []
+  defensePower: 2
+  trainsUnit: {fileID: 11400000, guid: e8fb4e2e107726c478722734b6857046, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

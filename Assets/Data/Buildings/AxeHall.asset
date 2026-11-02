@@ -1,0 +1,180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AxeHall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AxeHall
+  displayName: Axe Hall
+  description: 'Trains Axemen: hard-hitting but lightly protected infantry with bronze
+    axes.'
+  icon: {fileID: 21300000, guid: 775e7f7fd4cfec64a8f6731e74649fdf, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 775e7f7fd4cfec64a8f6731e74649fdf, type: 3}
+    - {fileID: 21300000, guid: fa42ab6d3ee6064409c9c2639d4f2bda, type: 3}
+    - {fileID: 21300000, guid: 1d2e046622dd84b449fbb91ee444fd9c, type: 3}
+    - {fileID: 21300000, guid: b9e2bcd2a69858e42a3f86cb09471fb5, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 85885cd3a3cab7345a1491d07afdd290, type: 3}
+    - {fileID: 21300000, guid: 6f1c7031221123e439be3b8c43ad3c7d, type: 3}
+    - {fileID: 21300000, guid: daad893c47117cf41b3d72b43e105ba0, type: 3}
+    - {fileID: 21300000, guid: 97465c601abebf440a5ff7520f0ea916, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 61273e16ee9c0974ba0a9b6f1c1ac07c, type: 3}
+    - {fileID: 21300000, guid: dfa0288fb4054454a9638e434a57983a, type: 3}
+    - {fileID: 21300000, guid: ade12e0544b174b42991a7978e350a0d, type: 3}
+    - {fileID: 21300000, guid: 126b73f262a8b6f47b04665782087ad9, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: caf2cca7bf2c2b94a8d3a80decad2b63, type: 3}
+    - {fileID: 21300000, guid: 4a309d2a58c48f441bd8ae6c398c081a, type: 3}
+    - {fileID: 21300000, guid: 58043c015f29c9347b95e205d515238e, type: 3}
+    - {fileID: 21300000, guid: 62b59c9b01608f248b4465f20237f10c, type: 3}
+    fps: 5
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 50
+  upgrades:
+  - name: Crescent Blades
+    description: 'Wider bronze axe heads: +15% attack.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 50
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.15
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Leather Caps
+    description: 'Padded leather caps: +15% health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.15
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Hearth
+    description: Room for one more axeman.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 60
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 240
+  housing: 0
+  workers: 3
+  production: []
+  defensePower: 2
+  trainsUnit: {fileID: 11400000, guid: 3284a28d736ffa742bbf95bd82585d53, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

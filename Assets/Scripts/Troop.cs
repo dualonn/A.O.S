@@ -53,6 +53,12 @@ public class Troop : Unit
         detectionRange = sightRange;
     }
 
+    /// <summary>Update the area a defending troop holds (its settlement grows or changes).</summary>
+    public void SetDefendZone(Rect townZone)
+    {
+        defendZone = townZone;
+    }
+
     protected override void Awake()
     {
         base.Awake();

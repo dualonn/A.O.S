@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Peltast
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Peltast
+  icon: {fileID: 21300000, guid: 4fd66d6aea6a40146b08b5ecc2f77a15, type: 3}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 7569670734986437433, guid: 4914ab3b7e0fa5f49b5f5852af80e272, type: 3}
+  cost: 0
+  populationCost: 1
+  maxHealth: 190
+  moveSpeed: 1.05
+  attackPower: 24
+  attackCooldown: 1.5
+  attackRange: 3.6
+  hitDelay: 0.3
+  detectionRange: 6.5
+  projectile: {fileID: 21300000, guid: 7bd96fe80971b464f8122a2407bd338a, type: 3}
+  projectileSpeed: 10

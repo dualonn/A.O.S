@@ -17,6 +17,12 @@ public class Painter
     public float Outline = 0.035f;
     public Color Ink = new Color(0.08f, 0.07f, 0.07f);
 
+    /// <summary>
+    /// Where unit (0, 0) sits on the canvas, in units from its bottom-left corner. Lets a drawing
+    /// spill past its nominal area (smoke, flags) onto a bigger canvas without changing its code.
+    /// </summary>
+    public Vector2 Origin;
+
     private readonly Color[] pixels;
 
     public Painter(float widthUnits, float heightUnits, float pixelsPerUnit)
@@ -32,15 +38,15 @@ public class Painter
     /// <summary>Paint 'color' wherever sdf(p) &lt; 0 (p in units). 'bounds' limits the work area (units).</summary>
     public void Draw(Func<Vector2, float> sdf, Rect bounds, Color color)
     {
-        int x0 = Mathf.Max(0, Mathf.FloorToInt(bounds.xMin * Scale) - 2);
-        int y0 = Mathf.Max(0, Mathf.FloorToInt(bounds.yMin * Scale) - 2);
-        int x1 = Mathf.Min(Width - 1, Mathf.CeilToInt(bounds.xMax * Scale) + 2);
-        int y1 = Mathf.Min(Height - 1, Mathf.CeilToInt(bounds.yMax * Scale) + 2);
+        int x0 = Mathf.Max(0, Mathf.FloorToInt((bounds.xMin + Origin.x) * Scale) - 2);
+        int y0 = Mathf.Max(0, Mathf.FloorToInt((bounds.yMin + Origin.y) * Scale) - 2);
+        int x1 = Mathf.Min(Width - 1, Mathf.CeilToInt((bounds.xMax + Origin.x) * Scale) + 2);
+        int y1 = Mathf.Min(Height - 1, Mathf.CeilToInt((bounds.yMax + Origin.y) * Scale) + 2);
         for (int y = y0; y <= y1; y++)
         {
             for (int x = x0; x <= x1; x++)
             {
-                var p = new Vector2((x + 0.5f) / Scale, (y + 0.5f) / Scale);
+                var p = new Vector2((x + 0.5f) / Scale - Origin.x, (y + 0.5f) / Scale - Origin.y);
                 float distancePixels = sdf(p) * Scale;
                 float cover = Mathf.Clamp01(0.5f - distancePixels);
                 if (cover > 0)
@@ -69,11 +75,35 @@ public class Painter
     /// <summary>Erase everything below a height (units), e.g. to keep only a figure's upper body.</summary>
     public void ClearBelow(float yUnits)
     {
-        int rows = Mathf.Clamp(Mathf.RoundToInt(yUnits * Scale), 0, Height);
+        int rows = Mathf.Clamp(Mathf.RoundToInt((yUnits + Origin.y) * Scale), 0, Height);
         for (int i = 0; i < rows * Width; i++)
         {
             pixels[i] = Color.clear;
         }
+    }
+
+    /// <summary>Bounds of everything painted (alpha above 'threshold'), in units. Null if empty.</summary>
+    public Rect? PaintedBounds(float threshold = 0.25f)
+    {
+        int minX = int.MaxValue, minY = int.MaxValue, maxX = -1, maxY = -1;
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                if (pixels[y * Width + x].a > threshold)
+                {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+        if (maxX < 0)
+        {
+            return null;
+        }
+        return Rect.MinMaxRect(minX / Scale - Origin.x, minY / Scale - Origin.y, (maxX + 1) / Scale - Origin.x, (maxY + 1) / Scale - Origin.y);
     }
 
     public Texture2D ToTexture()

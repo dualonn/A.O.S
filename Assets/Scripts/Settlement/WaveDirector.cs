@@ -84,7 +84,24 @@ public class WaveDirector : MonoBehaviour
             return wave;
         }
 
-        float budget = Database.waveBaseStrength + settlement.ThreatLevel * Database.waveStrengthPerThreat;
+        // Budget in power: the threat level counted in this age's enemies, so each age's waves
+        // keep pace with that age's (roughly twice as strong) units.
+        float agePower = 0f;
+        int ageUnits = 0;
+        var currentAge = Database.GetAge(State.ageIndex);
+        if (currentAge != null)
+        {
+            foreach (var unit in currentAge.enemyUnits)
+            {
+                if (unit != null)
+                {
+                    agePower += Settlement.UnitPower(unit);
+                    ageUnits++;
+                }
+            }
+        }
+        agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
+        float budget = settlement.ThreatLevel * agePower;
         int guard = 200;
         while (guard-- > 0)
         {

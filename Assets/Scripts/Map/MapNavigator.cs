@@ -41,19 +41,66 @@ public class MapNavigator
     public float SpeedFactor(Vector3 world) =>
         map.GetTerrain(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y)) == TerrainType.Hill ? hillSpeed : 1f;
 
-    /// <summary>True if a straight walk from a to b never crosses water.</summary>
+    /// <summary>
+    /// True if a straight walk from a to b never crosses water. Away from the two ends it also
+    /// checks a strip either side of the line, so units don't clip the corners of water tiles.
+    /// </summary>
     public bool ClearLine(Vector3 a, Vector3 b)
     {
-        float distance = Vector2.Distance(a, b);
-        int steps = Mathf.CeilToInt(distance / 0.35f);
+        Vector2 delta = b - a;
+        float distance = delta.magnitude;
+        if (distance < 0.0001f)
+        {
+            return map.IsWalkable(b);
+        }
+        Vector2 side = new Vector2(-delta.y, delta.x) / distance * 0.25f;
+        int steps = Mathf.CeilToInt(distance / 0.15f);
         for (int i = 1; i <= steps; i++)
         {
-            if (!map.IsWalkable(Vector3.Lerp(a, b, i / (float)steps)))
+            float t = i / (float)steps;
+            Vector2 p = Vector2.Lerp(a, b, t);
+            if (!map.IsWalkable(p))
+            {
+                return false;
+            }
+            float along = t * distance;
+            if (along > 0.35f && distance - along > 0.35f
+                && (!map.IsWalkable(p + side) || !map.IsWalkable(p - side)))
             {
                 return false;
             }
         }
         return true;
+    }
+
+    /// <summary>
+    /// Move from 'from' towards 'to' by up to 'maxDelta' without stepping into water: blocked
+    /// steps slide along the shore instead. A unit already in water heads for the nearest dry land.
+    /// </summary>
+    public Vector3 Step(Vector3 from, Vector3 to, float maxDelta)
+    {
+        if (!map.IsWalkable(from))
+        {
+            Vector3 dry = NearestWalkable(from);
+            dry.z = from.z;
+            return Vector3.MoveTowards(from, dry, Mathf.Max(maxDelta, 0.02f));
+        }
+        Vector3 next = Vector3.MoveTowards(from, to, maxDelta);
+        if (map.IsWalkable(next))
+        {
+            return next;
+        }
+        // Slide along whichever axis stays dry, trying the larger part of the move first.
+        Vector3 move = next - from;
+        var slideX = new Vector3(from.x + move.x, from.y, from.z);
+        var slideY = new Vector3(from.x, from.y + move.y, from.z);
+        bool xFirst = Mathf.Abs(move.x) >= Mathf.Abs(move.y);
+        Vector3 first = xFirst ? slideX : slideY, second = xFirst ? slideY : slideX;
+        if (map.IsWalkable(first))
+        {
+            return first;
+        }
+        return map.IsWalkable(second) ? second : from;
     }
 
     /// <summary>
@@ -157,7 +204,8 @@ public class MapNavigator
         return result;
     }
 
-    private Vector3 NearestWalkable(Vector3 p)
+    /// <summary>'p' if it's dry, otherwise the centre of the nearest dry tile.</summary>
+    public Vector3 NearestWalkable(Vector3 p)
     {
         if (map.IsWalkable(p))
         {
@@ -254,7 +302,7 @@ public class PathFollower
             return goal;
         }
         // Straight shot available: no need to plan.
-        if (Vector2.Distance(position, goal) < 2f || nav.ClearLine(position, goal))
+        if (nav.ClearLine(position, goal))
         {
             path.Clear();
             return goal;

@@ -70,6 +70,11 @@ public class BuildingDefinition : GameData
     [Tooltip("Footprint in grid cells.")]
     public Vector2Int size = Vector2Int.one;
 
+    [Tooltip("Area the art is drawn for, if bigger than the footprint (0 = same as size). It shares the footprint's bottom-left corner; the extra (roof peaks, flags, chimneys) hangs over the tiles behind.")]
+    public Vector2Int artSize;
+
+    public Vector2Int ArtSize => artSize.x > 0 && artSize.y > 0 ? artSize : size;
+
     [Tooltip("The age this building belongs to. It unlocks on reaching that age (plus any research in requirements).")]
     public Age age;
 
@@ -80,7 +85,7 @@ public class BuildingDefinition : GameData
     public List<BuildingUpgrade> upgrades = new List<BuildingUpgrade>();
 
     [Header("Rank up (after the last upgrade)")]
-    [Tooltip("The next age's version of this building (same footprint). Once fully upgraded and that age is reached, " +
+    [Tooltip("The next age's version of this building (same or smaller footprint). Once fully upgraded and that age is reached, " +
              "the building can be rebuilt in place as it, for less than building one fresh.")]
     public BuildingDefinition rankUpTo;
 
@@ -90,6 +95,11 @@ public class BuildingDefinition : GameData
 
     [Tooltip("The settlement's founding building (Campfire). Nothing else can be built until one exists.")]
     public bool isTownCenter;
+
+    [Tooltip("Tiles up the footprint where the building stands up from the ground: units further forward draw " +
+             "over it, units behind it draw under. 0 = the usual front wall. Flat buildings like farm fields use " +
+             "a high value, so figures walk over the field.")]
+    public float sortLine;
 
     [Header("Where it can go (OpenTTD-style)")]
     [Tooltip("The deposit this building works. Leave empty if it can go anywhere.")]

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Slinger
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Slinger
+  icon: {fileID: 21300000, guid: 8265abeac7a620c4c91dd8b0e814af5a, type: 3}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 8274362056149112852, guid: 2f21307b10aa91a42bda4bee112789b3, type: 3}
+  cost: 0
+  populationCost: 1
+  maxHealth: 110
+  moveSpeed: 1
+  attackPower: 13
+  attackCooldown: 1.2
+  attackRange: 4
+  hitDelay: 0.3
+  detectionRange: 5.5
+  projectile: {fileID: 21300000, guid: 9f3ea857b1266c24a9cd78f0e15d33bf, type: 3}
+  projectileSpeed: 10

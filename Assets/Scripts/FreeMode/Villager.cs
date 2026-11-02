@@ -106,7 +106,9 @@ public class Villager : MonoBehaviour
                 {
                     speed *= MapNavigator.Current.SpeedFactor(pos);
                 }
-                Vector3 next = Vector3.MoveTowards(pos, waypoint, speed * dt);
+                Vector3 next = MapNavigator.Current != null
+                    ? MapNavigator.Current.Step(pos, waypoint, speed * dt)
+                    : Vector3.MoveTowards(pos, waypoint, speed * dt);
                 next.z = target.z;
                 transform.position = next;
                 Face(waypoint.x - pos.x);

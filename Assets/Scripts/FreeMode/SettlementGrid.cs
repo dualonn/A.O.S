@@ -32,7 +32,7 @@ public class SettlementGrid : MonoBehaviour
     public Detail CurrentDetail { get; private set; } = Detail.Tiles;
 
     private const int RegionTiles = 64;          // deposit tilemap and overview picture regions
-    private const int OverviewPixelsPerTile = 2;
+    private const int OverviewPixelsPerTile = 4;
 
     private static readonly Color LinesIdle = new Color(1, 1, 1, 0f);
     private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.35f);
@@ -46,6 +46,18 @@ public class SettlementGrid : MonoBehaviour
     private Tilemap groundTilemap;
     private TilemapRenderer groundRenderer;
     private Tile grassTile, waterTile, hillTile;
+
+    // Smooth terrain: hills and water drawn on grids offset half a tile, one shape per corner pattern.
+    private bool smoothTerrain;
+    private Tile[] grassVariants;
+    private Tilemap waterTilemap;
+    private TilemapRenderer waterRenderer;
+    private Tile[] hillFullVariants;
+    // Hill tiers 1-3: each tier is its own layer, drawn over the middle of the one below.
+    private readonly List<Tilemap> hillTilemaps = new List<Tilemap>();
+    private readonly List<TilemapRenderer> hillRenderers = new List<TilemapRenderer>();
+    private readonly List<Tile[]> hillTiers = new List<Tile[]>();
+    private TileBase[] waterShapes;
 
     private class Region
     {
@@ -76,7 +88,7 @@ public class SettlementGrid : MonoBehaviour
         fog.transform.SetParent(transform, false);
         fog.sprite = SimpleSprites.Square;
         fog.color = FogColor;
-        fog.sortingOrder = -24;
+        fog.sortingOrder = -28;
         fog.transform.localPosition = new Vector3(-200, -200, 0);
         fog.transform.localScale = new Vector3(map.Width + 400, map.Height + 400, 1);
 
@@ -87,10 +99,11 @@ public class SettlementGrid : MonoBehaviour
         groundObject.transform.SetParent(tileGrid.transform, false);
         groundTilemap = groundObject.AddComponent<Tilemap>();
         groundRenderer = groundObject.AddComponent<TilemapRenderer>();
-        groundRenderer.sortingOrder = -21;
+        groundRenderer.sortingOrder = -27;
         grassTile = MakeTile(art != null ? art.grassTile : null, new Color(0.42f, 0.6f, 0.31f));
         waterTile = MakeTile(art != null ? art.waterTile : null, new Color(0.25f, 0.48f, 0.75f));
         hillTile = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
+        BuildSmoothTerrain(art);
 
         // Strategy map: one pixel per zone, point-filtered into crisp squares.
         strategyTexture = new Texture2D(map.ChunksX, map.ChunksY, TextureFormat.RGBA32, false)
@@ -171,9 +184,10 @@ public class SettlementGrid : MonoBehaviour
         depositObject.transform.SetParent(tileGrid.transform, false);
         region.deposits = depositObject.AddComponent<Tilemap>();
         region.depositRenderer = depositObject.AddComponent<TilemapRenderer>();
-        region.depositRenderer.sortingOrder = -11;
-        region.depositRenderer.sortOrder = TilemapRenderer.SortOrder.TopLeft; // lower trees overlap higher ones
-        region.depositRenderer.mode = TilemapRenderer.Mode.Chunk;
+        // Trees, rocks and ores sort one by one with units and buildings, by where they touch
+        // the ground (each tile's depth is set in DepositChange), so a figure can walk behind a tree.
+        region.depositRenderer.sortingOrder = BuildingView.SortingOrder;
+        region.depositRenderer.mode = TilemapRenderer.Mode.Individual;
 
         int px = OverviewPixelsPerTile;
         region.overview = new Texture2D(RegionTiles * px, RegionTiles * px, TextureFormat.RGBA32, false)
@@ -216,18 +230,12 @@ public class SettlementGrid : MonoBehaviour
             {
                 var t = Map.RawTerrain(x, y);
                 positions[i] = new Vector3Int(x, y, 0);
-                tiles[i] = t == TerrainType.Water ? waterTile : t == TerrainType.Hill ? hillTile : grassTile;
+                tiles[i] = smoothTerrain ? GrassAt(x, y)
+                    : t == TerrainType.Water ? waterTile : t == TerrainType.Hill ? hillTile : grassTile;
                 i++;
 
                 var deposit = Map.RawDeposit(x, y);
-                Color32 baseColor = TerrainColor(t);
-                Color32 mark = deposit != null ? OverviewColor(deposit) : baseColor;
-                for (int b = 0; b < block.Length; b++)
-                {
-                    // One corner pixel keeps the terrain colour so patches read as dotted, not solid.
-                    block[b] = deposit != null && b != 0 ? mark : baseColor;
-                }
-                region.overview.SetPixels32((x - baseX) * px, (y - baseY) * px, px, px, block);
+                PaintOverviewTile(region, x, y, baseX, baseY, block);
 
                 if (deposit != null && deposit.sprites.Count > 0 && !hiddenDeposits.Contains(new Vector2Int(x, y)))
                 {
@@ -237,6 +245,10 @@ public class SettlementGrid : MonoBehaviour
         }
         region.overviewDirty = true;
         groundTilemap.SetTiles(positions, tiles);
+        if (smoothTerrain)
+        {
+            DrawEdges(area);
+        }
         region.deposits.SetTiles(depositChanges.ToArray(), true);
         depositChanges.Clear();
     }
@@ -274,9 +286,34 @@ public class SettlementGrid : MonoBehaviour
             tile.flags = TileFlags.LockColor;
             depositTileFor[sprite] = tile;
         }
-        float scale = (0.6f + Hash01(x, y, 2) * 0.2f) / Mathf.Max(0.5f, sprite.bounds.size.x);
+        // Varied size and a loose scatter so deposit fields don't line up in rows.
+        float scale = (0.58f + Hash01(x, y, 2) * 0.32f) / Mathf.Max(0.5f, sprite.bounds.size.x);
         float flip = Hash01(x, y, 3) < 0.5f ? -1f : 1f;
-        var offset = new Vector3((Hash01(x, y, 4) - 0.5f) * 0.4f, (Hash01(x, y, 5) - 0.5f) * 0.3f - 0.3f, 0);
+        float jx = (Hash01(x, y, 4) - 0.5f) * 0.6f, jy = (Hash01(x, y, 5) - 0.5f) * 0.4f, baseY = -0.3f;
+        if (smoothTerrain)
+        {
+            // Keep rocks off the cliff faces of hill terraces: step back from a drop, and stay
+            // low under a cliff rising behind, so the height steps stay visible.
+            int level = HillLevel(x, y);
+            if (HillLevel(x, y - 1) < level)
+            {
+                baseY = -0.02f;
+                jy = Mathf.Abs(jy) * 0.5f;
+                scale *= 0.85f;
+            }
+            else if (HillLevel(x, y + 1) > level)
+            {
+                baseY = -0.38f;
+                jy = -Mathf.Abs(jy) * 0.3f;
+                scale *= 0.85f;
+            }
+            if (HillLevel(x - 1, y) < level) jx = Mathf.Abs(jx) * 0.5f + 0.08f;
+            if (HillLevel(x + 1, y) < level) jx = -Mathf.Abs(jx) * 0.5f - 0.08f;
+        }
+        // The sprite's pivot is its foot; tiles sit on the cell centre.
+        float footY = transform.position.y + (y + 0.5f + jy + baseY) * cellSize;
+        float depth = BuildingView.DepthFor(footY) - tileGrid.transform.position.z;
+        var offset = new Vector3(jx, jy + baseY, depth);
         return new TileChangeData(new Vector3Int(x, y, 0), tile, Color.white,
             Matrix4x4.TRS(offset, Quaternion.identity, new Vector3(scale * flip, scale, 1)));
     }
@@ -346,6 +383,14 @@ public class SettlementGrid : MonoBehaviour
         CurrentDetail = detail;
         bool tiles = detail == Detail.Tiles;
         groundRenderer.enabled = tiles;
+        if (smoothTerrain)
+        {
+            foreach (var renderer in hillRenderers)
+            {
+                renderer.enabled = tiles;
+            }
+            waterRenderer.enabled = tiles;
+        }
         foreach (var region in regions.Values)
         {
             region.depositRenderer.enabled = tiles;
@@ -354,10 +399,200 @@ public class SettlementGrid : MonoBehaviour
         strategy.enabled = detail == Detail.Strategy;
     }
 
-    // ---------- Helpers ----------
+    // ---------- Smooth terrain ----------
 
-    private static Color32 TerrainColor(TerrainType t) =>
-        t == TerrainType.Water ? WaterColor : t == TerrainType.Hill ? HillColor : GrassColor;
+    private void BuildSmoothTerrain(ArtLibrary art)
+    {
+        smoothTerrain = art != null && art.grassVariants.Count > 0 && art.hillShapes.Count == 16
+            && art.waterFrameCount > 0 && art.waterFrames.Count == 16 * art.waterFrameCount;
+        if (!smoothTerrain)
+        {
+            return;
+        }
+        grassVariants = art.grassVariants.ConvertAll(sprite => MakeTile(sprite, Color.white)).ToArray();
+        foreach (var shapes in new[] { art.hillShapes, art.hillShapes2, art.hillShapes3 })
+        {
+            if (shapes.Count == 16)
+            {
+                hillTiers.Add(shapes.ConvertAll(sprite => sprite != null ? MakeTile(sprite, Color.white) : null).ToArray());
+            }
+        }
+        hillFullVariants = art.hillFullVariants.ConvertAll(sprite => MakeTile(sprite, Color.white)).ToArray();
+        waterShapes = new TileBase[16];
+        for (int mask = 1; mask < 16; mask++)
+        {
+            var tile = ScriptableObject.CreateInstance<AnimatedTerrainTile>();
+            tile.frames = art.waterFrames.GetRange(mask * art.waterFrameCount, art.waterFrameCount).ToArray();
+            tile.framesPerSecond = art.waterFps;
+            waterShapes[mask] = tile;
+        }
+        for (int tier = 0; tier < hillTiers.Count; tier++)
+        {
+            hillTilemaps.Add(MakeEdgeLayer("Hills " + (tier + 1), -26 + tier, out var renderer));
+            hillRenderers.Add(renderer);
+        }
+        waterTilemap = MakeEdgeLayer("Water", -23, out waterRenderer);
+        if (art.waterMaterial != null)
+        {
+            waterRenderer.sharedMaterial = art.waterMaterial;
+        }
+    }
+
+    /// <summary>A tilemap shifted half a tile, so each of its cells sits where four tiles meet.</summary>
+    private Tilemap MakeEdgeLayer(string name, int order, out TilemapRenderer renderer)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(tileGrid.transform, false);
+        go.transform.localPosition = new Vector3(0.5f, 0.5f, 0) * cellSize;
+        var tilemap = go.AddComponent<Tilemap>();
+        renderer = go.AddComponent<TilemapRenderer>();
+        renderer.sortingOrder = order;
+        return tilemap;
+    }
+
+    private Tile GrassAt(int x, int y)
+    {
+        // Mostly the plain variant, with the detailed ones sprinkled in.
+        float roll = Hash01(x, y, 7);
+        if (roll < 0.55f || grassVariants.Length == 1)
+        {
+            return grassVariants[0];
+        }
+        return grassVariants[1 + Mathf.Min(grassVariants.Length - 2, (int)((roll - 0.55f) / 0.45f * (grassVariants.Length - 1)))];
+    }
+
+    /// <summary>
+    /// How high each tile looks on the detailed map: 0 = not hill, 1 = hill, 2 = hill with hills
+    /// all round it, 3 = deep inside a big hill area. Covers 'rect' grown by one tile each side.
+    /// </summary>
+    private int[] HillLevels(RectInt rect, out RectInt grown)
+    {
+        grown = new RectInt(rect.xMin - 1, rect.yMin - 1, rect.width + 2, rect.height + 2);
+        var levels = new int[grown.width * grown.height];
+        int i = 0;
+        for (int y = grown.yMin; y < grown.yMax; y++)
+        {
+            for (int x = grown.xMin; x < grown.xMax; x++)
+            {
+                levels[i++] = HillLevel(x, y);
+            }
+        }
+        return levels;
+    }
+
+    private int HillLevel(int x, int y) =>
+        Map.RawTerrain(x, y) != TerrainType.Hill ? 0
+        : !AllHill(x, y, 1) ? 1
+        : !AllHill(x, y, 3) ? 2 : 3;
+
+    private bool AllHill(int cx, int cy, int radius)
+    {
+        for (int y = cy - radius; y <= cy + radius; y++)
+        {
+            for (int x = cx - radius; x <= cx + radius; x++)
+            {
+                if (Map.RawTerrain(x, y) != TerrainType.Hill)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /// <summary>Update the hill and water edge cells whose corners touch 'area'.</summary>
+    private void DrawEdges(RectInt area)
+    {
+        var levels = HillLevels(area, out var grown);
+        int w = area.width + 1, h = area.height + 1, n = w * h;
+        var positions = new Vector3Int[n];
+        var hills = new TileBase[hillTiers.Count][];
+        for (int tier = 0; tier < hills.Length; tier++)
+        {
+            hills[tier] = new TileBase[n];
+        }
+        var water = new TileBase[n];
+        int i = 0;
+        for (int y = area.yMin - 1; y < area.yMax; y++)
+        {
+            for (int x = area.xMin - 1; x < area.xMax; x++)
+            {
+                int waterMask = 0;
+                for (int c = 0; c < 4; c++)
+                {
+                    if (Map.RawTerrain(x + (c & 1), y + (c >> 1)) == TerrainType.Water) waterMask |= 1 << c;
+                }
+                positions[i] = new Vector3Int(x, y, 0);
+                for (int tier = 0; tier < hills.Length; tier++)
+                {
+                    int mask = 0;
+                    for (int c = 0; c < 4; c++)
+                    {
+                        int tx = x + (c & 1), ty = y + (c >> 1);
+                        if (levels[(ty - grown.yMin) * grown.width + (tx - grown.xMin)] > tier) mask |= 1 << c;
+                    }
+                    hills[tier][i] = tier == 0 && mask == 15 && hillFullVariants.Length > 0 && Hash01(x, y, 13) < 0.5f
+                        ? hillFullVariants[(int)(Hash01(x, y, 17) * hillFullVariants.Length) % hillFullVariants.Length]
+                        : hillTiers[tier][mask];
+                }
+                water[i] = waterShapes[waterMask];
+                i++;
+            }
+        }
+        for (int tier = 0; tier < hills.Length; tier++)
+        {
+            hillTilemaps[tier].SetTiles(positions, hills[tier]);
+        }
+        waterTilemap.SetTiles(positions, water);
+    }
+
+    /// <summary>
+    /// Paint one tile of the zoomed-out picture. Each pixel blends the four nearest tiles, so
+    /// coasts, hills and forests come out as smooth shapes instead of blocks.
+    /// </summary>
+    private void PaintOverviewTile(Region region, int x, int y, int baseX, int baseY, Color32[] block)
+    {
+        int px = OverviewPixelsPerTile;
+        for (int sy = 0; sy < px; sy++)
+        {
+            for (int sx = 0; sx < px; sx++)
+            {
+                // Position among tile centres: corners (ix, iy) .. (ix + 1, iy + 1).
+                float cx = x + (sx + 0.5f) / px - 0.5f, cy = y + (sy + 0.5f) / px - 0.5f;
+                int ix = Mathf.FloorToInt(cx), iy = Mathf.FloorToInt(cy);
+                float u = cx - ix, v = cy - iy;
+                float waterW = 0, hillW = 0, depositW = 0, bestDeposit = 0;
+                DepositType deposit = null;
+                for (int c = 0; c < 4; c++)
+                {
+                    int tx = ix + (c & 1), ty = iy + (c >> 1);
+                    float weight = ((c & 1) == 1 ? u : 1 - u) * ((c >> 1) == 1 ? v : 1 - v);
+                    var t = Map.RawTerrain(tx, ty);
+                    if (t == TerrainType.Water) waterW += weight;
+                    else if (t == TerrainType.Hill) hillW += weight;
+                    var d = Map.RawDeposit(tx, ty);
+                    if (d != null)
+                    {
+                        depositW += weight;
+                        if (weight > bestDeposit)
+                        {
+                            bestDeposit = weight;
+                            deposit = d;
+                        }
+                    }
+                }
+                Color32 color;
+                if (waterW > 0.5f) color = WaterColor;
+                else if (depositW > 0.5f) color = OverviewColor(deposit);
+                else if (hillW > 0.5f) color = HillColor;
+                else color = GrassColor;
+                block[sy * px + sx] = color;
+            }
+        }
+        region.overview.SetPixels32((x - baseX) * px, (y - baseY) * px, px, px, block);
+    }
+
+    // ---------- Helpers ----------
 
     private static Color32 OverviewColor(DepositType deposit)
     {

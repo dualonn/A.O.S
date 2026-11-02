@@ -19,12 +19,12 @@ MonoBehaviour:
   prefab: {fileID: 843689390167708181, guid: e2be4506bcbc9934dbbd3da5f1ebe1bd, type: 3}
   cost: 0
   populationCost: 1
-  maxHealth: 150
+  maxHealth: 160
   moveSpeed: 0.85
-  attackPower: 15
+  attackPower: 14
   attackCooldown: 1.1
   attackRange: 0.75
   hitDelay: 0.3
   detectionRange: 2.5
   projectile: {fileID: 0}
-  projectileSpeed: 9
+  projectileSpeed: 10

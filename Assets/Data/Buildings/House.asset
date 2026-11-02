@@ -37,6 +37,7 @@ MonoBehaviour:
     - {fileID: 21300000, guid: cd3853b199724e04ba28b22240cb99d7, type: 3}
     fps: 4
   size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
   age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
   requirements:
     minimumAge: {fileID: 0}
@@ -107,14 +108,18 @@ MonoBehaviour:
     extraTowerRange: 0
     extraTowerDamage: 0
     operatorLift: 0
-  rankUpTo: {fileID: 0}
+  rankUpTo: {fileID: 11400000, guid: cc516d6c404cbd34792522dc3b973493, type: 2}
   rankUpRequirements:
     minimumAge: {fileID: 0}
     technologies: []
     buildings: []
     population: 0
-    cost: []
-  rankUpTime: 30
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 40
+  rankUpTime: 25
   isTownCenter: 0
   requiredDeposit: {fileID: 0}
   catchmentRadius: 3

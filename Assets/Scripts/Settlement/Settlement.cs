@@ -39,7 +39,10 @@ public class Settlement : MonoBehaviour
     public float WorkerEfficiency => WorkersNeeded == 0 ? 1f : Mathf.Min(1f, State.population / WorkersNeeded);
 
     /// <summary>How advanced the player is. Drives wave strength.</summary>
-    public int ThreatLevel => State.ageIndex * 5 + State.researched.Count;
+    /// <summary>How many current-age enemies' worth the next wave brings (grows with research and survival).</summary>
+    public float ThreatLevel => Mathf.Min(Database.maxWaveUnits,
+        Database.waveBaseUnits + State.researched.Count * Database.waveUnitsPerTech
+        + State.wavesSurvived * Database.waveUnitsPerWaveSurvived);
 
     private const float AutosaveInterval = 30f;
     private float autosaveTimer;
@@ -104,6 +107,7 @@ public class Settlement : MonoBehaviour
             building.health = Mathf.Round(building.health);
         }
         RecalculateDerived();
+        RepairUnderfilledHealth();
         Waves = gameObject.AddComponent<WaveDirector>();
         Waves.Initialise(this);
     }
@@ -242,6 +246,28 @@ public class Settlement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Older saves placed buildings with their base health, ignoring research bonuses, so they
+    /// never showed full. A building sitting at exactly that research-less maximum gets topped up.
+    /// </summary>
+    private void RepairUnderfilledHealth()
+    {
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def == null || building.health <= 0)
+            {
+                continue;
+            }
+            int full = StatsOf(def, building.upgradeLevel).maxHealth;
+            int withoutResearch = full - (Mathf.RoundToInt(def.maxHealth * BuildingHealthMultiplier) - def.maxHealth);
+            if (withoutResearch < full && Mathf.Approximately(building.health, withoutResearch))
+            {
+                building.health = full;
+            }
+        }
+    }
+
     public static BuildingStats StatsOf(BuildingDefinition def, int level)
     {
         float researchHealth = Instance != null && Instance.State != null ? Instance.BuildingHealthMultiplier : 1f;
@@ -364,9 +390,11 @@ public class Settlement : MonoBehaviour
             missing = building.rankingUp ? "Already ranking up" : "Already upgrading";
             return false;
         }
-        if (target.size != def.size)
+        // Ranking up rebuilds in place, so the new building must fit on the old one's spot
+        // (it can be smaller: e.g. a 3x3 Garrison becomes a 3x2 Legion Fort).
+        if (target.size.x > def.size.x || target.size.y > def.size.y)
         {
-            missing = $"{Name(target)} needs a different footprint";
+            missing = $"{Name(target)} is too big to fit on this building's spot";
             return false;
         }
         if (!IsAgeUnlocked(target))
@@ -570,6 +598,162 @@ public class Settlement : MonoBehaviour
             Notify($"Research complete: {tech.displayName}.");
             Changed?.Invoke();
         }
+    }
+
+    // ---------- Settlements (groups of buildings) and their raider-free zones ----------
+
+    /// <summary>
+    /// One settlement: a group of buildings standing close together. Its raider-free zone follows
+    /// the shape of the group (everywhere within safeDistance of one of its buildings), so a long
+    /// town along a river gets a long zone rather than one huge circle.
+    /// </summary>
+    public class SettlementZone
+    {
+        /// <summary>Footprints of the buildings in this settlement, in tiles.</summary>
+        public readonly List<Rect> buildings = new List<Rect>();
+        public Rect bounds;
+        public Vector2 centre;
+        public float safeDistance;
+        public int housingBuildings;
+
+        /// <summary>
+        /// A group with no housing and no town centre (a lone lumber camp, say): it keeps raiders
+        /// from spawning on top of it, but its zone is small and raids never set out for it.
+        /// </summary>
+        public bool IsOutpost;
+
+        /// <summary>Distance from 'point' to the nearest building of this settlement.</summary>
+        public float DistanceTo(Vector2 point)
+        {
+            float best = float.MaxValue;
+            foreach (var r in buildings)
+            {
+                float dx = Mathf.Max(r.xMin - point.x, 0, point.x - r.xMax);
+                float dy = Mathf.Max(r.yMin - point.y, 0, point.y - r.yMax);
+                best = Mathf.Min(best, dx * dx + dy * dy);
+            }
+            return Mathf.Sqrt(best);
+        }
+
+        /// <summary>How far outside the zone 'point' is (negative inside).</summary>
+        public float Clearance(Vector2 point) => DistanceTo(point) - safeDistance;
+
+        public bool Contains(Vector2 point) => Clearance(point) < 0;
+    }
+
+    /// <summary>
+    /// Every settlement. Buildings belong together when the gap between their footprints is at
+    /// most settlementMergeDistance, so farms, camps and walls join the town they work for. A
+    /// group with housing or the town centre is a settlement; its zone reaches settlementSafeRadius
+    /// past its buildings, a little more as it grows. Any other group is an outpost.
+    /// </summary>
+    public List<SettlementZone> SettlementZones()
+    {
+        var rects = new List<Rect>();
+        var homes = new List<bool>();
+        var cores = new List<bool>();
+        foreach (var building in State.buildings)
+        {
+            var def = Database.GetBuilding(building.definitionId);
+            if (def == null)
+            {
+                continue;
+            }
+            rects.Add(new Rect(building.cell, def.size));
+            bool home = StatsOf(def, building.upgradeLevel).housing > 0;
+            homes.Add(home);
+            cores.Add(home || def.isTownCenter);
+        }
+
+        var zones = new List<SettlementZone>();
+        var grouped = new bool[rects.Count];
+        float merge = Database.settlementMergeDistance;
+        for (int i = 0; i < rects.Count; i++)
+        {
+            if (grouped[i])
+            {
+                continue;
+            }
+            // Flood out from this building to every building within merge distance of the group.
+            var zone = new SettlementZone { IsOutpost = true };
+            var queue = new Queue<int>();
+            queue.Enqueue(i);
+            grouped[i] = true;
+            while (queue.Count > 0)
+            {
+                int k = queue.Dequeue();
+                zone.buildings.Add(rects[k]);
+                if (homes[k]) zone.housingBuildings++;
+                if (cores[k]) zone.IsOutpost = false;
+                for (int j = 0; j < rects.Count; j++)
+                {
+                    if (!grouped[j] && Gap(rects[j], rects[k]) <= merge)
+                    {
+                        grouped[j] = true;
+                        queue.Enqueue(j);
+                    }
+                }
+            }
+
+            var min = new Vector2(float.MaxValue, float.MaxValue);
+            var max = new Vector2(float.MinValue, float.MinValue);
+            var centre = Vector2.zero;
+            foreach (var r in zone.buildings)
+            {
+                min = Vector2.Min(min, r.min);
+                max = Vector2.Max(max, r.max);
+                centre += r.center;
+            }
+            zone.bounds = Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+            zone.centre = centre / zone.buildings.Count;
+            zone.safeDistance = zone.IsOutpost
+                ? Database.outpostSafeRadius
+                : Database.settlementSafeRadius + Mathf.Min(Database.settlementSafeRadiusGrowthMax,
+                    Database.settlementSafeRadiusPerBuilding * zone.buildings.Count);
+            zones.Add(zone);
+        }
+        return zones;
+    }
+
+    /// <summary>Gap between two footprints (0 when they touch or overlap).</summary>
+    private static float Gap(Rect a, Rect b)
+    {
+        float dx = Mathf.Max(0, Mathf.Max(a.xMin - b.xMax, b.xMin - a.xMax));
+        float dy = Mathf.Max(0, Mathf.Max(a.yMin - b.yMax, b.yMin - a.yMax));
+        return Mathf.Sqrt(dx * dx + dy * dy);
+    }
+
+    /// <summary>The settlement 'point' is in or nearest to (null when there are none).</summary>
+    public static SettlementZone NearestZone(List<SettlementZone> zones, Vector2 point, bool settlementsOnly = false)
+    {
+        SettlementZone best = null;
+        float bestClearance = float.MaxValue;
+        foreach (var zone in zones)
+        {
+            if (settlementsOnly && zone.IsOutpost)
+            {
+                continue;
+            }
+            float c = zone.Clearance(point);
+            if (c < bestClearance)
+            {
+                bestClearance = c;
+                best = zone;
+            }
+        }
+        return best;
+    }
+
+    public static bool InAnyZone(List<SettlementZone> zones, Vector2 point)
+    {
+        foreach (var zone in zones)
+        {
+            if (zone.Contains(point))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void RecalculateDerived()
@@ -796,7 +980,7 @@ public class Settlement : MonoBehaviour
             instanceId = State.nextBuildingId++,
             definitionId = def.id,
             cell = cell,
-            health = def.maxHealth,
+            health = StatsOf(def, 0).maxHealth,   // includes research bonuses, so it starts full
             buildProgress = def.buildTime > 0 ? 0 : 1,
             siteQuality = quality
         };
@@ -971,7 +1155,9 @@ public class Settlement : MonoBehaviour
         float health = unit.maxHealth * (modifier?.healthMultiplier ?? 1f);
         float attack = unit.attackPower * (modifier?.attackMultiplier ?? 1f);
         float cooldown = Mathf.Max(0.1f, unit.attackCooldown * (modifier?.cooldownMultiplier ?? 1f));
-        return health / 100f * (attack / 10f) / cooldown;
+        // Ranged units deal their damage from safety, so they count double.
+        float ranged = unit.projectile != null ? 2f : 1f;
+        return health / 100f * (attack / 10f) / cooldown * ranged;
     }
 
     public static UnitStatModifier Combine(UnitStatModifier a, UnitStatModifier b)

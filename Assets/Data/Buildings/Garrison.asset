@@ -1,0 +1,183 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Garrison
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Garrison
+  displayName: Garrison
+  description: Trains Swordsmen.
+  icon: {fileID: 21300000, guid: bb8dc3cbb0e7c8347bd5b58def5a8dab, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: bb8dc3cbb0e7c8347bd5b58def5a8dab, type: 3}
+    - {fileID: 21300000, guid: 4c435f76101a1ea4887bcacc6b6e303f, type: 3}
+    - {fileID: 21300000, guid: 74ef951de7342034e81919f48e72a844, type: 3}
+    - {fileID: 21300000, guid: b92722777bca6db4d929f4f96efaa8d4, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: e16d31acb22ac5545b76c8ff02683ac9, type: 3}
+    - {fileID: 21300000, guid: 492bb115f541fc24993d14c8c69b0754, type: 3}
+    - {fileID: 21300000, guid: 54549c42f16cb1b4f9ad8f89eb0c39bc, type: 3}
+    - {fileID: 21300000, guid: e8d6dabea0be8724898b9ffa1f7a6b1b, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 1051efca21fc23e4a82896cc12d8ca2a, type: 3}
+    - {fileID: 21300000, guid: 04545fe4f44a65a4dace2a2d33c6c194, type: 3}
+    - {fileID: 21300000, guid: 8ac9d8c2c899cfb4fabef933dea296e8, type: 3}
+    - {fileID: 21300000, guid: 9ddb928b3cf243948862a80ade36fd3e, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: fa83fed296579f943a0eb197dd755cfd, type: 3}
+    - {fileID: 21300000, guid: 4aaa9fd969c061d4a8bafcd7a415a6f9, type: 3}
+    - {fileID: 21300000, guid: 017d5df2076be0241bcc1cdae1ca8e32, type: 3}
+    - {fileID: 21300000, guid: 57b4588d20bb6444b92174fbe4485066, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 40
+  upgrades:
+  - name: Iron Helmets
+    description: 'Swordsmen wear iron helmets: +20% health.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 80
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Forged Blades
+    description: 'Better-forged swords: +20% attack.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Drill Yard
+    description: Room for one more swordsman.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 100
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 43836dcacbb08bc4e9b7a46ab05421af, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 20
+  rankUpTime: 35
+  isTownCenter: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 400
+  housing: 0
+  workers: 3
+  production: []
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 08f5b130efed1c945a363c13ff88ac41, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}
