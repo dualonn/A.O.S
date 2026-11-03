@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
   m_Name: EnlightenmentAge
   m_EditorClassIdentifier: Assembly-CSharp::Age
-  displayName: Age of Enlightenment
+  displayName: Enlightenment
   order: 6
   description: 'Reason and powder smoke: flintlocks and bayonets, star forts, encyclopaedias,
     and philosophers coaxing lightning into jars.'

@@ -1,0 +1,189 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Pillbox
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Pillbox
+  displayName: Pillbox
+  description: A squat concrete pillbox. Its machine gun swings to meet the raiders
+    and sprays them with bullets.
+  icon: {fileID: 21300000, guid: eb4cc16b49dfb074d896c3e9e28faf68, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: eb4cc16b49dfb074d896c3e9e28faf68, type: 3}
+    - {fileID: 21300000, guid: 64233d1b72a2cf54aac2655857f22081, type: 3}
+    - {fileID: 21300000, guid: 400f326594bfa844caa87a1dc948b34c, type: 3}
+    - {fileID: 21300000, guid: 94dce0d345861d246b8f900c7e5dc490, type: 3}
+    fps: 8
+  - frames:
+    - {fileID: 21300000, guid: 63b291cae979c124585a092dc10c2a58, type: 3}
+    - {fileID: 21300000, guid: f3c07930d517e8248a880a75f0f4ac66, type: 3}
+    - {fileID: 21300000, guid: 332012ca3187ef1418dbb46cf8326890, type: 3}
+    - {fileID: 21300000, guid: a30e61593b1f56747a48a5bff9d740d3, type: 3}
+    fps: 8
+  - frames:
+    - {fileID: 21300000, guid: d12fa6db90fa1814d8249668b9a41a57, type: 3}
+    - {fileID: 21300000, guid: df610d0fdf221554b9c913083d94e177, type: 3}
+    - {fileID: 21300000, guid: 2bfef3022f7542442bfd2e77449050af, type: 3}
+    - {fileID: 21300000, guid: faa680847194ea8489ba02b39247652b, type: 3}
+    fps: 8
+  - frames:
+    - {fileID: 21300000, guid: 9140e41712aa2d6479a73ff647e850e5, type: 3}
+    - {fileID: 21300000, guid: 35307259e36adef4089654d6d2460411, type: 3}
+    - {fileID: 21300000, guid: 9b096e389024e7540812d799cabaecaf, type: 3}
+    - {fileID: 21300000, guid: 3666f906db053454b91c74c84b24e1ab, type: 3}
+    fps: 8
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9611c30cd5fbe71409b35d43caa76d48, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 30
+  upgrades:
+  - name: Twin Guns
+    description: +12 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 12
+    operatorLift: 0
+  - name: Range Finder
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Thicker Walls
+    description: +800 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 400
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 800
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1600
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 9.5
+  towerDamage: 34
+  towerCooldown: 0.55
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 30
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1.875, y: 0.453125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

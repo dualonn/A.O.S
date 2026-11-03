@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Gangster
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Gangster
+  icon: {fileID: 21300000, guid: 97b586f401147294ea91f6346592fc38, type: 3}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 1606589115393667768, guid: 51cf0e17b2a624447a50ca67f80d3f77, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 520
+  moveSpeed: 1
+  attackPower: 12
+  attackCooldown: 0.45
+  attackRange: 4.5
+  hitDelay: 0.3
+  detectionRange: 5.5
+  projectile: {fileID: 21300000, guid: 77aaa76df8c51a14893fd69c3493e502, type: 3}
+  projectileSpeed: 30
+  projectileArc: 0
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -63,7 +63,8 @@ public class FigureStyle
         GearLook.Ballista => WeaponClass.None,
         GearLook.Crossbow => WeaponClass.Crossbow,
         GearLook.RuneStaff => WeaponClass.Staff,
-        GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket => WeaponClass.Musket,
+        GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket
+            or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
         GearLook.AetherRod or GearLook.LeydenRod => WeaponClass.Staff,
         GearLook.Cannon => WeaponClass.Cannon,
@@ -109,6 +110,9 @@ public static class PixelFigure
             case MountKind.Chariot: w = 96; h = 60; cx = 48; gy = 4; break;
             case MountKind.Cannon: w = 76; h = 48; cx = 20; gy = 4; break;   // the gunner stands behind the gun
             case MountKind.Crawler: w = 88; h = 54; cx = 26; gy = 4; break;  // the commander stands in the hatch
+            case MountKind.Tank: w = 96; h = 54; cx = 32; gy = 4; break;     // in the turret hatch
+            case MountKind.ArmouredCar: w = 80; h = 50; cx = 32; gy = 4; break;
+            case MountKind.Walker: w = 64; h = 76; cx = 30; gy = 4; break;   // the pilot in a cockpit on two iron legs
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -163,7 +167,11 @@ public static class PixelFigure
     }
 
     /// <summary>Two-handed shoulder guns (arquebus, rifle).</summary>
-    private static bool LongGun(FigureStyle s) => s.weapon == GearLook.Arquebus || s.weapon == GearLook.Rifle || s.weapon == GearLook.Musket;
+    private static bool LongGun(FigureStyle s) => s.weapon == GearLook.Arquebus || s.weapon == GearLook.Rifle || s.weapon == GearLook.Musket
+        || s.weapon == GearLook.BoltRifle || s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun;
+
+    /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
+    private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -313,10 +321,13 @@ public static class PixelFigure
 
         public void Draw()
         {
-            bool mounted = s.mount != MountKind.None && s.mount != MountKind.Cannon && s.mount != MountKind.Crawler;
+            bool mounted = s.mount != MountKind.None && s.mount != MountKind.Cannon && !Hatch(s.mount);
             riding = mounted && p.death < 2;
             thrown = mounted && p.death >= 2;
             float lean = p.death == 1 ? -15f : p.death == 2 ? -55f : p.death == 3 ? -88f : 0f;
+            // In a vehicle's hatch the crewman slumps down inside it instead of toppling out.
+            bool inHatch = Hatch(s.mount);
+            if (inHatch) lean = p.death == 1 ? -10f : p.death == 2 ? -20f : p.death == 3 ? -30f : 0f;
 
             // Joints (local, before leaning)
             float baseX = cx + 0.5f;
@@ -346,7 +357,7 @@ public static class PixelFigure
             // Lean the rider/figure for death frames (round the feet, or the saddle).
             c.Pivot = riding ? hip : V(hip.x, gy);
             c.Angle = lean;
-            c.Shift = p.death == 3 ? V(X(-4), X(2)) : Vector2.zero;
+            c.Shift = inHatch ? V(0, -p.death * X(2.5f)) : p.death == 3 ? V(X(-4), X(2)) : Vector2.zero;
 
             DrawCape();
             if (s.weapon == GearLook.Bow) Quiver();
@@ -358,15 +369,15 @@ public static class PixelFigure
             if (riding)
             {
                 c.Angle = 0; c.Shift = Vector2.zero;
-                if (s.mount != MountKind.Chariot) FarLegRiding();
+                if (s.mount != MountKind.Chariot && s.mount != MountKind.Walker) FarLegRiding();
                 DrawMount(fallen: false);
                 c.Pivot = hip; c.Angle = lean;
                 if (s.mount == MountKind.Chariot) { StandingLegs(); ChariotFront(); }
-                else NearLegRiding();
+                else if (s.mount != MountKind.Walker) NearLegRiding();
             }
-            else
+            else if (!inHatch)
             {
-                StandingLegs();
+                StandingLegs();   // (a crewman's legs are inside the vehicle)
             }
 
             Torso();
@@ -376,14 +387,18 @@ public static class PixelFigure
             c.Angle = 0; c.Shift = Vector2.zero;
             if (s.mount == MountKind.Cannon) FieldGun();
             if (s.mount == MountKind.Crawler) SteamCrawler();
+            if (s.mount == MountKind.Tank) TankHull();
+            if (s.mount == MountKind.ArmouredCar) ArmouredCar();
+            if (s.mount == MountKind.Walker && riding) WalkerCockpit();
             c.Outline(P.Ink, 0.6f);
             if (p.release && (s.Class == WeaponClass.Musket || s.Class == WeaponClass.Cannon)) MuzzleFlash();
             if (p.smear) Smear();
             if (p.thrust) Thrust();
             float shadowX = s.mount == MountKind.None ? cx + 1 : s.mount == MountKind.Cannon ? cx + X(12) : s.mount == MountKind.Crawler ? cx + X(8)
-                : cx + X(s.mount == MountKind.Chariot ? 4 : 0);
+                : s.mount == MountKind.Tank ? cx + X(4) : s.mount == MountKind.ArmouredCar ? cx + X(2) : cx + X(s.mount == MountKind.Chariot ? 4 : 0);
             float shadowW = s.mount == MountKind.None ? X(7) : s.mount == MountKind.Elephant ? X(18) : s.mount == MountKind.Cannon ? X(16)
-                : s.mount == MountKind.Crawler ? X(20) : X(s.mount == MountKind.Chariot ? 24 : 14);
+                : s.mount == MountKind.Crawler || s.mount == MountKind.Tank ? X(20) : s.mount == MountKind.ArmouredCar ? X(16)
+                : s.mount == MountKind.Walker ? X(10) : X(s.mount == MountKind.Chariot ? 24 : 14);
             if (p.death == 3 && s.mount == MountKind.None) shadowX += X(8);
             c.Shadow(shadowX, gy, shadowW, X(1.8f));
         }
@@ -415,6 +430,8 @@ public static class PixelFigure
                 GearLook.Scale => P.Bronze,
                 GearLook.Mail or GearLook.Plate or GearLook.Surcoat or GearLook.Cuirass => P.Steel,
                 GearLook.BrassPlate => P.Brass,
+                GearLook.Fatigues => P.Olive,
+                GearLook.TrenchCoat => P.Khaki,
                 GearLook.Robe => crest,
                 GearLook.Bare => skinRamp,
                 _ => team,
@@ -432,7 +449,7 @@ public static class PixelFigure
                     return l.x < hip.x - half * 0.4f ? crest[1] : crest[2];
                 });
             }
-            if (s.body == GearLook.Greatcoat)
+            if (s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat)
             {
                 // coat-tails to the knee, split at the back
                 float top = hip.y + 1, bottom = hip.y - X(5.5f);
@@ -440,11 +457,12 @@ public static class PixelFigure
                 {
                     if (Mathf.Abs(l.x - (hip.x - X(1.2f))) < 0.6f && l.y < hip.y - X(2)) return null;   // the split
                     if (l.y < bottom + 1) return Trim(GearSlot.Body, team[0]);
-                    return l.x < hip.x - X(1.2f) ? team[1] : team[2];
+                    var coat = s.body == GearLook.TrenchCoat ? P.Khaki : team;
+                    return l.x < hip.x - X(1.2f) ? coat[1] : coat[2];
                 });
             }
             // Tunic skirt in the team colour shows below any armour (not under a robe).
-            if (s.body != GearLook.Robe && s.body != GearLook.Greatcoat)
+            if (s.body != GearLook.Robe && s.body != GearLook.Greatcoat && s.body != GearLook.TrenchCoat)
             c.FillLocal(new Rect(hip.x - X(3.5f), hip.y - X(1.5f), X(7.5f), X(2.5f)), l =>
                 l.y < hip.y + 1 ? (Color32?)(l.x < hip.x ? team[2] : team[1]) : null);
             c.Capsule(a, b, r, cloth, s.body == GearLook.Bare ? -0.45f : 0f);   // a bare chest a shade darker, so the near arm shows
@@ -498,6 +516,22 @@ public static class PixelFigure
                     c.Line(V(b.x + r - 1, b.y - 1), V(a.x - r + 1, a.y + 1), P.Linen[2]);
                     for (float y = a.y + X(1.2f); y < b.y - 1; y += X(1.5f)) c.Put(c.T(V(a.x + X(1.2f), y)), Trim(GearSlot.Body, P.Brass[2]));
                     c.Line(V(b.x - r + 0.5f, b.y - 0.5f), V(b.x + r - 0.5f, b.y - 0.5f), crest[2]);   // the collar
+                    break;
+                }
+                case GearLook.Fatigues:
+                {
+                    // olive tunic with webbing: a belt, two ammunition pouches and a strap over the shoulder
+                    c.Line(V(b.x - r + 1, b.y - 1), V(a.x + r - 1, a.y + 1), P.Khaki[1]);
+                    c.Put(c.T(V(a.x - X(1.4f), a.y + X(0.8f))), P.Khaki[1]);
+                    c.Put(c.T(V(a.x + X(1.4f), a.y + X(0.8f))), P.Khaki[1]);
+                    c.Line(V(b.x - r + 0.5f, b.y - 0.5f), V(b.x + r - 0.5f, b.y - 0.5f), team[2]);   // the collar tabs in the team colour
+                    break;
+                }
+                case GearLook.TrenchCoat:
+                {
+                    // a double row of buttons, a belt with a buckle, and the collar turned up
+                    for (float y = a.y + X(1.2f); y < b.y - 1; y += X(1.6f)) { c.Put(c.T(V(a.x - X(0.6f), y)), P.Khaki[0]); c.Put(c.T(V(a.x + X(1.2f), y)), P.Khaki[0]); }
+                    c.Line(V(b.x - r + 0.5f, b.y - 0.5f), V(b.x + r - 0.5f, b.y - 0.5f), P.Khaki[3]);
                     break;
                 }
                 case GearLook.BrassPlate:
@@ -788,6 +822,26 @@ public static class PixelFigure
                     }
                     break;
                 }
+                case GearLook.SteelHelmet:
+                {
+                    Hair(false);
+                    // a wide flat steel helmet with a chin strap
+                    c.Ellipse(hd + V(0, X(1.0f)), r + 0.3f, X(3.0f), P.Olive, l => l.y > hd.y + X(1.0f));
+                    rim = Trim(GearSlot.Head, P.Olive[0]);
+                    c.Line(V(hd.x - r - X(1.0f), hd.y + X(1.0f)), V(hd.x + r + X(1.0f), hd.y + X(1.0f)), rim, S > 1.3f ? 2 : 1);
+                    c.Line(V(hd.x + X(1.2f), hd.y + X(1.0f)), V(hd.x + X(1.6f), hd.y - X(2.4f)), P.Leather[1]);
+                    break;
+                }
+                case GearLook.Fedora:
+                {
+                    Hair(false);
+                    // a pinched felt hat with a dark band, its brim snapped down at the front
+                    c.Ellipse(hd + V(0, X(2.4f)), r - 0.2f, X(2.0f), P.Cloth, l => l.y > hd.y + X(1.6f));
+                    c.Line(V(hd.x - r - X(1.6f), hd.y + X(1.6f)), V(hd.x + r + X(1.8f), hd.y + X(1.3f)), Trim(GearSlot.Head, P.Cloth[1]), S > 1.3f ? 2 : 1);
+                    c.Line(V(hd.x - r + 0.4f, hd.y + X(2.1f)), V(hd.x + r - 0.4f, hd.y + X(2.1f)), crest[1]);
+                    c.Put(c.T(hd + V(0, X(4.2f))), P.Cloth[1]);   // the pinch
+                    break;
+                }
                 case GearLook.Tricorne:
                 {
                     Hair(false);
@@ -958,11 +1012,13 @@ public static class PixelFigure
             if (sleeve)
             {
                 var sl = s.body == GearLook.Mail || s.body == GearLook.Plate || s.body == GearLook.Surcoat ? P.Steel : s.body == GearLook.Scale ? P.Bronze
-                    : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass : team;
-                // a greatcoat's sleeves reach the wrist, with a cuff in the collar colour
-                float reach = s.body == GearLook.Greatcoat ? 0.85f : 0.4f;
-                c.Line(from, Vector2.Lerp(from, hand, reach), far ? sl[1] : sl[2], limb);
+                    : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass
+                    : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : team;
+                // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
+                bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues;
+                c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
+                if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
             }
             c.FillLocal(new Rect(hand.x - 0.5f, hand.y - 0.5f, limb, limb), _ => far ? skin[1] : skin[2]);
         }
@@ -1115,6 +1171,16 @@ public static class PixelFigure
                             c.Put(c.T(at(len + X(t), X(side))), orb[3]);
                     break;
                 }
+                case GearLook.Shovel:
+                {
+                    // a short entrenching shovel, the blade sharpened for close work
+                    float len = X(8);
+                    c.Line(at(-2), at(len), P.Wood[2], ww);
+                    c.Polygon(new[] { at(len, -X(1.6f)), at(len + X(3.4f), -X(1.2f)), at(len + X(3.8f), 0), at(len + X(3.4f), X(1.2f)), at(len, X(1.6f)) },
+                        _ => Trim(GearSlot.Weapon, P.Iron[2]));
+                    c.Line(at(len + X(0.5f), -X(1.2f)), at(len + X(3), -X(0.8f)), P.Iron[3]);
+                    break;
+                }
                 case GearLook.Sabre:
                 {
                     // a curved light-cavalry sabre with a brass stirrup hilt
@@ -1172,7 +1238,7 @@ public static class PixelFigure
                     c.Ellipse(hand + V(0, X(-0.4f)), X(1.6f), X(1.6f), new[] { P.Green[0], P.Green[2], P.Green[3], P.White });
                     c.Put(c.T(hand + V(0, X(2))), P.Fire[2]);                                         // the lit rag
                     break;
-                case GearLook.Cannon when s.mount == MountKind.Crawler:
+                case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank:
                     break;   // the commander works the gun from inside
                 case GearLook.Cannon:
                 {
@@ -1241,7 +1307,25 @@ public static class PixelFigure
             bool aiming = p.attack && p.hNear.y > -2;
             Vector2 butt = aiming ? hFar + V(X(-1.5f), 0) : hFar + V(X(-1), X(-1));
             Vector2 d = aiming ? V(1, 0) : V(0.8f, 0.6f);
-            bool rifle = s.weapon == GearLook.Rifle, musket = s.weapon == GearLook.Musket;
+            bool rifle = s.weapon == GearLook.Rifle || s.weapon == GearLook.BoltRifle, musket = s.weapon == GearLook.Musket;
+            if (s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun)
+            {
+                bool mg = s.weapon == GearLook.MachineGun;
+                Vector2 rear = butt + d * X(mg ? 2 : 1.5f), front = butt + d * X(mg ? 15 : 10);
+                c.Line(butt, rear, P.Wood[1], limb + 1);
+                c.Line(rear, front, P.Iron[1], limb + (mg ? 1 : 0));
+                if (mg)
+                {
+                    c.Line(rear + d * X(3), front - d * X(1), P.Iron[2], limb + 2);                 // the cooling jacket
+                    for (int i = 0; i < 4; i++) c.Put(c.T(rear + d * X(4 + i * 2) + V(0, X(1.2f))), P.Iron[0]);
+                    c.Line(rear + V(0, -X(1)), rear + V(X(-1.5f), -X(4)), P.Brass[2]);              // the ammunition belt
+                }
+                else
+                    c.Ellipse(rear + d * X(3) + V(0, -X(1.8f)), X(1.6f), X(1.6f), P.Iron);           // drum magazine
+                c.Put(c.T(rear + d * X(1) + V(0, X(1))), Trim(GearSlot.Weapon, P.Iron[3]));
+                muzzle = front + d;
+                return;
+            }
             Vector2 lock_ = butt + d * X(4), end = butt + d * X(rifle || musket ? 16 : 15);
             c.Line(butt, lock_, rifle ? P.Wood[1] : P.Wood[2], limb + 1);
             c.Line(lock_, end, P.Iron[1], limb);
@@ -1349,6 +1433,117 @@ public static class PixelFigure
                 c.Put(c.T(wheel + V(phase % 2 == 0 ? 0.5f : -0.5f, 0.5f)), P.Brass[2]);
             }
             if (p.attack && p.loaded) c.Put(c.T(breech + V(X(1), X(2))), P.Fire[3]);
+        }
+
+        /// <summary>A tank: a riveted olive hull on tracks, a turret with a long gun, the commander in its hatch.</summary>
+        private void TankHull()
+        {
+            float recoil = p.release ? -X(1.5f) : 0;
+            float x0 = cx - X(16), x1 = cx + X(22), yb = gy + X(1), yt = gy + X(9);
+            int phase = p.fNear.x > 2 ? 1 : p.fNear.x < -2 ? 2 : p.bob > 0 ? 3 : 0;
+            var hull = P.Olive;
+            // tracks
+            var tread = new Rect(x0 - X(1), yb - X(1), x1 - x0 + X(2), X(5));
+            c.FillLocal(tread, l =>
+            {
+                float dx = Mathf.Min(l.x - tread.xMin, tread.xMax - l.x), dy = Mathf.Abs(l.y - tread.center.y) / (tread.height / 2);
+                if (dx < X(2.5f) && (X(2.5f) - dx) * (X(2.5f) - dx) / (X(2.5f) * X(2.5f)) + dy * dy > 1.1f) return null;
+                if (l.y < tread.yMin + 1 || l.y > tread.yMax - 1) return ((int)l.x + phase) % 3 == 0 ? P.Iron[3] : P.Coal[1];
+                return P.Coal[2];
+            });
+            for (int i = 0; i < 6; i++)
+            {
+                Vector2 wheel = V(Mathf.Lerp(tread.xMin + X(2.6f), tread.xMax - X(2.6f), i / 5f), tread.center.y);
+                c.Ellipse(wheel, X(1.6f), X(1.6f), P.Iron);
+            }
+            // the hull, with a sloped front
+            c.FillLocal(new Rect(x0, yb + X(3), x1 - x0, yt - yb - X(3)), l =>
+            {
+                if (l.x > x1 - X(5) && l.x - (x1 - X(5)) > (yt - l.y) * 0.8f) return null;
+                if (l.y > yt - 1.2f) return hull[3];
+                return ((int)(l.x - x0) % 7 == 0 && (int)l.y % 3 == 0) ? hull[0] : l.x < x0 + X(2) ? hull[3] : hull[2];
+            });
+            c.Put(c.T(V(x0 + X(4), yb + X(6))), team[2]);   // a team-colour roundel
+            c.Put(c.T(V(x0 + X(5), yb + X(6))), team[2]);
+            // the turret around the commander's waist, and its gun
+            Vector2 breech = V(cx + X(6) + recoil, yt + X(3)), mouth = breech + V(X(18), 0);
+            c.Line(breech, mouth, hull[1], S > 1.3f ? 3 : 2);
+            c.Line(mouth + V(X(-1), 0), mouth, hull[0], S > 1.3f ? 4 : 3);   // the muzzle brake
+            muzzle = mouth + V(X(1), 0);
+            c.FillLocal(new Rect(cx - X(7), yt, X(14), X(5.5f)), l =>
+            {
+                float dx = Mathf.Abs(l.x - cx) / X(7), dy = (l.y - yt) / X(5.5f);
+                if (dy > 0.6f && dx > 1.1f - dy * 0.6f) return null;
+                return l.y > yt + X(5) ? hull[3] : l.x < cx - X(4) ? hull[3] : hull[2];
+            });
+            if (p.attack && p.loaded) c.Put(c.T(breech), P.Fire[3]);
+        }
+
+        /// <summary>An armoured car: a boxy riveted body on big wheels, the gunner standing in the open top with his machine gun.</summary>
+        private void ArmouredCar()
+        {
+            float x0 = cx - X(13), x1 = cx + X(15), yb = gy + X(4), yt = gy + X(11);
+            int phase = p.fNear.x > 2 ? 1 : p.fNear.x < -2 ? 2 : 0;
+            var hull = P.Olive;
+            c.FillLocal(new Rect(x0, yb, x1 - x0, yt - yb), l =>
+            {
+                if (l.x > x1 - X(5) && l.y > yb + X(4) && l.x - (x1 - X(5)) > (l.y - (yb + X(4))) * 1.2f) return null;   // sloped bonnet
+                if (l.y > yt - 1.2f) return hull[3];
+                return ((int)(l.x - x0) % 6 == 0 && (int)l.y % 3 == 0) ? hull[0] : l.x < x0 + X(2) ? hull[3] : hull[2];
+            });
+            c.Rect((int)(x1 - X(6)), (int)(yb + X(4)), (int)(x1 - X(4)), (int)(yb + X(5)), P.Coal[1]);   // the driver's slit
+            c.Line(V(x0 + X(2), yb + X(3)), V(x1 - X(6), yb + X(3)), team[2]);
+            foreach (float wx in new[] { x0 + X(5), x1 - X(6) })
+            {
+                Vector2 w = V(wx, gy + X(3));
+                c.Ellipse(w, X(3.2f), X(3.2f), P.Coal);
+                c.Ellipse(w, X(1.2f), X(1.2f), P.Iron);
+                c.Put(c.T(w + V(phase == 1 ? X(1) : phase == 2 ? X(-1) : 0, X(0.8f))), P.Iron[3]);
+            }
+        }
+
+        /// <summary>The walker's open cockpit in front of the pilot's waist, with its gauges.</summary>
+        private void WalkerCockpit()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var hull = P.Olive;
+            var box = new Rect(hip.x - X(7), hip.y - X(5), X(15), X(9));
+            c.FillLocal(box, l =>
+            {
+                if (l.x > box.xMax - X(3) && l.y > box.yMax - X(3) && (l.x - (box.xMax - X(3))) > (box.yMax - l.y)) return null;
+                if (l.y > box.yMax - 1.2f) return Trim(GearSlot.Body, hull[3]);
+                return ((int)l.x % 5 == 0 && (int)l.y % 3 == 0) ? hull[0] : l.x < box.xMin + X(2) ? hull[3] : hull[2];
+            });
+            c.Put(c.T(V(box.xMin + X(3), box.yMin + X(5))), P.Glow[3]);   // a lamp
+            c.Line(V(box.xMin + X(2), box.yMin + X(2)), V(box.xMax - X(4), box.yMin + X(2)), team[2]);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>The walker's two iron legs (back-jointed, like a bird's) and the hull behind the pilot.</summary>
+        private void WalkerLegs(int drop)
+        {
+            var hull = P.Olive;
+            Vector2 seat = V(cx + 0.5f, gy + X(22) - (drop == 0 ? 0 : drop == 1 ? X(6) : X(14)));
+            int g = Gait;
+            for (int side = -1; side <= 1; side += 2)
+            {
+                bool far = side < 0;
+                float swing = drop > 0 ? 0 : g * X(3) * side;
+                Vector2 hipJ = seat + V(X(far ? -2 : 2), X(-3));
+                Vector2 knee = hipJ + V(X(-4) + swing * 0.3f, X(-8));
+                Vector2 foot = drop == 2 ? hipJ + V(X(side * 6), X(-12)) : V(seat.x + X(far ? -3 : 3) + swing, gy + 1);
+                if (drop == 2) knee = Vector2.Lerp(hipJ, foot, 0.5f) + V(0, X(2));
+                var col = far ? hull[1] : hull[2];
+                c.Line(hipJ, knee, col, S > 1.3f ? 4 : 3);
+                c.Line(knee, foot, col, S > 1.3f ? 3 : 2);
+                c.Ellipse(knee, X(1.5f), X(1.5f), P.Iron);
+                c.Line(foot + V(X(-2), 0), foot + V(X(3), 0), P.Iron[1], 2);   // a splayed iron foot
+            }
+            // the engine pack behind the pilot, with an exhaust stack
+            c.Ellipse(seat + V(X(-5), X(3)), X(4), X(5), hull);
+            c.Line(seat + V(X(-7), X(6)), seat + V(X(-7), X(11)), P.Iron[1], 2);
+            if (drop == 0) c.Ellipse(seat + V(X(-7.5f) - Gait, X(13)), X(1.6f), X(1.2f), P.Stone, null, 0.4f);
         }
 
         /// <summary>A short iron gun on the bastion's parapet, in front of its gunner.</summary>
@@ -1533,6 +1728,7 @@ public static class PixelFigure
         {
             MountKind.Chariot => V(cx + 0.5f - X(10), gy + X(9) + X(7) + 1),
             MountKind.Elephant => V(cx + 0.5f - X(2), gy + X(27)),
+            MountKind.Walker => V(cx + 0.5f, gy + X(22)),
             _ => V(cx + 0.5f - X(1), gy + X(15)),
         };
 
@@ -1569,6 +1765,7 @@ public static class PixelFigure
             int drop = !fallen ? 0 : p.death == 2 ? 1 : 2;
             switch (s.mount)
             {
+                case MountKind.Walker: WalkerLegs(drop); break;
                 case MountKind.Horse: Horse(V(cx + 0.5f, gy), coat, drop, 0); break;
                 case MountKind.Chariot:
                     Horse(V(cx + 0.5f + X(16), gy), coat, drop, 0);

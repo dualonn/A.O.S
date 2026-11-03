@@ -19,7 +19,7 @@ public static partial class PlaceholderArt
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         Age renaissance = db.ages.Find(a => a != null && a.name == "RenaissanceAge");
-        var age = AgeAsset(db, "EnlightenmentAge", "Age of Enlightenment", 6,
+        var age = AgeAsset(db, "EnlightenmentAge", "Enlightenment", 6,
             "Reason and powder smoke: flintlocks and bayonets, star forts, encyclopaedias, and philosophers coaxing lightning into jars.");
         // It sits between the Renaissance and the Industrial Age, which moves up one.
         var industrialAge = db.ages.Find(a => a != null && a.name == "IndustrialAge");

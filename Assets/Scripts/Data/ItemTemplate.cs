@@ -26,7 +26,9 @@ public enum GearLook
     // Industrial (steampunk)
     Shako, Bearskin, TopHat, Goggles, BoilerHelm, Greatcoat, BrassPlate, Rifle, Grenade, AetherRod, Wrench, PistonHammer,
     // Age of Enlightenment
-    Tricorne, Busby, Musket, Sabre, LeydenRod
+    Tricorne, Busby, Musket, Sabre, LeydenRod,
+    // Modern (dieselpunk)
+    SteelHelmet, Fedora, Fatigues, TrenchCoat, BoltRifle, MachineGun, Tommygun, Shovel
 }
 
 /// <summary>

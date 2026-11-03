@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -149,6 +149,22 @@ public static partial class PlaceholderArt
         c.Rect(8, 12, 11, 17, P.Linen[3]);
         c.Rect(7, 17, 12, 18, P.Wood[2]);
         c.Put(7, 9, P.White);
+    }
+
+    private static void IcOil(PixelCanvas c)
+    {
+        // a fat black drop with a sheen
+        c.Ellipse(Iv(10, 7), 6, 6, new[] { P.Coal[0], P.Coal[1], P.Coal[2], P.Coal[3] });
+        for (int y = 12; y < 18; y++) { int h = (18 - y) / 2; c.Rect(10 - h, y, 10 + h, y, P.Coal[1]); }
+        c.Put(7, 9, P.Aether[2]); c.Put(8, 10, P.Rune[2]);
+    }
+
+    private static void IcFuel(PixelCanvas c)
+    {
+        // a red jerrycan
+        c.Rect(4, 2, 15, 15, P.Red[2]); c.Rect(4, 2, 5, 15, P.Red[3]); c.Rect(14, 2, 15, 15, P.Red[1]);
+        c.Line(Iv(6, 5), Iv(13, 12), P.Red[1]); c.Line(Iv(13, 5), Iv(6, 12), P.Red[1]);
+        c.Rect(8, 16, 12, 17, P.Iron[2]); c.Rect(12, 16, 14, 18, P.Iron[1]);
     }
 
     private static void IcCoal(PixelCanvas c)

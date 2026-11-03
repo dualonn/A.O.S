@@ -33,10 +33,14 @@ public static partial class PlaceholderArt
         4 => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
         5 => new PxWallStyle { ramp = BastionRamp, height = 26, kind = 1, crenels = false, towers = true }, // low, thick brick bastion wall
         6 => new PxWallStyle { ramp = StarFortRamp, height = 24, kind = 3, crenels = false, towers = true }, // low dressed-stone star-fort rampart
+        8 => new PxWallStyle { ramp = ConcreteRamp, height = 28, kind = 6, crenels = false, towers = true }, // poured concrete, barbed wire on top
         _ => new PxWallStyle { ramp = P.Iron, height = 30, kind = 5, crenels = false, towers = true },     // riveted iron-plated wall
     };
 
     /// <summary>Red brick for Renaissance bastion walls.</summary>
+    /// <summary>Grey poured concrete for Modern walls.</summary>
+    private static Color32[] ConcreteRamp => new[] { P.Hex("4c4c4e"), P.Hex("78787a"), P.Hex("a2a29e"), P.Hex("c8c8c2") };
+
     /// <summary>Warm limestone for Enlightenment star forts.</summary>
     private static Color32[] StarFortRamp => new[] { P.Hex("5e5240"), P.Hex("8e7c60"), P.Hex("c2ad88"), P.Hex("e6d6b4") };
 
@@ -70,6 +74,14 @@ public static partial class PlaceholderArt
                 if (tone < 0) tone += 4;
                 Color32 face = tone == 0 ? r[3] : r[2];
                 return rv == course - 1 ? PixelCanvas.Mix(face, P.White, 0.12f) : face;
+            }
+            case 6:   // poured concrete: wide formwork panels, a few stains, barbed wire along the top
+            {
+                if (v >= s.height - 2) return ((u + v) % 3 == 0) ? P.Iron[1] : (((u % 4) + 4) % 4 == 0 ? P.Iron[2] : r[2]);
+                int pu = ((u % 16) + 16) % 16;
+                if (pu == 0 || v % 10 == 0) return r[1];
+                if (((u * 7 + v * 3) % 23) == 0) return r[1];
+                return pu < 4 ? r[3] : r[2];
             }
             case 5:   // riveted iron plates, 8 wide and 6 high, a brass band near the top
             {
@@ -318,7 +330,7 @@ public static partial class PlaceholderArt
     private static void GenerateWallArt(int onlyTier)
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate"), ("ConcreteWall", "ConcreteGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
             if (onlyTier >= 0 && age != onlyTier) continue;

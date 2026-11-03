@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: SteamCrawler
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Steam Crawler
-  icon: {fileID: 21300000, guid: 88bbe5ac5d617164a9fbee16c92c479a, type: 3}
+  icon: {fileID: 21300000, guid: d56397448ead4ba40871d7c31df5f72a, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
-  prefab: {fileID: 5360652295665640482, guid: 76ab79f3896cfdf4f8d75e4ada7a60dd, type: 3}
+  prefab: {fileID: 1415608547083824311, guid: 72efa8c60817f0d49934502fed83b62d, type: 3}
   cost: 0
   populationCost: 3
   upkeep:
