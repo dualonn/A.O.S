@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ManaWell
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ManaWell
+  displayName: Mana Well
+  description: A moonstone well where manastone is dissolved into glowing Mana.
+  icon: {fileID: 21300000, guid: ec6c2547e37f8a54f87e97fcf0489615, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: ec6c2547e37f8a54f87e97fcf0489615, type: 3}
+    - {fileID: 21300000, guid: 074ecff578d983643b9bcb0417dbeac8, type: 3}
+    - {fileID: 21300000, guid: 3a439dff5158c81429fdc80869e010b0, type: 3}
+    - {fileID: 21300000, guid: 5e0bf848ee962fd459c1c4e456123330, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: b579fd077e7f2d04f8a04818c374b3b0, type: 3}
+    - {fileID: 21300000, guid: c65297b2c85ca7d4fbf217d591989d68, type: 3}
+    - {fileID: 21300000, guid: 3f52f1c49013b504ab52cba106ba7da1, type: 3}
+    - {fileID: 21300000, guid: d85108a4ba4c97c498b9febb2a0c9d1a, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 5e7f8ca705cfb584aaa5fc345c7113fb, type: 3}
+    - {fileID: 21300000, guid: e009961784681dd4ebbcc99c876a0f9a, type: 3}
+    - {fileID: 21300000, guid: 508a80a31454067429176f62d6033a3b, type: 3}
+    - {fileID: 21300000, guid: 51f71e24357439b4eacb9a121b8d937c, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b196eb3540464f646af08d55b629c879, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 150
+  upgrades:
+  - name: Deeper Well
+    description: +30% mana.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 400
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Crystal Jars
+    description: +30% mana.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1000
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+    perSecond: 0.12
+  inputs:
+  - resource: {fileID: 11400000, guid: 69e08591c4ab6664683cede531656d21, type: 2}
+    perSecond: 0.12
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

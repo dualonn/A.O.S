@@ -108,6 +108,17 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Arcane Age (fantasy)
+        ("Spellblade", Fig(B, GearLook.Cowl, GearLook.Runeblade, body: GearLook.Spellweave, crest: "Arcane"), false),
+        ("Arcanist", Fig(B, GearLook.WizardHat, GearLook.ManaStaff, body: GearLook.Spellweave, crest: "Arcane"), false),
+        ("GriffinRider", Fig(B, GearLook.PlumedHelm, GearLook.Javelin, body: GearLook.Plate, mount: MountKind.Griffin, coat: "Griffin"), false),
+        ("Lightbringer", Medic(Fig(B, GearLook.WizardHat, GearLook.None, body: GearLook.Spellweave, crest: "Linen")), false),
+        ("Warwalker", Fig(B, GearLook.WizardHat, GearLook.Cannon, body: GearLook.Spellweave, mount: MountKind.Walker, crest: "Arcane"), false),
+        ("RunicGolem", Skin(Fig(B, GearLook.GolemHead, GearLook.None, body: GearLook.GolemBody, scale: 1.5f), "Rock"), false),
+        ("Skyship", Fig(B, GearLook.WizardHat, GearLook.Grenade, body: GearLook.Spellweave, mount: MountKind.Airship, crest: "Arcane"), false),
+        ("Hexblade", Fig(Rd, GearLook.Hood, GearLook.Runeblade, body: GearLook.Jerkin, raider: true), true),
+        ("Warlock", Fig(Rd, GearLook.Cowl, GearLook.ManaStaff, body: GearLook.Robe, crest: "Purple", raider: true), true),
+        ("WyvernRider", Fig(Rd, GearLook.Hood, GearLook.Javelin, body: GearLook.Jerkin, mount: MountKind.Griffin, coat: "Wyvern", raider: true), true),
         // Information Age (cyber)
         ("Commando", Fig(B, GearLook.TacHelmet, GearLook.AssaultRifle, body: GearLook.TacVest), false),
         ("PlasmaGunner", Fig(B, GearLook.TacHelmet, GearLook.PlasmaRifle, body: GearLook.TacVest), false),
@@ -146,6 +157,7 @@ public static partial class PlaceholderArt
 
     private static FigureStyle Medic(FigureStyle s) { s.medic = true; return s; }
     private static FigureStyle Skin(FigureStyle s, string skin) { s.skin = skin; return s; }
+    private static FigureStyle Lich(FigureStyle s) { s.skin = "Bone"; s.undead = true; return s; }
 
     /// <summary>Tower crews (drawn from the waist up; they stand behind a parapet).</summary>
     private static (string building, string name, FigureStyle style)[] PixelCrews => new[]
@@ -206,6 +218,12 @@ public static partial class PlaceholderArt
             var n = PixelPalette.Neon;
             c.LineRaw(new Vector2(0, 2), new Vector2(5, 2), n[1]); c.Ellipse(new Vector2(7, 2), 2, 2, n); c.Put(7, 3, n[3]);
         });
+        var manaBolt = PixelProjectile("ManaBolt", 11, 7, c =>
+        {
+            var m = PixelPalette.Mana;
+            c.LineRaw(new Vector2(0, 3), new Vector2(5, 3), m[1]); c.LineRaw(new Vector2(2, 4), new Vector2(6, 4), m[2]);
+            c.Ellipse(new Vector2(8, 3.5f), 2.4f, 2.4f, m); c.Put(8, 4, PixelPalette.White);
+        });
         var bullet = PixelProjectile("Bullet", 5, 3, c => { c.LineRaw(new Vector2(0, 1), new Vector2(3, 1), PixelPalette.Brass[2]); c.Put(4, 1, PixelPalette.Glow[3]); });
         var aetherBolt = PixelProjectile("AetherBolt", 12, 7, c =>
         {
@@ -231,7 +249,8 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.PlasmaRifle ? plasmaBolt : style.weapon == GearLook.AssaultRifle ? bullet
                 : style.weapon == GearLook.BoltRifle ? ball : style.weapon == GearLook.MachineGun || style.weapon == GearLook.Tommygun ? bullet
                 : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
-                : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball : null;
+                : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball
+                : style.weapon == GearLook.ManaStaff ? manaBolt : null;
             SetFlight(def, style.weapon);
             EditorUtility.SetDirty(def);
         }
@@ -286,6 +305,7 @@ public static partial class PlaceholderArt
             case GearLook.LeydenRod: def.projectileArc = 0f; def.projectileSpeed = 16f; def.splashRadius = 0.7f; break;
             case GearLook.Grenade: def.projectileArc = 0.4f; def.projectileSpeed = 8f; def.splashRadius = 1.5f; break;
             case GearLook.AetherRod: def.projectileArc = 0f; def.projectileSpeed = 18f; def.splashRadius = 0.8f; break;
+            case GearLook.ManaStaff: def.projectileArc = 0f; def.projectileSpeed = 20f; def.splashRadius = 0.9f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
@@ -558,6 +578,20 @@ public static partial class PlaceholderArt
         },
         new BossSpec
         {
+            id = "BossLichArchmage", name = "The Lich Archmage", age = "ArcaneAge",
+            style = Lich(Fig(Rd, GearLook.WizardHat, GearLook.ManaStaff, body: GearLook.Spellweave, crest: "Purple", cape: "Purple", scale: 1.7f, raider: true)),
+            health = 11500, attack = 150, speed = 0.8f, cooldown = 1.6f, range = 7.5f, detection = 8f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "Hexblade", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "BossStoneTitan", name = "The Stone Titan", age = "ArcaneAge",
+            style = Skin(Fig(Rd, GearLook.GolemHead, GearLook.None, body: GearLook.GolemBody, scale: 2.4f, raider: true), "Rock"),
+            health = 14000, attack = 170, speed = 0.6f, cooldown = 1.4f, range = 1.2f, detection = 3.5f,
+            ability = BossAbility.Slam, abilityCooldown = 6f, abilityRadius = 3f, abilityPower = 1.5f,
+        },
+        new BossSpec
+        {
             id = "BossRogueAI", name = "The Rogue AI", age = "InformationAge",
             style = Skin(Fig(Rd, GearLook.SynthHead, GearLook.PlasmaRifle, body: GearLook.SynthBody, scale: 2.0f, raider: true), "Synth"),
             health = 10500, attack = 40, speed = 0.8f, cooldown = 0.5f, range = 7f, detection = 7.5f,
@@ -629,7 +663,7 @@ public static partial class PlaceholderArt
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
                 GearLook.RayGun or GearLook.RayRifle => "RayBolt", GearLook.PlasmaRifle => "PlasmaBolt", GearLook.AssaultRifle => "Bullet",
-                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", _ => null,
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff => "ManaBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);

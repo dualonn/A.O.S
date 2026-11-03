@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -66,7 +66,7 @@ public class FigureStyle
         GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
-        GearLook.AetherRod or GearLook.LeydenRod => WeaponClass.Staff,
+        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff => WeaponClass.Staff,
         GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
@@ -122,6 +122,7 @@ public static class PixelFigure
             case MountKind.Jetpack: w = 56; h = 76; cx = 26; gy = 4; break;   // flying on a rocket pack
             case MountKind.Drone: w = 40; h = 56; cx = 20; gy = 4; break;     // a pilotless quad-rotor
             case MountKind.Jet: w = 84; h = 80; cx = 40; gy = 4; break;       // a jet fighter, the pilot under its canopy
+            case MountKind.Griffin: w = 80; h = 100; cx = 38; gy = 4; break;  // a rider on a flying griffin (or a raider's wyvern)
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -148,7 +149,7 @@ public static class PixelFigure
         p.hFar = V(3, -5);
         p.hNear = shield ? V(4, -4) : V(-1, -6);
         if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin || s.weapon == GearLook.Pike || s.weapon == GearLook.RuneStaff
-            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod) p.wa = 84;
+            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff) p.wa = 84;
         if (s.weapon == GearLook.Lance) p.wa = 62;
         if (cls == WeaponClass.Crossbow || LongGun(s)) { p.hNear = V(5, -4); p.hFar = V(2, -5); }
         if (s.weapon == GearLook.Pistol || s.weapon == GearLook.RayGun) p.wa = -60;
@@ -190,7 +191,7 @@ public static class PixelFigure
     /// <summary>How high a flying craft is drawn above its shadow (pixels, before scaling).</summary>
     private static int Altitude(FigureStyle s) => s.mount == MountKind.Airship ? 50 : s.mount == MountKind.Biplane ? 40
         : s.mount == MountKind.Jetpack ? 28 : s.mount == MountKind.HoverTank || s.mount == MountKind.HoverCar ? 6
-        : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : 0;
+        : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : s.mount == MountKind.Griffin ? 30 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -440,10 +441,11 @@ public static class PixelFigure
 
         private void StandingLegs()
         {
-            bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody;   // robots, automatons, androids
-            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : P.Brass)
+            bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody
+                || s.body == GearLook.GolemBody;   // robots, automatons, androids, golems
+            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock : P.Brass)
                 : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
-            Color32[] boots = metal ? P.Iron : P.Leather;
+            Color32[] boots = s.body == GearLook.GolemBody ? P.Rock : metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
             Leg(footNear, pants[2], boots[2], 1);
         }
@@ -472,7 +474,8 @@ public static class PixelFigure
                 GearLook.SynthBody => P.Synth,
                 GearLook.ChromePlate => P.Chrome,
                 GearLook.TrenchCoat => P.Khaki,
-                GearLook.Robe => crest,
+                GearLook.Robe or GearLook.Spellweave => crest,
+                GearLook.GolemBody => P.Rock,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
@@ -583,6 +586,24 @@ public static class PixelFigure
                     for (int i = -1; i <= 1; i++) c.FillLocal(new Rect(a.x + i * X(1.6f) - X(0.6f), a.y + X(1), X(1.2f), X(1.6f)), _ => P.Tactical[3]);
                     c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), P.Tactical[2]);
                     c.Put(c.T(shNear + V(0, -0.5f)), team[2]); c.Put(c.T(shNear + V(0.5f, -1.5f)), team[2]);
+                    break;
+                }
+                case GearLook.Spellweave:
+                {
+                    // a long robe stitched with glowing runes, a gold sash at the waist
+                    c.Line(V(a.x - X(0.5f), a.y), V(b.x - X(0.5f), b.y - 1), crest[1]);
+                    for (float y = a.y + X(1.5f); y < b.y - 1; y += X(2.2f)) c.Put(c.T(V(a.x + X(0.9f), y)), Trim(GearSlot.Body, P.Arcane[3]));
+                    c.Line(V(a.x - r + 0.5f, a.y - 1), V(a.x + r - 0.5f, a.y - 1), P.Gold[2]);
+                    break;
+                }
+                case GearLook.GolemBody:
+                {
+                    // courses of stacked stone with a glowing crack down the chest
+                    c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
+                        Inside(l, a, b, r) && (int)(l.y - a.y) % 4 == 3 ? (Color32?)P.Rock[0] : null);
+                    c.Line(V(a.x - X(0.8f), a.y + X(1)), V(a.x + X(0.6f), b.y - X(2)), P.Arcane[2]);
+                    c.Ellipse(shNear + V(0, 0.5f), X(2.2f), X(1.8f), P.Rock);   // a boulder shoulder
+                    c.Put(c.T(Vector2.Lerp(a, b, 0.6f)), Trim(GearSlot.Body, P.Arcane[3]));
                     break;
                 }
                 case GearLook.SynthBody:
@@ -907,6 +928,26 @@ public static class PixelFigure
                     c.Put(c.T(hd + V(X(-r * 0.6f), X(2))), P.Red[3]);
                     break;
                 }
+                case GearLook.WizardHat:
+                {
+                    Hair(false);
+                    // a tall pointed hat with a wide brim, its tip bent over, a gold star on the front
+                    c.Polygon(new[] { V(hd.x - r, hd.y + X(2.2f)), V(hd.x + r, hd.y + X(2.2f)), V(hd.x - X(1.2f), hd.y + X(9.5f)) }, _ => crest[2]);
+                    c.Line(V(hd.x - r * 0.3f, hd.y + X(2.4f)), V(hd.x - X(1.2f), hd.y + X(9.5f)), crest[1]);
+                    c.Line(V(hd.x - X(1.2f), hd.y + X(9.5f)), V(hd.x - X(3.6f), hd.y + X(8.2f)), crest[2], 2);
+                    c.Line(V(hd.x - r - X(2.2f), hd.y + X(2)), V(hd.x + r + X(2.2f), hd.y + X(2)), Trim(GearSlot.Head, crest[1]), S > 1.3f ? 2 : 1);   // brim
+                    c.Put(c.T(hd + V(X(0.2f), X(4.6f))), P.Gold[3]);
+                    break;
+                }
+                case GearLook.GolemHead:
+                {
+                    // a carved block of stone with a glowing rune for eyes and another on the brow
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.6f, X(3.6f) + 0.4f, P.Rock);
+                    c.Line(V(hd.x + X(0.2f), hd.y + X(0.8f)), V(hd.x + r, hd.y + X(0.8f)), Trim(GearSlot.Head, P.Arcane[3]), S > 1.3f ? 2 : 1);
+                    c.Put(c.T(hd + V(-X(0.8f), X(2.6f))), P.Arcane[2]);
+                    c.Line(V(hd.x - r, hd.y - X(1)), V(hd.x - r * 0.3f, hd.y + X(1.5f)), P.Rock[0]);   // a crack
+                    break;
+                }
                 case GearLook.SynthHead:
                 {
                     // a smooth, featureless synthetic head with a cyan visor band
@@ -1132,10 +1173,12 @@ public static class PixelFigure
                 var sl = s.body == GearLook.Mail || s.body == GearLook.Plate || s.body == GearLook.Surcoat ? P.Steel : s.body == GearLook.Scale ? P.Bronze
                     : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass
                     : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome
-                    : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth : team;
+                    : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth
+                    : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
-                    || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody;
+                    || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody
+                    || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1290,6 +1333,34 @@ public static class PixelFigure
                     if (p.loaded && p.attack)
                         foreach (var (t, side) in new[] { (3f, 2.2f), (2f, -2.6f), (4f, -0.6f) })
                             c.Put(c.T(at(len + X(t), X(side))), orb[3]);
+                    break;
+                }
+                case GearLook.ManaStaff:
+                {
+                    // a pale wooden staff, a mana crystal floating in its forked head
+                    float len = X(13);
+                    c.Line(at(-X(5)), at(len), P.Linen[1], ww);
+                    c.Line(at(len - X(1.5f), -X(1.2f)), at(len + X(0.5f), -X(1.6f)), P.Linen[1]);
+                    c.Line(at(len - X(1.5f), X(1.2f)), at(len + X(0.5f), X(1.6f)), P.Linen[1]);
+                    var crystal = P.Mana;
+                    bool lit = p.loaded || !p.attack;
+                    c.Polygon(new[] { at(len + X(0.5f)), at(len + X(2.5f), -X(1.3f)), at(len + X(4.5f)), at(len + X(2.5f), X(1.3f)) },
+                        _ => lit ? crystal[2] : crystal[0]);
+                    c.Put(c.T(at(len + X(2), X(0.4f))), lit ? crystal[3] : crystal[1]);
+                    if (p.loaded && p.attack)
+                        foreach (var (t, side) in new[] { (5.5f, 2f), (4f, -2.6f), (1.5f, 2.6f) })
+                            c.Put(c.T(at(len + X(t), X(side))), crystal[3]);
+                    break;
+                }
+                case GearLook.Runeblade:
+                {
+                    // a long steel sword, runes glowing violet along the fuller
+                    float len = X(11);
+                    c.Line(at(-2), at(0), P.Leather[2], ww);
+                    c.Line(at(1, -X(1.6f)), at(1, X(1.6f)), Trim(GearSlot.Weapon, P.Gold[2]), ww);
+                    c.Line(at(2), at(len), P.Steel[3], ww + 1);
+                    for (float t = X(3); t < len - 1; t += X(2)) c.Put(c.T(at(t, -0.5f)), P.Arcane[3]);
+                    c.Put(c.T(at(len + 1)), P.Steel[2]);
                     break;
                 }
                 case GearLook.EnergyBlade:
@@ -2087,11 +2158,66 @@ public static class PixelFigure
                     ChariotBack(drop);
                     break;
                 case MountKind.Elephant: Elephant(V(cx + 0.5f, gy), coat, drop); break;
+                case MountKind.Griffin: Griffin(V(cx + 0.5f, gy), P.Named(s.coat == "Wyvern" ? "Wyvern" : "Griffin"), drop); break;
             }
             (c.Angle, c.Shift, c.Pivot) = save;
         }
 
         private int Gait => p.death > 0 ? 0 : p.fNear.x > 2 ? 1 : p.fNear.x < -2 ? -1 : 0;
+
+        /// <summary>A griffin: a lion's body, an eagle's head and wings beating with the stride. A raider's wyvern is scaled, with a lizard's head.</summary>
+        private void Griffin(Vector2 o, Color32[] coat, int drop)
+        {
+            float lift = drop == 0 ? 0 : drop == 1 ? -X(4) : -X(8);
+            Vector2 body = o + V(0, X(11) + lift);
+            bool wyvern = s.coat == "Wyvern";
+            var feathers = wyvern ? coat : P.Linen;
+            // wings beat with the stride, held high at rest
+            float flap = drop > 0 ? -0.5f : p.fNear.x > 2 ? 1.1f : p.fNear.x < -2 ? -0.2f : 0.7f;
+            void Wing(float dx, bool far)
+            {
+                if (drop == 2) return;
+                Vector2 root = body + V(X(dx), X(4)), tip = root + V(X(-15), X(12 * flap + 6)), back = root + V(X(-13), X(-1));
+                Color32[] ramp = wyvern ? coat : (far ? P.Griffin : feathers);
+                c.Polygon(new[] { root, tip, back }, _ => far ? ramp[1] : ramp[2]);
+                c.Line(root, tip, ramp[far ? 0 : 1], 2);
+                for (int i = 1; i < 5; i++) c.Line(Vector2.Lerp(root, tip, i / 5f), Vector2.Lerp(back, tip, i / 5f + 0.1f), ramp[far ? 0 : 1]);
+            }
+            Wing(-2, true);
+            // tail: a lion's tuft, or a wyvern's long spade
+            Vector2 tailEnd = body + V(X(wyvern ? -19 : -16), X(wyvern ? 1 : 5));
+            c.Line(body + V(X(-9), X(1)), tailEnd, coat[1], 2);
+            if (wyvern) c.Polygon(new[] { tailEnd + V(0, X(1.6f)), tailEnd + V(X(-2.8f), 0), tailEnd + V(0, X(-1.6f)) }, _ => coat[2]);
+            else c.Ellipse(tailEnd, X(1.6f), X(1.6f), new[] { coat[0], coat[0], coat[1], coat[1] });
+            // tucked legs: talons in front, paws behind
+            if (drop < 2)
+            {
+                c.Line(body + V(X(6), X(-4)), body + V(X(9), X(-7)), wyvern ? coat[1] : P.Gold[2], 2);
+                c.Line(body + V(X(-7), X(-4)), body + V(X(-11), X(-6)), coat[1], 2);
+            }
+            c.Ellipse(body + V(X(-7), X(0.3f)), X(5.5f), X(5), coat);
+            c.Ellipse(body, X(10), X(5.2f), coat);
+            c.Ellipse(body + V(X(7), X(1)), X(4.6f), X(5.2f), wyvern ? coat : feathers);   // a feathered breast
+            // neck and head
+            Vector2 neck0 = body + V(X(8), X(3)), head = drop == 2 ? body + V(X(14), X(-1)) : body + V(X(12), X(8.5f));
+            c.Capsule(neck0, head, X(2.8f), wyvern ? coat : feathers);
+            c.Ellipse(head, X(3.4f), X(3), wyvern ? coat : feathers);
+            if (wyvern)
+            {
+                c.Polygon(new[] { head + V(X(1.5f), X(1.6f)), head + V(X(7), X(0)), head + V(X(1.5f), X(-1.8f)) }, _ => coat[2]);   // long jaw
+                c.Line(head + V(X(-1), X(2.4f)), head + V(X(-3.5f), X(4.5f)), coat[1], 2);   // horn
+                c.Put(head + V(X(1), X(1)), P.Red[3]);
+            }
+            else
+            {
+                c.Polygon(new[] { head + V(X(2.4f), X(1.6f)), head + V(X(6.4f), X(0.2f)), head + V(X(5), X(-2.2f)), head + V(X(2.4f), X(-1.2f)) }, _ => P.Gold[2]);   // hooked beak
+                c.Line(head + V(X(-1.5f), X(2.4f)), head + V(X(-3.5f), X(4.2f)), feathers[1], 2);   // ear tuft
+                c.Put(head + V(X(1.2f), X(1)), P.Ink);
+            }
+            Wing(1, false);
+            // the saddle cloth in the team colour
+            if (drop < 2) c.FillLocal(new Rect(body.x - X(5), body.y + X(2), X(8), X(3.5f)), l => l.x < body.x - X(3) ? team[2] : team[1]);
+        }
 
         private void Horse(Vector2 o, Color32[] coat, int drop, int unused)
         {

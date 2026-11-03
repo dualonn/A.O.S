@@ -28,7 +28,7 @@ public partial class Settlement
 
     /// <summary>The rare material an enchantment is bound with: the rarest one around the item's age.</summary>
     public string EnchantMaterial(ItemInstance item) =>
-        item.power < 5 ? "Runestone" : item.power < 6.5f ? "Quicksilver" : item.power < 8.5f ? "Aether" : item.power < 10 ? "Uranium" : "Silicon";
+        item.power < 5 ? "Runestone" : item.power < 6.5f ? "Quicksilver" : item.power < 8.5f ? "Aether" : item.power < 10 ? "Uranium" : item.power < 11 ? "Silicon" : "Manastone";
 
     public List<ResourceAmount> EnchantCost(ItemInstance item) => Costs(
         ("Essence", Mathf.RoundToInt(40 * PowerCost(item))),

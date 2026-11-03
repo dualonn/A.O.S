@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -159,6 +159,27 @@ public static partial class PlaceholderArt
             for (int y = 2; y < 2 + h; y++) { c.Put(x, y, P.Linen[3]); c.Put(x + 1, y, P.Stone[2]); c.Put(x - 1, y, P.White); }
             c.Put(x, 2 + h, P.White);
         }
+    }
+
+    private static void IcManastone(PixelCanvas c)
+    {
+        // a grey stone with blue crystals growing out of it
+        c.Ellipse(new Vector2(10, 6), 7, 4.5f, P.Stone);
+        foreach (var (x, h) in new[] { (6, 7), (10, 11), (14, 8) })
+        {
+            for (int y = 6; y < 6 + h; y++) { c.Put(x, y, P.Mana[2]); c.Put(x + 1, y, P.Mana[1]); }
+            c.Put(x, 6 + h, P.Mana[3]);
+        }
+    }
+
+    private static void IcMana(PixelCanvas c)
+    {
+        // a crystal jar of glowing blue mana
+        c.Rect(6, 3, 13, 13, P.Mana[1]);
+        c.Rect(7, 4, 12, 11, P.Mana[2]);
+        c.Rect(8, 9, 9, 11, P.Mana[3]);
+        c.Rect(7, 14, 12, 15, P.Steel[2]);
+        c.Put(9, 7, P.White);
     }
 
     private static void IcMicrochips(PixelCanvas c)

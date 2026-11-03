@@ -74,6 +74,15 @@ public static class PixelPalette
     public static readonly Color32[] Synth = { H("8a94a0"), H("c4ccd6"), H("e6ecf2"), H("ffffff") };
     /// <summary>Matte black tactical gear.</summary>
     public static readonly Color32[] Tactical = { H("16181c"), H("2a2e34"), H("454b54"), H("6a727e") };
+    /// <summary>Violet arcane light: runes, spell glow and wizards' robes.</summary>
+    public static readonly Color32[] Arcane = { H("2a0f3e"), H("5a1f86"), H("9a4ae0"), H("e0b8ff") };
+    /// <summary>Azure mana crystals.</summary>
+    public static readonly Color32[] Mana = { H("0c2c5a"), H("1f5cc0"), H("4aa8ff"), H("c8ecff") };
+    /// <summary>Pale moonstone for Arcane Age buildings.</summary>
+    public static readonly Color32[] Moonstone = { H("5a566e"), H("8e8aa6"), H("c2bed6"), H("eceaf6") };
+    /// <summary>A griffin's tawny lion coat, and a wyvern's dark scales.</summary>
+    public static readonly Color32[] Griffin = { H("6a4a1c"), H("a8782e"), H("d8aa52"), H("f4dc98") };
+    public static readonly Color32[] Wyvern = { H("1c2a1e"), H("2e4a30"), H("4e7046"), H("86a46a") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -93,6 +102,7 @@ public static class PixelPalette
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
+        "Arcane" => Arcane, "Mana" => Mana, "Moonstone" => Moonstone, "Griffin" => Griffin, "Wyvern" => Wyvern,
         "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,
         _ => Blue,
     };

@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ArcaneObelisk
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ArcaneObelisk
+  displayName: Arcane Obelisk
+  description: A rune-carved obelisk, a crystal spinning over its tip that throws
+    bolts of mana.
+  icon: {fileID: 21300000, guid: d42012dd71db37146adafb542f120b4e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d42012dd71db37146adafb542f120b4e, type: 3}
+    - {fileID: 21300000, guid: e5f5867b252dabb4faf94e5824380ad3, type: 3}
+    - {fileID: 21300000, guid: 1ca006f2022bc3c468d2f69e1ecd8d90, type: 3}
+    - {fileID: 21300000, guid: 8a06383f1d7e2594ca9b6c6c46a15f8b, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 858eac004e840cc46a924e371bd17eb2, type: 3}
+    - {fileID: 21300000, guid: 00807b6e47d7ba940a98dc272980c3b9, type: 3}
+    - {fileID: 21300000, guid: 7e971e7970a93fd449ec75a0fc0a5bd7, type: 3}
+    - {fileID: 21300000, guid: c685e030270df96468ea9c746fa5f29b, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 579bb6a1d1e73404697b41b9ea2ea16e, type: 3}
+    - {fileID: 21300000, guid: 0bb9521d22404214a8abdfd15021e344, type: 3}
+    - {fileID: 21300000, guid: 12d1359eb2f61984ba5b6df89b1b056f, type: 3}
+    - {fileID: 21300000, guid: bef7b2721cd6ffd458a9f33a23fabfdf, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 91737cb6c149bf84fafa4c32c636e04b, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 70
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 40
+  upgrades:
+  - name: Seeing Eye
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Brighter Crystal
+    description: +16 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 16
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2000
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 10.5
+  towerDamage: 48
+  towerCooldown: 0.45
+  towerProjectile: {fileID: 21300000, guid: f68b50ac99fca9b4c9d19f835a2cd779, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 26
+  towerSplash: 0.9
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.5625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

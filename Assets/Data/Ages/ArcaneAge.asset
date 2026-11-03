@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: ArcaneAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Arcane Age
+  order: 11
+  description: 'Magic, rediscovered and engineered: runeblades and mana staffs, griffins
+    and skyships, golems of living stone.'
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c0b1cc8acfd37e544b050e900fbc7ca4, type: 2}
+    buildings: []
+    population: 900
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 10000
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 6500
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 8000
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 2400
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 1200
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 1600
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 1200
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 200
+  playerUnits:
+  - {fileID: 11400000, guid: 6f6ede4d1e940524aa6f7902b1711a84, type: 2}
+  - {fileID: 11400000, guid: 9bb98f4c16ff4e9468af1b7d67b341b8, type: 2}
+  - {fileID: 11400000, guid: 1e04d3f3a1187944a99ef9e79d6844b6, type: 2}
+  - {fileID: 11400000, guid: efd54eaadd698be40ae171c6f9423967, type: 2}
+  - {fileID: 11400000, guid: 33b71b8886aa4c9448f4b8b1fd261bbf, type: 2}
+  - {fileID: 11400000, guid: 3e325c1891166ba41b5f2a03fdfd15f7, type: 2}
+  - {fileID: 11400000, guid: 973d320f0e460c64aab87f57bd170a90, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 2d999cdf187dad64ba92c47e8de1539f, type: 2}
+  - {fileID: 11400000, guid: ae3b618bf453c014584503356fd39123, type: 2}
+  - {fileID: 11400000, guid: a2d604df1cc23bb4f86de615a1de2ca0, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 35e63da949fd673478dd926ea17fd6a7, type: 2}
+  - {fileID: 11400000, guid: 7ce3eeadc0033eb418c7db84052b3dd0, type: 2}

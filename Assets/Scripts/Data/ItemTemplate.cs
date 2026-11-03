@@ -34,7 +34,9 @@ public enum GearLook
     // Electric Age (retro-futuristic)
     BubbleHelmet, RobotHead, Jumpsuit, ChromePlate, RayGun, RayRifle, Claw,
     // Information Age (cyber)
-    TacHelmet, SynthHead, TacVest, SynthBody, AssaultRifle, PlasmaRifle, EnergyBlade
+    TacHelmet, SynthHead, TacVest, SynthBody, AssaultRifle, PlasmaRifle, EnergyBlade,
+    // Arcane Age (fantasy)
+    WizardHat, GolemHead, Spellweave, GolemBody, ManaStaff, Runeblade
 }
 
 /// <summary>
