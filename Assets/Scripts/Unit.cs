@@ -210,6 +210,7 @@ public abstract class Unit : MonoBehaviour
         if (currentTarget != null && ShouldEngage())
         {
             Engage(currentTarget);
+            UseAbility(currentTarget);
         }
         else
         {
@@ -388,6 +389,9 @@ public abstract class Unit : MonoBehaviour
         }
         return best;
     }
+
+    /// <summary>Special abilities while fighting (heroes' paths). Nothing by default.</summary>
+    protected virtual void UseAbility(Unit target) { }
 
     /// <summary>Whether to fight the current target this frame (false lets a move order win).</summary>
     protected virtual bool ShouldEngage() => true;

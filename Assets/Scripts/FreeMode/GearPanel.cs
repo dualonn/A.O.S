@@ -26,6 +26,8 @@ public class GearPanel
     private readonly TextMeshProUGUI emptyNote;
     private readonly Button removeButton;
     private readonly RectTransform enchantRow;
+    private readonly RectTransform classRow;
+    private readonly List<(HeroClass cls, Button button)> classButtons = new List<(HeroClass, Button)>();
     private readonly Button enhanceButton, enchantButton, rerollButton, salvageButton;
     private readonly TextMeshProUGUI enhanceLabel, enchantLabel, rerollLabel, salvageLabel;
     private readonly List<(Button button, TextMeshProUGUI label)> itemRows = new List<(Button, TextMeshProUGUI)>();
@@ -57,6 +59,21 @@ public class GearPanel
         heroLayout.childForceExpandWidth = true;
         heroLayout.childForceExpandHeight = false;
         heroInfo = UIBuilder.Text("Info", heroBlock, "", 16);
+
+        // At level 2 a hero can choose its path (once).
+        classRow = UIBuilder.Row("Path", heroBlock, 4);
+        classRow.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
+        foreach (var cls in new[] { HeroClass.Warrior, HeroClass.Ranger, HeroClass.Mage, HeroClass.Priest })
+        {
+            var c = cls;
+            var b = UIBuilder.Button(cls.ToString(), classRow, () => ChooseClass(c), out var label, 34, 13);
+            b.GetComponent<LayoutElement>().flexibleWidth = 1;
+            label.alignment = TextAlignmentOptions.Center;
+            label.text = cls.ToString();
+            b.image.color = new Color(0.36f, 0.28f, 0.12f);
+            UIBuilder.OnHover(b.gameObject, () => showTooltip(() => ClassTip(c)), () => hideTooltip());
+            classButtons.Add((cls, b));
+        }
 
         // Five slots in a row: click one to see the items that fit it.
         var slots = UIBuilder.Row("Slots", heroBlock, 4);
@@ -120,9 +137,12 @@ public class GearPanel
         // Level and what the gear adds up to.
         var stats = Settlement.HeroStats(hero);
         string xp = hero.level + 1 >= Settlement.LevelCap ? "max level for this age" : $"{hero.xp:0}/{Settlement.XpToNext(hero):0} xp";
-        heroInfo.text = $"<color=#fd6><b>{hero.name}</b></color>  Level {hero.level + 1} <size=80%><color=#aaa>({xp})</color></size>\n" +
+        string path = hero.heroClass != HeroClass.None ? $"  <color=#fc6>{hero.heroClass}</color>" : hero.level >= Settlement.ClassLevel ? "  <color=#fc6>choose a path:</color>" : "";
+        heroInfo.text = $"<color=#fd6><b>{hero.name}</b></color>  Level {hero.level + 1}{path} <size=80%><color=#aaa>({xp})</color></size>\n" +
                         $"<size=85%>{Items.Describe(stats).Replace("\n", "  ·  ")}</size>";
 
+        classRow.gameObject.SetActive(hero.heroClass == HeroClass.None && hero.level >= Settlement.ClassLevel);
+        foreach (var (cls, button) in classButtons) button.interactable = Settlement.CanChooseClass(hero, cls, out _);
         while (hero.equipped.Count < 5) hero.equipped.Add(0);
         foreach (var (slot, button, label) in slotButtons)
         {
@@ -184,6 +204,22 @@ public class GearPanel
             salvageButton.interactable = spares > 0;
             salvageLabel.text = $"Salvage\n<size=80%>{spares} spare</size>";
         }
+    }
+
+    private void ChooseClass(HeroClass cls)
+    {
+        var hero = Troop?.Hero;
+        if (hero == null) return;
+        if (!Settlement.ChooseClass(hero, cls, out string why)) controller.ShowMessage(why);
+        Troop?.RefreshHeroTag();
+        Refresh();
+    }
+
+    private string ClassTip(HeroClass cls)
+    {
+        var hero = Troop?.Hero;
+        bool can = Settlement.CanChooseClass(hero, cls, out string why);
+        return $"<b>{cls}</b>\n{Settlement.ClassDescription(cls)}" + (can ? "\n<color=#aaa>A hero chooses once.</color>" : $"\n<color=#f88>{why}</color>");
     }
 
     private ItemInstance Worn

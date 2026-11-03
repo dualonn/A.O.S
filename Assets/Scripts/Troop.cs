@@ -77,7 +77,8 @@ public class Troop : Unit
     {
         if (nameTag != null && Hero != null)
         {
-            nameTag.text = $"{Hero.name} <size=75%>Lv {Hero.level + 1}</size>";
+            string path = Hero.heroClass != HeroClass.None ? $" {Hero.heroClass}" : "";
+            nameTag.text = $"{Hero.name} <size=75%>Lv {Hero.level + 1}{path}</size>";
         }
     }
 
@@ -85,6 +86,70 @@ public class Troop : Unit
     {
         // Units face left by turning round; keep the name readable.
         if (nameTag != null) nameTag.transform.rotation = Quaternion.identity;
+    }
+
+    private float nextHeroAbility;
+
+    /// <summary>A hero's path ability, used on its own in a fight.</summary>
+    protected override void UseAbility(Unit target)
+    {
+        if (Hero == null || Hero.heroClass == HeroClass.None || target == null || Time.time < nextHeroAbility) return;
+        float distance = Vector2.Distance(transform.position, target.transform.position);
+        switch (Hero.heroClass)
+        {
+            case HeroClass.Warrior:
+            {
+                if (distance > attackRange + 0.8f) return;
+                foreach (var u in Living)
+                    if (u != null && u.Team != Team && CanHit(u) && Vector2.Distance(u.transform.position, transform.position) <= 1.9f)
+                        u.TakeDamage(Mathf.RoundToInt(attackPower * 0.7f), this);
+                Puff.Spawn(transform.position + Vector3.up * 0.3f, 0.9f, new Color(1f, 1f, 1f, 0.7f), 7, 0.35f);
+                nextHeroAbility = Time.time + 8f;
+                break;
+            }
+            case HeroClass.Ranger:
+            {
+                if (!IsRanged) return;
+                int shots = 0;
+                foreach (var u in Living)
+                {
+                    if (shots >= 3) break;
+                    if (u == null || u == target || u.Team == Team || !CanHit(u)) continue;
+                    if (Vector2.Distance(u.transform.position, transform.position) > detectionRange) continue;
+                    Projectile.Fire(definition.projectile, LaunchPoint, u, definition.projectileSpeed, attackPower, this, definition.projectileArc, definition.splashRadius);
+                    shots++;
+                }
+                if (shots == 0) return;
+                nextHeroAbility = Time.time + 9f;
+                break;
+            }
+            case HeroClass.Mage:
+            {
+                if (distance > Mathf.Max(attackRange, 4f) + 0.5f) return;
+                Vector3 at = target.transform.position;
+                foreach (var u in Living)
+                    if (u != null && u.Team != Team && u.Targetable && Vector2.Distance(u.transform.position, at) <= 1.7f)
+                        u.TakeDamage(Mathf.RoundToInt(attackPower * 1.4f), this);
+                Puff.Blast(at, 1.7f, true);
+                nextHeroAbility = Time.time + 7f;
+                break;
+            }
+            case HeroClass.Priest:
+            {
+                bool anyHurt = false;
+                foreach (var u in Living)
+                {
+                    if (u == null || u.Team != Team || !u.IsAlive || u.health >= u.maxHealth) continue;
+                    if (Vector2.Distance(u.transform.position, transform.position) > 3.5f) continue;
+                    u.Heal(Mathf.RoundToInt(u.maxHealth * 0.2f));
+                    anyHurt = true;
+                }
+                if (!anyHurt) return;
+                Puff.Spawn(transform.position + Vector3.up * 0.4f, 1.2f, new Color(1f, 0.9f, 0.45f, 0.75f), 8, 0.6f);
+                nextHeroAbility = Time.time + 11f;
+                break;
+            }
+        }
     }
 
     protected override void OnKilled(Unit victim)

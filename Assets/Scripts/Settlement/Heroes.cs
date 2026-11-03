@@ -195,8 +195,51 @@ public partial class Settlement
         }
         total.health += 0.05f * hero.level;
         total.attack += 0.05f * hero.level;
+        // The hero's path: a passive bonus that grows with its level.
+        switch (hero.heroClass)
+        {
+            case HeroClass.Warrior: total.health += 0.15f + 0.02f * hero.level; total.armour += 10f + 2f * hero.level; break;
+            case HeroClass.Ranger: total.range += 0.12f; total.haste += 0.1f + 0.01f * hero.level; break;
+            case HeroClass.Mage: total.attack += 0.12f + 0.015f * hero.level; break;
+            case HeroClass.Priest: total.mending += 1f + 0.3f * hero.level; break;
+        }
         return total;
     }
+
+    /// <summary>The level (shown as level 2) at which a hero can choose its path.</summary>
+    public const int ClassLevel = 1;
+
+    /// <summary>Can this hero take this path? Warriors fight hand to hand, rangers shoot; anyone can be a mage or a priest.</summary>
+    public bool CanChooseClass(HeroState hero, HeroClass cls, out string why)
+    {
+        why = null;
+        if (hero == null || cls == HeroClass.None) { why = "No hero"; return false; }
+        if (hero.heroClass != HeroClass.None) { why = $"Already a {hero.heroClass}"; return false; }
+        if (hero.level < ClassLevel) { why = $"Reach level {ClassLevel + 1} first"; return false; }
+        var unit = FindUnit(hero.unitId);
+        bool ranged = unit != null && unit.projectile != null;
+        if (cls == HeroClass.Warrior && ranged) { why = "Warriors fight hand to hand"; return false; }
+        if (cls == HeroClass.Ranger && !ranged) { why = "Rangers fight from a distance"; return false; }
+        return true;
+    }
+
+    public bool ChooseClass(HeroState hero, HeroClass cls, out string why)
+    {
+        if (!CanChooseClass(hero, cls, out why)) return false;
+        hero.heroClass = cls;
+        Notify($"{hero.name} takes the path of the {cls}.");
+        Changed?.Invoke();
+        return true;
+    }
+
+    public static string ClassDescription(HeroClass cls) => cls switch
+    {
+        HeroClass.Warrior => "Tougher and better armoured. <b>Whirlwind</b>: every few seconds, strikes everything around it.",
+        HeroClass.Ranger => "Longer reach and quicker shots. <b>Volley</b>: every few seconds, fires at three more enemies at once.",
+        HeroClass.Mage => "Hits harder. <b>Firestorm</b>: every few seconds, fire bursts among the enemy it's fighting.",
+        HeroClass.Priest => "Heals allies around it all the time. <b>Blessing</b>: every few seconds, heals everyone nearby a fifth of their health.",
+        _ => "",
+    };
 
     // ---------- Loot ----------
 

@@ -77,7 +77,13 @@ public class HeroState
 
     [Tooltip("Play time when it's back on its feet after falling.")]
     public float downUntil;
+
+    [Tooltip("The path it chose at level 2: a passive bonus and an ability it uses in a fight.")]
+    public HeroClass heroClass;
 }
+
+/// <summary>A hero's path, chosen once at level 2.</summary>
+public enum HeroClass { None, Warrior, Ranger, Mage, Priest }
 
 /// <summary>A raider camp out on the map: where raids come from, and somewhere to send your army.</summary>
 [Serializable]
