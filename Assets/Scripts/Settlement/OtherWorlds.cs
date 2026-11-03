@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -13,6 +14,20 @@ public partial class Settlement
     // Background worlds tick in steps, not every frame: cheaper, and nothing there needs smoothness.
     private const float OffWorldStep = 0.5f;
     private float offWorldTimer;
+
+    // Each world keeps its own automation and population clocks. Sharing one let a background
+    // world reset it every step, so the world you were on never ran auto-repair or queued upgrades.
+    private readonly Dictionary<int, (float automation, float population)> worldClocks =
+        new Dictionary<int, (float automation, float population)>();
+
+    private void StashClocks(int world) => worldClocks[world] = (automationTimer, populationTimer);
+
+    private void LoadClocks(int world)
+    {
+        worldClocks.TryGetValue(world, out var c);
+        automationTimer = c.automation;
+        populationTimer = c.population;
+    }
 
     /// <summary>Is this world founded (has a town centre)?</summary>
     public bool IsWorldFounded(WorldState world) =>
@@ -40,6 +55,8 @@ public partial class Settlement
         var homeMap = Map;
         bool wasOffWorld = offWorld;
         var cache = zonesCache;
+        StashClocks(home);
+        LoadClocks(world);
         State.currentWorld = world;
         Map = null;   // (so MapOf gives that world's map)
         Map = MapOf(world);
@@ -52,6 +69,8 @@ public partial class Settlement
         finally
         {
             worldMaps[world] = Map;
+            StashClocks(world);
+            LoadClocks(home);
             State.currentWorld = home;
             Map = homeMap;
             offWorld = wasOffWorld;

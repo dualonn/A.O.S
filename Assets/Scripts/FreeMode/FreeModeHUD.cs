@@ -762,7 +762,7 @@ public class FreeModeHUD : MonoBehaviour
             string ageTag = groupByType && def.age != null
                 ? $"  <size=70%><color=#{ColorUtility.ToHtmlStringRGB(AgeAccents[Mathf.Clamp(ageOrder, 0, AgeAccents.Length - 1)])}>{def.age.displayName.Replace(" Age", "")}</color></size>" : "";
             string text = $"<b>{def.displayName}</b>{ageTag}{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
-                          $"<size=80%>{SubtitleFor(def.requirements.cost, can, missing)}</size>";
+                          $"<size=80%>{SubtitleFor(settlement.CostOf(def), can, missing)}</size>";
             if (label.text != text) label.text = text;
         }
 
@@ -1506,7 +1506,8 @@ public class FreeModeHUD : MonoBehaviour
         {
             sb.Append($"<color=#ccc>{def.description}</color>\n");
         }
-        sb.Append($"Cost: {CostText(def.requirements.cost)}   Build time: {def.buildTime:0}s\n");
+        bool kit = def.launchesShips && settlement.HasStarportKit;
+        sb.Append($"Cost: {(kit ? "<color=#8f8>Free: your colony ship brought a Starport kit</color>" : CostText(def.requirements.cost))}   Build time: {def.buildTime:0}s\n");
         sb.Append(StatsText(def, 0));
         sb.Append(PlacementText(def));
         if (def.upgrades.Count > 0)

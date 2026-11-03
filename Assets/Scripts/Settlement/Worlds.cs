@@ -59,6 +59,9 @@ public class WorldState
 
     [Tooltip("Seconds until lightning strikes again, in a storm.")]
     public float lightningIn = 30f;
+
+    [Tooltip("A colony's first Starport is free (the colony ship brings a kit); true once it has been built.")]
+    public bool starportKitUsed;
 }
 
 /// <summary>

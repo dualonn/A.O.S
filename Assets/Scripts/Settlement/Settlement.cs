@@ -56,6 +56,8 @@ public partial class Settlement : MonoBehaviour
         if (world < 0 || world >= State.worlds.Count || world == State.currentWorld) return;
         State.explored = Map.RevealedZones();
         worldMaps[State.currentWorld] = Map;
+        StashClocks(State.currentWorld);
+        LoadClocks(world);
         State.currentWorld = world;
         Map = null;   // (so MapOf builds or fetches the new world's map, not this one)
         Map = MapOf(world);
@@ -1030,7 +1032,8 @@ public partial class Settlement : MonoBehaviour
             return;
         }
         automationTimer = 0f;
-        bool raid = RaidUnderway != null && RaidUnderway();
+        UseStarportKit();
+        bool raid = !offWorld && RaidUnderway != null && RaidUnderway();   // (a raid on the world you're watching doesn't stop repairs elsewhere)
         foreach (var building in State.buildings.ToArray())
         {
             if (!building.IsBuilt)
@@ -1536,7 +1539,7 @@ public partial class Settlement : MonoBehaviour
     public int CountAll(BuildingDefinition def) => State.buildings.FindAll(b => b.definitionId == def.id).Count;
 
     /// <summary>True if every condition and the cost are met. Otherwise 'missing' lists what isn't.</summary>
-    public bool Meets(Requirements req, out string missing)
+    public bool Meets(Requirements req, out string missing, bool free = false)
     {
         var problems = new StringBuilder();
         if (req != null)
@@ -1563,7 +1566,7 @@ public partial class Settlement : MonoBehaviour
             {
                 problems.AppendLine($"Population {req.population} ({Population}/{req.population})");
             }
-            foreach (var item in req.cost)
+            if (!free) foreach (var item in req.cost)
             {
                 if (item.resource != null && GetAmount(item.resource) < item.amount)
                 {
@@ -1689,7 +1692,7 @@ public partial class Settlement : MonoBehaviour
             missing = $"There is only one {def.displayName} (it's on {wonderWhere})";
             return false;
         }
-        return Meets(def.requirements, out missing);
+        return Meets(def.requirements, out missing, free: CostOf(def).Count == 0);
     }
 
     /// <summary>Each age unlocks its buildings; earlier ages' buildings stay available.</summary>
@@ -1707,7 +1710,7 @@ public partial class Settlement : MonoBehaviour
             return false;
         }
         bool founding = def.isTownCenter && !IsFounded;
-        Spend(def.requirements.cost);
+        Spend(CostOf(def));
         placed = new BuildingState
         {
             instanceId = State.nextBuildingId++,

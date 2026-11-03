@@ -36,6 +36,25 @@ public partial class Settlement
     /// <summary>Does the world you're looking at have a working Starport?</summary>
     public bool HasStarport => State.buildings.Exists(b => b.IsBuilt && b.health > 0 && Database.GetBuilding(b.definitionId)?.launchesShips == true);
 
+    /// <summary>
+    /// A colony ship carries a Starport kit, so a new colony isn't cut off until it can make Starmetal and
+    /// Astral Cores itself: on any world but the home world, the first ship-launching building costs nothing.
+    /// </summary>
+    public bool HasStarportKit => State.currentWorld != 0 && !CurrentWorld.starportKitUsed
+        && !State.buildings.Exists(b => Database.GetBuilding(b.definitionId)?.launchesShips == true);
+
+    private static readonly List<ResourceAmount> NoCost = new List<ResourceAmount>();
+
+    /// <summary>What placing this building costs here (the Starport kit makes a colony's first one free).</summary>
+    public List<ResourceAmount> CostOf(BuildingDefinition def) =>
+        def.launchesShips && HasStarportKit ? NoCost : def.requirements.cost;
+
+    /// <summary>Once a colony's kit Starport is finished, the kit is spent.</summary>
+    private void UseStarportKit()
+    {
+        if (!CurrentWorld.starportKitUsed && State.currentWorld != 0 && HasStarport) CurrentWorld.starportKitUsed = true;
+    }
+
     /// <summary>What a ship costs to build (from the world it launches from).</summary>
     public List<ResourceAmount> ShipCost(string kind)
     {
@@ -178,7 +197,7 @@ public partial class Settlement
             }
             world.population += ship.settlers;
             if (!offWorld) GameAudio.UI("notify");
-            Notify($"The colony ship has landed on {planet.name}! Go there (star map or the world list) and choose where to build the colony.");
+            Notify($"The colony ship has landed on {planet.name}! Go there (star map or the world list) and choose where to build the colony. It brought a Starport kit: the colony's first Starport is free.");
         }
     }
 }

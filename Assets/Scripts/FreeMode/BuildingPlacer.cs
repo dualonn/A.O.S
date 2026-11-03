@@ -234,7 +234,7 @@ public class BuildingPlacer : MonoBehaviour
         ghostSprite.enabled = false;
         catchment.enabled = false;
 
-        var each = Current.requirements.cost;
+        var each = settlement.CostOf(Current);
         var total = Settlement.SumCost(System.Linq.Enumerable.Repeat(each, good));
         bool afford = settlement.CanAfford(total);
         info.enabled = true;
