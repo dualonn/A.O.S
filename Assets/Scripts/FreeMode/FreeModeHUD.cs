@@ -437,7 +437,7 @@ public class FreeModeHUD : MonoBehaviour
         journalShown = count;
         foreach (Transform child in journalSection.Body) Destroy(child.gameObject);
         int lore = settlement.State.journal.Count;
-        journalSection.SetNote(lore + blessings.Count > 0 ? $"{lore} lore, {blessings.Count} blessings" : "");
+        journalSection.SetNote(lore + blessings.Count > 0 ? $"{lore}/{Lore.Entries.Length} lore, {blessings.Count} blessings" : "");
         if (lore + blessings.Count == 0)
         {
             UIBuilder.Text("Empty", journalSection.Body, "<size=85%><color=#aaa>Nothing yet. Send units to read lore stones, and heroes to kneel at shrines.</color></size>", 16);

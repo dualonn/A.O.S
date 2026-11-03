@@ -291,15 +291,17 @@ public partial class Settlement
     public void ReadLore(SiteState site)
     {
         if (site.done) return;
-        int count = Lore.Entries.Length;
-        int pick = -1;
-        for (int i = 0; i < count; i++)
+        int biome = Map != null ? (int)Map.BiomeAt((int)site.Centre.x, (int)site.Centre.y) : -1;
+        int pick = Lore.Pick(site.variant, State.ageIndex, biome, State.journal);
+        if (pick < 0)
         {
-            int id = (site.variant + i) % count;
-            if (!State.journal.Contains(id)) { pick = id; break; }
+            // Nothing new here: an old story, but the offerings left at the stone are yours.
+            var loot = GiveResources(("Gold", 20 + 10 * State.ageIndex), ("Essence", CanEnchant ? 15 : 0));
+            Notify($"The lore stone tells a story you already know. Offerings left at it: {Describe(loot)}.");
+            Finish(site, 0f);
+            return;
         }
-        if (pick < 0) pick = site.variant % count;
-        if (!State.journal.Contains(pick)) State.journal.Add(pick);
+        State.journal.Add(pick);
         Notify($"Your people read a lore stone: <color=#fd6>{Lore.Entries[pick].title}</color>. (See the Journal.)");
         Finish(site, 0f);
     }
