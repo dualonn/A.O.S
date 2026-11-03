@@ -1068,7 +1068,7 @@ def _(v):
 KEEP = {'research_complete', 'goal_complete', 'level_up', 'enchant', 'discover', 'shrine_bless', 'lore_stone',
         'drop_common', 'drop_uncommon', 'drop_rare', 'drop_epic', 'drop_legendary',
         'amb_night', 'amb_desert', 'amb_tundra', 'amb_swamp', 'amb_volcanic', 'amb_crystal', 'amb_fungal',
-        'amb_barren', 'amb_rain', 'amb_space', 'amb_dungeon'}
+        'amb_barren', 'amb_space', 'amb_dungeon'}
 
 
 def main(filters):

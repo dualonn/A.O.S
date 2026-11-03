@@ -28,6 +28,7 @@ public static class GameAudio
     static void ResetStatics()
     {
         clips = null;
+        weather = null;
         lastStart.Clear();
         host = null;
     }
@@ -230,7 +231,40 @@ public static class GameAudio
         if (order == 7) return "industrial";
         if (order <= 9) return "modern";         // Modern, Electric
         if (order <= 11) return "information";   // Information, Arcane
-        return "space";                          // Astral, Stellar, Interstellar, Galactic
+        if (order <= 15) return "space";         // Astral, Stellar, Interstellar, Galactic
+        return "universal";                      // Universal: choirs and a slow clock (creation and time)
+    }
+
+    // ------------------------------------------------------------------ weather
+
+    static string weather;
+
+    /// <summary>
+    /// Weather sound on top of the biome ambience: "rain", "storm", "snow", "wind", or null for clear skies.
+    /// Cross-fades when it changes; call it whenever the weather changes (repeat calls are free).
+    /// </summary>
+    public static void SetWeather(string kind)
+    {
+        Ensure();
+        weather = string.IsNullOrEmpty(kind) ? null : kind;
+    }
+
+    /// <summary>A thunderclap, somewhere overhead (pass the strike point to place it on screen).</summary>
+    public static void Thunder(Vector3? at = null)
+    {
+        if (at.HasValue) Play("thunder", at.Value, 1.2f);
+        else UI("thunder", 0.9f);
+    }
+
+    internal static string WeatherLoop()
+    {
+        switch (weather)
+        {
+            case null: return null;
+            case "snow": case "blizzard": return "amb_tundra";
+            case "wind": return "amb_barren";
+            default: return "amb_" + weather;   // amb_rain, amb_storm
+        }
     }
 
     /// <summary>Which ambience loop fits the place the camera is looking at.</summary>
@@ -260,8 +294,8 @@ public static class GameAudio
 public class AudioHost : MonoBehaviour
 {
     AudioSource[] voices;
-    AudioSource musicA, musicB, ambA, ambB;
-    string era, ambience;
+    AudioSource musicA, musicB, ambA, ambB, wxA, wxB;
+    string era, ambience, weatherLoop;
     float nextCheck, silenceUntil, battleHoldUntil;
     readonly Dictionary<string, List<string>> playlists = new Dictionary<string, List<string>>();
     readonly Dictionary<string, int> playlistPos = new Dictionary<string, int>();
@@ -272,6 +306,7 @@ public class AudioHost : MonoBehaviour
         for (int i = 0; i < count; i++) voices[i] = NewSource(false);
         musicA = NewSource(false); musicB = NewSource(false);
         ambA = NewSource(true); ambB = NewSource(true);
+        wxA = NewSource(true); wxB = NewSource(true);
         silenceUntil = Time.unscaledTime + 1.5f;   // let the scene settle first
     }
 
@@ -313,9 +348,11 @@ public class AudioHost : MonoBehaviour
             nextCheck = now + 1f;
             UpdateMusic(now);
             UpdateAmbience();
+            UpdateWeather();
         }
         Fade(musicA, musicB, GameAudio.MusicLevel, dt, 0.4f);
         Fade(ambA, ambB, GameAudio.AmbienceLevel, dt, 0.5f);
+        Fade(wxA, wxB, weatherLoop != null ? GameAudio.AmbienceLevel * 1.1f : 0f, dt, 0.25f);
     }
 
     // Source A is the one fading in (or holding); B fades out and stops.
@@ -397,6 +434,22 @@ public class AudioHost : MonoBehaviour
         ambA.volume = 0f;
         ambA.time = Random.Range(0f, clip.length * 0.8f);   // don't always start at the same spot
         ambA.Play();
+    }
+
+    void UpdateWeather()
+    {
+        string want = GameAudio.WeatherLoop();
+        if (want == weatherLoop) return;
+        weatherLoop = want;
+        Swap(ref wxA, ref wxB);
+        wxA.Stop();
+        wxA.clip = want != null ? Resources.Load<AudioClip>("Audio/Ambience/" + want) : null;
+        wxA.volume = 0f;
+        if (wxA.clip != null)
+        {
+            wxA.time = Random.Range(0f, wxA.clip.length * 0.8f);
+            wxA.Play();
+        }
     }
 
     static void Swap(ref AudioSource a, ref AudioSource b) => (a, b) = (b, a);

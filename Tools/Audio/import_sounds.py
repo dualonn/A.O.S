@@ -282,12 +282,23 @@ SFX = {
         'force_field': V('forceField_00[0-1].ogg'),
         'scifi_door': V('sci-fi-sounds/**/doorOpen_00[0-1].ogg'),
     },
+    # seasons & weather, random events, diplomacy, wonders
+    'World': {
+        'thunder': [S('rain-thunder.ogg', start=21.3, dur=10), S('Dark_Rainy_Night(ambience).ogg', start=33.6, dur=5),
+                    S('Dark_Rainy_Night(ambience).ogg', start=51.8, dur=4.5), S('Dark_Rainy_Night(ambience).ogg', start=89.5, dur=5)],
+        'event_card': L(S('rpg-audio/x/Audio/bookFlip1.ogg'), S('oga-100-CC0-SFX_0/**/bell_01.ogg', gain=0.35)),
+        'wonder_complete': L(S('oga-100-CC0-SFX_0/**/gong_01.ogg'), S('Heavenly Loop.flac', dur=7, gain=0.8)),
+        'diplomacy': V('rpg-audio/**/bookPlace*.ogg'),
+        'peace': V('oga-100-CC0-SFX_0/**/bell_02.ogg'),
+        'war_declared': V('their-coming-generic-horn-sound/theircoming3.ogg'),
+        'clock_tick': V('ticking clock - tick*.wav'),
+    },
 }
 
 # loudest-0.3s loudness target per group (dB)
-LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15}
+LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15}
 QUIET_UI = {'click': -24, 'hover': -27, 'tab': -24, 'panel_open': -22, 'panel_close': -22, 'page_flip': -22}
-LONG = {'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -14}
+LONG = {'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -14}
 
 # Music: era playlists (the game picks per age), played whole and cross-faded; stereo OGG.
 MUSIC = {
@@ -298,7 +309,7 @@ MUSIC = {
     'industrial': ['allin.flac', 'ruskerdax_-_menacing_otherworld.mp3'],
     'modern': ['80s_song_mastered.mp3', 'nighum.mp3'],
     'information': ['exploration-theme/exploration_theme.ogg', 'sansho.mp3'],
-    'space': ['cosmic_navigation_loop.flac', 'OutThere.ogg', 'boundless2.ogg', 'a_start_to_spacev3.24.ogg', 'space_echo.ogg', 'outer_space_1.mp3'],
+    'space': ['cosmic_navigation_loop.flac', 'OutThere.ogg', 'boundless2.ogg', 'a_start_to_spacev3.24.ogg', 'space_echo.ogg', 'outer_space_1.mp3', 'starfield_romance1.wav'],
     'battle': ['battle_1.wav', 'call_to_war.wav'],
 }
 
@@ -310,6 +321,8 @@ AMBIENCE = {
     'amb_town': S('sfx100v2_loop_construction_site.ogg', gain=0.6),
     'amb_industrial': S('Factory.ogg'),
     'amb_jungle': S('Forest Birds/Raw/Forest 1.wav'),
+    'amb_rain': S('rain-loopable/x/3.ogg'),
+    'amb_storm': S('Dark_Rainy_Night(ambience).ogg', start=100, dur=95),
 }
 
 
