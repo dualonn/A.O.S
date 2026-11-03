@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: MeteorMine
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: MeteorMine
+  displayName: Meteor Mine
+  description: A crane over a meteor crater, cutting starmetal from the fallen star.
+    Must be built on or next to Starmetal, or right on a rich starmetal vein.
+  icon: {fileID: 21300000, guid: 7575854d473ffa544bbe49a37846850e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7575854d473ffa544bbe49a37846850e, type: 3}
+    - {fileID: 21300000, guid: a527517b286278046b4bedbdf61ac969, type: 3}
+    - {fileID: 21300000, guid: 86a3dac0971f5e3408181a7324f6e094, type: 3}
+    - {fileID: 21300000, guid: ffacc836f8b19d54990809e7d3937bf1, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 81da0a333d4472044a5c0098f87a01ce, type: 3}
+    - {fileID: 21300000, guid: c3bc29bdb39730d408e0175bf5c869f2, type: 3}
+    - {fileID: 21300000, guid: b2c4f84fd93ae0341b88849d89fee7a7, type: 3}
+    - {fileID: 21300000, guid: 997ac0b1ccb62b148a934c2aca54b0b3, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 8e5878f7699f02244ab9e7ec7b0905cf, type: 3}
+    - {fileID: 21300000, guid: e9b3f69e33d1db24182520ce87ffec99, type: 3}
+    - {fileID: 21300000, guid: c5c71166744b3ec45890a627d5def352, type: 3}
+    - {fileID: 21300000, guid: ee251f66562390c4a9dd2408ad8fa900, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 131f0b59edba4974595571f5ad3a1196, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 450
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 40
+  upgrades:
+  - name: Mana Saws
+    description: +30% starmetal.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 50
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Crater Survey
+    description: +30% starmetal.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 11400000, guid: 5f331bba0e1942a4491dd949d7657473, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 8
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 800
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+    perSecond: 0.13
+  inputs: []
+  runsWithoutInputs: 0.5
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

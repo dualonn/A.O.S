@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossVoidHerald
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: The Void Herald
+  icon: {fileID: 21300000, guid: f52168dad10f3c04cb203212c0919d6c, type: 3}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 8466947072758893082, guid: e8791941e0b68f34ab0ca8b6863ca7a3, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 15500
+  moveSpeed: 0.85
+  attackPower: 175
+  attackCooldown: 1.5
+  attackRange: 7.5
+  hitDelay: 0.3
+  detectionRange: 8
+  projectile: {fileID: 21300000, guid: 8f5e4c339c589564d8590bb3e939ad77, type: 3}
+  projectileSpeed: 26
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0
+  splashRadius: 0.8
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isBoss: 1
+  bossAbility: 3
+  abilityCooldown: 12
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 11400000, guid: 645ac8aa618d53c449e9afcc1546057d, type: 2}
+  summonCount: 3

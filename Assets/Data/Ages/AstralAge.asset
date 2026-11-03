@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: AstralAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Astral Age
+  order: 12
+  description: 'Magic and machine as one: blades of starlight, mana-drive starships
+    and hovering nova thrones, and the first look at the worlds beyond the sky.'
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 56014683804fc4e4fb3f13cc0ab7ed2d, type: 2}
+    buildings: []
+    population: 1000
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 11000
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 7000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 9000
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 2600
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 1400
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 1800
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 1400
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 200
+  playerUnits:
+  - {fileID: 11400000, guid: 054d11289edebeb4482322f926712c19, type: 2}
+  - {fileID: 11400000, guid: 6b4ab9ac77526034bb843b89c24949ab, type: 2}
+  - {fileID: 11400000, guid: e4d5868695c654e41b004ca3e326fc98, type: 2}
+  - {fileID: 11400000, guid: 7ad10bb5e3d032d41bf77dce6621a20b, type: 2}
+  - {fileID: 11400000, guid: 9d8de4fc97919544b9fdbed3f46f2245, type: 2}
+  - {fileID: 11400000, guid: f01d9f0240e593f4890991450908b413, type: 2}
+  - {fileID: 11400000, guid: 7a282f6a8febae4449924dd94d6fd82f, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 645ac8aa618d53c449e9afcc1546057d, type: 2}
+  - {fileID: 11400000, guid: 2a904125a66d3034e941adb67d230213, type: 2}
+  - {fileID: 11400000, guid: f45d6e5e7882b0b4bba3555b89c221e3, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 479d60056dd69fc439ee3298853388d0, type: 2}
+  - {fileID: 11400000, guid: df03946841a002f45ad0d3263b10bf43, type: 2}

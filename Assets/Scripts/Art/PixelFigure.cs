@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin, Skybike, Starship, HoverThrone, Drake }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -66,7 +66,7 @@ public class FigureStyle
         GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
-        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff => WeaponClass.Staff,
+        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff or GearLook.BeamStaff => WeaponClass.Staff,
         GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle or GearLook.ManaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
@@ -123,6 +123,10 @@ public static class PixelFigure
             case MountKind.Drone: w = 40; h = 56; cx = 20; gy = 4; break;     // a pilotless quad-rotor
             case MountKind.Jet: w = 84; h = 80; cx = 40; gy = 4; break;       // a jet fighter, the pilot under its canopy
             case MountKind.Griffin: w = 80; h = 100; cx = 38; gy = 4; break;  // a rider on a flying griffin (or a raider's wyvern)
+            case MountKind.Skybike: w = 72; h = 80; cx = 30; gy = 4; break;   // a mana jetbike, the rider low in its seat
+            case MountKind.Starship: w = 104; h = 100; cx = 46; gy = 4; break; // a star-steel gunship, the pilot under the hatch
+            case MountKind.HoverThrone: w = 92; h = 76; cx = 42; gy = 4; break; // a throne on a hovering disc, a nova cannon at its side
+            case MountKind.Drake: w = 100; h = 84; cx = 42; gy = 4; break;     // a rider on an armoured war drake that breathes fire
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -149,7 +153,7 @@ public static class PixelFigure
         p.hFar = V(3, -5);
         p.hNear = shield ? V(4, -4) : V(-1, -6);
         if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin || s.weapon == GearLook.Pike || s.weapon == GearLook.RuneStaff
-            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff) p.wa = 84;
+            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff || s.weapon == GearLook.BeamStaff) p.wa = 84;
         if (s.weapon == GearLook.Lance) p.wa = 62;
         if (cls == WeaponClass.Crossbow || LongGun(s)) { p.hNear = V(5, -4); p.hFar = V(2, -5); }
         if (s.weapon == GearLook.Pistol || s.weapon == GearLook.RayGun) p.wa = -60;
@@ -183,7 +187,8 @@ public static class PixelFigure
 
     /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
     private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
-        || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill || m == MountKind.HoverTank || m == MountKind.HoverCar;
+        || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill || m == MountKind.HoverTank || m == MountKind.HoverCar
+        || m == MountKind.Skybike || m == MountKind.Starship || m == MountKind.HoverThrone;
 
     /// <summary>Machines with nobody visible aboard: only the machine is drawn.</summary>
     private static bool Pilotless(MountKind m) => m == MountKind.Drone || m == MountKind.Jet;
@@ -191,7 +196,8 @@ public static class PixelFigure
     /// <summary>How high a flying craft is drawn above its shadow (pixels, before scaling).</summary>
     private static int Altitude(FigureStyle s) => s.mount == MountKind.Airship ? 50 : s.mount == MountKind.Biplane ? 40
         : s.mount == MountKind.Jetpack ? 28 : s.mount == MountKind.HoverTank || s.mount == MountKind.HoverCar ? 6
-        : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : s.mount == MountKind.Griffin ? 30 : 0;
+        : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : s.mount == MountKind.Griffin ? 30
+        : s.mount == MountKind.Skybike ? 26 : s.mount == MountKind.Starship ? 44 : s.mount == MountKind.HoverThrone ? 8 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -423,6 +429,9 @@ public static class PixelFigure
             if (s.mount == MountKind.Drill) DrillMachine();
             if (s.mount == MountKind.HoverTank) HoverHull(true);
             if (s.mount == MountKind.HoverCar) HoverHull(false);
+            if (s.mount == MountKind.Skybike) StarHull(false);
+            if (s.mount == MountKind.Starship) StarHull(true);
+            if (s.mount == MountKind.HoverThrone) Throne();
             c.Outline(P.Ink, 0.6f);
             if (p.release && (s.Class == WeaponClass.Musket || s.Class == WeaponClass.Cannon)) MuzzleFlash();
             if (p.smear) Smear();
@@ -433,7 +442,7 @@ public static class PixelFigure
                 : s.mount == MountKind.Crawler || s.mount == MountKind.Tank ? X(20) : s.mount == MountKind.ArmouredCar ? X(16)
                 : s.mount == MountKind.Walker ? X(10) : X(s.mount == MountKind.Chariot ? 24 : 14);
             if (p.death == 3 && s.mount == MountKind.None) shadowX += X(8);
-            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Jetpack ? 6 : 13); }   // the craft's shadow on the ground
+            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Starship ? 18 : s.mount == MountKind.Jetpack ? 6 : 13); }   // the craft's shadow on the ground
             c.Shadow(shadowX, groundY, shadowW, X(1.8f));
         }
 
@@ -442,9 +451,9 @@ public static class PixelFigure
         private void StandingLegs()
         {
             bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody
-                || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate;   // robots, automatons, androids, golems, power armour
+                || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate;   // robots, automatons, androids, golems, power armour
             Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock
-                : s.body == GearLook.RunePlate ? P.Moonstone : P.Brass)
+                : s.body == GearLook.RunePlate ? P.Moonstone : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : P.Brass)
                 : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
             Color32[] boots = s.body == GearLook.GolemBody ? P.Rock : metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
@@ -478,6 +487,8 @@ public static class PixelFigure
                 GearLook.Robe or GearLook.Spellweave => crest,
                 GearLook.GolemBody => P.Rock,
                 GearLook.RunePlate => P.Moonstone,
+                GearLook.StarPlate => P.Astral,
+                GearLook.VoidPlate => P.Void,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
@@ -620,6 +631,26 @@ public static class PixelFigure
                     c.Put(c.T(Vector2.Lerp(a, b, 0.62f) + V(X(0.6f), 0)), Trim(GearSlot.Body, P.White));
                     c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Moonstone);   // a pauldron
                     c.Put(c.T(shNear + V(X(0.4f), X(0.6f))), P.Arcane[3]);
+                    break;
+                }
+                case GearLook.StarPlate:
+                {
+                    // star-steel power armour: gold at the belt and collar, a star burning in the chest
+                    c.Line(V(a.x - r + 0.5f, a.y + X(1.2f)), V(a.x + r - 0.5f, a.y + X(1.2f)), Trim(GearSlot.Body, P.Gold[2]));
+                    c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), P.Gold[2]);
+                    var star = Vector2.Lerp(a, b, 0.6f) + V(X(0.6f), 0);
+                    foreach (var o in new[] { V(1, 0), V(-1, 0), V(0, 1), V(0, -1) }) c.Put(c.T(star + o), P.Mana[3]);
+                    c.Put(c.T(star), P.White);
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Astral);   // a pauldron
+                    c.Put(c.T(shNear + V(0, X(1.2f))), P.Gold[3]);
+                    break;
+                }
+                case GearLook.VoidPlate:
+                {
+                    // black-violet armour, a seam of magenta light across it, a spike on the shoulder
+                    c.Line(V(a.x - X(1), a.y + X(1)), V(b.x + X(1), b.y - X(1)), P.Void[3]);
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.8f), X(1.4f), P.Void);
+                    c.Line(shNear + V(0, X(1.5f)), shNear + V(X(-0.6f), X(3.2f)), P.Void[2]);
                     break;
                 }
                 case GearLook.SynthBody:
@@ -955,6 +986,27 @@ public static class PixelFigure
                     c.Put(c.T(hd + V(-X(1.4f), X(5.8f))), P.Arcane[3]);
                     break;
                 }
+                case GearLook.StarHelm:
+                {
+                    Hair(false);
+                    // a dark star-steel helm, a gold fin along the crown and a T-shaped visor of white light
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Astral);
+                    c.Line(V(hd.x - r * 0.9f, hd.y + X(3.6f)), V(hd.x + r * 0.4f, hd.y + X(4.5f)), Trim(GearSlot.Head, P.Gold[2]), S > 1.3f ? 2 : 1);
+                    c.Line(V(hd.x - X(0.2f), hd.y + X(0.6f)), V(hd.x + r + 0.5f, hd.y + X(0.6f)), P.White);
+                    c.Line(V(hd.x + X(1.6f), hd.y - X(1.2f)), V(hd.x + X(1.6f), hd.y + X(0.6f)), P.Mana[3]);
+                    break;
+                }
+                case GearLook.VoidHelm:
+                {
+                    Hair(false);
+                    // a black horned helm, two magenta eyes burning in its slit
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Void);
+                    c.Line(V(hd.x - X(0.6f), hd.y + X(2.8f)), V(hd.x - X(2.8f), hd.y + X(6)), P.Void[2], 2);
+                    c.Line(V(hd.x + X(1), hd.y + X(3)), V(hd.x + X(2.4f), hd.y + X(6.2f)), P.Void[2], 2);
+                    c.Put(c.T(hd + V(X(1.2f), X(0.6f))), P.Void[3]);
+                    c.Put(c.T(hd + V(X(2.6f), X(0.6f))), P.Void[3]);
+                    break;
+                }
                 case GearLook.WizardHat:
                 {
                     Hair(false);
@@ -1156,7 +1208,7 @@ public static class PixelFigure
                 Arm(shNear, hNear, false);
                 return;
             }
-            if (s.weapon == GearLook.Cannon && s.mount != MountKind.Cannon) BastionGun();
+            if (s.weapon == GearLook.Cannon && s.mount != MountKind.Cannon && s.mount != MountKind.Starship && s.mount != MountKind.HoverThrone) BastionGun();
             if (s.Class == WeaponClass.Bow)
             {
                 Arm(shNear, hNear, false);
@@ -1201,11 +1253,13 @@ public static class PixelFigure
                     : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass
                     : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome
                     : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth
-                    : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : s.body == GearLook.RunePlate ? P.Moonstone : team;
+                    : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : s.body == GearLook.RunePlate ? P.Moonstone
+                    : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
                     || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody
-                    || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave || s.body == GearLook.RunePlate;
+                    || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave || s.body == GearLook.RunePlate
+                    || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1379,6 +1433,35 @@ public static class PixelFigure
                             c.Put(c.T(at(len + X(t), X(side))), crystal[3]);
                     break;
                 }
+                case GearLook.StarBlade:
+                {
+                    // a gold hilt holding a blade of violet starlight, gold sparks drifting in it
+                    float len = X(11);
+                    bool voidBlade = s.raider;
+                    var glow = voidBlade ? P.Void : P.Arcane;
+                    c.Line(at(-2), at(0), voidBlade ? P.Void[1] : P.Astral[1], ww);
+                    c.Line(at(1, -X(1.6f)), at(1, X(1.6f)), Trim(GearSlot.Weapon, voidBlade ? P.Void[2] : P.Gold[2]), ww);
+                    c.Line(at(2), at(len), glow[3], ww + 1);
+                    c.Line(at(2, -0.6f), at(len - 1, -0.6f), P.White);
+                    for (float t = X(3); t < len - 1; t += X(2.5f)) c.Put(c.T(at(t, 0.5f)), voidBlade ? P.Void[2] : P.Gold[3]);
+                    c.Put(c.T(at(len + 1)), glow[2]);
+                    break;
+                }
+                case GearLook.BeamStaff:
+                {
+                    // a star-steel staff with a gold ring at its head, a captured star burning in the ring
+                    float len = X(13);
+                    c.Line(at(-X(5)), at(len), s.raider ? P.Void[1] : P.Steel[2], ww);
+                    for (float t = 0; t < len - X(2); t += X(3)) c.Put(c.T(at(t)), s.raider ? P.Void[3] : P.Mana[2]);
+                    Vector2 ring = at(len + X(2));
+                    c.Ellipse(ring, X(2.2f), X(2.2f), s.raider ? P.Void : P.Gold);
+                    bool lit = p.loaded || !p.attack;
+                    c.Ellipse(ring, X(1.1f), X(1.1f), lit ? new[] { P.Gold[3], P.White, P.White, P.White } : P.Astral);
+                    if (p.loaded && p.attack)
+                        foreach (var (t, side) in new[] { (5f, 2.2f), (4f, -2.6f), (1.5f, 2.6f) })
+                            c.Put(c.T(at(len + X(t), X(side))), P.Gold[3]);
+                    break;
+                }
                 case GearLook.Runeblade:
                 {
                     // a long steel sword, runes glowing violet along the fuller
@@ -1498,7 +1581,7 @@ public static class PixelFigure
                     c.Ellipse(hand + V(0, X(-0.4f)), X(1.6f), X(1.6f), new[] { P.Green[0], P.Green[2], P.Green[3], P.White });
                     c.Put(c.T(hand + V(0, X(2))), P.Fire[2]);                                         // the lit rag
                     break;
-                case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank:
+                case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank || s.mount == MountKind.Starship || s.mount == MountKind.HoverThrone:
                     break;   // the commander works the gun from inside
                 case GearLook.Cannon:
                 {
@@ -1953,6 +2036,84 @@ public static class PixelFigure
             }
         }
 
+        /// <summary>
+        /// A star-steel craft: a mana jetbike (small) or a gunship (big) with swept wings, a crystal behind the
+        /// hatch and a cannon in its nose. Raiders' craft are void-black with magenta drives.
+        /// </summary>
+        private void StarHull(bool big)
+        {
+            float x0 = cx - X(big ? 20 : 11), x1 = cx + X(big ? 26 : 15), yb = gy + X(big ? -1 : 1), yt = gy + X(big ? 8 : 7);
+            var hull = s.raider ? P.Void : P.Astral;
+            var drive = s.raider ? new[] { P.Void[1], P.Void[2], P.Void[3], P.White } : new[] { P.Mana[1], P.Mana[2], P.Mana[3], P.White };
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            float h = yt - yb, noseFrom = x1 - X(big ? 10 : 7);
+            if (big)   // swept wings under the hull
+                c.Polygon(new[] { V(cx - X(4), yb + X(2)), V(cx + X(10), yb + X(2)), V(cx - X(14), yb - X(6)) }, _ => hull[1]);
+            c.FillLocal(new Rect(x0, yb, x1 - x0, h), l =>
+            {
+                float n = Mathf.Clamp01((l.x - noseFrom) / (x1 - noseFrom));   // the nose tapers to a point
+                if (l.y > yt - n * h * 0.75f || l.y < yb + n * h * 0.2f) return null;
+                if (l.x < x0 + X(1.5f) && l.y < yb + X(1)) return null;
+                if (l.y > yt - n * h * 0.75f - 1.2f) return hull[3];
+                return l.y < yb + X(2) ? hull[1] : hull[2];
+            });
+            c.Line(V(x0 + X(2), yb + X(3)), V(noseFrom + X(2), yb + X(3)), s.raider ? P.Void[3] : P.Gold[2]);
+            c.Line(V(x0 + X(3), yb + X(5)), V(x0 + X(8), yb + X(5)), team[2]);
+            // the drive at the stern, its flame flickering
+            c.FillLocal(new Rect(x0 - X(2), yb + X(1.5f), X(2.5f), h - X(3)), _ => hull[1]);
+            c.Ellipse(V(x0 - X(3.5f), (yb + yt) / 2), X(flick ? 3.2f : 2.2f), X(1.5f), drive);
+            c.Polygon(new[] { V(x0 + X(1), yt), V(x0 - X(2), yt + X(big ? 7 : 5)), V(x0 + X(6), yt) }, _ => hull[2]);   // a tail fin
+            c.Put(c.T(V(x0 - X(2), yt + X(big ? 7 : 5))), s.raider ? P.Void[3] : P.Gold[3]);
+            if (big)
+            {
+                // a mana crystal behind the hatch, and a cannon in the nose
+                Vector2 cr = V(cx - X(9), yt + X(2.5f));
+                c.Polygon(new[] { cr + V(0, X(3)), cr + V(X(1.6f), 0), cr + V(0, X(-1.5f)), cr + V(X(-1.6f), 0) }, _ => drive[2]);
+                Vector2 breech = V(noseFrom - X(2), yb + X(1)), mouth = breech + V(X(15), 0);
+                c.Line(breech, mouth, hull[0], S > 1.3f ? 3 : 2);
+                c.Ellipse(mouth, X(1.2f), X(1.2f), drive);
+                muzzle = mouth + V(X(1), 0);
+            }
+            else
+            {
+                c.Ellipse(V(cx + X(2), yb - X(0.5f)), X(5), X(0.9f), drive);   // the lift glow under the bike
+            }
+        }
+
+        /// <summary>
+        /// A throne on a hovering disc of star-steel (void-black for raiders): mana crystals circle it, a nova
+        /// cannon is mounted at its side with a little sun at the mouth, a glow underneath.
+        /// </summary>
+        private void Throne()
+        {
+            var hull = s.raider ? P.Void : P.Astral;
+            var glow = s.raider ? new[] { P.Void[1], P.Void[2], P.Void[3], P.White } : new[] { P.Mana[1], P.Mana[2], P.Mana[3], P.White };
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            float dy = gy + X(3);
+            // the lift glow on the ground, and the disc
+            c.Ellipse(V(cx + 0.5f, groundY + X(1)), X(flick ? 13 : 12), X(1.4f), glow);
+            c.Ellipse(V(cx + 0.5f, dy), X(16), X(3.6f), hull);
+            c.Line(V(cx - X(15), dy), V(cx + X(16), dy), s.raider ? P.Void[3] : P.Gold[2]);
+            for (int i = -2; i <= 2; i++) c.Put(c.T(V(cx + i * X(6), dy - X(2))), glow[2]);
+            // the throne's front: a gold-trimmed panel that hides the pilot's legs
+            c.FillLocal(new Rect(cx - X(7), dy + X(1), X(14), X(6)), l => l.y > dy + X(6) ? (Color32?)(s.raider ? P.Void[3] : P.Gold[2]) : l.x < cx - X(4) ? hull[3] : hull[2]);
+            c.Put(c.T(V(cx, dy + X(4))), glow[3]);
+            // the nova cannon on its arm, a little sun at the mouth
+            Vector2 breech = V(cx + X(6), dy + X(7)), mouth = breech + V(X(12) - (p.release ? X(1.5f) : 0), X(1));
+            c.Line(breech, mouth, hull[1], S > 1.3f ? 3 : 2);
+            c.Line(breech + V(0, -X(1)), breech + V(X(4), -X(1)), s.raider ? P.Void[3] : P.Gold[2]);
+            c.Ellipse(mouth + V(X(1), 0), X(1.8f), X(1.8f), s.raider ? glow : new[] { P.Gold[1], P.Gold[2], P.Gold[3], P.White });
+            muzzle = mouth + V(X(2), 0);
+            // three crystals orbiting the throne
+            for (int i = 0; i < 3; i++)
+            {
+                float t = (p.fNear.x + p.bob * 2 + (p.attack ? 3 : 0)) * 0.6f + i * 2.1f;   // turns with the pose
+                Vector2 o = V(cx + Mathf.Cos(t) * X(18), dy + X(9) + Mathf.Sin(t) * X(3));
+                c.Polygon(new[] { o + V(0, X(2)), o + V(X(1.2f), 0), o + V(0, -X(2)), o + V(-X(1.2f), 0) }, _ => glow[2]);
+                c.Put(c.T(o + V(0, X(0.6f))), glow[3]);
+            }
+        }
+
         /// <summary>A rocket pack on the flyer's back: two chrome tubes with flames out of the bottom.</summary>
         private void Jetpack()
         {
@@ -2156,12 +2317,14 @@ public static class PixelFigure
             MountKind.Chariot => V(cx + 0.5f - X(10), gy + X(9) + X(7) + 1),
             MountKind.Elephant => V(cx + 0.5f - X(2), gy + X(27)),
             MountKind.Walker => V(cx + 0.5f, gy + X(22)),
+            MountKind.Drake => V(cx + 0.5f - X(3), gy + X(21)),
             _ => V(cx + 0.5f - X(1), gy + X(15)),
         };
 
         private float ThrownOffset() => s.mount switch
         {
             MountKind.Elephant => X(22),
+            MountKind.Drake => X(22),
             MountKind.Chariot => X(-18),
             _ => X(14),
         };
@@ -2200,6 +2363,7 @@ public static class PixelFigure
                     break;
                 case MountKind.Elephant: Elephant(V(cx + 0.5f, gy), coat, drop); break;
                 case MountKind.Griffin: Griffin(V(cx + 0.5f, gy), P.Named(s.coat == "Wyvern" ? "Wyvern" : "Griffin"), drop); break;
+                case MountKind.Drake: Drake(V(cx + 0.5f, gy), drop); break;
             }
             (c.Angle, c.Shift, c.Pivot) = save;
         }
@@ -2258,6 +2422,75 @@ public static class PixelFigure
             Wing(1, false);
             // the saddle cloth in the team colour
             if (drop < 2) c.FillLocal(new Rect(body.x - X(5), body.y + X(2), X(8), X(3.5f)), l => l.x < body.x - X(3) ? team[2] : team[1]);
+        }
+
+        /// <summary>
+        /// A heavy war drake: four clawed legs, a long spiked tail, a horned head that breathes fire when it
+        /// attacks, and moonstone barding with a mana line along it.
+        /// </summary>
+        private void Drake(Vector2 o, int drop)
+        {
+            var coat = P.Drake;
+            float lift = drop == 0 ? 0 : drop == 1 ? -X(5) : -X(10);
+            Vector2 body = o + V(0, X(13) + lift);
+            int g = Gait;
+            void Leg(float dx, bool far, int phase)
+            {
+                if (drop == 2) return;
+                float swing = g * X(2.5f) * phase;
+                Vector2 top = body + V(X(dx), X(-2)), knee = top + V(X(-1) + swing * 0.5f, X(-6)), foot = V(top.x + swing, gy + 1);
+                var col = far ? coat[1] : coat[2];
+                c.Line(top, knee, col, S > 1.3f ? 6 : 5);
+                c.Line(knee, foot, col, S > 1.3f ? 5 : 4);
+                c.Line(foot + V(X(-1), 0), foot + V(X(3), 0), P.Bone[2], 2);   // claws
+            }
+            Leg(-8, true, 1); Leg(7, true, -1);
+            // the tail, sweeping back and down, spikes along it
+            Vector2 t0 = body + V(X(-10), X(1)), t1 = body + V(X(-18), X(-3)), t2 = body + V(X(-26), X(-6) + (drop == 2 ? X(4) : 0));
+            c.Capsule(t0, t1, X(2.6f), coat); c.Capsule(t1, t2, X(1.6f), coat);
+            c.Polygon(new[] { t2 + V(0, X(1.8f)), t2 + V(X(-3.5f), 0), t2 + V(0, X(-1.8f)) }, _ => coat[1]);
+            // the body
+            c.Ellipse(body + V(X(-6), 0), X(7), X(6.5f), coat);
+            c.Ellipse(body, X(12), X(7), coat);
+            c.Ellipse(body + V(X(7), X(1)), X(6), X(6.5f), coat);
+            c.Line(body + V(X(-9), X(-4)), body + V(X(9), X(-3.5f)), coat[3]);   // a pale belly
+            for (int i = 0; i < 5; i++) c.Put(c.T(body + V(X(-14 + i * 3), X(4.8f - Mathf.Abs(i - 1) * 0.6f))), coat[0]);   // tail-root spikes
+            // neck and horned head
+            bool breathe = p.attack && (p.release || !p.loaded);
+            Vector2 neck0 = body + V(X(9), X(3)), head = drop == 2 ? body + V(X(17), X(-2)) : body + V(X(15), X(10));
+            c.Capsule(neck0, head, X(3.8f), coat);
+            c.Ellipse(head, X(4.4f), X(3.6f), coat);
+            float gape = breathe && drop == 0 ? X(1.6f) : 0;
+            c.Polygon(new[] { head + V(X(1.5f), X(1.4f)), head + V(X(7), X(0.6f)), head + V(X(6), X(-0.4f)), head + V(X(1.5f), X(-0.4f)) }, _ => coat[2]);   // snout
+            c.Polygon(new[] { head + V(X(1.5f), X(-0.6f)), head + V(X(6), X(-1.2f) - gape), head + V(X(1.5f), X(-2.2f)) }, _ => coat[1]);   // jaw
+            c.Line(head + V(X(-1), X(2.2f)), head + V(X(-4.5f), X(5)), P.Bone[2], 2);   // horns
+            c.Line(head + V(X(0.5f), X(2.6f)), head + V(X(-2.5f), X(5.6f)), P.Bone[3], 2);
+            c.Put(c.T(head + V(X(1.6f), X(1.2f))), P.Glow[3]);   // eye
+            if (breathe && drop == 0)
+            {
+                Vector2 m = head + V(X(7), X(-0.4f));
+                c.Ellipse(m + V(X(2.5f), 0), X(3), X(1.8f), P.Fire);
+                c.Ellipse(m + V(X(1.2f), 0), X(1.4f), X(1), new[] { P.Fire[2], P.Fire[3], P.White, P.White });
+                muzzle = m;
+            }
+            if (drop < 2)
+            {
+                // folded leathery wings along the flank: too heavy to fly
+                Vector2 w0 = body + V(X(4), X(5)), w1 = body + V(X(-12), X(9)), w2 = body + V(X(-10), X(2));
+                c.Polygon(new[] { w0, w1, w2 }, _ => coat[1]);
+                c.Line(w0, w1, coat[0], 2);
+                c.Line(w0, Vector2.Lerp(w1, w2, 0.5f), coat[0]);
+                // moonstone barding over the back with a mana line, and the saddle cloth in the team colour
+                c.FillLocal(new Rect(body.x - X(9), body.y + X(1), X(18), X(5.5f)), l =>
+                {
+                    float dx = (l.x - body.x) / X(9.5f), dy = (l.y - body.y) / X(6.2f);
+                    if (dx * dx + dy * dy > 1f) return null;
+                    return l.y > body.y + X(4.6f) ? Trim(GearSlot.Body, P.Gold[2]) : l.x < body.x - X(6) ? P.Moonstone[3] : P.Moonstone[2];
+                });
+                c.Line(body + V(X(-8), X(2.5f)), body + V(X(8), X(2.5f)), P.Mana[2]);
+                c.FillLocal(new Rect(body.x - X(5), body.y + X(4), X(7), X(3)), l => l.x < body.x - X(3) ? team[2] : team[1]);
+                Leg(-6, false, -1); Leg(9, false, 1);
+            }
         }
 
         private void Horse(Vector2 o, Color32[] coat, int drop, int unused)

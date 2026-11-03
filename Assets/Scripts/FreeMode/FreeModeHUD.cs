@@ -615,6 +615,7 @@ public class FreeModeHUD : MonoBehaviour
         new Color(0.6f, 0.82f, 0.98f), new Color(0.85f, 0.55f, 0.45f),   // Enlightenment, Industrial
         new Color(0.7f, 0.75f, 0.5f), new Color(0.6f, 0.9f, 0.7f),       // Modern, Electric
         new Color(0.45f, 0.85f, 1f), new Color(0.78f, 0.6f, 1f),         // Information, Arcane
+        new Color(0.95f, 0.85f, 0.5f),                                   // Astral
     };
 
     private CollapsibleSection AgeSection(Age age, Transform parent)

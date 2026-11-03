@@ -221,6 +221,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e5fdba86091bf0e44b673902ca068ccf, type: 3}
   - {fileID: 21300000, guid: 2e6f0c2690ba52c45814a7fc6cc7cc36, type: 3}
   - {fileID: 21300000, guid: d61b37813cfc9de44a4de406fe341ad2, type: 3}
+  - {fileID: 21300000, guid: 9cc6cdfc7204eb04187b46b4b989da65, type: 3}
   siteVeinIds:
   - GoldOre
   - Runestone
@@ -229,6 +230,7 @@ MonoBehaviour:
   - Uranium
   - Silicon
   - Manastone
+  - Starmetal
   siteIcons:
   - {fileID: 21300000, guid: 83034151085e0d94b97a7a3ed034255d, type: 3}
   - {fileID: 21300000, guid: 2e985ef847e9e27408d14d34a472314f, type: 3}

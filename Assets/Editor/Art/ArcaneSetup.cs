@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The Arcane Age, the first fully fantasy age: magic, read like code once the Information Age could
 /// decode the old shrines' runes, then engineered. Spellblades and arcanists, griffin riders and
-/// skyships, warwalkers, temples of light, obelisks that throw mana and spires that call down stars,
+/// skyships, war drakes, temples of light, obelisks that throw mana and spires that call down stars,
 /// runeward walls, and its special class, the runic golem (the android's successor). Spellcode
 /// (Information research) opens it. Manastone is a new hill deposit (with rich veins), refined into Mana.
 /// Every Information line ranks up into an Arcane building.
@@ -79,7 +79,7 @@ public static partial class PlaceholderArt
         var animation = ATech("Animation", "Animation", "Tools that work on their own when told. Nanoassemblers rank up into the Animated Workshop; everything you produce comes in 5% faster.",
             125f, Cost(steel, 500, gears, 300, mana, 100), runeforging.id, runeforging);
         animation.productionModifiers = new List<ProductionModifier> { new ProductionModifier { resource = null, multiplier = 1.05f } };
-        var walkers = ATech("Warwalkers", "Warwalkers", "A walking fortress with a mage at the helm. Plasma Tank Works rank up into the Colossus Works.",
+        var walkers = ATech("DrakeTaming", "Drake Taming", "Drakes are too heavy to fly and too proud to be ridden, until they are given rune-plate barding to wear. Plasma Tank Works rank up into the Drake Pens.",
             135f, Cost(steel, 700, mana, 160, cells, 120), animation.id, arcanism);
         var golemancy = ATech("Golemancy", "Golemancy", "Stone, an iron frame and a mana core: a servant that never tires. Android Labs rank up into the Golem Sanctum.",
             140f, Cost(stone, 2400, mana, 200, runestone, 150, chips, 100), walkers.id, animation);
@@ -111,7 +111,7 @@ public static partial class PlaceholderArt
         griffinRider.movement = Movement.Air; griffinRider.flyHeight = 1.0f; griffinRider.populationCost = 2;
         var lightbringer = MedievalUnit("Lightbringer", "Lightbringer", age, "Nanomedic", 460, 60, 1.0f, 0.8f, 1.1f);
         lightbringer.healer = true; lightbringer.healRange = 15f;
-        var warwalker = MedievalUnit("Warwalker", "Warwalker", age, "PlasmaTank", 2300, 230, 3.4f, 10f, 0.8f);
+        var warwalker = MedievalUnit("WarDrake", "War Drake", age, "PlasmaTank", 2400, 230, 3.4f, 9f, 0.9f);
         warwalker.populationCost = 3; warwalker.movement = Movement.Ground; warwalker.flyHeight = 0f;
         var golem = MedievalUnit("RunicGolem", "Runic Golem", age, "Android", 2100, 115, 1.0f, 1.1f, 1.0f);
         golem.populationCost = 2;
@@ -259,16 +259,16 @@ public static partial class PlaceholderArt
             Upgrade("More Hands", "+30% gears.", Cost(mana, 80, gears, 100), 1.3f),
             Upgrade("Tireless Tools", "+30% gears.", Cost(steel, 200, mana, 60), 1.3f),
         };
-        var colossusWorks = RankUp(db, "PlasmaTankWorks", "ColossusWorks", "Colossus Works", age, walkers,
-            "A great gate in a moonstone wall. Builds Warwalkers: walking fortresses with a mage at the helm.",
+        var colossusWorks = RankUp(db, "PlasmaTankWorks", "DrakePens", "Drake Pens", age, walkers,
+            "Moonstone pens round a great barred gate, a drake's head looking out. Raises War Drakes: armoured drakes that breathe fireballs.",
             Cost(stone, 600, steel, 400, mana, 140), Cost(stone, 300, mana, 70), 1900);
         colossusWorks.trainsUnit = warwalker;
         colossusWorks.maxUnits = 2;
         colossusWorks.workers = 6;
         colossusWorks.upgrades = new List<BuildingUpgrade>
         {
-            new BuildingUpgrade { name = "Second Gate", description = "+1 warwalker.", requirements = new Requirements { cost = Cost(steel, 300, mana, 100) }, upgradeTime = 35f, extraUnits = 1 },
-            new BuildingUpgrade { name = "Warded Plating", description = "Warwalkers are 25% tougher.", requirements = new Requirements { cost = Cost(mana, 120, runestone, 60) }, upgradeTime = 35f,
+            new BuildingUpgrade { name = "Second Pen", description = "+1 war drake.", requirements = new Requirements { cost = Cost(steel, 300, mana, 100) }, upgradeTime = 35f, extraUnits = 1 },
+            new BuildingUpgrade { name = "Warded Barding", description = "War drakes are 25% tougher.", requirements = new Requirements { cost = Cost(mana, 120, runestone, 60) }, upgradeTime = 35f,
                 trainedUnits = new UnitStatModifier { healthMultiplier = 1.25f } },
         };
         var sanctum = RankUp(db, "AndroidLab", "GolemSanctum", "Golem Sanctum", age, golemancy,
@@ -343,7 +343,7 @@ public static partial class PlaceholderArt
             if (!b.IsWall) GenerateBuildingLooks(b);
         GenerateWallArt(11);
         GenerateWarriorsAndCrews(db, new HashSet<string>
-            { "Spellblade", "Arcanist", "GriffinRider", "Lightbringer", "Warwalker", "RunicGolem", "Skyship", "Hexblade", "Warlock", "WyvernRider" });
+            { "Spellblade", "Arcanist", "GriffinRider", "Lightbringer", "WarDrake", "RunicGolem", "Skyship", "Hexblade", "Warlock", "WyvernRider" });
         obelisk.towerProjectile = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/ManaBolt.png");
         EditorUtility.SetDirty(obelisk);
         SetupBosses("ArcaneAge");

@@ -451,7 +451,7 @@ public static partial class PlaceholderArt
             c.Outline(P.Ink, 0.4f);
             return;
         }
-        var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : P.Rock;
+        var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : ore == Ore.Starmetal ? P.Starmetal : P.Rock;
         if (ore == Ore.Quicksilver || ore == Ore.Aether || ore == Ore.Silicon || ore == Ore.Mana) rock = P.Stone;
         (float x, float y, float rx, float ry)[] stones = variant switch
         {
@@ -477,6 +477,7 @@ public static partial class PlaceholderArt
             Ore.Aether => new[] { P.Aether[1], P.Aether[2], P.Aether[3] },
             Ore.Uranium => new[] { P.Ray[1], P.Ray[2], P.Ray[3] },          // ore that glows green
             Ore.Mana => new[] { P.Mana[1], P.Mana[2], P.Mana[3] },          // blue crystal
+            Ore.Starmetal => new[] { P.Gold[1], P.Gold[3], P.White },       // a meteorite's gold-white sheen
             Ore.Silicon => new[] { P.Linen[3], P.White, P.Neon[3] },        // glittering quartz
             _ => null,
         };

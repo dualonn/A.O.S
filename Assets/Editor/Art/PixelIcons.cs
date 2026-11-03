@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana }, { "Starmetal", IcStarmetal }, { "AstralCores", IcAstralCores },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -180,6 +180,23 @@ public static partial class PlaceholderArt
         c.Rect(8, 9, 9, 11, P.Mana[3]);
         c.Rect(7, 14, 12, 15, P.Steel[2]);
         c.Put(9, 7, P.White);
+    }
+
+    private static void IcStarmetal(PixelCanvas c)
+    {
+        // a lump of dark meteoric metal, pitted, with a gold-white sheen
+        c.Ellipse(new Vector2(10, 9), 7.5f, 6, P.Starmetal);
+        foreach (var (x, y) in new[] { (7, 10), (12, 7), (9, 6) }) c.Put(x, y, P.Starmetal[0]);
+        c.Put(8, 12, P.Starmetal[4]); c.Put(13, 11, P.Gold[3]); c.Put(9, 13, P.White);
+    }
+
+    private static void IcAstralCores(PixelCanvas c)
+    {
+        // a star-steel sphere banded in gold, a mana-blue light shining from its middle
+        c.Ellipse(new Vector2(10, 9), 6.5f, 6.5f, P.Astral);
+        c.Rect(4, 8, 16, 9, P.Gold[2]);
+        c.Ellipse(new Vector2(10, 9), 2.4f, 2.4f, P.Mana);
+        c.Put(10, 9, P.White);
     }
 
     private static void IcMicrochips(PixelCanvas c)

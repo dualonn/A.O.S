@@ -108,12 +108,23 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Astral Age (magic and sci-fi fused)
+        ("Starknight", Fig(B, GearLook.StarHelm, GearLook.StarBlade, body: GearLook.StarPlate, cape: "Astral"), false),
+        ("Technomancer", Fig(B, GearLook.Cowl, GearLook.BeamStaff, body: GearLook.Spellweave, crest: "Astral"), false),
+        ("Skylancer", Fig(B, GearLook.StarHelm, GearLook.ManaRifle, body: GearLook.StarPlate, mount: MountKind.Skybike), false),
+        ("Starmender", Medic(Fig(B, GearLook.StarHelm, GearLook.None, body: GearLook.StarPlate)), false),
+        ("NovaThrone", Fig(B, GearLook.Cowl, GearLook.Cannon, body: GearLook.Spellweave, crest: "Astral", mount: MountKind.HoverThrone, scale: 1.35f), false),
+        ("AstralConstruct", Skin(Fig(B, GearLook.SynthHead, GearLook.StarBlade, body: GearLook.StarPlate, scale: 1.55f), "Synth"), false),
+        ("StarFrigate", Fig(B, GearLook.StarHelm, GearLook.Cannon, body: GearLook.StarPlate, mount: MountKind.Starship), false),
+        ("Voidreaver", Fig(Rd, GearLook.VoidHelm, GearLook.StarBlade, body: GearLook.VoidPlate, raider: true), true),
+        ("VoidCaster", Fig(Rd, GearLook.VoidHelm, GearLook.BeamStaff, body: GearLook.Robe, crest: "Void", raider: true), true),
+        ("VoidSkiff", Fig(Rd, GearLook.VoidHelm, GearLook.ManaRifle, body: GearLook.VoidPlate, mount: MountKind.Skybike, raider: true), true),
         // Arcane Age (fantasy)
         ("Spellblade", Fig(B, GearLook.RuneVisor, GearLook.Runeblade, body: GearLook.RunePlate, crest: "Arcane"), false),
         ("Arcanist", Fig(B, GearLook.WizardHat, GearLook.ManaRifle, body: GearLook.Spellweave, crest: "Arcane"), false),
         ("GriffinRider", Fig(B, GearLook.RuneVisor, GearLook.Javelin, body: GearLook.RunePlate, mount: MountKind.Griffin, coat: "Griffin"), false),
         ("Lightbringer", Medic(Fig(B, GearLook.WizardHat, GearLook.None, body: GearLook.Spellweave, crest: "Linen")), false),
-        ("Warwalker", Fig(B, GearLook.RuneVisor, GearLook.Cannon, body: GearLook.RunePlate, mount: MountKind.Walker, crest: "Arcane"), false),
+        ("WarDrake", Fig(B, GearLook.RuneVisor, GearLook.Runeblade, body: GearLook.RunePlate, mount: MountKind.Drake, crest: "Arcane", scale: 1.15f), false),
         ("RunicGolem", Skin(Fig(B, GearLook.GolemHead, GearLook.None, body: GearLook.GolemBody, scale: 1.5f), "Rock"), false),
         ("Skyship", Fig(B, GearLook.RuneVisor, GearLook.Grenade, body: GearLook.RunePlate, mount: MountKind.Airship, crest: "Arcane"), false),
         ("Hexblade", Fig(Rd, GearLook.Goggles, GearLook.Runeblade, body: GearLook.TacVest, raider: true), true),
@@ -224,6 +235,13 @@ public static partial class PlaceholderArt
             c.LineRaw(new Vector2(0, 3), new Vector2(5, 3), m[1]); c.LineRaw(new Vector2(2, 4), new Vector2(6, 4), m[2]);
             c.Ellipse(new Vector2(8, 3.5f), 2.4f, 2.4f, m); c.Put(8, 4, PixelPalette.White);
         });
+        var starBolt = PixelProjectile("StarBolt", 12, 7, c =>
+        {
+            var g = PixelPalette.Gold;
+            c.LineRaw(new Vector2(0, 3), new Vector2(6, 3), PixelPalette.Arcane[2]); c.LineRaw(new Vector2(2, 4), new Vector2(7, 4), g[2]);
+            c.Ellipse(new Vector2(9, 3.5f), 2.4f, 2.4f, new[] { g[1], g[2], g[3], PixelPalette.White });
+            c.Put(9, 6, g[3]); c.Put(9, 1, g[3]); c.Put(11, 4, PixelPalette.White);
+        });
         var bullet = PixelProjectile("Bullet", 5, 3, c => { c.LineRaw(new Vector2(0, 1), new Vector2(3, 1), PixelPalette.Brass[2]); c.Put(4, 1, PixelPalette.Glow[3]); });
         var aetherBolt = PixelProjectile("AetherBolt", 12, 7, c =>
         {
@@ -250,8 +268,12 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.BoltRifle ? ball : style.weapon == GearLook.MachineGun || style.weapon == GearLook.Tommygun ? bullet
                 : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
                 : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball
-                : style.weapon == GearLook.ManaStaff || style.weapon == GearLook.ManaRifle ? manaBolt : null;
+                : style.weapon == GearLook.ManaStaff || style.weapon == GearLook.ManaRifle ? manaBolt
+                : style.weapon == GearLook.BeamStaff ? starBolt : null;
             SetFlight(def, style.weapon);
+            if (style.mount == MountKind.Starship) StarshipGun(def, starBolt);
+            if (style.mount == MountKind.HoverThrone) NovaGun(def);
+            if (style.mount == MountKind.Drake) DrakeFire(def);
             EditorUtility.SetDirty(def);
         }
         if (database == null) return;
@@ -307,11 +329,35 @@ public static partial class PlaceholderArt
             case GearLook.AetherRod: def.projectileArc = 0f; def.projectileSpeed = 18f; def.splashRadius = 0.8f; break;
             case GearLook.ManaStaff: def.projectileArc = 0f; def.projectileSpeed = 20f; def.splashRadius = 0.9f; break;
             case GearLook.ManaRifle: def.projectileArc = 0f; def.projectileSpeed = 28f; def.splashRadius = 0.7f; break;
+            case GearLook.BeamStaff: def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 0.8f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
             default: def.projectileArc = Projectile.BowArc; break;
         }
+    }
+
+    /// <summary>A starship's nose cannon fires bolts of starlight, straight and fast, with no smoke.</summary>
+    private static void StarshipGun(UnitDefinition def, Sprite starBolt)
+    {
+        def.projectile = starBolt;
+        def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 1.2f; def.muzzleSmoke = false;
+    }
+
+    /// <summary>A war drake breathes fireballs that burst and set the ground alight.</summary>
+    private static void DrakeFire(UnitDefinition def)
+    {
+        var fire = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/Fireball.png");
+        if (fire != null) def.projectile = fire;
+        def.projectileArc = 0.1f; def.projectileSpeed = 13f; def.splashRadius = 1.7f; def.splashFire = true; def.muzzleSmoke = false;
+    }
+
+    /// <summary>A hover throne's cannon lobs novas that burst wide.</summary>
+    private static void NovaGun(UnitDefinition def)
+    {
+        var nova = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/Nova.png");
+        if (nova != null) def.projectile = nova;
+        def.projectileArc = 0.15f; def.projectileSpeed = 14f; def.splashRadius = 2.0f; def.muzzleSmoke = false;
     }
 
     /// <summary>Rows above the feet where tower crews are cut (BuildingView.CrewCutAbovePivot must match).</summary>
@@ -579,6 +625,20 @@ public static partial class PlaceholderArt
         },
         new BossSpec
         {
+            id = "BossVoidHerald", name = "The Void Herald", age = "AstralAge",
+            style = Fig(Rd, GearLook.VoidHelm, GearLook.BeamStaff, body: GearLook.VoidPlate, cape: "Void", scale: 1.8f, raider: true),
+            health = 15500, attack = 175, speed = 0.85f, cooldown = 1.5f, range = 7.5f, detection = 8f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "Voidreaver", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "BossVoidTyrant", name = "The Void Tyrant on his Dark Throne", age = "AstralAge",
+            style = Fig(Rd, GearLook.VoidHelm, GearLook.Cannon, body: GearLook.VoidPlate, cape: "Void", mount: MountKind.HoverThrone, scale: 1.5f, raider: true),
+            health = 17500, attack = 230, speed = 0.65f, cooldown = 3.0f, range = 9f, detection = 9.5f,
+            ability = BossAbility.WarCry, abilityCooldown = 11f, abilityPower = 1.4f,
+        },
+        new BossSpec
+        {
             id = "BossLichArchmage", name = "The Lich Archmage", age = "ArcaneAge",
             style = Lich(Fig(Rd, GearLook.WizardHat, GearLook.ManaStaff, body: GearLook.Spellweave, crest: "Purple", cape: "Purple", scale: 1.7f, raider: true)),
             health = 11500, attack = 150, speed = 0.8f, cooldown = 1.6f, range = 7.5f, detection = 8f,
@@ -664,10 +724,11 @@ public static partial class PlaceholderArt
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
                 GearLook.RayGun or GearLook.RayRifle => "RayBolt", GearLook.PlasmaRifle => "PlasmaBolt", GearLook.AssaultRifle => "Bullet",
-                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", _ => null,
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", GearLook.BeamStaff => "StarBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);
+            if (spec.style.mount == MountKind.HoverThrone) NovaGun(def);
             def.prefab = BuildPixelUnit(spec.id, spec.style, true, def, boss: true);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{spec.id}/{spec.id}_Idle.png");
             EditorUtility.SetDirty(def);

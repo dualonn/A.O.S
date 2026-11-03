@@ -1,0 +1,162 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CoreForge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CoreForge
+  displayName: Core Forge
+  description: 'A forge where starmetal is shaped round a drop of mana into an Astral
+    Core: the heart of every Astral machine.'
+  icon: {fileID: 21300000, guid: c5ec514cdc8a21c448101a99273fe873, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: c5ec514cdc8a21c448101a99273fe873, type: 3}
+    - {fileID: 21300000, guid: 9bf60e47ba359dd459035612acd4c082, type: 3}
+    - {fileID: 21300000, guid: da6094012f9c2b34f8d3b6785374bfe7, type: 3}
+    - {fileID: 21300000, guid: ff9c4af97b6e6f6499e65eb869be4a1b, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 71b95140c58b2d54589edcf8be90bbc6, type: 3}
+    - {fileID: 21300000, guid: a6831dfcf3354af4ba87364736f9a78a, type: 3}
+    - {fileID: 21300000, guid: 59f86c9426dec0f4d854433f9b63c265, type: 3}
+    - {fileID: 21300000, guid: 5c0a29f84b5b9094db3107e46faeabf0, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a844bb7182c392f43967bc639e3d689d, type: 3}
+    - {fileID: 21300000, guid: 09db6fc340d994248960f381385a4e15, type: 3}
+    - {fileID: 21300000, guid: 48b6a1da8dad14847be58a811d64ac8f, type: 3}
+    - {fileID: 21300000, guid: bf157a393c91a7f4cb5d7e1f894cd6ef, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 131f0b59edba4974595571f5ad3a1196, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 250
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 150
+  upgrades:
+  - name: Finer Moulds
+    description: +30% cores.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 500
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Mana Quench
+    description: +30% cores.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1100
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+    perSecond: 0.08
+  inputs:
+  - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+    perSecond: 0.1
+  - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+    perSecond: 0.04
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

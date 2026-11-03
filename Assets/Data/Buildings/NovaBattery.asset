@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: NovaBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: NovaBattery
+  displayName: Nova Battery
+  description: A squat star-steel tower with a sun caught in a cage on top. Each
+    shot is a nova that bursts wide.
+  icon: {fileID: 21300000, guid: 32403afb9a2b53848971212cfd82031f, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 32403afb9a2b53848971212cfd82031f, type: 3}
+    - {fileID: 21300000, guid: 5147d9df773398c498480580b424967a, type: 3}
+    - {fileID: 21300000, guid: 36e97ee1655e30145a89d88829bab061, type: 3}
+    - {fileID: 21300000, guid: 7bff3ccb50f8d6e45b1c229f3eda6a27, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 75b39f8a4029c9a43b4f6e5776649536, type: 3}
+    - {fileID: 21300000, guid: ba136ee1660726646bcd41985632944b, type: 3}
+    - {fileID: 21300000, guid: 3a9309d973873104da099a0363fd9873, type: 3}
+    - {fileID: 21300000, guid: 5d5baae57ab9db74096a070500dc7921, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 3dcb28738c8c24e4981ba4980ee9bbe0, type: 3}
+    - {fileID: 21300000, guid: cb6bbf5edf10b8d43b7ab7d2a82cf161, type: 3}
+    - {fileID: 21300000, guid: d473b840b43d9cf41b780cc6010fda3a, type: 3}
+    - {fileID: 21300000, guid: f47796e3bd19fb84cbd3efae41eacc2a, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bd4119032a096464b913c0d5c1865cba, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 120
+  upgrades:
+  - name: Longer Throw
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 100
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Hotter Suns
+    description: +130 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 120
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 130
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2700
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 15
+  towerDamage: 400
+  towerCooldown: 3.2
+  towerProjectile: {fileID: 21300000, guid: 040173edad98cbd4baf108bb0266e669, type: 3}
+  towerProjectileArc: 0.2
+  towerProjectileSpeed: 16
+  towerSplash: 2.8
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.25}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

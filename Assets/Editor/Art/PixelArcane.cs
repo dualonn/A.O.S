@@ -16,7 +16,7 @@ public static partial class PlaceholderArt
             { "SpireOfLights", (PxSpireOfLights, 4, 3f) }, { "ArcaneTreasury", (PxArcaneTreasury, 4, 4f) }, { "SpellbladeHall", (PxSpellbladeHall, 4, 4f) },
             { "ArcaneAcademy", (PxArcaneAcademy, 4, 6f) }, { "GriffinRoost", (PxGriffinRoost, 4, 5f) }, { "TempleOfLight", (PxTempleOfLight, 4, 4f) },
             { "ArcaneObelisk", (PxArcaneObelisk, 4, 6f) }, { "StarfallSpire", (PxStarfallSpire, 4, 4f) }, { "FireballSpire", (PxFireballSpire, 4, 6f) },
-            { "Runeforge", (PxRuneforge, 4, 6f) }, { "AnimatedWorkshop", (PxAnimatedWorkshop, 4, 5f) }, { "ColossusWorks", (PxColossusWorks, 4, 4f) },
+            { "Runeforge", (PxRuneforge, 4, 6f) }, { "AnimatedWorkshop", (PxAnimatedWorkshop, 4, 5f) }, { "DrakePens", (PxDrakePens, 4, 4f) },
             { "GolemSanctum", (PxGolemSanctum, 4, 4f) }, { "SkyshipDock", (PxSkyshipDock, 4, 4f) }, { "LeylineNexus", (PxLeylineNexus, 4, 6f) },
             { "ManastoneMine", (PxManastoneMine, 4, 5f) }, { "ManaWell", (PxManaWell, 4, 6f) },
         };
@@ -268,17 +268,25 @@ public static partial class PlaceholderArt
         k.Finish();
     }
 
-    private static void PxColossusWorks(K k)
+    private static void PxDrakePens(K k)
     {
-        // A great gate in a moonstone wall; a warwalker's legs and cockpit stand in the yard.
+        // Moonstone pens round a great barred gate; a drake's horned head looks out over it, smoke curling from its nose.
         k.Ground(2, 2, 94, 40, P.Dirt);
-        MoonWall(k, 4, 8, 64, 36);
-        k.Rect(18, 9, 50, 30, P.Coal[1]);
-        k.Rect(18, 30, 50, 32, P.Gold[2]);
-        int step = k.Frame % 2;
-        k.Line(76, 4, 72 + step * 2, 18, Moon[1], 3); k.Line(84, 4, 86 - step * 2, 18, Moon[1], 3);
-        k.Ellipse(79, 22, 8, 5, Moon);
-        k.Rect(77, 22, 83, 25, P.Mana[2]);
+        MoonWall(k, 4, 8, 64, 30);
+        k.Rect(18, 9, 50, 26, P.Coal[1]);
+        for (int x = 20; x < 50; x += 5) k.VLine(x, 9, 26, P.Steel[2]);
+        k.Rect(16, 26, 52, 28, P.Gold[2]);
+        var d = P.Drake;
+        int nod = k.Frame % 4 < 2 ? 0 : 1;
+        k.Ellipse(34, 33 + nod, 6, 4, d);
+        k.Polygon(new[] { new Vector2(38, 34 + nod), new Vector2(46, 33 + nod), new Vector2(38, 31 + nod) }, _ => d[2]);
+        k.Line(31, 36 + nod, 27, 41 + nod, P.Bone[2], 2); k.Line(35, 36 + nod, 33, 42 + nod, P.Bone[3], 2);
+        k.Px(37, 34 + nod, P.Glow[3]);
+        if (k.Frame % 2 == 0) { k.Px(47, 35 + nod, P.Coal[2]); k.Px(49, 37, P.Coal[1]); }
+        // a fenced yard of straw and a trough
+        k.HLine(68, 92, 18, P.Wood[2]); k.VLine(68, 4, 18, P.Wood[1]); k.VLine(92, 4, 18, P.Wood[1]);
+        k.Ellipse(80, 8, 9, 3, P.Straw);
+        k.Rect(72, 4, 86, 6, P.Iron[1]);
         k.Finish();
     }
 

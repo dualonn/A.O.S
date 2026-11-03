@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AstralLance
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AstralLance
+  displayName: Astral Lance
+  description: A needle of star-steel, a lens at its tip that fires bolts of starlight.
+  icon: {fileID: 21300000, guid: 1c422fe5cdd447f46adfd83d786d951b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1c422fe5cdd447f46adfd83d786d951b, type: 3}
+    - {fileID: 21300000, guid: 7f90725861ed78049ab955824378ef8c, type: 3}
+    - {fileID: 21300000, guid: 506f64770e733ca46ad6a3d43f7ced0d, type: 3}
+    - {fileID: 21300000, guid: 73b26bda282a84246bfda784bc78620d, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 65af0e06589948244a8cb5e5cc2508ba, type: 3}
+    - {fileID: 21300000, guid: f467921ae405321489f6743dac8bea9b, type: 3}
+    - {fileID: 21300000, guid: 36efbb4a64a31ca4794c2d2eb789c0f9, type: 3}
+    - {fileID: 21300000, guid: 53b50534d36a4f6499714bfeaa8acb62, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 7e087eb5c0513414d92f2831e4b76952, type: 3}
+    - {fileID: 21300000, guid: c21ea538f25fe1f47bbf8a4faf1945b2, type: 3}
+    - {fileID: 21300000, guid: a2a3aaac9030a7a418823efb470fcd6f, type: 3}
+    - {fileID: 21300000, guid: f3dabca3238981d4ab25d3b47b4e76eb, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: fbb5dc1a19375d541b187e52ed361270, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 70
+    - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+      amount: 20
+  upgrades:
+  - name: Long Lens
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 250
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Brighter Star
+    description: +18 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 18
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2300
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 11.5
+  towerDamage: 58
+  towerCooldown: 0.42
+  towerProjectile: {fileID: 21300000, guid: 8f5e4c339c589564d8590bb3e939ad77, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 30
+  towerSplash: 0.9
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.6875}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

@@ -83,6 +83,13 @@ public static class PixelPalette
     /// <summary>A griffin's tawny lion coat, and a wyvern's dark scales.</summary>
     public static readonly Color32[] Griffin = { H("6a4a1c"), H("a8782e"), H("d8aa52"), H("f4dc98") };
     public static readonly Color32[] Wyvern = { H("1c2a1e"), H("2e4a30"), H("4e7046"), H("86a46a") };
+    /// <summary>Deep star-steel blue for the Astral Age, and the black-violet of the void with its magenta glow.</summary>
+    public static readonly Color32[] Astral = { H("121735"), H("232c62"), H("3a4c9c"), H("8aa0e8") };
+    public static readonly Color32[] Void = { H("10060f"), H("2c1038"), H("5e1c6e"), H("e85ad8") };
+    /// <summary>Meteoric starmetal: dark iron with a gold-white sheen.</summary>
+    public static readonly Color32[] Starmetal = { H("2a2c34"), H("4c505e"), H("6e7486"), H("9aa0b2"), H("f2e6b8") };
+    /// <summary>A war drake's crimson scales.</summary>
+    public static readonly Color32[] Drake = { H("2e0c0c"), H("5e1a16"), H("9a3324"), H("d8704a") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -103,6 +110,7 @@ public static class PixelPalette
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
         "Arcane" => Arcane, "Mana" => Mana, "Moonstone" => Moonstone, "Griffin" => Griffin, "Wyvern" => Wyvern,
+        "Astral" => Astral, "Void" => Void, "Starmetal" => Starmetal, "Drake" => Drake,
         "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,
         _ => Blue,
     };

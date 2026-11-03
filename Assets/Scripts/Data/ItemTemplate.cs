@@ -38,7 +38,9 @@ public enum GearLook
     // Arcane Age (fantasy)
     WizardHat, GolemHead, Spellweave, GolemBody, ManaStaff, Runeblade,
     // Arcane technomancy (magic built into machines)
-    RuneVisor, RunePlate, ManaRifle
+    RuneVisor, RunePlate, ManaRifle,
+    // Astral Age (magic and sci-fi fused)
+    StarHelm, StarPlate, StarBlade, BeamStaff, VoidHelm, VoidPlate
 }
 
 /// <summary>

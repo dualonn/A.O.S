@@ -19,7 +19,7 @@ public static class Lore
 
     // Age indexes, for readability below.
     private const int Stone = 0, Bronze = 1, Iron = 2, Classical = 3, Medieval = 4, Renaissance = 5,
-        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10;
+        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10, Arcane = 11, Astral = 12;
     private const int Desert = (int)Biome.Desert, Tundra = (int)Biome.Tundra, Swamp = (int)Biome.Swamp,
         Volcanic = (int)Biome.Volcanic, Crystal = (int)Biome.Crystal;
 
@@ -117,6 +117,14 @@ public static class Lore
             "The old gods threw lightning. Now it runs along wires to light our streets, cook our food and drive our machines. Some of the old priests say the gods are not pleased. Most people no longer listen.", Electric),
         new Entry("The Thinking Machines",
             "We taught the machines to count, then to remember, then to learn. The newest ones dream, the engineers say, when they think no one is looking. They dream of seven worlds, and of a door.", Information),
+        new Entry("Spells That Compile",
+            "The first spell run on a machine took four days and burned out the machine. The second took an hour. Now a child can cast with a staff what took a circle of wizards a lifetime, and the old wizards are not sure how they feel about it.", Arcane),
+        new Entry("The Iron That Fell",
+            "Starmetal does not rust, does not bend, and does not forget where it came from. Hold a piece of it up at night and it pulls, very gently, towards one star.", Astral),
+        new Entry("The Void Between",
+            "Between the worlds there is a dark that is not empty. Things live there that were raiders once, of some other world, and went too far. Now they come down to ours, burning magenta, hungry for the light.", Astral),
+        new Entry("The First Ship",
+            "It went up on a column of blue fire, circled the world twice and came down in the sea. The crew climbed out laughing. They had seen the seven worlds plainly, they said, and one of them had lights on it that answered theirs.", Astral, after: 20),
     };
 
     /// <summary>The entry a lore stone shows: unread ones that fit your age and the stone's land first, story arcs in order.</summary>

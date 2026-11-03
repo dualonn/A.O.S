@@ -37,6 +37,7 @@ public static partial class PlaceholderArt
         9 => new PxWallStyle { ramp = P.Chrome, height = 30, kind = 7, crenels = false, towers = true },     // chrome pylons and a shimmering force field
         10 => new PxWallStyle { ramp = P.Tactical, height = 30, kind = 8, crenels = false, towers = true },  // black posts and a hexagonal hard-light grid
         11 => new PxWallStyle { ramp = P.Moonstone, height = 32, kind = 9, crenels = true, towers = true },   // pale moonstone warded with glowing runes
+        12 => new PxWallStyle { ramp = P.Astral, height = 32, kind = 10, crenels = false, towers = true },    // dark star-steel panels seamed with gold
         _ => new PxWallStyle { ramp = P.Iron, height = 30, kind = 5, crenels = false, towers = true },     // riveted iron-plated wall
     };
 
@@ -77,6 +78,16 @@ public static partial class PlaceholderArt
                 if (tone < 0) tone += 4;
                 Color32 face = tone == 0 ? r[3] : r[2];
                 return rv == course - 1 ? PixelCanvas.Mix(face, P.White, 0.12f) : face;
+            }
+            case 10:   // starward: tall star-steel panels, gold seams, a star glittering here and there
+            {
+                int pu = ((u % 12) + 12) % 12, panel = (((u - pu) / 12) % 7 + 7) % 7;
+                if (v < 2) return r[1];
+                if (pu == 0) return P.Gold[2];
+                if (v >= s.height - 3) return v == s.height - 3 ? P.Gold[2] : r[3];
+                if (v == s.height / 2) return r[1];
+                if (pu == 6 && v == 6 + panel * 3) return panel % 2 == 0 ? P.White : P.Mana[3];
+                return pu < 3 ? r[3] : r[2];
             }
             case 9:   // runeward: moonstone blocks, violet runes glowing in some of them
             {
@@ -358,7 +369,7 @@ public static partial class PlaceholderArt
     private static void GenerateWallArt(int onlyTier)
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate"), ("ConcreteWall", "ConcreteGate"), ("ForceFieldWall", "ForceFieldGate"), ("HardLightWall", "HardLightGate"), ("RunewardWall", "RunewardGate") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate"), ("ConcreteWall", "ConcreteGate"), ("ForceFieldWall", "ForceFieldGate"), ("HardLightWall", "HardLightGate"), ("RunewardWall", "RunewardGate"), ("StarwardWall", "StarwardGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
             if (onlyTier >= 0 && age != onlyTier) continue;

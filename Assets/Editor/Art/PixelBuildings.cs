@@ -51,7 +51,8 @@ public static partial class PlaceholderArt
             && !EnlightenmentBuildingArt.TryGetValue(def.id, out art) && !AgeLinkBuildingArt.TryGetValue(def.id, out art)
             && !ModernBuildingArt.TryGetValue(def.id, out art) && !TowerAndAirArt.TryGetValue(def.id, out art)
             && !ElectricBuildingArt.TryGetValue(def.id, out art) && !InformationBuildingArt.TryGetValue(def.id, out art)
-            && !ArcaneBuildingArt.TryGetValue(def.id, out art)) return;
+            && !ArcaneBuildingArt.TryGetValue(def.id, out art)
+            && !AstralBuildingArt.TryGetValue(def.id, out art)) return;
         string dir = $"Buildings/{def.id}";
         ResetDir(dir);
         int artW = Mathf.RoundToInt(def.ArtSize.x * TilePx), artH = Mathf.RoundToInt(def.ArtSize.y * TilePx);
