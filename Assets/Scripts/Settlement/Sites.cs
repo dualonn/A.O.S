@@ -221,7 +221,7 @@ public partial class Settlement
     {
         if (site.done) return;
         int t = SiteTier(site);
-        var loot = GiveResources(("Stone", 80 * (t + 1)), ("Gold", t >= 2 ? 25 * t : 0), ("Bronze", t >= 1 ? 30 : 0));
+        var loot = GiveResources(("Stone", 80 * (t + 1)), ("Gold", t >= 2 ? 25 * t : 0), ("Bronze", t >= 1 ? 30 : 0), ("Essence", CanEnchant ? 15 + 8 * t : 0));
         Notify($"You opened the chest in the ruins: {Describe(loot)}.");
         GainLoot(0.2f + 0.1f * t - 0.1f * State.ageIndex, 0.25f, "in the ruins");
         Finish(site, 0f);
@@ -232,7 +232,7 @@ public partial class Settlement
     {
         if (site.done) return;
         int t = SiteTier(site);
-        var loot = GiveResources(("Gold", 40 + 30 * t), ("Iron", t >= 2 ? 40 : 0), ("Food", 150));
+        var loot = GiveResources(("Gold", 40 + 30 * t), ("Iron", t >= 2 ? 40 : 0), ("Food", 150), ("Essence", CanEnchant ? 40 + 15 * t : 0));
         Notify($"The dungeon is cleared! Its treasure: {Describe(loot)}.");
         GainLoot(0.5f, 0.6f, "in the dungeon's hoard", Rarity.Rare);
         GainLoot(0.3f, 0.4f, "in the dungeon's hoard");
@@ -244,7 +244,7 @@ public partial class Settlement
     {
         if (site.done) return;
         int t = SiteTier(site);
-        var loot = GiveResources(("Food", 120 * (t + 1)));
+        var loot = GiveResources(("Food", 120 * (t + 1)), ("Essence", CanEnchant ? 8 + 5 * t : 0));
         Notify($"The lair is cleared: {Describe(loot)}.");
         var rng = SiteRng(site);
         if (rng.NextDouble() < 0.4 + 0.08 * t) GainLoot(0.15f * t, 0.2f, "in the lair");

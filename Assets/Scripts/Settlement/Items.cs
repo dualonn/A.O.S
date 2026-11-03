@@ -36,6 +36,11 @@ public class ItemInstance
     public float power;
     public Rarity rarity;
     public List<TraitRoll> traits = new List<TraitRoll>();
+    [Tooltip("Enhancement level, +0 to +5 (each +10% to the base stats).")]
+    public int enhance;
+    [Tooltip("One extra magic trait bound with a rare material.")]
+    public bool enchanted;
+    public TraitRoll enchant;
 }
 
 /// <summary>Everything an item (or a set of equipped items) does, added up.</summary>
@@ -264,6 +269,45 @@ public static class Items
         return prefix + template.displayName + suffix;
     }
 
+    // ---------- Enchanting ----------
+
+    /// <summary>The name to show: "+3 Runed Sword of the Ox ✦" for an enhanced, enchanted one.</summary>
+    public static string DisplayName(ItemInstance item) =>
+        item == null ? "" : (item.enhance > 0 ? $"+{item.enhance} " : "") + item.name + (item.enchanted ? " <color=#c9f>*</color>" : "");
+
+    private static readonly Trait[] EnchantPool =
+        { Trait.LifeSteal, Trait.Cleave, Trait.Thorns, Trait.Mending, Trait.Rallying, Trait.Might, Trait.Vigor, Trait.Haste, Trait.Swiftness, Trait.Warding };
+
+    /// <summary>A magic trait for an enchantment: a little stronger than a rolled one.</summary>
+    public static TraitRoll RollEnchantment(ItemInstance item, System.Random rng)
+    {
+        var trait = EnchantPool[rng.Next(EnchantPool.Length)];
+        return new TraitRoll { trait = trait, value = TraitValue(trait, item.power, (float)rng.NextDouble()) * 1.25f };
+    }
+
+    public static string EnchantmentName(Trait trait) => trait switch
+    {
+        Trait.LifeSteal => "Bloodthirst", Trait.Cleave => "Sweeping Edge", Trait.Thorns => "Spines", Trait.Mending => "Healing Light",
+        Trait.Rallying => "War Song", Trait.Might => "Strength", Trait.Vigor => "Endurance", Trait.Haste => "Quickness",
+        Trait.Swiftness => "Fleetness", Trait.Warding => "Warding", _ => trait.ToString(),
+    };
+
+    /// <summary>New traits for an item, as many as its rarity gives.</summary>
+    public static void RerollTraits(ItemInstance item, ItemTemplate template, System.Random rng)
+    {
+        if (template == null) return;
+        int count = item.traits.Count;
+        item.traits.Clear();
+        var pool = TraitsFor(template.slot);
+        for (int i = 0; i < count && pool.Count > 0; i++)
+        {
+            var trait = pool[rng.Next(pool.Count)];
+            pool.Remove(trait);
+            item.traits.Add(new TraitRoll { trait = trait, value = TraitValue(trait, item.power, (float)rng.NextDouble()) });
+        }
+        item.name = NameFor(item, template, rng);
+    }
+
     // ---------- Reading items ----------
 
     /// <summary>What an item does, from its template, power, rarity and traits.</summary>
@@ -274,14 +318,16 @@ public static class Items
         {
             return s;
         }
-        float k = PowerScale(item.power) * RarityStrength[(int)item.rarity];
+        float k = PowerScale(item.power) * RarityStrength[(int)item.rarity] * (1f + 0.1f * item.enhance);
         s.health = template.health * k;
         s.attack = template.attack * k;
         s.speed = template.speed * k;
         s.haste = template.haste * k;
         s.range = template.range * k;
         s.armour = template.armour * k;
-        foreach (var t in item.traits)
+        var all = new List<TraitRoll>(item.traits);
+        if (item.enchanted) all.Add(item.enchant);
+        foreach (var t in all)
         {
             switch (t.trait)
             {
