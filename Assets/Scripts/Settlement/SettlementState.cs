@@ -51,6 +51,15 @@ public class SettlementState
 
     [Tooltip("Lore entries found (indexes into Lore.Entries), in the order found.")]
     public List<int> journal = new List<int>();
+
+    [Tooltip("The expansion goals on offer (three at a time).")]
+    public List<GoalState> goals = new List<GoalState>();
+    public int goalsDone;
+    public int campsCleared;
+    public int sitesDone;
+    public int chiefsKilled;
+    [Tooltip("Biomes your explorers have reached (as Biome values).")]
+    public List<int> biomesVisited = new List<int>();
     public int nextItemId = 1;
     public int nextHeroId = 1;
 }

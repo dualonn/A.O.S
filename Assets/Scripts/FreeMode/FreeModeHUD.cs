@@ -244,6 +244,10 @@ public class FreeModeHUD : MonoBehaviour
         {
             if (tech != null && tech.IsLevelled) AddResearchButton(tech, masterySection.Body);
         }
+        // Expansion goals: three at a time, open by default.
+        goalsSection = new CollapsibleSection("Goals", researchContent, "Goals", new Color(0.6f, 0.95f, 0.55f));
+        goalsSection.Toggled += _ => FitSidePanels();
+        goalsSection.Root.SetSiblingIndex(0);
         // The journal: lore from lore stones and blessings from shrines, folded away under research.
         journalSection = new CollapsibleSection("Journal", researchContent, "Journal", new Color(0.95f, 0.82f, 0.5f));
         journalSection.SetOpen(false);
@@ -335,6 +339,7 @@ public class FreeModeHUD : MonoBehaviour
         unitPanel.Refresh();
         RefreshAutoRepairNew();
         RefreshJournal();
+        RefreshGoals();
         RefreshDungeon();
     }
 
@@ -373,6 +378,50 @@ public class FreeModeHUD : MonoBehaviour
         if (shownRun == null) return;
         if (controller.Viewing == shownRun) controller.ShowSurface();
         else controller.FocusDungeon(shownRun);
+    }
+
+    // ---------- Goals ----------
+
+    private CollapsibleSection goalsSection;
+    private readonly List<TMPro.TextMeshProUGUI> goalLabels = new List<TMPro.TextMeshProUGUI>();
+    private string goalsShown;
+
+    private void RefreshGoals()
+    {
+        if (goalsSection == null) return;
+        var goals = settlement.State.goals;
+        var sb = new System.Text.StringBuilder();
+        foreach (var g in goals) { var (h, n) = settlement.GoalProgress(g); sb.Append(g.kind).Append(g.target).Append(h).Append('|'); }
+        string key = sb.ToString();
+        if (key == goalsShown) return;
+        goalsShown = key;
+        while (goalLabels.Count < goals.Count)
+        {
+            int index = goalLabels.Count;
+            var row = UIBuilder.Button("Goal" + index, goalsSection.Body, () => { }, out var label, 30, 15);
+            UIBuilder.OnHover(row.gameObject, () => tooltipSource = () => GoalTip(index), HideTooltip);
+            goalLabels.Add(label);
+        }
+        for (int i = 0; i < goalLabels.Count; i++)
+        {
+            bool shown = i < goals.Count;
+            goalLabels[i].transform.parent.gameObject.SetActive(shown);
+            if (!shown) continue;
+            var (have, need) = settlement.GoalProgress(goals[i]);
+            string count = need > 1 ? $" <color=#aaa>{have}/{need}</color>" : "";
+            goalLabels[i].text = $"<color=#bf9>{settlement.GoalTitle(goals[i])}</color>{count}";
+        }
+        goalsSection.SetNote(settlement.State.goalsDone > 0 ? $"{settlement.State.goalsDone} done" : "");
+    }
+
+    private string GoalTip(int index)
+    {
+        var goals = settlement.State.goals;
+        if (index >= goals.Count) return "";
+        var g = goals[index];
+        var (have, need) = settlement.GoalProgress(g);
+        return $"<b>{settlement.GoalTitle(g)}</b> <color=#aaa>({have}/{need})</color>\n{settlement.GoalHint(g)}\n" +
+               $"<color=#8f8>Reward: {Settlement.Describe(settlement.GoalReward(g))}, and a rare or better item.</color>";
     }
 
     // ---------- Journal ----------

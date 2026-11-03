@@ -155,6 +155,7 @@ public class Boss : MonoBehaviour
         {
             return;
         }
+        settlement.CountChiefKill();
         // Always something good, a bit above your level.
         settlement.GainLoot(0.4f, 0.6f, $"on {Title}", Rarity.Rare);
     }

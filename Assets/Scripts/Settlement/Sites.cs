@@ -211,6 +211,7 @@ public partial class Settlement
     private void Finish(SiteState site, float resetSeconds)
     {
         site.done = true;
+        State.sitesDone++;
         site.resetIn = resetSeconds;
         SiteChanged?.Invoke(site);
         Changed?.Invoke();

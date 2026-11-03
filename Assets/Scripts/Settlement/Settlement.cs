@@ -276,6 +276,7 @@ public partial class Settlement : MonoBehaviour
             GainLoot(0.25f * (t - State.ageIndex), 0.05f * t, "in the raiders' camp");
         }
         camp.cleared = true;
+        State.campsCleared++;
         camp.reoccupyIn = Database.campReoccupySeconds;
         State.secondsUntilWave += 90f;
         Notify($"Raider camp destroyed! You took {Describe(loot)}, and raids will hold off a while.");
@@ -492,6 +493,7 @@ public partial class Settlement : MonoBehaviour
         TickAutomation(dt);
         TickCamps(dt);
         TickSites(dt);
+        TickGoals(dt);
         TickAges();
     }
 
