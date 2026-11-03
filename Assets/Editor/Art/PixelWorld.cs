@@ -478,6 +478,9 @@ public static partial class PlaceholderArt
             Ore.Uranium => new[] { P.Ray[1], P.Ray[2], P.Ray[3] },          // ore that glows green
             Ore.Mana => new[] { P.Mana[1], P.Mana[2], P.Mana[3] },          // blue crystal
             Ore.Starmetal => new[] { P.Gold[1], P.Gold[3], P.White },       // a meteorite's gold-white sheen
+            Ore.Heliolite => new[] { P.Heliolite[1], P.Heliolite[2], P.Heliolite[3] },   // stone that glows like embers
+            Ore.Riftstone => new[] { P.Riftstone[1], P.Riftstone[2], P.Riftstone[3] },   // violet stone, half out of the world
+            Ore.Stardust => new[] { P.Stardust[1], P.Stardust[2], P.Stardust[3] },      // glittering dust of dead stars
             Ore.Silicon => new[] { P.Linen[3], P.White, P.Neon[3] },        // glittering quartz
             _ => null,
         };

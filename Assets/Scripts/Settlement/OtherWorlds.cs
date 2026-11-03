@@ -71,6 +71,7 @@ public partial class Settlement
         TickAutomation(dt);
         TickCamps(dt);
         TickSites(dt);
+        TickHazards(dt);
         TickBackgroundRaids(dt);
     }
 

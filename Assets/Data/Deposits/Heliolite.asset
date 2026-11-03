@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dcc1aff82e4ea4caf035c765b340a8, type: 3}
+  m_Name: Heliolite
+  m_EditorClassIdentifier: Assembly-CSharp::DepositType
+  id: Heliolite
+  displayName: Heliolite
+  resource: {fileID: 11400000, guid: 5b00871402fcd0d48b68ae726342eef9, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: 43f27c4b40a8e6f45893fa4b843e421d, type: 3}
+  - {fileID: 21300000, guid: f092cf8085dfb304aa75e902843e4ccc, type: 3}
+  - {fileID: 21300000, guid: bbc0e2b394738a34aad4f5f72197f49f, type: 3}
+  richVeins: 1
+  onHills: 1
+  patchScale: 0.22
+  rarity: 0.72
+  minMoisture: 0
+  maxMoisture: 1

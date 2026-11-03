@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: SunOrb
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Sun Orb
+  icon: {fileID: 21300000, guid: 4c71b6140ae5f3d47b26f1c6bb7382a7, type: 3}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 6561269046054658954, guid: ff5a3f893a2866e4aa992f80bdd4ee37, type: 3}
+  cost: 0
+  populationCost: 3
+  upkeep:
+  - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+    perSecond: 0.012
+  - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+    perSecond: 0.1
+  maxHealth: 2900
+  moveSpeed: 0.9
+  attackPower: 300
+  attackCooldown: 3.2
+  attackRange: 11
+  hitDelay: 0.3
+  detectionRange: 6.5
+  projectile: {fileID: 21300000, guid: 66cfbdf1aedfe3441b7daed81d513c4c, type: 3}
+  projectileSpeed: 15
+  movement: 0
+  flyHeight: 0
+  projectileArc: 0.15
+  splashRadius: 2.4
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

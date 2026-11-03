@@ -108,7 +108,7 @@ public class WaveDirector : MonoBehaviour
             }
         }
         agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
-        float budget = settlement.ThreatLevel * agePower;
+        float budget = settlement.ThreatLevel * agePower * settlement.WorldThreatFactor;
         wave.boss = PickBoss();
         if (wave.boss != null)
         {

@@ -33,15 +33,23 @@ MonoBehaviour:
     - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
       amount: 6
   upgrades: []
-  rankUpTo: {fileID: 0}
+  rankUpTo: {fileID: 11400000, guid: db04c7da40811744394574dd2a09a261, type: 2}
   rankUpRequirements:
     minimumAge: {fileID: 0}
-    technologies: []
+    technologies:
+    - {fileID: 11400000, guid: e65187cb873858841a6c6dadf9a45787, type: 2}
     buildings: []
     population: 0
-    cost: []
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 28
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 4
   rankUpTime: 40
   isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
   wallKind: 2
   pieces:
   - {fileID: 21300000, guid: ac8e673f924fd364da365e615c9298c6, type: 3}

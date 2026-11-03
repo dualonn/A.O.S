@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana }, { "Starmetal", IcStarmetal }, { "AstralCores", IcAstralCores },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana }, { "Starmetal", IcStarmetal }, { "AstralCores", IcAstralCores }, { "Heliolite", IcHeliolite }, { "Sunfire", IcSunfire }, { "Riftstone", IcRiftstone }, { "WarpCells", IcWarpCells }, { "Stardust", IcStardust }, { "Quintessence", IcQuintessence },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -197,6 +197,60 @@ public static partial class PlaceholderArt
         c.Rect(4, 8, 16, 9, P.Gold[2]);
         c.Ellipse(new Vector2(10, 9), 2.4f, 2.4f, P.Mana);
         c.Put(10, 9, P.White);
+    }
+
+    private static void IcHeliolite(PixelCanvas c)
+    {
+        // a chunk of stone with orange crystal glowing out of it
+        c.Ellipse(new Vector2(10, 7), 7.5f, 5, P.Stone);
+        foreach (var (x, h) in new[] { (6, 6), (10, 10), (14, 7) })
+        {
+            for (int y = 7; y < 7 + h; y++) { c.Put(x, y, P.Heliolite[2]); c.Put(x + 1, y, P.Heliolite[1]); }
+            c.Put(x, 7 + h, P.Heliolite[3]);
+        }
+    }
+
+    private static void IcSunfire(PixelCanvas c)
+    {
+        // a glass bottle holding a little sun
+        c.Rect(7, 3, 12, 13, P.Steel[3]);
+        c.Ellipse(new Vector2(9.5f, 8), 3.4f, 4, new[] { P.Solar[1], P.Solar[2], P.Solar[3], P.White });
+        c.Rect(8, 14, 11, 16, P.Solar[1]);
+        c.Put(8, 11, P.White);
+    }
+
+    private static void IcRiftstone(PixelCanvas c)
+    {
+        // a violet stone with a crack of light through it, its edge flickering away
+        c.Ellipse(new Vector2(10, 9), 7, 6, P.Riftstone);
+        c.Line(new Vector2(6, 4), new Vector2(13, 14), P.Phase[3]);
+        c.Put(16, 9, P.Riftstone[3]); c.Put(17, 11, P.Riftstone[2]);
+    }
+
+    private static void IcWarpCells(PixelCanvas c)
+    {
+        // a squat teal can with a fold of dark space showing through its window
+        c.Rect(5, 3, 14, 15, P.Phase[1]);
+        c.Rect(6, 4, 13, 14, P.Phase[2]);
+        c.Ellipse(new Vector2(9.5f, 9), 2.6f, 3, new[] { P.Coal[0], P.Coal[0], P.Phase[1], P.Phase[3] });
+        c.Rect(5, 15, 14, 16, P.Steel[2]);
+    }
+
+    private static void IcStardust(PixelCanvas c)
+    {
+        // a heap of glittering grey dust with stars in it
+        c.Ellipse(new Vector2(10, 6), 8, 4.5f, P.Stardust);
+        foreach (var (x, y) in new[] { (6, 6), (10, 8), (13, 5), (8, 4), (15, 7) }) c.Put(x, y, P.Stardust[3]);
+        c.Put(10, 12, P.White); c.Put(9, 12, P.Stardust[2]); c.Put(11, 12, P.Stardust[2]); c.Put(10, 13, P.Stardust[2]); c.Put(10, 11, P.Stardust[2]);
+    }
+
+    private static void IcQuintessence(PixelCanvas c)
+    {
+        // a crystal phial holding a little galaxy
+        c.Rect(7, 3, 12, 13, P.Cosmic[1]);
+        c.Ellipse(new Vector2(9.5f, 8), 2.6f, 1.4f, new[] { P.Cosmic[2], P.Cosmic[3], P.White, P.White });
+        c.Rect(8, 14, 11, 16, P.Steel[3]);
+        c.Put(8, 11, P.White);
     }
 
     private static void IcMicrochips(PixelCanvas c)

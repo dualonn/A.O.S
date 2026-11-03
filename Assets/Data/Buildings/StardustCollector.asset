@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: StardustCollector
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: StardustCollector
+  displayName: Stardust Collector
+  description: A field of nets and funnels catching the dust of dead stars as it
+    falls. Must be built on or next to Stardust, or right on a rich stardust vein.
+  icon: {fileID: 21300000, guid: 7b9fed56e54abce4fbc8d3b1cd7bdcdd, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7b9fed56e54abce4fbc8d3b1cd7bdcdd, type: 3}
+    - {fileID: 21300000, guid: b01b0f4c8f0792a46a27d64bf837f71a, type: 3}
+    - {fileID: 21300000, guid: 0e28c272ac456ea4b8b0016bccd1d1f4, type: 3}
+    - {fileID: 21300000, guid: 27ab954966fcfb44cbd2a7f9a76e87e8, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: e7cc45672e1340c4bae4a0b1f1e8162c, type: 3}
+    - {fileID: 21300000, guid: c37e27a9cdbb30547b8cb4c79e92583f, type: 3}
+    - {fileID: 21300000, guid: 4341f7dd126d1844eb25e82ce16ef4d1, type: 3}
+    - {fileID: 21300000, guid: 37d168fb65e041940aa72a3fd9fc0fed, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 049cbae37dba4804184053c17ff1f7ab, type: 3}
+    - {fileID: 21300000, guid: b125bd9fd556bd74da85a5ad57fc2f97, type: 3}
+    - {fileID: 21300000, guid: 719272a497f243b469f73f79561e4554, type: 3}
+    - {fileID: 21300000, guid: d454721a7bce2734eabb7e4468bb76bb, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 03b0a09694bc0f644a3e92e39a53ffa2, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 520
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 720
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 91
+  upgrades:
+  - name: Finer Nets
+    description: +30% stardust.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 430
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 91
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Star Survey
+    description: +30% stardust.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 290
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 11400000, guid: c275e1e2dfd62c24bbbedc25d5ec5ed0, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 8
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1300
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 615f663c21e1ae34791ff17ea6350977, type: 2}
+    perSecond: 0.13
+  inputs: []
+  runsWithoutInputs: 0.5
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

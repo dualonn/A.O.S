@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: QuasarBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: QuasarBattery
+  displayName: Quasar Battery
+  description: A squat tower with a quasar's twin beams spinning on top. Each shot
+    bursts wide.
+  icon: {fileID: 21300000, guid: cf94a0daad8b4ea44b0ba683e6e1ae4a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: cf94a0daad8b4ea44b0ba683e6e1ae4a, type: 3}
+    - {fileID: 21300000, guid: bc88d9dfbe86f4e4f9808b42f98735aa, type: 3}
+    - {fileID: 21300000, guid: 23ed2b41ad238ff46b0349aa80199bde, type: 3}
+    - {fileID: 21300000, guid: 1eb218f585c5c0348822109cf6af0069, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 4c8a4ecb8c7df4943a0fa5a660d88ca8, type: 3}
+    - {fileID: 21300000, guid: 4391d9a0e90035f468be0e37dfd4a52c, type: 3}
+    - {fileID: 21300000, guid: 3891d78ae78b4164db791e36fee17875, type: 3}
+    - {fileID: 21300000, guid: 132d3ac915616ce4c84c4a7da49db820, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: eb52877b5b0d2494d9d032addbb4b870, type: 3}
+    - {fileID: 21300000, guid: 71279f8dba1eeec438b7a2d80b8da29a, type: 3}
+    - {fileID: 21300000, guid: 6446ceb6f317c5844ba1ae3711644796, type: 3}
+    - {fileID: 21300000, guid: 53ddac94eaa6dfe41a1ee93e782e3958, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e130089000996d74faead4f278f7472d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1100
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 130
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 210
+  upgrades:
+  - name: Longer Throw
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 130
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 170
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Wider Bursts
+    description: +160 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 180
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 78
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 160
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 4160
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 16.5
+  towerDamage: 650
+  towerCooldown: 3.1
+  towerProjectile: {fileID: 21300000, guid: e5052d0c94052b748af8fc772dd7d437, type: 3}
+  towerProjectileArc: 0.2
+  towerProjectileSpeed: 16
+  towerSplash: 3.1
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.3125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

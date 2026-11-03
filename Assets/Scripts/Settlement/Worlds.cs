@@ -38,6 +38,9 @@ public class WorldState
     public float secondsUntilWave;
     public int wavesSurvived;
 
+    [Tooltip("Seconds until the next storm or quake (on worlds that have them).")]
+    public float hazardIn = 200f;
+
     [Tooltip("Biomes your explorers have reached on this world (as Biome values).")]
     public List<int> biomesVisited = new List<int>();
 }

@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SunForge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SunForge
+  displayName: Sun Forge
+  description: A forge under a great mirror, its crucible heated by focused sunlight.
+    Steel without end.
+  icon: {fileID: 21300000, guid: 1fe465f782141564a9c4a7c33b69f910, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1fe465f782141564a9c4a7c33b69f910, type: 3}
+    - {fileID: 21300000, guid: cf99b07662e855d49b6303c380e8453a, type: 3}
+    - {fileID: 21300000, guid: 9c3a102112dea7f499c559cf4260b611, type: 3}
+    - {fileID: 21300000, guid: d58fa836bbf50a8449fc2f1bf0e27d0a, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 08af948a4b839164bb492884f209aed4, type: 3}
+    - {fileID: 21300000, guid: 995e65671785bf840932f11241d4f8d4, type: 3}
+    - {fileID: 21300000, guid: 1d40bb85beb86ca49a199a1477f94aca, type: 3}
+    - {fileID: 21300000, guid: 7d71d46ef4d2d474195e660dcdfd93f4, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 0ecdada1fcdcda14fb15c05be574a556, type: 3}
+    - {fileID: 21300000, guid: 90d0087d542cb2c429775b5ef5cce436, type: 3}
+    - {fileID: 21300000, guid: 76b06217b1be94746bf1bd022aa5bee0, type: 3}
+    - {fileID: 21300000, guid: 790048f1b66a50041a1dd09b6f38766e, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 7bc8157a56ba26a4fbe9ad675b76333f, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 60
+  upgrades:
+  - name: Second Mirror
+    description: +30% steel.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 400
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Noon Crucibles
+    description: +30% steel.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 400
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 40
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 2166506e3394190438e2f63409eec5b5, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a068af082a889f546b845e7cee350922, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 440
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 34
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1750
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+    perSecond: 1
+  inputs:
+  - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+    perSecond: 0.44
+  - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+    perSecond: 0.012
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

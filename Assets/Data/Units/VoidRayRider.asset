@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: VoidRayRider
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Void Ray Rider
+  icon: {fileID: 21300000, guid: 1ecb6a973c26f12459d251ff13b3a613, type: 3}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 7173898193842542313, guid: 71427db059a7e8e4aad32061ccb88600, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 1150
+  moveSpeed: 2.8
+  attackPower: 103
+  attackCooldown: 1.3
+  attackRange: 6.5
+  hitDelay: 0.3
+  detectionRange: 5.5
+  projectile: {fileID: 21300000, guid: 15a329f5384798748932b1b779a7b5b4, type: 3}
+  projectileSpeed: 28
+  movement: 1
+  flyHeight: 1
+  projectileArc: 0.22
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

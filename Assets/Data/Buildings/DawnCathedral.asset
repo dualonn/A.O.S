@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: DawnCathedral
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: DawnCathedral
+  displayName: Dawn Cathedral
+  description: A cathedral of white glass, lit gold from within. Trains Dawnkeepers.
+  icon: {fileID: 21300000, guid: 755c5c4157462454b9ece051c84c3473, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 755c5c4157462454b9ece051c84c3473, type: 3}
+    - {fileID: 21300000, guid: 05d933ee03a6289489eefca839346db6, type: 3}
+    - {fileID: 21300000, guid: b32026b6f01ccf549ab9d7248b24ec3b, type: 3}
+    - {fileID: 21300000, guid: f037d16e97fa5ae46bc5777c021cb357, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 4019ce0e3c3235045ae617d0da027dc8, type: 3}
+    - {fileID: 21300000, guid: 9e595fe96b208014d96a45a1029bfafc, type: 3}
+    - {fileID: 21300000, guid: bda3f89c323150146b68f3039d2cfd2f, type: 3}
+    - {fileID: 21300000, guid: 72becf0a7e142ef4bb8b8a839cd5c3b7, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: df51db5bcef5aa243b2354f9f5910418, type: 3}
+    - {fileID: 21300000, guid: 818f021355d02b04daccdb9980512e4a, type: 3}
+    - {fileID: 21300000, guid: 8dfeb5f539861de419eb2b668f336f5f, type: 3}
+    - {fileID: 21300000, guid: 0bd889d957b6cd1459cd562803a0fd93, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 40a847c5d1e336e4e9fb68017e9fb7dd, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 250
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 40
+  upgrades:
+  - name: Morning Choir
+    description: +1 dawnkeeper.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: First Light
+    description: Dawnkeepers heal 30% more and are 20% tougher.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.3
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 66b04370398082b4abaaaac09f3756f2, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 973938695b596954fb2b3e8372f0da7d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 520
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 23
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1450
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: fd5f20c807e898f429fd78da11e3f0ff, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -60,6 +60,8 @@ public partial class Settlement
             float k = CampHash(zone, 302);
             var kind = k < 0.24f ? SiteKind.Cache : k < 0.44f ? SiteKind.LoreStone : k < 0.64f ? SiteKind.Ruins
                 : k < 0.80f ? SiteKind.Lair : k < 0.90f ? SiteKind.Shrine : SiteKind.Dungeon;
+            if (HasTrait(AncientRuins) && (kind == SiteKind.Cache || kind == SiteKind.LoreStone))
+                kind = CampHash(zone, 305) < 0.7f ? SiteKind.Ruins : SiteKind.Dungeon;
             var site = new SiteState { kind = kind, zoneXY = zone, variant = (int)(CampHash(zone, 303) * 1000) };
             if (kind == SiteKind.Lair)
             {
@@ -225,6 +227,7 @@ public partial class Settlement
         var loot = GiveResources(("Stone", 80 * (t + 1)), ("Gold", t >= 2 ? 25 * t : 0), ("Bronze", t >= 1 ? 30 : 0), ("Essence", CanEnchant ? 15 + 8 * t : 0));
         Notify($"You opened the chest in the ruins: {Describe(loot)}.");
         GainLoot(0.2f + 0.1f * t - 0.1f * State.ageIndex, 0.25f, "in the ruins");
+        PrecursorFind(0.25f);
         Finish(site, 0f);
     }
 
@@ -237,7 +240,18 @@ public partial class Settlement
         Notify($"The dungeon is cleared! Its treasure: {Describe(loot)}.");
         GainLoot(0.5f, 0.6f, "in the dungeon's hoard", Rarity.Rare);
         GainLoot(0.3f, 0.4f, "in the dungeon's hoard");
+        PrecursorFind(0.6f);
         Finish(site, Database.dungeonResetSeconds);
+    }
+
+    /// <summary>
+    /// Precursor science: what's in the ruins and vaults of other worlds can be learned from.
+    /// With the research, each one pushes your current research on (a vault more than ruins).
+    /// </summary>
+    private void PrecursorFind(float share)
+    {
+        if (!OnAlienWorld || !State.researched.Contains("PrecursorScience")) return;
+        Notify("Your scholars study what the precursors left: " + Research(share));
     }
 
     /// <summary>A lair's creatures are dead: hides, meat and whatever they hoarded.</summary>

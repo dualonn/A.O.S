@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin, Skybike, Starship, HoverThrone, Drake }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin, Skybike, Starship, HoverThrone, Drake, SolarWings, SunOrb, SolarBarque, StarWhale, GravityPyramid, FoldCruiser, Comet, GateRing, Ark }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -66,7 +66,7 @@ public class FigureStyle
         GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
-        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff or GearLook.BeamStaff => WeaponClass.Staff,
+        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff or GearLook.BeamStaff or GearLook.SunStaff or GearLook.GravityStaff or GearLook.CosmicStaff => WeaponClass.Staff,
         GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle or GearLook.ManaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
@@ -127,6 +127,15 @@ public static class PixelFigure
             case MountKind.Starship: w = 104; h = 100; cx = 46; gy = 4; break; // a star-steel gunship, the pilot under the hatch
             case MountKind.HoverThrone: w = 92; h = 76; cx = 42; gy = 4; break; // a throne on a hovering disc, a nova cannon at its side
             case MountKind.Drake: w = 100; h = 84; cx = 42; gy = 4; break;     // a rider on an armoured war drake that breathes fire
+            case MountKind.SolarWings: w = 72; h = 84; cx = 34; gy = 4; break; // flying on wings of light
+            case MountKind.SunOrb: w = 92; h = 88; cx = 44; gy = 4; break;     // a pilot inside a hovering sphere of sunfire
+            case MountKind.SolarBarque: w = 112; h = 112; cx = 52; gy = 4; break; // a ship under sails of light, the captain on deck
+            case MountKind.StarWhale: w = 110; h = 104; cx = 48; gy = 4; break;   // a rider on a great whale that swims between stars
+            case MountKind.GravityPyramid: w = 92; h = 88; cx = 44; gy = 4; break; // a pilot in a hovering black pyramid
+            case MountKind.FoldCruiser: w = 112; h = 104; cx = 52; gy = 4; break;  // an angular warship, the captain in its bridge
+            case MountKind.Comet: w = 88; h = 88; cx = 44; gy = 4; break;         // riding a burning comet through the sky
+            case MountKind.GateRing: w = 96; h = 100; cx = 44; gy = 4; break;     // a pilot standing in a hovering gate ring
+            case MountKind.Ark: w = 128; h = 116; cx = 60; gy = 4; break;         // a city-sized ark, the captain on its bridge
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -153,7 +162,8 @@ public static class PixelFigure
         p.hFar = V(3, -5);
         p.hNear = shield ? V(4, -4) : V(-1, -6);
         if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin || s.weapon == GearLook.Pike || s.weapon == GearLook.RuneStaff
-            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff || s.weapon == GearLook.BeamStaff) p.wa = 84;
+            || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff || s.weapon == GearLook.BeamStaff
+            || s.weapon == GearLook.SunStaff || s.weapon == GearLook.GravityStaff || s.weapon == GearLook.CosmicStaff) p.wa = 84;
         if (s.weapon == GearLook.Lance) p.wa = 62;
         if (cls == WeaponClass.Crossbow || LongGun(s)) { p.hNear = V(5, -4); p.hFar = V(2, -5); }
         if (s.weapon == GearLook.Pistol || s.weapon == GearLook.RayGun) p.wa = -60;
@@ -188,7 +198,8 @@ public static class PixelFigure
     /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
     private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
         || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill || m == MountKind.HoverTank || m == MountKind.HoverCar
-        || m == MountKind.Skybike || m == MountKind.Starship || m == MountKind.HoverThrone;
+        || m == MountKind.Skybike || m == MountKind.Starship || m == MountKind.HoverThrone || m == MountKind.SunOrb || m == MountKind.SolarBarque
+        || m == MountKind.GravityPyramid || m == MountKind.FoldCruiser || m == MountKind.GateRing || m == MountKind.Ark;
 
     /// <summary>Machines with nobody visible aboard: only the machine is drawn.</summary>
     private static bool Pilotless(MountKind m) => m == MountKind.Drone || m == MountKind.Jet;
@@ -197,7 +208,10 @@ public static class PixelFigure
     private static int Altitude(FigureStyle s) => s.mount == MountKind.Airship ? 50 : s.mount == MountKind.Biplane ? 40
         : s.mount == MountKind.Jetpack ? 28 : s.mount == MountKind.HoverTank || s.mount == MountKind.HoverCar ? 6
         : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : s.mount == MountKind.Griffin ? 30
-        : s.mount == MountKind.Skybike ? 26 : s.mount == MountKind.Starship ? 44 : s.mount == MountKind.HoverThrone ? 8 : 0;
+        : s.mount == MountKind.Skybike ? 26 : s.mount == MountKind.Starship ? 44 : s.mount == MountKind.HoverThrone ? 8
+        : s.mount == MountKind.SolarWings ? 28 : s.mount == MountKind.SunOrb ? 10 : s.mount == MountKind.SolarBarque ? 46
+        : s.mount == MountKind.StarWhale ? 34 : s.mount == MountKind.GravityPyramid ? 10 : s.mount == MountKind.FoldCruiser ? 44
+        : s.mount == MountKind.Comet ? 30 : s.mount == MountKind.GateRing ? 14 : s.mount == MountKind.Ark ? 50 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -353,7 +367,8 @@ public static class PixelFigure
 
         public void Draw()
         {
-            bool mounted = s.mount != MountKind.None && s.mount != MountKind.Cannon && s.mount != MountKind.Jetpack && !Hatch(s.mount);
+            bool mounted = s.mount != MountKind.None && s.mount != MountKind.Cannon && s.mount != MountKind.Jetpack && s.mount != MountKind.SolarWings
+                && s.mount != MountKind.Comet && !Hatch(s.mount);
             riding = mounted && p.death < 2;
             thrown = mounted && p.death >= 2;
             float lean = p.death == 1 ? -15f : p.death == 2 ? -55f : p.death == 3 ? -88f : 0f;
@@ -393,6 +408,10 @@ public static class PixelFigure
 
             if (s.mount == MountKind.Airship && p.death < 3) AirshipBag();
             if (s.mount == MountKind.Jetpack) Jetpack();
+            if (s.mount == MountKind.SolarWings) LightWings();
+            if (s.mount == MountKind.Comet) CometUnder();
+            if (s.mount == MountKind.GateRing && p.death < 3) RingBack();
+            if (s.mount == MountKind.SunOrb && p.death < 3) OrbBack();
             DrawCape();
             if (s.weapon == GearLook.Bow) Quiver();
             if (s.trinket == GearLook.Horn) Horn();
@@ -432,6 +451,12 @@ public static class PixelFigure
             if (s.mount == MountKind.Skybike) StarHull(false);
             if (s.mount == MountKind.Starship) StarHull(true);
             if (s.mount == MountKind.HoverThrone) Throne();
+            if (s.mount == MountKind.SunOrb) OrbFront();
+            if (s.mount == MountKind.SolarBarque) Barque();
+            if (s.mount == MountKind.GravityPyramid) Pyramid();
+            if (s.mount == MountKind.FoldCruiser) Cruiser();
+            if (s.mount == MountKind.GateRing) RingFront();
+            if (s.mount == MountKind.Ark) ArkHull();
             c.Outline(P.Ink, 0.6f);
             if (p.release && (s.Class == WeaponClass.Musket || s.Class == WeaponClass.Cannon)) MuzzleFlash();
             if (p.smear) Smear();
@@ -442,7 +467,7 @@ public static class PixelFigure
                 : s.mount == MountKind.Crawler || s.mount == MountKind.Tank ? X(20) : s.mount == MountKind.ArmouredCar ? X(16)
                 : s.mount == MountKind.Walker ? X(10) : X(s.mount == MountKind.Chariot ? 24 : 14);
             if (p.death == 3 && s.mount == MountKind.None) shadowX += X(8);
-            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Starship ? 18 : s.mount == MountKind.Jetpack ? 6 : 13); }   // the craft's shadow on the ground
+            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Starship || s.mount == MountKind.SolarBarque || s.mount == MountKind.FoldCruiser || s.mount == MountKind.StarWhale || s.mount == MountKind.Ark ? 18 : s.mount == MountKind.Jetpack || s.mount == MountKind.SolarWings ? 7 : 13); }   // the craft's shadow on the ground
             c.Shadow(shadowX, groundY, shadowW, X(1.8f));
         }
 
@@ -451,9 +476,13 @@ public static class PixelFigure
         private void StandingLegs()
         {
             bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody
-                || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate;   // robots, automatons, androids, golems, power armour
+                || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate
+                || s.body == GearLook.SolarPlate || s.body == GearLook.PhasePlate || s.body == GearLook.PrismBody
+                || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace;   // robots, automatons, androids, golems, power armour, chitin
             Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock
-                : s.body == GearLook.RunePlate ? P.Moonstone : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : P.Brass)
+                : s.body == GearLook.RunePlate ? P.Moonstone : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void
+                : s.body == GearLook.SolarPlate ? P.Synth : s.body == GearLook.PhasePlate ? P.Phase : s.body == GearLook.PrismBody ? P.Riftstone
+                : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive : P.Brass)
                 : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
             Color32[] boots = s.body == GearLook.GolemBody ? P.Rock : metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
@@ -489,6 +518,11 @@ public static class PixelFigure
                 GearLook.RunePlate => P.Moonstone,
                 GearLook.StarPlate => P.Astral,
                 GearLook.VoidPlate => P.Void,
+                GearLook.SolarPlate => P.Synth,
+                GearLook.PhasePlate => P.Phase,
+                GearLook.PrismBody => P.Riftstone,
+                GearLook.CelestialPlate => P.Cosmic,
+                GearLook.HiveCarapace => P.Hive,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
@@ -643,6 +677,55 @@ public static class PixelFigure
                     c.Put(c.T(star), P.White);
                     c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Astral);   // a pauldron
                     c.Put(c.T(shNear + V(0, X(1.2f))), P.Gold[3]);
+                    break;
+                }
+                case GearLook.SolarPlate:
+                {
+                    // white-gold armour: a gold rim at belt and collar, a sun-disc burning in the chest
+                    c.Line(V(a.x - r + 0.5f, a.y + X(1.2f)), V(a.x + r - 0.5f, a.y + X(1.2f)), Trim(GearSlot.Body, P.Solar[2]));
+                    c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), P.Solar[2]);
+                    var disc = Vector2.Lerp(a, b, 0.6f) + V(X(0.6f), 0);
+                    c.Ellipse(disc, X(1.4f), X(1.4f), new[] { P.Solar[1], P.Solar[2], P.Solar[3], P.White });
+                    foreach (var o in new[] { V(X(2.2f), 0), V(-X(2.2f), 0), V(0, X(2.2f)), V(0, -X(2.2f)) }) c.Put(c.T(disc + o), P.Solar[2]);
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Synth);   // a pauldron
+                    c.Put(c.T(shNear + V(0, X(1.2f))), P.Solar[3]);
+                    break;
+                }
+                case GearLook.CelestialPlate:
+                {
+                    // armour of night: the stars show through it, a silver rim and a little galaxy on the chest
+                    c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
+                        Inside(l, a, b, r) && (((int)l.x * 7 + (int)l.y * 13) % 11 == 0) ? (Color32?)P.Cosmic[3] : null);
+                    c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), Trim(GearSlot.Body, P.Steel[3]));
+                    var g = Vector2.Lerp(a, b, 0.6f) + V(X(0.6f), 0);
+                    c.Ellipse(g, X(1.4f), X(0.8f), new[] { P.Cosmic[2], P.Cosmic[3], P.White, P.White });
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Cosmic);
+                    break;
+                }
+                case GearLook.HiveCarapace:
+                {
+                    // segmented chitin, amber glands glowing between the plates
+                    for (float y = a.y + X(1.2f); y < b.y - 1; y += X(2)) c.Line(V(a.x - r + 0.5f, y), V(a.x + r - 0.5f, y), P.Hive[0]);
+                    c.Put(c.T(Vector2.Lerp(a, b, 0.4f) + V(X(1), 0)), P.Hive[3]);
+                    c.Put(c.T(Vector2.Lerp(a, b, 0.75f) + V(X(1), 0)), P.Hive[3]);
+                    c.Line(shNear, shNear + V(X(1.2f), X(2.6f)), P.Hive[1], 2);   // a spine
+                    break;
+                }
+                case GearLook.PhasePlate:
+                {
+                    // teal armour that flickers: bands of it fade to light, a ring of bent space on the chest
+                    for (float y = a.y + X(1.5f); y < b.y - 1; y += X(2.4f)) c.Line(V(a.x - r + 0.5f, y), V(a.x + r - 0.5f, y), Trim(GearSlot.Body, P.Phase[3]));
+                    c.Ellipse(Vector2.Lerp(a, b, 0.6f) + V(X(0.6f), 0), X(1.3f), X(1.3f), new[] { P.Phase[3], P.Phase[0], P.Phase[0], P.Phase[3] });
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Phase);
+                    break;
+                }
+                case GearLook.PrismBody:
+                {
+                    // faceted crystal plates, each catching the light differently
+                    c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
+                        Inside(l, a, b, r) && ((int)(l.x + l.y) % 5 == 0) ? (Color32?)P.Riftstone[3] : null);
+                    c.Line(V(a.x - X(1), a.y + X(1)), V(a.x + X(1.5f), b.y - X(1)), P.Riftstone[1]);
+                    c.Ellipse(shNear + V(0, 0.5f), X(2.2f), X(1.8f), P.Riftstone);
                     break;
                 }
                 case GearLook.VoidPlate:
@@ -986,6 +1069,89 @@ public static class PixelFigure
                     c.Put(c.T(hd + V(-X(1.4f), X(5.8f))), P.Arcane[3]);
                     break;
                 }
+                case GearLook.GalaxyHelm:
+                {
+                    Hair(false);
+                    // a night-black helm with a swirl of stars for a visor and a silver crest
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Cosmic);
+                    c.Ellipse(hd + V(X(1.2f), X(0.4f)), X(1.6f), X(0.9f), new[] { P.Cosmic[2], P.Cosmic[3], P.White, P.White });
+                    c.Line(V(hd.x - r * 0.8f, hd.y + X(3.6f)), V(hd.x + r * 0.5f, hd.y + X(4.6f)), Trim(GearSlot.Head, P.Steel[3]), S > 1.3f ? 2 : 1);
+                    break;
+                }
+                case GearLook.HiveHead:
+                {
+                    // a chitinous head, mandibles and a cluster of amber eyes
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.6f, X(3.4f), P.Hive);
+                    c.Line(hd + V(r, -X(1)), hd + V(r + X(2), -X(2.5f)), P.Hive[0], 2);
+                    foreach (var o in new[] { V(X(1.2f), X(1)), V(X(2.2f), X(0.5f)), V(X(1.6f), X(1.8f)) }) c.Put(c.T(hd + o), P.Hive[3]);
+                    c.Line(hd + V(-X(1), X(2.5f)), hd + V(-X(3), X(5.5f)), P.Hive[1]);   // an antenna
+                    break;
+                }
+                case GearLook.StarCrown:
+                {
+                    // a head of the night sky itself, a crown of five stars floating over it
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.4f, X(3.6f) + 0.3f, P.Cosmic);
+                    for (int i = 0; i < 6; i++) c.Put(c.T(hd + V(X(-2 + (i * 7) % 5), X(-2 + (i * 3) % 4))), P.Cosmic[3]);
+                    for (int i = 0; i < 5; i++) c.Put(c.T(hd + V(X(-2.4f + i * 1.2f), X(5 + (i % 2)))), Trim(GearSlot.Head, P.White));
+                    break;
+                }
+                case GearLook.PhaseHelm:
+                {
+                    Hair(false);
+                    // a smooth teal helm with a slit of white light, its edges flickering out of the world
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Phase);
+                    c.Line(V(hd.x - X(0.2f), hd.y + X(0.6f)), V(hd.x + r + 0.5f, hd.y + X(0.6f)), Trim(GearSlot.Head, P.White), S > 1.3f ? 2 : 1);
+                    c.Put(c.T(hd + V(-r, X(2))), P.Phase[3]); c.Put(c.T(hd + V(-r - 1, X(0.5f))), P.Phase[3]);
+                    break;
+                }
+                case GearLook.RiftMask:
+                {
+                    Hair(false);
+                    // a violet hood, a mask of cracked glass with acid-green eyes
+                    c.Ellipse(hd + V(-X(0.3f), X(0.6f)), r + 0.8f, X(3.9f), P.Rift);
+                    c.Ellipse(hd + V(X(1.2f), X(0.2f)), X(1.8f), X(2f), new[] { P.Rift[1], P.Rift[2], P.Rift[2], P.Rift[1] });
+                    c.Put(c.T(hd + V(X(1.6f), X(0.6f))), P.Rift[3]); c.Put(c.T(hd + V(X(0.6f), X(0.6f))), P.Rift[3]);
+                    break;
+                }
+                case GearLook.PrismHead:
+                {
+                    // a head of cut crystal, light moving through its facets
+                    c.Polygon(new[] { hd + V(-r, -X(1)), hd + V(0, -X(3.5f)), hd + V(r + 1, -X(0.5f)), hd + V(r * 0.5f, X(3.5f)), hd + V(-r, X(2.5f)) },
+                        l => l.x < hd.x ? (Color32?)P.Riftstone[3] : P.Riftstone[2]);
+                    c.Line(V(hd.x, hd.y + X(0.6f)), V(hd.x + r, hd.y + X(0.6f)), Trim(GearSlot.Head, P.White));
+                    break;
+                }
+                case GearLook.SunHelm:
+                {
+                    Hair(false);
+                    // a white helm with a gold visor, a crown of sun-rays fanning from its brow
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Synth);
+                    c.Line(V(hd.x - X(0.2f), hd.y + X(0.6f)), V(hd.x + r + 0.5f, hd.y + X(0.6f)), Trim(GearSlot.Head, P.Solar[2]), S > 1.3f ? 2 : 1);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        float ang = Mathf.Lerp(30f, 150f, i / 4f) * Mathf.Deg2Rad;
+                        Vector2 from = hd + V(Mathf.Cos(ang) * (r - 0.5f), X(1) + Mathf.Sin(ang) * X(3.2f));
+                        c.Line(from, from + V(Mathf.Cos(ang) * X(2.4f), Mathf.Sin(ang) * X(2.4f)), i == 2 ? P.Solar[3] : P.Solar[2]);
+                    }
+                    break;
+                }
+                case GearLook.EclipseHood:
+                {
+                    Hair(false);
+                    // a black hood, a burning orange ring where the face should be
+                    c.Ellipse(hd + V(-X(0.3f), X(0.6f)), r + 0.8f, X(3.9f), P.Eclipse);
+                    c.Ellipse(hd + V(X(1.2f), X(0.2f)), X(1.8f), X(2f), new[] { P.Eclipse[3], P.Eclipse[3], P.Eclipse[0], P.Eclipse[0] });
+                    c.Put(c.T(hd + V(X(1.2f), X(0.2f))), P.Eclipse[0]);
+                    break;
+                }
+                case GearLook.HaloHead:
+                {
+                    // a smooth white head with a gold visor, a halo of light floating over it
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.4f, X(3.6f) + 0.3f, P.Synth);
+                    c.Line(V(hd.x - X(0.6f), hd.y + X(0.6f)), V(hd.x + r + 0.3f, hd.y + X(0.6f)), Trim(GearSlot.Head, P.Solar[3]), S > 1.3f ? 2 : 1);
+                    c.Ellipse(hd + V(0, X(5.2f)), X(3.2f), X(0.9f), new[] { P.Solar[2], P.Solar[3], P.Solar[3], P.White }, l => Mathf.Abs(l.y - (hd.y + X(5.2f))) > X(0.25f) || Mathf.Abs(l.x - hd.x) > X(2.2f));
+                    break;
+                }
                 case GearLook.StarHelm:
                 {
                     Hair(false);
@@ -1208,7 +1374,9 @@ public static class PixelFigure
                 Arm(shNear, hNear, false);
                 return;
             }
-            if (s.weapon == GearLook.Cannon && s.mount != MountKind.Cannon && s.mount != MountKind.Starship && s.mount != MountKind.HoverThrone) BastionGun();
+            if (s.weapon == GearLook.Cannon && s.mount != MountKind.Cannon && s.mount != MountKind.Starship && s.mount != MountKind.HoverThrone
+                && s.mount != MountKind.SunOrb && s.mount != MountKind.SolarBarque && s.mount != MountKind.GravityPyramid && s.mount != MountKind.FoldCruiser
+                && s.mount != MountKind.GateRing && s.mount != MountKind.Ark) BastionGun();
             if (s.Class == WeaponClass.Bow)
             {
                 Arm(shNear, hNear, false);
@@ -1254,12 +1422,14 @@ public static class PixelFigure
                     : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome
                     : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth
                     : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : s.body == GearLook.RunePlate ? P.Moonstone
-                    : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : team;
+                    : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : s.body == GearLook.SolarPlate ? P.Synth : s.body == GearLook.PhasePlate ? P.Phase : s.body == GearLook.PrismBody ? P.Riftstone
+                    : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
                     || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody
                     || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave || s.body == GearLook.RunePlate
-                    || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate;
+                    || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate || s.body == GearLook.SolarPlate || s.body == GearLook.PhasePlate || s.body == GearLook.PrismBody
+                    || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1433,6 +1603,87 @@ public static class PixelFigure
                             c.Put(c.T(at(len + X(t), X(side))), crystal[3]);
                     break;
                 }
+                case GearLook.SingularityBlade:
+                {
+                    // a black blade edged in violet light, a point of collapsed star at its tip
+                    float len = X(11.5f);
+                    var glow = s.raider ? P.Hive : P.Cosmic;
+                    c.Line(at(-2), at(0), P.Steel[2], ww);
+                    c.Line(at(1, -X(1.8f)), at(1, X(1.8f)), Trim(GearSlot.Weapon, P.Steel[3]), ww);
+                    c.Line(at(2), at(len), P.Coal[0], ww + 1);
+                    c.Line(at(2, -0.8f), at(len, -0.8f), glow[3]);
+                    c.Ellipse(at(len + X(1)), X(1.1f), X(1.1f), new[] { P.Coal[0], P.Coal[0], glow[2], glow[3] });
+                    break;
+                }
+                case GearLook.CosmicStaff:
+                {
+                    // a silver staff with a little spiral galaxy turning at its head
+                    float len = X(13);
+                    var glow = s.raider ? P.Hive : P.Cosmic;
+                    c.Line(at(-X(5)), at(len), P.Steel[3], ww);
+                    Vector2 g = at(len + X(2.4f));
+                    bool lit = p.loaded || !p.attack;
+                    c.Ellipse(g, X(2.4f), X(1.2f), lit ? new[] { glow[1], glow[2], glow[3], P.White } : new[] { glow[0], glow[1], glow[1], glow[2] });
+                    c.Put(c.T(g), P.White);
+                    c.Put(c.T(g + V(X(2.8f), X(0.6f))), glow[3]); c.Put(c.T(g - V(X(2.8f), X(0.6f))), glow[3]);
+                    break;
+                }
+                case GearLook.PhaseBlade:
+                {
+                    // a blade drawn as broken light: dashes of teal along its length, half in this world
+                    float len = X(11);
+                    var glow = s.raider ? P.Rift : P.Phase;
+                    c.Line(at(-2), at(0), glow[0], ww);
+                    c.Line(at(1, -X(1.6f)), at(1, X(1.6f)), Trim(GearSlot.Weapon, glow[1]), ww);
+                    for (float t = 2; t < len; t += X(2.2f)) c.Line(at(t), at(Mathf.Min(len, t + X(1.4f))), glow[3], ww + 1);
+                    c.Put(c.T(at(len + 1)), P.White);
+                    break;
+                }
+                case GearLook.GravityStaff:
+                {
+                    // a black staff with a dark sphere at its head and two rings orbiting it
+                    float len = X(13);
+                    var glow = s.raider ? P.Rift : P.Phase;
+                    c.Line(at(-X(5)), at(len), P.Coal[1], ww);
+                    Vector2 orb = at(len + X(2.2f));
+                    bool lit = p.loaded || !p.attack;
+                    c.Ellipse(orb, X(1.8f), X(1.8f), new[] { P.Coal[0], P.Coal[0], glow[1], glow[2] });
+                    for (int i = 0; i < 12; i++)
+                    {
+                        float ang = i * Mathf.PI / 6f;
+                        c.Put(c.T(orb + V(Mathf.Cos(ang) * X(3.2f), Mathf.Sin(ang) * X(1.2f))), lit ? glow[3] : glow[1]);
+                    }
+                    break;
+                }
+                case GearLook.SunBlade:
+                {
+                    // a blade of white fire with a gold guard, flames licking off its edge
+                    float len = X(11);
+                    bool dark = s.raider;
+                    c.Line(at(-2), at(0), dark ? P.Eclipse[1] : P.Solar[0], ww);
+                    c.Line(at(1, -X(1.8f)), at(1, X(1.8f)), Trim(GearSlot.Weapon, dark ? P.Eclipse[2] : P.Solar[2]), ww);
+                    c.Line(at(2), at(len), dark ? P.Eclipse[3] : P.Solar[3], ww + 1);
+                    c.Line(at(2, -0.6f), at(len - 1, -0.6f), P.White);
+                    for (float t = X(3); t < len; t += X(2.2f)) c.Put(c.T(at(t, X(1.2f))), dark ? P.Eclipse[3] : P.Fire[2]);
+                    break;
+                }
+                case GearLook.SunStaff:
+                {
+                    // a white staff crowned with a sun-disc and its rays
+                    float len = X(13);
+                    bool dark = s.raider;
+                    c.Line(at(-X(5)), at(len), dark ? P.Eclipse[1] : P.Synth[1], ww);
+                    Vector2 sun = at(len + X(2));
+                    var ramp = dark ? new[] { P.Eclipse[0], P.Eclipse[2], P.Eclipse[3], P.Eclipse[3] } : new[] { P.Solar[1], P.Solar[2], P.Solar[3], P.White };
+                    bool lit = p.loaded || !p.attack;
+                    c.Ellipse(sun, X(2f), X(2f), lit ? ramp : new[] { P.Coal[1], ramp[0], ramp[1], ramp[1] });
+                    for (int i = 0; i < 8; i++)
+                    {
+                        float ang = i * Mathf.PI / 4f;
+                        c.Put(c.T(sun + V(Mathf.Cos(ang) * X(3.2f), Mathf.Sin(ang) * X(3.2f))), ramp[2]);
+                    }
+                    break;
+                }
                 case GearLook.StarBlade:
                 {
                     // a gold hilt holding a blade of violet starlight, gold sparks drifting in it
@@ -1581,7 +1832,9 @@ public static class PixelFigure
                     c.Ellipse(hand + V(0, X(-0.4f)), X(1.6f), X(1.6f), new[] { P.Green[0], P.Green[2], P.Green[3], P.White });
                     c.Put(c.T(hand + V(0, X(2))), P.Fire[2]);                                         // the lit rag
                     break;
-                case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank || s.mount == MountKind.Starship || s.mount == MountKind.HoverThrone:
+                case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank || s.mount == MountKind.Starship || s.mount == MountKind.HoverThrone
+                    || s.mount == MountKind.SunOrb || s.mount == MountKind.SolarBarque || s.mount == MountKind.GravityPyramid || s.mount == MountKind.FoldCruiser
+                    || s.mount == MountKind.GateRing || s.mount == MountKind.Ark:
                     break;   // the commander works the gun from inside
                 case GearLook.Cannon:
                 {
@@ -2114,6 +2367,234 @@ public static class PixelFigure
             }
         }
 
+        /// <summary>A comet under the rider's feet: a head of blue-white ice and a long burning tail behind.</summary>
+        private void CometUnder()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var ramp = s.raider ? P.Hive : P.Comet;
+            Vector2 head = V(cx + 0.5f + X(2), gy - X(1));
+            bool flick = p.fNear.x > 2 || p.bob > 0;
+            for (int i = 0; i < 6; i++)   // the tail
+                c.Ellipse(head + V(X(-4 - i * 4), X(1 + i * 0.4f)), X(4.5f - i * 0.6f), X(2.6f - i * 0.3f), new[] { ramp[0], ramp[1], ramp[2], ramp[3] });
+            c.Ellipse(head, X(4.5f), X(3), new[] { ramp[1], ramp[2], ramp[3], P.White });
+            if (flick) c.Put(c.T(head + V(X(-26), X(4))), ramp[3]);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>The gate ring's open middle, behind its pilot: a disc of deep space with stars in it.</summary>
+        private void RingBack()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var ramp = s.raider ? P.Hive : P.Cosmic;
+            Vector2 centre = RingCentre;
+            float r = RingRadius;
+            c.Ellipse(centre, r - 1, r - 1, new[] { ramp[0], ramp[0], ramp[1], ramp[2] });
+            for (int i = 0; i < 9; i++)
+            {
+                float a = i * 2.4f, d = r * (0.25f + 0.08f * i);
+                c.Put(c.T(centre + V(Mathf.Cos(a) * d, Mathf.Sin(a) * d)), i % 2 == 0 ? P.White : ramp[3]);
+            }
+            (c.Angle, c.Shift) = save;
+        }
+
+        private Vector2 RingCentre => V(cx + 0.5f, gy + X(15));
+        private float RingRadius => X(13);
+
+        /// <summary>A gate ring seen face on, the pilot standing on a platform at its foot; it fires stars from its rim.</summary>
+        private void RingFront()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var ramp = s.raider ? P.Hive : P.Cosmic;
+            Vector2 centre = RingCentre;
+            float r = RingRadius;
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            c.Ellipse(V(cx + 0.5f, groundY + X(1)), X(flick ? 10 : 9), X(1.3f), new[] { ramp[1], ramp[2], ramp[3], P.White });   // light under it
+            for (int i = 0; i < 90; i++)
+            {
+                float t = i / 90f * Mathf.PI * 2f;
+                Vector2 inner = centre + V(Mathf.Cos(t) * r, Mathf.Sin(t) * r), outer = centre + V(Mathf.Cos(t) * (r + X(1.6f)), Mathf.Sin(t) * (r + X(1.6f)));
+                c.Line(inner, outer, Mathf.Sin(t) > 0.3f ? P.Steel[3] : P.Steel[2], 2);
+                if (i % 15 == (flick ? 7 : 0)) c.Put(c.T(Vector2.Lerp(inner, outer, 0.5f)), ramp[3]);
+            }
+            c.FillLocal(new Rect(cx - X(7), gy - X(4), X(14), X(5)), l => l.y > gy - X(0.5f) ? (Color32?)P.Steel[3] : l.x < cx - X(4) ? P.Steel[2] : P.Steel[1]);   // the platform
+            Vector2 mouth = centre + V(r * 0.72f, r * 0.72f);
+            c.Ellipse(mouth, X(1.8f), X(1.8f), new[] { ramp[2], ramp[3], P.White, P.White });
+            muzzle = mouth + V(X(2), 0);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>A Dreadnought Ark: a city-sized hull with towers on its back, a row of glowing ports and great drives.</summary>
+        private void ArkHull()
+        {
+            var hull = s.raider ? P.Hive : P.Cosmic;
+            float yb = gy - X(2), yt = gy + X(9);
+            float x0 = cx - X(32), x1 = cx + X(30);
+            c.FillLocal(new Rect(x0, yb, x1 - x0, yt - yb), l =>
+            {
+                float n = Mathf.Clamp01((l.x - (x1 - X(10))) / X(10));
+                if (l.y > yt - n * (yt - yb) * 0.6f) return null;
+                return l.y > yt - 1.5f ? P.Steel[3] : l.y < yb + X(2) ? P.Steel[0] : P.Steel[1];
+            });
+            for (int i = 0; i < 9; i++) c.Put(c.T(V(x0 + X(4 + i * 6), yb + X(4))), (i % 3 == 0) ? P.White : hull[3]);   // ports
+            foreach (float tx in new[] { cx - X(18), cx - X(6), cx + X(8) })   // towers on its back
+                c.FillLocal(new Rect(tx, yt, X(5), X(6 + (int)(tx % 3))), l => l.x < tx + X(1.5f) ? (Color32?)P.Steel[2] : P.Steel[1]);
+            bool flick = p.fNear.x > 2 || p.bob > 0;
+            for (int i = 0; i < 2; i++)
+                c.Ellipse(V(x0 - X(2), yb + X(3 + i * 4)), X(flick ? 3.5f : 2.5f), X(1.6f), new[] { hull[1], hull[2], hull[3], P.White });
+            Vector2 gun = V(x1 - X(4), yb + X(5));
+            c.Line(gun, gun + V(X(10), 0), P.Steel[0], 3);
+            c.Ellipse(gun + V(X(10), 0), X(1.6f), X(1.6f), new[] { hull[2], hull[3], P.White, P.White });
+            muzzle = gun + V(X(12), 0);
+        }
+
+        /// <summary>A star whale: a vast blue body patterned with glowing spots, a long tail and slow-beating fins.</summary>
+        private void StarWhale(Vector2 o, int drop)
+        {
+            var coat = s.raider ? P.Rift : P.Whale;
+            float lift = drop == 0 ? 0 : drop == 1 ? -X(5) : -X(12);
+            Vector2 body = o + V(0, X(12) + lift);
+            float beat = drop > 0 ? 0f : p.fNear.x > 2 ? 1f : p.fNear.x < -2 ? -0.4f : 0.4f;
+            // the tail and its flukes
+            Vector2 t0 = body + V(X(-14), X(1)), t1 = body + V(X(-26), X(3 + 2 * beat));
+            c.Capsule(t0, t1, X(3), coat);
+            c.Polygon(new[] { t1 + V(0, X(1)), t1 + V(X(-6), X(6)), t1 + V(X(-3), 0), t1 + V(X(-6), -X(5)), t1 + V(0, -X(1)) }, _ => coat[1]);
+            // the body: a long ellipse, pale below
+            c.Ellipse(body, X(18), X(7), coat);
+            c.Ellipse(body + V(X(2), -X(3)), X(14), X(3), new[] { coat[2], coat[3], coat[3], P.White }, l => l.y < body.y - X(2));
+            c.Ellipse(body + V(X(14), X(1)), X(6), X(6), coat);
+            // glowing spots down its back
+            for (int i = 0; i < 6; i++) c.Put(c.T(body + V(X(-10 + i * 4), X(4 + (i % 2)))), coat[3]);
+            // a fin beating
+            c.Polygon(new[] { body + V(X(4), -X(2)), body + V(X(-4), X(-8 - 4 * beat)), body + V(X(-2), -X(2)) }, _ => coat[1]);
+            c.Put(c.T(body + V(X(16), X(2))), P.White);   // eye
+            if (drop < 2) c.FillLocal(new Rect(body.x - X(5), body.y + X(5), X(8), X(3)), l => l.x < body.x - X(3) ? team[2] : team[1]);
+        }
+
+        /// <summary>A hovering black pyramid: its pilot in a slot near the apex, the ground bending under it, a lens at its point.</summary>
+        private void Pyramid()
+        {
+            var glow = s.raider ? P.Rift : P.Phase;
+            float yb = gy + X(1), top = gy + X(16);
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            c.Ellipse(V(cx + 0.5f, groundY + X(1)), X(flick ? 12 : 11), X(1.6f), new[] { glow[0], glow[1], glow[2], glow[3] });   // the bent ground
+            c.Polygon(new[] { V(cx - X(14), yb), V(cx + X(14), yb), V(cx + 0.5f, top) }, l => l.x < cx - X(4) ? (Color32?)P.Coal[1] : l.x < cx + X(4) ? P.Coal[2] : P.Coal[0]);
+            for (int i = 1; i < 4; i++) c.Line(V(cx - X(14 - i * 3.5f), yb + X(i * 4)), V(cx + X(14 - i * 3.5f), yb + X(i * 4)), glow[1]);
+            c.Line(V(cx - X(14), yb), V(cx + X(14), yb), glow[2]);
+            c.Ellipse(V(cx + X(9), yb + X(5)), X(2), X(2), new[] { glow[1], glow[2], glow[3], P.White });
+            muzzle = V(cx + X(12), yb + X(5));
+        }
+
+        /// <summary>An angular warship of folded space: a long dark hull, a raised bridge, fold vanes and a spinal gun.</summary>
+        private void Cruiser()
+        {
+            var hull = s.raider ? P.Rift : P.Phase;
+            float yb = gy - X(1), yt = gy + X(8);
+            float x0 = cx - X(24), x1 = cx + X(28);
+            c.Polygon(new[] { V(x0, yb + X(2)), V(x0 + X(4), yt), V(x1 - X(6), yt), V(x1, yb + X(4)), V(x1 - X(8), yb), V(x0 + X(6), yb) },
+                l => l.y > yt - X(2) ? (Color32?)P.Coal[2] : l.y < yb + X(2) ? P.Coal[0] : P.Coal[1]);
+            c.Line(V(x0 + X(4), yb + X(4)), V(x1 - X(8), yb + X(4)), hull[2]);
+            for (int i = 0; i < 3; i++)
+            {
+                float vx = x0 + X(8 + i * 8);
+                c.Polygon(new[] { V(vx, yt), V(vx + X(4), yt), V(vx - X(2), yt + X(8)) }, _ => hull[1]);   // fold vanes
+                c.Put(c.T(V(vx - X(1), yt + X(7))), hull[3]);
+            }
+            bool flick = p.fNear.x > 2 || p.bob > 0;
+            c.Ellipse(V(x0 - X(2), (yb + yt) / 2), X(flick ? 3 : 2), X(2), new[] { hull[1], hull[2], hull[3], P.White });
+            c.Line(V(x1 - X(10), yb + X(3)), V(x1 + X(6), yb + X(3)), P.Coal[0], 2);
+            c.Ellipse(V(x1 + X(6), yb + X(3)), X(1.4f), X(1.4f), new[] { hull[2], hull[3], P.White, P.White });
+            muzzle = V(x1 + X(8), yb + X(3));
+        }
+
+        /// <summary>Wings of light on the flyer's back: two great feathered arcs of gold, beating with the stride.</summary>
+        private void LightWings()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var ramp = s.raider ? new[] { P.Eclipse[0], P.Eclipse[1], P.Eclipse[2], P.Eclipse[3] } : new[] { P.Solar[1], P.Solar[2], P.Solar[3], P.White };
+            float beat = p.death >= 2 ? -0.6f : p.fNear.x > 2 ? 1f : p.fNear.x < -2 ? 0.2f : 0.6f;
+            for (int side = 0; side < 2; side++)
+            {
+                Vector2 root = sh + V(X(-1.5f - side * 1.2f), X(-0.5f));
+                Vector2 tip = root + V(X(-13 + side * 2), X(9 * beat + 2));
+                Vector2 low = root + V(X(-10 + side * 2), X(-4));
+                c.Polygon(new[] { root, tip, low }, l => side == 0 ? (Color32?)ramp[1] : ramp[2]);
+                for (int i = 1; i < 5; i++) c.Line(Vector2.Lerp(root, tip, i / 5f), Vector2.Lerp(low, tip, i / 5f + 0.1f), ramp[side == 0 ? 0 : 1]);
+                c.Put(c.T(tip), ramp[3]);
+            }
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>The far half of a sun orb, behind its pilot: a sphere of golden glass with a sun burning low inside.</summary>
+        private void OrbBack()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            var glass = s.raider ? P.Eclipse : P.Solar;
+            float cyO = gy + X(9);
+            c.Ellipse(V(cx + 0.5f, cyO), X(12), X(11), new[] { glass[0], glass[1], glass[1], glass[2] }, l => l.y > cyO - X(2));
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>
+        /// The front of a sun orb: the rim and lower glass of the sphere hiding the pilot's legs, a sun of
+        /// sunfire in its belly, two rings turning round it and a lens throwing flares from its front.
+        /// </summary>
+        private void OrbFront()
+        {
+            var glass = s.raider ? P.Eclipse : P.Solar;
+            var hot = s.raider ? new[] { P.Eclipse[2], P.Eclipse[3], P.Eclipse[3], P.White } : new[] { P.Solar[2], P.Solar[3], P.White, P.White };
+            float cyO = gy + X(9);
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            c.Ellipse(V(cx + 0.5f, groundY + X(1)), X(flick ? 10 : 9), X(1.3f), hot);   // its glow on the ground
+            c.Ellipse(V(cx + 0.5f, cyO), X(12), X(11), new[] { glass[0], glass[1], glass[2], glass[3] }, l => l.y <= cyO - X(2));
+            c.Ellipse(V(cx + 0.5f, cyO - X(5)), X(4.5f), X(3.5f), hot);
+            // two rings, tilted, round the sphere
+            for (int i = 0; i < 40; i++)
+            {
+                float t = i / 40f * Mathf.PI * 2f + (flick ? 0.3f : 0f);
+                c.Put(c.T(V(cx + 0.5f + Mathf.Cos(t) * X(15), cyO + Mathf.Sin(t) * X(3.5f) + Mathf.Cos(t) * X(2))), Mathf.Sin(t) < 0 ? glass[3] : glass[1]);
+                c.Put(c.T(V(cx + 0.5f + Mathf.Cos(t) * X(13), cyO + Mathf.Sin(t) * X(5) - Mathf.Cos(t) * X(3))), Mathf.Sin(t) < 0 ? glass[2] : glass[0]);
+            }
+            Vector2 lens = V(cx + X(12), cyO);
+            c.Ellipse(lens, X(2.2f), X(2.2f), hot);
+            muzzle = lens + V(X(2), 0);
+        }
+
+        /// <summary>A barque of the sun: a golden hull with a curled prow, a mast and a great triangular sail of light.</summary>
+        private void Barque()
+        {
+            var hull = s.raider ? P.Eclipse : P.Solar;
+            var sail = s.raider ? new[] { P.Eclipse[1], P.Eclipse[2], P.Eclipse[3], P.Eclipse[3] } : new[] { P.Solar[2], P.Solar[3], P.White, P.White };
+            float yb = gy - X(1), yt = gy + X(7);
+            float x0 = cx - X(26), x1 = cx + X(24);
+            c.FillLocal(new Rect(x0, yb, x1 - x0, yt - yb), l =>
+            {
+                float n = (l.x - x0) / (x1 - x0);
+                float bottom = yb + (Mathf.Abs(n - 0.5f) * 2f) * (yt - yb) * 0.6f;   // a curved keel
+                if (l.y < bottom) return null;
+                return l.y > yt - 1.2f ? hull[3] : l.y < bottom + X(1.5f) ? hull[0] : hull[1];
+            });
+            c.Line(V(x0 + X(3), yt - X(2)), V(x1 - X(3), yt - X(2)), hull[2]);
+            c.Line(V(x1 - X(2), yt), V(x1 + X(3), yt + X(5)), hull[2], 2);   // the curled prow
+            c.Put(c.T(V(x1 + X(4), yt + X(6))), hull[3]);
+            Vector2 mastFoot = V(cx - X(8), yt), mastTop = mastFoot + V(0, X(30));
+            c.Line(mastFoot, mastTop, hull[0], S > 1.3f ? 3 : 2);
+            bool flick = p.fNear.x > 2 || p.bob > 0;
+            c.Polygon(new[] { mastTop + V(X(1), -X(1)), mastFoot + V(X(1), X(4)), mastFoot + V(X(18 + (flick ? 1 : 0)), X(5)) }, l => (Color32?)sail[l.x < mastFoot.x + X(6) ? 1 : 0]);
+            c.Polygon(new[] { mastTop + V(-X(1), -X(2)), mastFoot + V(-X(1), X(5)), mastFoot + V(-X(12), X(6)) }, _ => sail[1]);
+            for (int i = 0; i < 4; i++) c.Put(c.T(mastFoot + V(X(4 + i * 3), X(8 + i * 4))), sail[3]);
+            // the bow gun: a lens of sunfire
+            Vector2 lens = V(x1 - X(4), yt - X(3));
+            c.Ellipse(lens, X(1.6f), X(1.6f), sail);
+            muzzle = lens + V(X(2), 0);
+            // light falling from the keel
+            if (p.death < 2) for (int i = 0; i < 4; i++) c.Put(c.T(V(cx - X(14) + i * X(9), yb - X(1 + (i + (flick ? 1 : 0)) % 2))), sail[2]);
+        }
+
         /// <summary>A rocket pack on the flyer's back: two chrome tubes with flames out of the bottom.</summary>
         private void Jetpack()
         {
@@ -2318,6 +2799,7 @@ public static class PixelFigure
             MountKind.Elephant => V(cx + 0.5f - X(2), gy + X(27)),
             MountKind.Walker => V(cx + 0.5f, gy + X(22)),
             MountKind.Drake => V(cx + 0.5f - X(3), gy + X(21)),
+            MountKind.StarWhale => V(cx + 0.5f - X(2), gy + X(19)),
             _ => V(cx + 0.5f - X(1), gy + X(15)),
         };
 
@@ -2364,6 +2846,7 @@ public static class PixelFigure
                 case MountKind.Elephant: Elephant(V(cx + 0.5f, gy), coat, drop); break;
                 case MountKind.Griffin: Griffin(V(cx + 0.5f, gy), P.Named(s.coat == "Wyvern" ? "Wyvern" : "Griffin"), drop); break;
                 case MountKind.Drake: Drake(V(cx + 0.5f, gy), drop); break;
+                case MountKind.StarWhale: StarWhale(V(cx + 0.5f, gy), drop); break;
             }
             (c.Angle, c.Shift, c.Pivot) = save;
         }

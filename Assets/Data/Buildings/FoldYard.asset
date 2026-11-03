@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FoldYard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FoldYard
+  displayName: Fold Yard
+  description: A yard of rings where cruisers jump in and out of folded space. Builds
+    Fold Cruisers, and launches ships to other worlds (open the star map).
+  icon: {fileID: 21300000, guid: 9dce313e7d99b64478554afa71480cd8, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 9dce313e7d99b64478554afa71480cd8, type: 3}
+    - {fileID: 21300000, guid: af6fe7555bd74454191f30ac86b68745, type: 3}
+    - {fileID: 21300000, guid: fecb280a1f097794eb22daf451e612e9, type: 3}
+    - {fileID: 21300000, guid: ae3fbe969f3201e4fb6cfa60dfa300fc, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 282078a83c14be340867de1ebf6f92d3, type: 3}
+    - {fileID: 21300000, guid: 365d241ef049be747b4ebba6155306b4, type: 3}
+    - {fileID: 21300000, guid: 1934985ca29a07d43a9374a63969b339, type: 3}
+    - {fileID: 21300000, guid: 33d9f06c1b199204c94aab3f97dd619a, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: ab3b9da4536eaa744b1554d13e07d160, type: 3}
+    - {fileID: 21300000, guid: 87b8817fce96f654989dcb3a7dcb8ee3, type: 3}
+    - {fileID: 21300000, guid: db0b4e1832468d04487bbd0a46608ff7, type: 3}
+    - {fileID: 21300000, guid: dce2de0395d74dc4ba74a14899e54d62, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 52ac7a60db508b94dba163938f0d1f1e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1040
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 750
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 130
+  upgrades:
+  - name: Second Ring
+    description: +1 fold cruiser.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 630
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 103
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Phase Hulls
+    description: Fold Cruisers are 25% tougher.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 150
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: e155cd6032f18b046954f6e8533c9b4b, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b8f9f4d7f85ff374f829f7a3bdc8ea7f, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 580
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 72
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 1
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2760
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 4065b372e3fe2124f95f3bd5307aded6, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

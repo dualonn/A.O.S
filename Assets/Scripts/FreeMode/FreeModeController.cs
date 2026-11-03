@@ -608,8 +608,35 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         SyncSites();
 
         TrackLiveWave();
+        OrbitalStrikes();
         ExploreAroundUnitsAndBuildings();
         UpdateMarkers();
+    }
+
+    // ---------- Orbital defence ----------
+
+    private float nextStrike;
+
+    /// <summary>
+    /// Orbital defence platforms (research, on a world with a Starport) drop a strike on the
+    /// toughest raider inside one of your settlements every so often; more levels hit harder.
+    /// </summary>
+    private void OrbitalStrikes()
+    {
+        int level = Settlement.OrbitalLevel;
+        if (level <= 0 || Time.time < nextStrike) return;
+        nextStrike = Time.time + Mathf.Max(4f, 14f - level);
+        Unit best = null;
+        var zones = CurrentZones;
+        foreach (var u in Unit.Living)
+        {
+            if (u == null || !u.IsAlive || u.Team != Team.Enemy || !(u is Enemy e) || !e.IsRaider) continue;
+            if (!Settlement.InAnyZone(zones, u.transform.position)) continue;
+            if (best == null || u.health > best.health) best = u;
+        }
+        if (best == null) return;
+        Puff.Blast(best.transform.position, 1.2f, true);
+        best.TakeDamage(250 * level);
     }
 
     // ---------- Buildings ----------

@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossWorldDevourer
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: The World Devourer
+  icon: {fileID: 21300000, guid: 2b2431df8eb5a0f439102c75def19602, type: 3}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 6928040973472221430, guid: 185602ff19f5c4148b8aa39e68cc1d28, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 28000
+  moveSpeed: 0.6
+  attackPower: 340
+  attackCooldown: 3
+  attackRange: 11
+  hitDelay: 0.3
+  detectionRange: 11.5
+  projectile: {fileID: 21300000, guid: e5052d0c94052b748af8fc772dd7d437, type: 3}
+  projectileSpeed: 18
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.12
+  splashRadius: 2.8
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 1
+  bossAbility: 1
+  abilityCooldown: 7
+  abilityRadius: 3.4
+  abilityPower: 1.55
+  summons: {fileID: 0}
+  summonCount: 0

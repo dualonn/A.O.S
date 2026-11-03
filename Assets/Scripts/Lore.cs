@@ -19,7 +19,7 @@ public static class Lore
 
     // Age indexes, for readability below.
     private const int Stone = 0, Bronze = 1, Iron = 2, Classical = 3, Medieval = 4, Renaissance = 5,
-        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10, Arcane = 11, Astral = 12;
+        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10, Arcane = 11, Astral = 12, Stellar = 13, Interstellar = 14, Galactic = 15;
     private const int Desert = (int)Biome.Desert, Tundra = (int)Biome.Tundra, Swamp = (int)Biome.Swamp,
         Volcanic = (int)Biome.Volcanic, Crystal = (int)Biome.Crystal;
 
@@ -125,6 +125,24 @@ public static class Lore
             "Between the worlds there is a dark that is not empty. Things live there that were raiders once, of some other world, and went too far. Now they come down to ours, burning magenta, hungry for the light.", Astral),
         new Entry("The First Ship",
             "It went up on a column of blue fire, circled the world twice and came down in the sea. The crew climbed out laughing. They had seen the seven worlds plainly, they said, and one of them had lights on it that answered theirs.", Astral, after: 20),
+        new Entry("The Sun's Song",
+            "The old sun-hymns were never prayers. Sung into a heliolite lens at the right pitch, they make it glow; sung by a choir, they make it burn. The priests always knew. They just never had the lenses.", Stellar),
+        new Entry("The Eclipse",
+            "They worship the dark at the heart of the sun: the moment it goes out. They wear its burning ring for a face, and they have sworn to put out every sun that men have caught in glass.", Stellar),
+        new Entry("Bottled Dawn",
+            "A bottle of sunfire lights a house for a year and heats it for ten. The first merchant to sell them grew so rich he bought a moon, and then, it is said, could not find a ship to take him there.", Stellar),
+        new Entry("The Fold",
+            "Space is not empty, the gravimancers say, but cloth: and cloth can be folded until two far places touch. The first fold was made by accident, in a teacup. The second took a city's worth of mana and went to another star.", Interstellar),
+        new Entry("Whales Between the Stars",
+            "They were always there, swimming the dark between suns, too slow for anyone to notice. They sing to each other across light-years. Some of them, it turns out, are willing to carry a rider, if the rider sings back.", Interstellar),
+        new Entry("What the Rift Is",
+            "The Rift is not a place. It is the space between the folds, where things fall when a fold is made badly. The reavers were people once, on a world that folded itself shut. They have been trying to get out ever since.", Interstellar),
+        new Entry("The Hive",
+            "It does not want your gold, your land or your gods. It wants your world, all of it, to eat. It has eaten others: the seven worlds were twelve, once, the oldest star charts say.", Galactic),
+        new Entry("The Gate Builders",
+            "The precursors did not build ships. They built gates, from star to star, and walked. Every ancient gate you wake is a door they left open behind them, as if they meant to come back, or meant for someone to follow.", Galactic, after: 20),
+        new Entry("The Ark",
+            "A ship the size of a city, built to carry a people from a dying world. It never needed to. Now it carries armies, and on its bridge, carved where every captain can see it, are the words: In case we were wrong.", Galactic),
     };
 
     /// <summary>The entry a lore stone shows: unread ones that fit your age and the stone's land first, story arcs in order.</summary>

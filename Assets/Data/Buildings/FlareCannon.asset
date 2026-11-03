@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FlareCannon
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FlareCannon
+  displayName: Flare Cannon
+  description: A squat white tower with a ring of mirrors round a captive flare.
+    Each shot bursts wide.
+  icon: {fileID: 21300000, guid: 0a54b40a87a54e441b5f2c1baf77bdff, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 0a54b40a87a54e441b5f2c1baf77bdff, type: 3}
+    - {fileID: 21300000, guid: 55bc3df2ff6cd1f40a13da2e7d52ccb6, type: 3}
+    - {fileID: 21300000, guid: 5c430c02000d362429b2eb0f1c60a6ad, type: 3}
+    - {fileID: 21300000, guid: cf46ab98e9b161c4994715083259c1d3, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 2d68a61b1f0a9e0469a10929b3993e4d, type: 3}
+    - {fileID: 21300000, guid: 54b344e7ab2db534391748472b31f1d8, type: 3}
+    - {fileID: 21300000, guid: 3a0f36034c0a45742b3aea31c01c5c24, type: 3}
+    - {fileID: 21300000, guid: 65652389ab464514192a3ae6fb09d4b5, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 153bdeaaa0553fd4d8c9e3d98f5b461f, type: 3}
+    - {fileID: 21300000, guid: e9bd4b948af695641950775e93eeb63a, type: 3}
+    - {fileID: 21300000, guid: 79ea4e355603c084f9c3af24758b7507, type: 3}
+    - {fileID: 21300000, guid: 416fe8f384502864684d7770b78e7c4b, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 06368ac2035b0e2458f2182935d645af, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 150
+  upgrades:
+  - name: Longer Throw
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 120
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Hotter Flares
+    description: +150 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 150
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 893e4d025dc0d0d46aee3dfa8c1f288d, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9c80b057599abdf4ca8623cd541a0871, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 480
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 57
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 3000
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 15.5
+  towerDamage: 460
+  towerCooldown: 3.1
+  towerProjectile: {fileID: 21300000, guid: 66cfbdf1aedfe3441b7daed81d513c4c, type: 3}
+  towerProjectileArc: 0.2
+  towerProjectileSpeed: 16
+  towerSplash: 3
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.3125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

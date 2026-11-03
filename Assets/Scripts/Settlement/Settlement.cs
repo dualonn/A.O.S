@@ -554,6 +554,7 @@ public partial class Settlement : MonoBehaviour
         State.playTime += dt;
         TickShips();
         TickRoutes();
+        TickOrbitalMines(dt);
         TickOtherWorlds(dt);
         UpdateWallLayer();
         if (!IsFounded)
@@ -570,6 +571,7 @@ public partial class Settlement : MonoBehaviour
         TickAutomation(dt);
         TickCamps(dt);
         TickSites(dt);
+        TickHazards(dt);
         TickGoals(dt);
         TickAges();
     }
@@ -645,7 +647,7 @@ public partial class Settlement : MonoBehaviour
 
     public static BuildingStats StatsOf(BuildingDefinition def, int level)
     {
-        float researchHealth = Instance != null && Instance.State != null ? Instance.BuildingHealthMultiplier : 1f;
+        float researchHealth = Instance != null && Instance.State != null ? Instance.BuildingHealthMultiplier * Instance.WorldBuildingHealthFactor : 1f;
         var s = new BuildingStats
         {
             maxHealth = Mathf.RoundToInt(def.maxHealth * researchHealth),
@@ -928,7 +930,7 @@ public partial class Settlement : MonoBehaviour
             {
                 if (rate.resource != null)
                 {
-                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality;
+                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource);
                     AddResource(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                 }
             }
@@ -1077,7 +1079,7 @@ public partial class Settlement : MonoBehaviour
         else if (State.population < Housing)
         {
             populationTimer += dt;
-            if (populationTimer >= Database.secondsPerNewPerson)
+            if (populationTimer >= Database.secondsPerNewPerson / Mathf.Max(0.1f, WorldGrowthFactor))
             {
                 populationTimer = 0;
                 State.population = Mathf.Min(Housing, State.population + 1);
@@ -1852,7 +1854,7 @@ public partial class Settlement : MonoBehaviour
                     total += stats.maxUnits * UnitPower(def.trainsUnit, mod);
                 }
             }
-            return total;
+            return total * (1f + 0.15f * OrbitalLevel);   // orbital defence platforms over Starport worlds
         }
     }
 

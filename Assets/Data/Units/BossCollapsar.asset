@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossCollapsar
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: The Collapsar
+  icon: {fileID: 21300000, guid: 7aebd5a50bd8b874d8750d7a203723f3, type: 3}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 6249818687942473547, guid: 0145672a6e093064e953d9e2c2e25c14, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 23000
+  moveSpeed: 0.6
+  attackPower: 300
+  attackCooldown: 3
+  attackRange: 10.5
+  hitDelay: 0.3
+  detectionRange: 11
+  projectile: {fileID: 21300000, guid: a7701d4cb90f4ad44bac4978e31152f4, type: 3}
+  projectileSpeed: 16
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.12
+  splashRadius: 2.6
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 1
+  bossAbility: 1
+  abilityCooldown: 7
+  abilityRadius: 3.2
+  abilityPower: 1.5
+  summons: {fileID: 0}
+  summonCount: 0

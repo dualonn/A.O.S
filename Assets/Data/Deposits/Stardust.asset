@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dcc1aff82e4ea4caf035c765b340a8, type: 3}
+  m_Name: Stardust
+  m_EditorClassIdentifier: Assembly-CSharp::DepositType
+  id: Stardust
+  displayName: Stardust
+  resource: {fileID: 11400000, guid: 615f663c21e1ae34791ff17ea6350977, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: 9e0733fbb2d276c478c6e8d084deb365, type: 3}
+  - {fileID: 21300000, guid: 1ef69d1e0d083db4ca54ce9f8024efe9, type: 3}
+  - {fileID: 21300000, guid: c75bb7a214a42a64ea74d983498ae757, type: 3}
+  richVeins: 1
+  onHills: 1
+  patchScale: 0.22
+  rarity: 0.72
+  minMoisture: 0
+  maxMoisture: 1

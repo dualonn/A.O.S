@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CelestialWorks
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CelestialWorks
+  displayName: Celestial Works
+  description: A hall where workers of living starlight make gears. Gears without
+    end.
+  icon: {fileID: 21300000, guid: bc96b3d89b6525a48a2db48d0791c17a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: bc96b3d89b6525a48a2db48d0791c17a, type: 3}
+    - {fileID: 21300000, guid: a23d29fa76ccbe84fb5e03c8bad8895b, type: 3}
+    - {fileID: 21300000, guid: c5d119d5417ac944f94bd3fe25a5d0e4, type: 3}
+    - {fileID: 21300000, guid: 45457a82d1296c341a6e1dfb4edb1b4c, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: adf0a54367e926b49b6e31dafb46ca36, type: 3}
+    - {fileID: 21300000, guid: 3467e8d90a0cec6428f108c429897319, type: 3}
+    - {fileID: 21300000, guid: 0f182744458526c4c8948ebd6b772e39, type: 3}
+    - {fileID: 21300000, guid: 0cdedb52570bc6c4d9de1fe7010687c4, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 57352e3ab4fac504394e350bb33ff4b3, type: 3}
+    - {fileID: 21300000, guid: 423e8b6428b245844bb6793a13f3dba8, type: 3}
+    - {fileID: 21300000, guid: 6f603efd1510ff44da9e85e7f6164593, type: 3}
+    - {fileID: 21300000, guid: 14db57c378eceb94786104a638797ec0, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bd02eefc406d48442a503737d67b2cba, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 840
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 52
+  upgrades:
+  - name: More Starlight
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 78
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 210
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Unending Night Shift
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 430
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 52
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2145
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+    perSecond: 0.91
+  inputs:
+  - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+    perSecond: 0.2
+  - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+    perSecond: 0.008
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

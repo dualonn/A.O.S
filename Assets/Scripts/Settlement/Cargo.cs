@@ -32,6 +32,16 @@ public partial class Settlement
     public bool HasStarportOn(WorldState w) =>
         w.buildings.Exists(b => b.IsBuilt && b.health > 0 && Database.GetBuilding(b.definitionId)?.launchesShips == true);
 
+    /// <summary>Does this world have a standing Star Gate?</summary>
+    public bool HasStarGateOn(WorldState w) =>
+        w != null && w.buildings.Exists(b => b.IsBuilt && b.health > 0 && Database.GetBuilding(b.definitionId)?.starGate == true);
+
+    /// <summary>How long a trip through two Star Gates takes (each way).</summary>
+    public const float GateTripSeconds = 5f;
+
+    /// <summary>Are these two of your worlds linked by Star Gates at both ends?</summary>
+    public bool GateLinked(WorldState a, WorldState b) => a != null && b != null && a != b && HasStarGateOn(a) && HasStarGateOn(b);
+
     /// <summary>Routes from one of your worlds to another.</summary>
     public List<CargoRoute> RoutesBetween(int from, int to) => State.routes.FindAll(r => r.fromWorld == from && r.toWorld == to);
 
@@ -69,6 +79,7 @@ public partial class Settlement
     {
         var a = PlanetOf(State.worlds[route.fromWorld]);
         var b = PlanetOf(State.worlds[route.toWorld]);
+        if (GateLinked(State.worlds[route.fromWorld], State.worlds[route.toWorld])) return 2f * GateTripSeconds;
         return a == null || b == null ? 600f : 2f * Galaxy.TravelSeconds(a, b, ShipSpeed);
     }
 

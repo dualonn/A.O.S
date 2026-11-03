@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiftMortar
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiftMortar
+  displayName: Rift Mortar
+  description: A cracked dome holding a small, angry rift. Each shot is a shard of
+    it that bursts wide.
+  icon: {fileID: 21300000, guid: a4f50e0462c05484abdca17852e77613, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a4f50e0462c05484abdca17852e77613, type: 3}
+    - {fileID: 21300000, guid: 62e1bfdb30b2b9740abad042532b64f3, type: 3}
+    - {fileID: 21300000, guid: 5839bb1e97795d447b0f72d8268d21be, type: 3}
+    - {fileID: 21300000, guid: b81cae85ed3bcb64891aad1908a5f9f4, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 9c45726d0b9ce004b990f167ef8601f6, type: 3}
+    - {fileID: 21300000, guid: 8741cbfafbd12c04e838062e9bdb52a9, type: 3}
+    - {fileID: 21300000, guid: 52af06e39d7276546b8680bdb741bf39, type: 3}
+    - {fileID: 21300000, guid: 5e4a5d72094ed9142bc8f3412eea4c2a, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 8bc5b59e28db99243991354cc48191e6, type: 3}
+    - {fileID: 21300000, guid: e05774904b49960499fb5ba97790b790, type: 3}
+    - {fileID: 21300000, guid: 6c90906bbee9ee448a19913444ccb998, type: 3}
+    - {fileID: 21300000, guid: e5eb1ec17ad23064898646c23273c6e8, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9c80b057599abdf4ca8623cd541a0871, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 980
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 110
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 180
+  upgrades:
+  - name: Longer Throw
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 110
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Wider Bursts
+    description: +160 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 69
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 160
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: b6f02d33784ee514ea2c8839716f0a7b, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e130089000996d74faead4f278f7472d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 550
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 65
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 3679
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 16
+  towerDamage: 575
+  towerCooldown: 3.1
+  towerProjectile: {fileID: 21300000, guid: 9e1a06a1adb06114b82cf2b3eb23f082, type: 3}
+  towerProjectileArc: 0.2
+  towerProjectileSpeed: 16
+  towerSplash: 3.1
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.3125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

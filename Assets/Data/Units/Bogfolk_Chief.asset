@@ -37,6 +37,7 @@ MonoBehaviour:
   muzzleSmoke: 0
   healer: 0
   healRange: 8
+  isNative: 1
   isBoss: 1
   bossAbility: 3
   abilityCooldown: 12

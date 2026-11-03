@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossDarkSun
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: The Dark Sun
+  icon: {fileID: 21300000, guid: ebae3b339d71ddc42b1e7c1b6a755007, type: 3}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 3314203118519964908, guid: 7197a331dc696e243bae85b6d96348e5, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 20000
+  moveSpeed: 0.65
+  attackPower: 260
+  attackCooldown: 3
+  attackRange: 10
+  hitDelay: 0.3
+  detectionRange: 10.5
+  projectile: {fileID: 21300000, guid: 66cfbdf1aedfe3441b7daed81d513c4c, type: 3}
+  projectileSpeed: 15
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.15
+  splashRadius: 2.4
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 1
+  bossAbility: 2
+  abilityCooldown: 11
+  abilityRadius: 2.2
+  abilityPower: 1.45
+  summons: {fileID: 0}
+  summonCount: 0

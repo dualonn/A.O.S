@@ -186,6 +186,7 @@ public class FreeModeHUD : MonoBehaviour
         StarMapPanel.Actions.Clear();   // (statics survive between plays: always point at this game)
         {
             StarMapPanel.Actions.Add(("Send a probe", p => !settlement.IsScanned(p.system), p => settlement.Launch(Settlement.Probe, p)));
+            StarMapPanel.Actions.Add(("Build an orbital mine", p => (p.kind == BodyKind.AsteroidBelt || p.kind == BodyKind.GasGiant) && !settlement.HasOrbitalMine(p), p => settlement.BuildOrbitalMine(p)));
             StarMapPanel.Actions.Add(("Send a colony ship", p => p.CanLand && settlement.IsScanned(p.system) && settlement.WorldIndexOf(p) < 0, p => settlement.Launch(Settlement.ColonyShip, p)));
         }
         starMapButton = UIBuilder.Button("StarMap", bar, () => starMap.Toggle(), out var starLabel, 40, 18);
@@ -671,7 +672,8 @@ public class FreeModeHUD : MonoBehaviour
         new Color(0.6f, 0.82f, 0.98f), new Color(0.85f, 0.55f, 0.45f),   // Enlightenment, Industrial
         new Color(0.7f, 0.75f, 0.5f), new Color(0.6f, 0.9f, 0.7f),       // Modern, Electric
         new Color(0.45f, 0.85f, 1f), new Color(0.78f, 0.6f, 1f),         // Information, Arcane
-        new Color(0.95f, 0.85f, 0.5f),                                   // Astral
+        new Color(0.95f, 0.85f, 0.5f), new Color(1f, 0.75f, 0.35f),      // Astral, Stellar
+        new Color(0.45f, 0.95f, 0.95f), new Color(0.75f, 0.65f, 1f),     // Interstellar, Galactic
     };
 
     private CollapsibleSection AgeSection(Age age, Transform parent)

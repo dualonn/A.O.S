@@ -40,7 +40,13 @@ public enum GearLook
     // Arcane technomancy (magic built into machines)
     RuneVisor, RunePlate, ManaRifle,
     // Astral Age (magic and sci-fi fused)
-    StarHelm, StarPlate, StarBlade, BeamStaff, VoidHelm, VoidPlate
+    StarHelm, StarPlate, StarBlade, BeamStaff, VoidHelm, VoidPlate,
+    // Stellar Age (sun-magic and solar tech)
+    SunHelm, SolarPlate, SunBlade, SunStaff, EclipseHood, HaloHead,
+    // Interstellar Age (gravity-magic and warp tech)
+    PhaseHelm, PhasePlate, PhaseBlade, GravityStaff, RiftMask, PrismHead, PrismBody,
+    // Galactic Age (cosmic magic and megastructures)
+    GalaxyHelm, CelestialPlate, SingularityBlade, CosmicStaff, HiveHead, HiveCarapace, StarCrown
 }
 
 /// <summary>

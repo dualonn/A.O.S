@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: BurningMirror
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: BurningMirror
+  displayName: Burning Mirror
+  description: A great curved mirror on a turret, a mage at its foot aiming it. It
+    burns raiders from very far away.
+  icon: {fileID: 21300000, guid: c039398f6ad72d94cab8ede4bf52770e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: c039398f6ad72d94cab8ede4bf52770e, type: 3}
+    - {fileID: 21300000, guid: 4e65afb68b75caf4193fe30589c74fcf, type: 3}
+    - {fileID: 21300000, guid: 7a21feb53ba61ee4392639fd21dac0c6, type: 3}
+    - {fileID: 21300000, guid: ef49c1e46f4a93a43a19ddf6b6188b33, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 369fc7eeb36d583449d0cc1f486ea6e1, type: 3}
+    - {fileID: 21300000, guid: 856952b563375794d846c790ea8b133d, type: 3}
+    - {fileID: 21300000, guid: 40e329cb4151a604a9b31e553b6f30e3, type: 3}
+    - {fileID: 21300000, guid: f4481fad30369db44810d108e6d77174, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: a8a44f1a1b8a5cd40b7d1b84a7265071, type: 3}
+    - {fileID: 21300000, guid: 36a3e1b2f2e7eee40847450450779e78, type: 3}
+    - {fileID: 21300000, guid: 6cf556643de476c439c43eb3faed0660, type: 3}
+    - {fileID: 21300000, guid: f79ad2e5a7d6c56479092367dbb8da4f, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: eabd4fe14c66aae43b5d67bbf77e6fed, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 200
+  upgrades:
+  - name: Wider Glass
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Noonday Focus
+    description: +150 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 150
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: d99fdc9112d4b5a4eb78a2172f17c230, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 55b3fa319be82764cbb73f49c584d44f, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 440
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 69
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1800
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 23
+  towerDamage: 480
+  towerCooldown: 2.8
+  towerProjectile: {fileID: 21300000, guid: f480c1ec777dc31409eeb2bfcbcde282, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 60
+  towerSplash: 1.4
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.5625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

@@ -70,6 +70,17 @@ public partial class Settlement
         return true;
     }
 
+    /// <summary>
+    /// How long a ship from the world you're on takes to reach 'target': by drive and distance, or
+    /// a few seconds if both ends have a Star Gate.
+    /// </summary>
+    public float TripSeconds(Planet target)
+    {
+        var there = State.worlds.Find(w => w.system == target.system.key && w.planet == target.index);
+        if (GateLinked(CurrentWorld, there)) return GateTripSeconds;
+        return Galaxy.TravelSeconds(CurrentPlanet ?? Galaxy.HomePlanet, target, ShipSpeed);
+    }
+
     /// <summary>Launch a ship from the world you're on.</summary>
     public bool Launch(string kind, Planet target)
     {
@@ -83,7 +94,7 @@ public partial class Settlement
             toSystem = target.system.key,
             toPlanet = target.index,
             departed = State.playTime,
-            arrives = State.playTime + Galaxy.TravelSeconds(CurrentPlanet ?? Galaxy.HomePlanet, target, ShipSpeed),
+            arrives = State.playTime + TripSeconds(target),
         };
         if (kind == ColonyShip)
         {

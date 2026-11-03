@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CelestialSpire
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CelestialSpire
+  displayName: Celestial Spire
+  description: A tower of dark glass reaching into orbit, a city on every floor.
+    Houses 280 people.
+  icon: {fileID: 21300000, guid: c52a0bf25c9337e49a5b41a8d97c617a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: c52a0bf25c9337e49a5b41a8d97c617a, type: 3}
+    - {fileID: 21300000, guid: 8812758f6b67ca249afe1bdf13c88aec, type: 3}
+    - {fileID: 21300000, guid: e8f624a63f32fe843961748b274fb052, type: 3}
+    - {fileID: 21300000, guid: 0c9c0fe4398dac74f99367f697b3946b, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: b93741ee79099a648a9f8e0cc91b9f52, type: 3}
+    - {fileID: 21300000, guid: 3c570a6e57bbebf498c7c2282cfc09a4, type: 3}
+    - {fileID: 21300000, guid: 14b88ced711cf124a9c31ce6a0d1d799, type: 3}
+    - {fileID: 21300000, guid: 3f7e721ab34d19d4f9c6427ca3d48adb, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 61b29a7f1ea5c964a9654f1697253cb2, type: 3}
+    - {fileID: 21300000, guid: 1e7d64ca9407c5744b60658c9eb6ef8d, type: 3}
+    - {fileID: 21300000, guid: 683a5812ad8c6d24d965327cb173f017, type: 3}
+    - {fileID: 21300000, guid: 86617c7c859289942a3f908d2dd96360, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 89b9892d6345534458f437087995470c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 78
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 290
+  upgrades:
+  - name: Orbital Gardens
+    description: +35 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 910
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 52
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 35
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Sky Cities
+    description: +40 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 104
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 290
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 40
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2665
+  housing: 280
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

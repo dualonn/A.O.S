@@ -69,6 +69,9 @@ public class SettlementState
     [Tooltip("Discoveries among the stars, newest last.")]
     public List<string> codex = new List<string>();
 
+    [Tooltip("Mines in orbit over belts and gas giants.")]
+    public List<OrbitalMineState> orbitalMines = new List<OrbitalMineState>();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>

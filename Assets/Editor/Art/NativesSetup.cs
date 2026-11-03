@@ -39,6 +39,7 @@ public static partial class PlaceholderArt
         {
             var u = MedievalUnit(s.id, s.name, astral, s.template, s.hp, s.atk, s.cd, s.range, s.speed);
             u.movement = Movement.Ground; u.flyHeight = 0f;
+            u.isNative = true;
             EditorUtility.SetDirty(u);
             if (!db.natives.Contains(u)) db.natives.Add(u);
             ids.Add(s.id);

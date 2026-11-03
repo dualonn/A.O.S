@@ -76,6 +76,9 @@ public class UnitDefinition : ScriptableObject
     public float healRange = 8f;
 
     [Header("Boss (raider chiefs only)")]
+    [Tooltip("Native to another world (Xenology research makes your troops hit them harder).")]
+    public bool isNative;
+
     public bool isBoss;
     public BossAbility bossAbility;
     [Tooltip("Seconds between uses of the ability.")]

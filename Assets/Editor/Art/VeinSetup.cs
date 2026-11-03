@@ -14,7 +14,7 @@ public static partial class PlaceholderArt
     /// <summary>The rare deposits that have rich veins, and how their seams look.</summary>
     private static readonly (string deposit, Ore ore)[] Veins =
     {
-        ("GoldOre", Ore.Gold), ("Runestone", Ore.Rune), ("Quicksilver", Ore.Quicksilver), ("Aether", Ore.Aether), ("Uranium", Ore.Uranium), ("Silicon", Ore.Silicon), ("Manastone", Ore.Mana), ("Starmetal", Ore.Starmetal),
+        ("GoldOre", Ore.Gold), ("Runestone", Ore.Rune), ("Quicksilver", Ore.Quicksilver), ("Aether", Ore.Aether), ("Uranium", Ore.Uranium), ("Silicon", Ore.Silicon), ("Manastone", Ore.Mana), ("Starmetal", Ore.Starmetal), ("Heliolite", Ore.Heliolite), ("Riftstone", Ore.Riftstone), ("Stardust", Ore.Stardust),
     };
 
     /// <summary>
@@ -90,6 +90,9 @@ public static partial class PlaceholderArt
         Ore.Uranium => new[] { P.Ray[1], P.Ray[2], P.Ray[3] },
         Ore.Mana => new[] { P.Mana[1], P.Mana[2], P.Mana[3] },
         Ore.Starmetal => new[] { P.Gold[1], P.Gold[3], P.White },
+        Ore.Heliolite => new[] { P.Heliolite[1], P.Heliolite[2], P.Heliolite[3] },
+        Ore.Riftstone => new[] { P.Riftstone[1], P.Riftstone[2], P.Riftstone[3] },
+        Ore.Stardust => new[] { P.Stardust[1], P.Stardust[2], P.Stardust[3] },
         Ore.Silicon => new[] { P.Linen[3], P.White, P.Neon[3] },
         _ => new[] { P.Rock[1], P.Rock[2], P.Rock[3] },
     };

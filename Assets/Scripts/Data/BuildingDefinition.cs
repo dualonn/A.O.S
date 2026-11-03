@@ -102,6 +102,9 @@ public class BuildingDefinition : GameData
     [Tooltip("A town centre only offered to found a settlement on a new world.")]
     public bool foundsColonies;
 
+    [Tooltip("A Star Gate: ships and cargo between two worlds that both have one arrive almost at once.")]
+    public bool starGate;
+
     [Header("Walls and gates (1x1, placed in lines)")]
     [Tooltip("Wall: blocks everyone. Gate: lets your units through, blocks raiders.")]
     public WallTile wallKind;

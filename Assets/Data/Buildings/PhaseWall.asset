@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PhaseWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PhaseWall
+  displayName: Phase Wall
+  description: A shimmering wall of teal light that is only half in this world, and
+    stops whatever is wholly in it.
+  icon: {fileID: 21300000, guid: 7e1f21b36215fc144ba0e46cd7d1d056, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a56343dcd531b2a4c81e8d7e97d36185, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 18
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 2
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: de92f3848a78fbf4c84d70eb3cc18fb5, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c96d49fd818998f4aad689ed4840799a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 15
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 2
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: 2b6910272311a0147886909c9c169d7f, type: 3}
+  - {fileID: 21300000, guid: 7b0a0e5869f3a0147ad45c3082de1f8f, type: 3}
+  - {fileID: 21300000, guid: 0d4612c208ccf6e44886e7f79bcf7a60, type: 3}
+  - {fileID: 21300000, guid: 7e1f21b36215fc144ba0e46cd7d1d056, type: 3}
+  - {fileID: 21300000, guid: ee0445c364e185f40a5503d291baf38c, type: 3}
+  - {fileID: 21300000, guid: 1275db6b337411e47b672a8d0e507c1f, type: 3}
+  - {fileID: 21300000, guid: 61d131fc16e6ec8418e5c040869a2789, type: 3}
+  - {fileID: 21300000, guid: 87bb7e08125bb83439607902c2e716bd, type: 3}
+  - {fileID: 21300000, guid: c6643d220bcc11b49ab4ca6ca1d3c171, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 7
+  maxCount: 0
+  maxHealth: 7819
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.15
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

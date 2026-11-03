@@ -669,6 +669,7 @@ public abstract class Unit : MonoBehaviour
         if (nav != null)
         {
             speed *= nav.SpeedFactor(transform.position);
+            if (Settlement.Instance != null) speed *= Settlement.Instance.UnitSpeedFactor;   // the world's gravity
             if (Time.time < rallyUntil) speed *= 1f + rallyBoost;
             Vector3 before = transform.position;
             transform.position = nav.Step(transform.position, next, speed * Time.deltaTime, Team);
@@ -729,6 +730,11 @@ public abstract class Unit : MonoBehaviour
             }
             float size = PersonalSpace / 0.8f;
             knockVelocity += away.normalized * knockback * size;
+        }
+        // Xenology: your people know where the natives of other worlds are soft.
+        if (attacker != null && attacker.Team == Team.Player && definition != null && definition.isNative && Settlement.Instance != null)
+        {
+            amount = Mathf.RoundToInt(amount * Settlement.Instance.XenologyFactor);
         }
         if (armour > 0)
         {

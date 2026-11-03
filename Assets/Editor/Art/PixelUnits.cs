@@ -108,6 +108,39 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Galactic Age (cosmic magic and megastructures)
+        ("AegisKnight", Fig(B, GearLook.GalaxyHelm, GearLook.SingularityBlade, GearLook.TowerShield, body: GearLook.CelestialPlate, shieldColor: "Cosmic", cape: "Cosmic"), false),
+        ("Starweaver", Fig(B, GearLook.Cowl, GearLook.CosmicStaff, body: GearLook.Spellweave, crest: "Cosmic"), false),
+        ("CometRider", Fig(B, GearLook.GalaxyHelm, GearLook.Javelin, body: GearLook.CelestialPlate, mount: MountKind.Comet), false),
+        ("Lifeweaver", Medic(Fig(B, GearLook.GalaxyHelm, GearLook.None, body: GearLook.Spellweave, crest: "Leaf")), false),
+        ("GateColossus", Fig(B, GearLook.GalaxyHelm, GearLook.Cannon, body: GearLook.CelestialPlate, mount: MountKind.GateRing, scale: 1.25f), false),
+        ("CelestialAvatar", Skin(Fig(B, GearLook.StarCrown, GearLook.SingularityBlade, body: GearLook.CelestialPlate, scale: 1.6f), "Cosmic"), false),
+        ("DreadnoughtArk", Fig(B, GearLook.GalaxyHelm, GearLook.Cannon, body: GearLook.CelestialPlate, mount: MountKind.Ark), false),
+        ("HiveDrone", Skin(Fig(Rd, GearLook.HiveHead, GearLook.Claw, body: GearLook.HiveCarapace, scale: 1.1f, raider: true), "Hive"), true),
+        ("HiveSpitter", Skin(Fig(Rd, GearLook.HiveHead, GearLook.CosmicStaff, body: GearLook.HiveCarapace, raider: true), "Hive"), true),
+        ("HiveSwarmer", Skin(Fig(Rd, GearLook.HiveHead, GearLook.Javelin, body: GearLook.HiveCarapace, mount: MountKind.SolarWings, raider: true), "Hive"), true),
+        // Interstellar Age (gravity-magic and warp tech)
+        ("Riftblade", Fig(B, GearLook.PhaseHelm, GearLook.PhaseBlade, body: GearLook.PhasePlate, cape: "Phase"), false),
+        ("Gravimancer", Fig(B, GearLook.Cowl, GearLook.GravityStaff, body: GearLook.Spellweave, crest: "Phase"), false),
+        ("WhaleRider", Fig(B, GearLook.PhaseHelm, GearLook.Javelin, body: GearLook.PhasePlate, mount: MountKind.StarWhale), false),
+        ("Riftmender", Medic(Fig(B, GearLook.PhaseHelm, GearLook.None, body: GearLook.Spellweave, crest: "Linen")), false),
+        ("GravityEngine", Fig(B, GearLook.PhaseHelm, GearLook.Cannon, body: GearLook.PhasePlate, mount: MountKind.GravityPyramid, scale: 1.2f), false),
+        ("PrismSentinel", Skin(Fig(B, GearLook.PrismHead, GearLook.PhaseBlade, body: GearLook.PrismBody, scale: 1.55f), "Riftstone"), false),
+        ("FoldCruiser", Fig(B, GearLook.PhaseHelm, GearLook.Cannon, body: GearLook.PhasePlate, mount: MountKind.FoldCruiser), false),
+        ("RiftReaver", Fig(Rd, GearLook.RiftMask, GearLook.PhaseBlade, body: GearLook.Robe, crest: "Rift", raider: true), true),
+        ("RiftWitch", Fig(Rd, GearLook.RiftMask, GearLook.GravityStaff, body: GearLook.Robe, crest: "Rift", raider: true), true),
+        ("VoidRayRider", Fig(Rd, GearLook.RiftMask, GearLook.Javelin, body: GearLook.Robe, crest: "Rift", mount: MountKind.StarWhale, scale: 0.8f, raider: true), true),
+        // Stellar Age (sun-magic and solar tech)
+        ("SolarPaladin", Fig(B, GearLook.SunHelm, GearLook.SunBlade, GearLook.KiteShield, body: GearLook.SolarPlate, shieldColor: "Solar", cape: "Solar"), false),
+        ("HelionMagus", Fig(B, GearLook.Cowl, GearLook.SunStaff, body: GearLook.Spellweave, crest: "Solar"), false),
+        ("Sunwing", Fig(B, GearLook.SunHelm, GearLook.Javelin, body: GearLook.SolarPlate, mount: MountKind.SolarWings), false),
+        ("Dawnkeeper", Medic(Fig(B, GearLook.SunHelm, GearLook.None, body: GearLook.Spellweave, crest: "Linen")), false),
+        ("SunOrb", Fig(B, GearLook.SunHelm, GearLook.Cannon, body: GearLook.SolarPlate, mount: MountKind.SunOrb, scale: 1.2f), false),
+        ("RadiantAutomaton", Skin(Fig(B, GearLook.HaloHead, GearLook.SunBlade, body: GearLook.SolarPlate, scale: 1.55f), "Synth"), false),
+        ("SolarBarque", Fig(B, GearLook.SunHelm, GearLook.Cannon, body: GearLook.SolarPlate, mount: MountKind.SolarBarque), false),
+        ("EclipseZealot", Fig(Rd, GearLook.EclipseHood, GearLook.SunBlade, body: GearLook.Robe, crest: "Eclipse", raider: true), true),
+        ("EclipseSeer", Fig(Rd, GearLook.EclipseHood, GearLook.SunStaff, body: GearLook.Robe, crest: "Eclipse", raider: true), true),
+        ("ShadeGlider", Fig(Rd, GearLook.EclipseHood, GearLook.Javelin, body: GearLook.Robe, crest: "Eclipse", mount: MountKind.SolarWings, raider: true), true),
         // Natives of other worlds
         ("Sandfolk_Skirmisher", Skin(Fig(Rd, GearLook.Hood, GearLook.Javelin, body: GearLook.Jerkin, raider: true), "Sandskin"), true),
         ("Sandfolk_Archer", Skin(Fig(Rd, GearLook.Headband, GearLook.Bow, body: GearLook.Jerkin, raider: true), "Sandskin"), true),
@@ -284,11 +317,20 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
                 : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball
                 : style.weapon == GearLook.ManaStaff || style.weapon == GearLook.ManaRifle ? manaBolt
-                : style.weapon == GearLook.BeamStaff ? starBolt : null;
+                : style.weapon == GearLook.BeamStaff ? starBolt
+                : style.weapon == GearLook.SunStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/SunBolt.png")
+                : style.weapon == GearLook.GravityStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/PhaseBolt.png")
+                : style.weapon == GearLook.CosmicStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/CosmicBolt.png") : null;
             SetFlight(def, style.weapon);
             if (style.mount == MountKind.Starship) StarshipGun(def, starBolt);
             if (style.mount == MountKind.HoverThrone) NovaGun(def);
             if (style.mount == MountKind.Drake) DrakeFire(def);
+            if (style.mount == MountKind.SunOrb) ShotOf(def, "Flare", 0.15f, 15f, 2.4f);
+            if (style.mount == MountKind.SolarBarque) ShotOf(def, "SunBolt", 0f, 28f, 1.3f);
+            if (style.mount == MountKind.GravityPyramid) ShotOf(def, "GravityWell", 0.12f, 16f, 2.6f);
+            if (style.mount == MountKind.FoldCruiser) ShotOf(def, "PhaseBolt", 0f, 32f, 1.4f);
+            if (style.mount == MountKind.GateRing) ShotOf(def, "QuasarBurst", 0.12f, 18f, 2.8f);
+            if (style.mount == MountKind.Ark) ShotOf(def, "CosmicBolt", 0f, 34f, 1.6f);
             EditorUtility.SetDirty(def);
         }
         if (database == null) return;
@@ -345,6 +387,9 @@ public static partial class PlaceholderArt
             case GearLook.ManaStaff: def.projectileArc = 0f; def.projectileSpeed = 20f; def.splashRadius = 0.9f; break;
             case GearLook.ManaRifle: def.projectileArc = 0f; def.projectileSpeed = 28f; def.splashRadius = 0.7f; break;
             case GearLook.BeamStaff: def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 0.8f; break;
+            case GearLook.SunStaff: def.projectileArc = 0f; def.projectileSpeed = 28f; def.splashRadius = 0.9f; break;
+            case GearLook.GravityStaff: def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 1.1f; break;
+            case GearLook.CosmicStaff: def.projectileArc = 0f; def.projectileSpeed = 30f; def.splashRadius = 1.1f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
@@ -357,6 +402,14 @@ public static partial class PlaceholderArt
     {
         def.projectile = starBolt;
         def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 1.2f; def.muzzleSmoke = false;
+    }
+
+    /// <summary>A craft's own gun: its shot, how it flies and how wide it bursts.</summary>
+    private static void ShotOf(UnitDefinition def, string shot, float arc, float speed, float splash)
+    {
+        var sprite = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png");
+        if (sprite != null) def.projectile = sprite;
+        def.projectileArc = arc; def.projectileSpeed = speed; def.splashRadius = splash; def.muzzleSmoke = false;
     }
 
     /// <summary>A war drake breathes fireballs that burst and set the ground alight.</summary>
@@ -541,6 +594,48 @@ public static partial class PlaceholderArt
 
     private static BossSpec[] BossSpecs => new[]
     {
+        new BossSpec
+        {
+            id = "BossEclipseProphet", name = "The Eclipse Prophet", age = "StellarAge",
+            style = Fig(Rd, GearLook.EclipseHood, GearLook.SunStaff, body: GearLook.Robe, crest: "Eclipse", cape: "Eclipse", scale: 1.8f, raider: true),
+            health = 18000, attack = 190, speed = 0.85f, cooldown = 1.5f, range = 8f, detection = 8.5f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "EclipseZealot", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "BossDarkSun", name = "The Dark Sun", age = "StellarAge",
+            style = Fig(Rd, GearLook.EclipseHood, GearLook.Cannon, body: GearLook.Robe, crest: "Eclipse", mount: MountKind.SunOrb, scale: 1.5f, raider: true),
+            health = 20000, attack = 260, speed = 0.65f, cooldown = 3.0f, range = 10f, detection = 10.5f,
+            ability = BossAbility.WarCry, abilityCooldown = 11f, abilityPower = 1.45f,
+        },
+        new BossSpec
+        {
+            id = "BossRiftQueen", name = "The Rift Queen", age = "InterstellarAge",
+            style = Fig(Rd, GearLook.RiftMask, GearLook.GravityStaff, body: GearLook.Robe, crest: "Rift", cape: "Rift", scale: 1.8f, raider: true),
+            health = 21000, attack = 215, speed = 0.85f, cooldown = 1.5f, range = 8f, detection = 8.5f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "RiftReaver", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "BossCollapsar", name = "The Collapsar", age = "InterstellarAge",
+            style = Fig(Rd, GearLook.RiftMask, GearLook.Cannon, body: GearLook.Robe, crest: "Rift", mount: MountKind.GravityPyramid, scale: 1.5f, raider: true),
+            health = 23000, attack = 300, speed = 0.6f, cooldown = 3.0f, range = 10.5f, detection = 11f,
+            ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 3.2f, abilityPower = 1.5f,
+        },
+        new BossSpec
+        {
+            id = "BossHiveMother", name = "The Hive Mother", age = "GalacticAge",
+            style = Skin(Fig(Rd, GearLook.HiveHead, GearLook.Claw, body: GearLook.HiveCarapace, scale: 2.3f, raider: true), "Hive"),
+            health = 26000, attack = 250, speed = 0.6f, cooldown = 1.4f, range = 1.3f, detection = 4f,
+            ability = BossAbility.Summon, abilityCooldown = 10f, summons = "HiveDrone", summonCount = 4,
+        },
+        new BossSpec
+        {
+            id = "BossWorldDevourer", name = "The World Devourer", age = "GalacticAge",
+            style = Skin(Fig(Rd, GearLook.HiveHead, GearLook.Cannon, body: GearLook.HiveCarapace, mount: MountKind.GateRing, scale: 1.5f, raider: true), "Hive"),
+            health = 28000, attack = 340, speed = 0.6f, cooldown = 3.0f, range = 11f, detection = 11.5f,
+            ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 3.4f, abilityPower = 1.55f,
+        },
         // Chiefs of the native peoples of other worlds (they lead their camps and raids there, never at home).
         new BossSpec
         {
@@ -779,6 +874,7 @@ public static partial class PlaceholderArt
             def.detectionRange = spec.detection;
             def.hitDelay = 0.3f;
             def.isBoss = true;
+            def.isNative = spec.native;
             def.bossAbility = spec.ability;
             def.abilityCooldown = spec.abilityCooldown;
             def.abilityRadius = spec.abilityRadius > 0 ? spec.abilityRadius : 2.2f;
@@ -793,11 +889,14 @@ public static partial class PlaceholderArt
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
                 GearLook.RayGun or GearLook.RayRifle => "RayBolt", GearLook.PlasmaRifle => "PlasmaBolt", GearLook.AssaultRifle => "Bullet",
-                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", GearLook.BeamStaff => "StarBolt", _ => null,
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", GearLook.BeamStaff => "StarBolt", GearLook.SunStaff => "SunBolt", GearLook.GravityStaff => "PhaseBolt", GearLook.CosmicStaff => "CosmicBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);
             if (spec.style.mount == MountKind.HoverThrone) NovaGun(def);
+            if (spec.style.mount == MountKind.SunOrb) ShotOf(def, "Flare", 0.15f, 15f, 2.4f);
+            if (spec.style.mount == MountKind.GravityPyramid) ShotOf(def, "GravityWell", 0.12f, 16f, 2.6f);
+            if (spec.style.mount == MountKind.GateRing) ShotOf(def, "QuasarBurst", 0.12f, 18f, 2.8f);
             def.prefab = BuildPixelUnit(spec.id, spec.style, true, def, boss: true);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{spec.id}/{spec.id}_Idle.png");
             EditorUtility.SetDirty(def);

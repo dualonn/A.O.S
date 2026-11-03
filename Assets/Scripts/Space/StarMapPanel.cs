@@ -240,9 +240,16 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         else
         {
             if (profile != null) sb.Append(profile.description).Append("\n\n");
-            if (p.traits.Count > 0) sb.Append("<b>Traits:</b> ").Append(string.Join(", ", p.traits)).Append("\n");
+            foreach (var t in p.traits)
+            {
+                string effect = Settlement.TraitEffect(t);
+                sb.Append($"<b>{t}</b>{(effect.Length > 0 ? $" <size=85%><color=#aaa>({effect})</color></size>" : "")}\n");
+            }
             if (p.moons > 0) sb.Append($"<b>Moons:</b> {p.moons}\n");
         }
+        if (settlement.HasOrbitalMine(p)) sb.Append("\n<color=#8f8>Your orbital mine works here.</color>\n");
+        else if (p.kind == BodyKind.AsteroidBelt || p.kind == BodyKind.GasGiant)
+            sb.Append($"\n<color=#aaa>Can be mined from orbit ({(p.kind == BodyKind.AsteroidBelt ? "starmetal, iron, stone" : "power cells, mana")}) from a Starport world in this system, with Astro-mining.</color>\n");
         int world = settlement.WorldIndexOf(p);
         if (world >= 0) sb.Append($"\n<color=#8f8>You have {(settlement.IsWorldFounded(settlement.State.worlds[world]) ? "a colony" : "a landing")} here.</color>\n");
         var from = settlement.CurrentPlanet;

@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GravityLens
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GravityLens
+  displayName: Gravity Lens
+  description: A ring of bent space on a black pillar. It drops crushing wells on
+    raiders from very far away.
+  icon: {fileID: 21300000, guid: f7ff90c900f33174782ab1c815276467, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f7ff90c900f33174782ab1c815276467, type: 3}
+    - {fileID: 21300000, guid: 12df743abd7f73f40ae4372499f7817b, type: 3}
+    - {fileID: 21300000, guid: f4c6d8c672898f243a91cc3c3425fe1c, type: 3}
+    - {fileID: 21300000, guid: c346fcef10cabe54faf9efef2dad2013, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: bb9d0ef3806a7c24ea2dc64e6005967c, type: 3}
+    - {fileID: 21300000, guid: fe05c97260f96c64884a4110b2d7c99b, type: 3}
+    - {fileID: 21300000, guid: 5af7d9ac71fb6c7458b3c06f45b8d10a, type: 3}
+    - {fileID: 21300000, guid: 42869ed6fb1643b4b82ae5166cb4d5a7, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 7f47536648d90e047ab63858ff82b83d, type: 3}
+    - {fileID: 21300000, guid: 0ea90168a95743e4bb21bdb2a2ee9c8d, type: 3}
+    - {fileID: 21300000, guid: cb378bf9a75567c4d8aa480fa8ef39a6, type: 3}
+    - {fileID: 21300000, guid: 4eba81c18bd30e84f8759e79edd5875d, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 55b3fa319be82764cbb73f49c584d44f, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 860
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 250
+  upgrades:
+  - name: Further Still
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 110
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 180
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Heavier Blows
+    description: +160 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 69
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 160
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 22090e2c6c78b4d41817a2b0d6fd726e, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 56a3e1408d2fdc9439bc11322be2aeb2, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 490
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 78
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2242
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 24
+  towerDamage: 598
+  towerCooldown: 2.8
+  towerProjectile: {fileID: 21300000, guid: a7701d4cb90f4ad44bac4978e31152f4, type: 3}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 22
+  towerSplash: 1.5
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

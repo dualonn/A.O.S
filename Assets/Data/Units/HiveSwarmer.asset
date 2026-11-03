@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: HiveSwarmer
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Hive Swarmer
+  icon: {fileID: 21300000, guid: 895acbd33c7a58a4db831acb741ab585, type: 3}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 3460578206598109125, guid: a17a92f50a295904a8383fbac6f3080c, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 1300
+  moveSpeed: 2.8
+  attackPower: 117
+  attackCooldown: 1.3
+  attackRange: 6.5
+  hitDelay: 0.3
+  detectionRange: 5.5
+  projectile: {fileID: 21300000, guid: 15a329f5384798748932b1b779a7b5b4, type: 3}
+  projectileSpeed: 28
+  movement: 1
+  flyHeight: 1
+  projectileArc: 0.22
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

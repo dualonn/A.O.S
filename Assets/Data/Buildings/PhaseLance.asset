@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PhaseLance
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PhaseLance
+  displayName: Phase Lance
+  description: A spike of teal crystal that flickers in and out of the world as it
+    fires.
+  icon: {fileID: 21300000, guid: 85afe8d55cabfe843a94cfd9f672902c, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 85afe8d55cabfe843a94cfd9f672902c, type: 3}
+    - {fileID: 21300000, guid: d203ce87cabd85442b1b4bad86bc5fff, type: 3}
+    - {fileID: 21300000, guid: 89692999ce867374aa8cbf648e1e3f00, type: 3}
+    - {fileID: 21300000, guid: 962dc82cae152c14fb973a0ec7be3e72, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 0235f3306edd79140adf959ed05c0a5a, type: 3}
+    - {fileID: 21300000, guid: 3d51b057158bf1047bec3cbc2a2d1a33, type: 3}
+    - {fileID: 21300000, guid: 1b9efbc99c94d6449b9b3aba929c7c94, type: 3}
+    - {fileID: 21300000, guid: 0e221cb2d8d27704e94a3c29a28ca3ba, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 92ea47d929777714e93a59a166bbbcea, type: 3}
+    - {fileID: 21300000, guid: f6f5395f588beab419b99f992e0aa1e6, type: 3}
+    - {fileID: 21300000, guid: ef8aa6d2ceaf9024ca51ada29a02ba6a, type: 3}
+    - {fileID: 21300000, guid: 140bc10106fb2274e96ac7645f7b98ff, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a56343dcd531b2a4c81e8d7e97d36185, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 750
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 34
+  upgrades:
+  - name: Longer Reach
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 69
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 380
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Harder Strikes
+    description: +22 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+        amount: 92
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 34
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 22
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: bd4e26f3f4a2d674c81399364a2f69f2, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c96d49fd818998f4aad689ed4840799a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 430
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 46
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 3219
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 12.5
+  towerDamage: 89
+  towerCooldown: 0.4
+  towerProjectile: {fileID: 21300000, guid: e413fe0a7b3463d4a8983059f7a3ff9f, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 34
+  towerSplash: 0.9
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.6875}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

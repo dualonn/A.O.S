@@ -88,6 +88,20 @@ public static class PixelPalette
     public static readonly Color32[] Void = { H("10060f"), H("2c1038"), H("5e1c6e"), H("e85ad8") };
     /// <summary>Meteoric starmetal: dark iron with a gold-white sheen.</summary>
     public static readonly Color32[] Starmetal = { H("2a2c34"), H("4c505e"), H("6e7486"), H("9aa0b2"), H("f2e6b8") };
+    /// <summary>Sun-gold and white for the Stellar Age; the Eclipse cult's black with a burning rim; heliolite's orange glow.</summary>
+    public static readonly Color32[] Solar = { H("8a4a0e"), H("d08a1c"), H("f6c442"), H("fff2b0") };
+    public static readonly Color32[] Eclipse = { H("0e0a0e"), H("221820"), H("3e2a2c"), H("ff8a2a") };
+    public static readonly Color32[] Heliolite = { H("6a2a08"), H("b05a10"), H("f09030"), H("ffd890") };
+    /// <summary>Interstellar Age: phase teal, the Rift's violet and acid green, riftstone, and the star whales' deep blue.</summary>
+    public static readonly Color32[] Phase = { H("0e2a3a"), H("1e5a6e"), H("3aa8b8"), H("b0f0f0") };
+    public static readonly Color32[] Rift = { H("140a1a"), H("3a1450"), H("7a2aa0"), H("50ffb0") };
+    public static readonly Color32[] Riftstone = { H("2a1a4a"), H("4a2a8a"), H("8a5ae0"), H("d0b0ff") };
+    public static readonly Color32[] Whale = { H("0e1a3a"), H("1e3a6a"), H("3a6aaa"), H("8ac0ff") };
+    /// <summary>Galactic Age: the deep violet of the night sky, the Hive's chitin and amber, stardust, a comet's blue-white.</summary>
+    public static readonly Color32[] Cosmic = { H("0a0618"), H("1e1240"), H("3a2a78"), H("c0b0ff") };
+    public static readonly Color32[] Hive = { H("1a1a0a"), H("3a3a14"), H("6a6a20"), H("ffc040") };
+    public static readonly Color32[] Stardust = { H("2a2a40"), H("5a5a8a"), H("a0a0e0"), H("fff8e0") };
+    public static readonly Color32[] Comet = { H("1a2a4a"), H("4a7aba"), H("a0d0ff"), H("ffffff") };
     /// <summary>Skins of the peoples native to other worlds.</summary>
     public static readonly Color32[] Sandskin = { H("6e4a22"), H("a8783c"), H("d6a860"), H("f2d49a") };
     public static readonly Color32[] Frostskin = { H("3a5470"), H("6a8cb0"), H("a8c8e4"), H("e6f2ff") };
@@ -119,6 +133,9 @@ public static class PixelPalette
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
         "Arcane" => Arcane, "Mana" => Mana, "Moonstone" => Moonstone, "Griffin" => Griffin, "Wyvern" => Wyvern,
         "Astral" => Astral, "Void" => Void, "Starmetal" => Starmetal, "Drake" => Drake,
+        "Solar" => Solar, "Eclipse" => Eclipse, "Heliolite" => Heliolite,
+        "Phase" => Phase, "Rift" => Rift, "Riftstone" => Riftstone, "Whale" => Whale,
+        "Cosmic" => Cosmic, "Hive" => Hive, "Stardust" => Stardust, "Comet" => Comet,
         "Sandskin" => Sandskin, "Frostskin" => Frostskin, "Bogskin" => Bogskin, "Ashskin" => Ashskin,
         "Shardskin" => Shardskin, "Reefskin" => Reefskin, "Barkskin" => Barkskin,
         "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,

@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: InterstellarAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Interstellar Age
+  order: 14
+  description: 'Space folded by gravity-magic and warp engines: phase blades, gravity
+    staffs, star whales, pyramids that bend the ground, and cruisers that skip between
+    stars.'
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 6b2b1e70b076a5e4aa3fe4ddd475412c, type: 2}
+    buildings: []
+    population: 1200
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 14950
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 9200
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 12650
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 3450
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 2070
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 2530
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 2070
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 340
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 400
+  playerUnits:
+  - {fileID: 11400000, guid: 4bb537f46619bc244a5b1d8276086826, type: 2}
+  - {fileID: 11400000, guid: 9aba5c56b138b674faa4e5fef3c27e67, type: 2}
+  - {fileID: 11400000, guid: 76e02fdeb4956c248ad3d12a9e1bfbb6, type: 2}
+  - {fileID: 11400000, guid: 0a4042d64d9423943b47b49121e3eccc, type: 2}
+  - {fileID: 11400000, guid: c1ad2d4c325e8bc40be3d92f2903766c, type: 2}
+  - {fileID: 11400000, guid: 4a80201136cfafc41958bd82007594c3, type: 2}
+  - {fileID: 11400000, guid: 4065b372e3fe2124f95f3bd5307aded6, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 71ad5870a8ea3e44c89b5b9e82e9f0cb, type: 2}
+  - {fileID: 11400000, guid: 61068c774f68b604b8dd6a85873b1e8b, type: 2}
+  - {fileID: 11400000, guid: bf68cd9a8441a4f479d73cd45f625aa6, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 0f92761caa4de8046b599194c8ff85dd, type: 2}
+  - {fileID: 11400000, guid: 07bf2b2ba8edfb64eb6c6a8c79de5f65, type: 2}
