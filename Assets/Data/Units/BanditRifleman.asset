@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BanditRifleman
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Bandit Rifleman
+  icon: {fileID: 21300000, guid: 692ab9b5f42f2af49ac57af364d2dd55, type: 3}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
+  prefab: {fileID: 880790867681655070, guid: f4d88da51eb548e42a29e3d04a604bf5, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 300
+  moveSpeed: 0.9
+  attackPower: 54
+  attackCooldown: 2.5
+  attackRange: 6.6
+  hitDelay: 0.3
+  detectionRange: 5.5
+  projectile: {fileID: 21300000, guid: 62b9d0317cf91f14f900fb7501cbc382, type: 3}
+  projectileSpeed: 26
+  projectileArc: 0
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 1
+  healer: 0
+  healRange: 8
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

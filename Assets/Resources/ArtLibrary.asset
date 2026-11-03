@@ -174,10 +174,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 196fc3ab1255c8545983e31931789717, type: 3}
   - {fileID: 21300000, guid: 63a4b5f95afc73049951222d951bcaaf, type: 3}
   - {fileID: 21300000, guid: 1290b05562b243446a7e62b98a612298, type: 3}
+  - {fileID: 21300000, guid: 1d0c5655fd777f74aad5c1042399d1ed, type: 3}
   siteVeinIds:
   - GoldOre
   - Runestone
   - Quicksilver
+  - Aether
   siteIcons:
   - {fileID: 21300000, guid: 83034151085e0d94b97a7a3ed034255d, type: 3}
   - {fileID: 21300000, guid: 2e985ef847e9e27408d14d34a472314f, type: 3}

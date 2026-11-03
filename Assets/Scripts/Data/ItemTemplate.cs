@@ -22,7 +22,9 @@ public enum GearLook
     // Medieval
     GreatHelm, KettleHat, Cowl, Robe, Surcoat, Crossbow, Pike, Lance, Mace, RuneStaff, KiteShield,
     // Renaissance
-    Morion, FeatheredCap, PlagueMask, Doublet, Cuirass, Arquebus, Pistol, Halberd, Zweihander, Flask, Cannon
+    Morion, FeatheredCap, PlagueMask, Doublet, Cuirass, Arquebus, Pistol, Halberd, Zweihander, Flask, Cannon,
+    // Industrial (steampunk)
+    Shako, Bearskin, TopHat, Goggles, BoilerHelm, Greatcoat, BrassPlate, Rifle, Grenade, AetherRod, Wrench, PistonHammer
 }
 
 /// <summary>

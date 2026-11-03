@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: EngineWorks
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: EngineWorks
+  displayName: Engine Works
+  description: 'A great engine shed with rails out of its doors. Builds Steam Crawlers:
+    armoured, slow, and their shells burst.'
+  icon: {fileID: 21300000, guid: 667866f394ae5f34eaf94804354200eb, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 667866f394ae5f34eaf94804354200eb, type: 3}
+    - {fileID: 21300000, guid: 8403aac46989b38429fede1e2e10093b, type: 3}
+    - {fileID: 21300000, guid: 351aca1f21015c14689748dab1d90938, type: 3}
+    - {fileID: 21300000, guid: 2ae588232e2737e4a925d3e996d930c0, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 5249deb6215aae64a80f895e952c2642, type: 3}
+    - {fileID: 21300000, guid: d96f119f93a78924e81bceec080ca742, type: 3}
+    - {fileID: 21300000, guid: d653304a727eb6b48b2e1df246a7d94d, type: 3}
+    - {fileID: 21300000, guid: 9010251fa766af4478ad19c3def9323b, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: d3aae4fe039f7cf4e8153d70ec361ea7, type: 3}
+    - {fileID: 21300000, guid: 81004348e14336144aded56bbca218f5, type: 3}
+    - {fileID: 21300000, guid: d141a18d9ef688c42a7bc20f0bcca75d, type: 3}
+    - {fileID: 21300000, guid: 31a23e101fbcf3847b46e446c57e106f, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 65ff20fd7080e144abf2fa00eca27b23, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 60
+  upgrades:
+  - name: Second Slip
+    description: +1 crawler.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 60
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Armoured Hulls
+    description: Crawlers are 25% tougher.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1100
+  housing: 0
+  workers: 5
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: a6d0fcb2dca7f6940b514821c1e5484e, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

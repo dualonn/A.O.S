@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: BessemerWorks
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: BessemerWorks
+  displayName: Bessemer Works
+  description: 'A steel mill with a roaring converter: twice the steel of the old
+    works, burning coal instead of charcoal.'
+  icon: {fileID: 21300000, guid: 5debae359d93e69439e6053c9580e47b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 5debae359d93e69439e6053c9580e47b, type: 3}
+    - {fileID: 21300000, guid: c7bd0d05cde4003458d438f8538aec1d, type: 3}
+    - {fileID: 21300000, guid: e79a78008fcfa9c41bca91862b6d7653, type: 3}
+    - {fileID: 21300000, guid: 19831c7f24ddb4345ac7505a2aa9c3b2, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: f8619ae10fe21214cad47feb744764b5, type: 3}
+    - {fileID: 21300000, guid: d57b3b53df51a1b40a86728ad7bd39b7, type: 3}
+    - {fileID: 21300000, guid: 4cae473145385e140ba998c81dd8bd9f, type: 3}
+    - {fileID: 21300000, guid: 3047523d32205ed468e19ff4c5d71e24, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 23f6ec69042177340a4a82bdc0a0e4ff, type: 3}
+    - {fileID: 21300000, guid: e8d5d432448901a48a348b8c654a8255, type: 3}
+    - {fileID: 21300000, guid: 013c4d128fb56134b8fb2cc7a06e2146, type: 3}
+    - {fileID: 21300000, guid: 389c690c014ed514f93bd46913e9a220, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9026f26c2f355f641946629c675dab78, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 200
+  upgrades:
+  - name: Second Converter
+    description: +30% steel.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Rolling Mill
+    description: +30% steel.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 80
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 900
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+    perSecond: 0.2
+  inputs:
+  - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+    perSecond: 0.18
+  - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+    perSecond: 0.12
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

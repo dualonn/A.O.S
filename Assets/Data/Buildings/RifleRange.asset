@@ -1,0 +1,192 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RifleRange
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RifleRange
+  displayName: Rifle Range
+  description: 'A covered firing shed and iron targets far down the range. Trains
+    Riflemen: long reach, true aim.'
+  icon: {fileID: 21300000, guid: 43308ad753def0041abe5b1f8c5cbfac, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 43308ad753def0041abe5b1f8c5cbfac, type: 3}
+    - {fileID: 21300000, guid: 9e54777461751b24180a2699ac33f13d, type: 3}
+    - {fileID: 21300000, guid: 8498ad086a664b540a31ee5affa07264, type: 3}
+    - {fileID: 21300000, guid: 77248775c0d003b43a34b7e6c3c53a2f, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 13394c5d185c265499047be51443c54a, type: 3}
+    - {fileID: 21300000, guid: 7e0b6e1b4ede19d4394e0b6680e331d7, type: 3}
+    - {fileID: 21300000, guid: 2a1e188ef8587d94497da92b31c1bb9e, type: 3}
+    - {fileID: 21300000, guid: ed3b8a99d4158c44c8112b6e951addbf, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 806640a094754824a8c6ac170fcdcbb3, type: 3}
+    - {fileID: 21300000, guid: 18bd98016f00ef84699bfbe50f29ee57, type: 3}
+    - {fileID: 21300000, guid: bbe07b1c574e50940ab621e0cb08c1bc, type: 3}
+    - {fileID: 21300000, guid: 79c4c84e1e7589c48a6b25031db42a5c, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: c3e6c5f83280f7a44aa7562c9cf533e3, type: 3}
+    - {fileID: 21300000, guid: 2507b4d8b2b8c0f4b9c70ff77883477d, type: 3}
+    - {fileID: 21300000, guid: 2b28fc196cc0d3f46979a6a630ec5772, type: 3}
+    - {fileID: 21300000, guid: ff8cbc821aee06c42aa0065ca16adc96, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 40772a2c5333ee94089ccb623bfe1f29, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 60
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 800
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 02c2beb14aea91d4eb01ed3a2b5ef58e, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

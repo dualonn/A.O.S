@@ -14,7 +14,7 @@ public static partial class PlaceholderArt
     /// <summary>The rare deposits that have rich veins, and how their seams look.</summary>
     private static readonly (string deposit, Ore ore)[] Veins =
     {
-        ("GoldOre", Ore.Gold), ("Runestone", Ore.Rune), ("Quicksilver", Ore.Quicksilver),
+        ("GoldOre", Ore.Gold), ("Runestone", Ore.Rune), ("Quicksilver", Ore.Quicksilver), ("Aether", Ore.Aether),
     };
 
     /// <summary>
@@ -43,7 +43,7 @@ public static partial class PlaceholderArt
         foreach (var (id, _) in Veins)
         {
             var dep = db.deposits.Find(d => d != null && d.id == id);
-            if (dep == null) { Debug.LogWarning($"Rich veins: no {id} deposit."); continue; }
+            if (dep == null) continue;   // a later age's deposit, not set up yet
             dep.richVeins = true;
             EditorUtility.SetDirty(dep);
         }
@@ -86,6 +86,7 @@ public static partial class PlaceholderArt
         Ore.Gold => new[] { P.Gold[1], P.Gold[2], P.Gold[3] },
         Ore.Rune => new[] { P.Rune[1], P.Rune[2], P.Rune[3] },
         Ore.Quicksilver => new[] { P.Red[1], P.Red[2], P.Steel[3] },
+        Ore.Aether => new[] { P.Aether[1], P.Aether[2], P.Aether[3] },
         _ => new[] { P.Rock[1], P.Rock[2], P.Rock[3] },
     };
 

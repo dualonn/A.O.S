@@ -56,6 +56,10 @@ public static class PixelPalette
     public static readonly Color32[] Berry = { H("5a0e24"), H("a01e3a"), H("e0365a"), H("ff8aa0") };
     /// <summary>The cold blue-green glow of carved runes.</summary>
     public static readonly Color32[] Rune = { H("143a44"), H("1f7a80"), H("46d6c8"), H("c4fff2") };
+    /// <summary>Polished brass: steam fittings, gauges, automaton plate.</summary>
+    public static readonly Color32[] Brass = { H("6a4416"), H("b07c26"), H("e2b44a"), H("fff0a8") };
+    /// <summary>The violet-blue crackle of aether.</summary>
+    public static readonly Color32[] Aether = { H("2a1f5c"), H("5a3fc0"), H("9f8cff"), H("e6e0ff") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -75,6 +79,7 @@ public static class PixelPalette
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
+        "Brass" => Brass, "Aether" => Aether,
         _ => Blue,
     };
 }

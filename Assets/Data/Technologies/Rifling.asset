@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: Rifling
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: Rifling
+  displayName: Rifling
+  description: Spiral grooves that make a ball fly true. Unlocks the Rifle Range;
+    all troops hit 4% harder.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: d33a436df33ca4443b01c4db1612aa2e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 20
+  researchTime: 100
+  unitModifiers:
+  - troopClass: {fileID: 0}
+    healthMultiplier: 1
+    attackMultiplier: 1.04
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+    rangeMultiplier: 1
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SteamGunTurret
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SteamGunTurret
+  displayName: Steam Gun Turret
+  description: An enclosed iron turret on a brick base. Its gunners work in safety
+    inside; the shells burst among the raiders.
+  icon: {fileID: 21300000, guid: 74b5f296047a5394eb9caa63be179612, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 74b5f296047a5394eb9caa63be179612, type: 3}
+    - {fileID: 21300000, guid: 1d87c130f01c549459a108cb380d35a8, type: 3}
+    - {fileID: 21300000, guid: 8d4a96280c11be14bb0bfe646eae8a4a, type: 3}
+    - {fileID: 21300000, guid: b63d1e9422e2248499d1f1e275182209, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: b7a3d0008cb3b654ea315f9371d0a8e6, type: 3}
+    - {fileID: 21300000, guid: aa2731e33ab0ad54c9f966be4bde4e50, type: 3}
+    - {fileID: 21300000, guid: c4ce7e74c5c285c4a8c0ef7ee56ed2c5, type: 3}
+    - {fileID: 21300000, guid: f346abf042a719849a1abf9ec132103c, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 313f8f4f3a436d542bac1c1128524a59, type: 3}
+    - {fileID: 21300000, guid: cce41372eb4fee7449a70c352dd20834, type: 3}
+    - {fileID: 21300000, guid: aa5ee1788caeb664baee2ab263a425e1, type: 3}
+    - {fileID: 21300000, guid: 7532c6f05776d6f4aa41b425a768b838, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: b5488c61f87320540bd2b90cc03425dd, type: 3}
+    - {fileID: 21300000, guid: 6ee8ac91b01b72d41ad84c40abd04b0d, type: 3}
+    - {fileID: 21300000, guid: 72338d6bbcb187d46a371b0004e604ce, type: 3}
+    - {fileID: 21300000, guid: 8a71b3ebead35a049b34749f91aeecbc, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e811fe94e44a1904c8696f8cef4f45c9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 450
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 30
+  upgrades:
+  - name: Rifled Barrel
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 20
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: High Explosive
+    description: +50 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 50
+    operatorLift: 0
+  - name: Armour Plate
+    description: +700 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 700
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1300
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 12
+  towerDamage: 150
+  towerCooldown: 3
+  towerProjectile: {fileID: 21300000, guid: 6d2b20e5091d5584a937364e11060c0c, type: 3}
+  towerProjectileArc: 0.04
+  towerProjectileSpeed: 18
+  towerSplash: 1.8
+  towerMuzzleSmoke: 1
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

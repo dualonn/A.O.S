@@ -81,7 +81,21 @@ public static partial class PlaceholderArt
         ("Landsknecht", Fig(Rd, GearLook.FeatheredCap, GearLook.Zweihander, body: GearLook.Doublet, raider: true, crest: "Gold"), true),
         ("Highwayman", Fig(Rd, GearLook.FeatheredCap, GearLook.Pistol, body: GearLook.Jerkin, mount: MountKind.Horse, raider: true, coat: "DarkHorse", crest: "Coal"), true),
         ("BrigandMusketeer", Fig(Rd, GearLook.Cap, GearLook.Arquebus, body: GearLook.Jerkin, raider: true), true),
+        // Industrial (steampunk)
+        ("Rifleman", Fig(B, GearLook.Shako, GearLook.Rifle, body: GearLook.Greatcoat, crest: "Red"), false),
+        ("Grenadier", Fig(B, GearLook.Bearskin, GearLook.Grenade, body: GearLook.Greatcoat, crest: "Red"), false),
+        ("Dragoon", Fig(B, GearLook.Shako, GearLook.Rifle, body: GearLook.Greatcoat, mount: MountKind.Horse, crest: "Gold", coat: "DarkHorse"), false),
+        ("FieldSurgeon", Medic(Fig(B, GearLook.TopHat, GearLook.None, body: GearLook.Greatcoat, crest: "Linen")), false),
+        ("AetherEngineer", Fig(B, GearLook.Goggles, GearLook.AetherRod, body: GearLook.Greatcoat, crest: "Aether"), false),
+        ("SteamCrawler", Fig(B, GearLook.Goggles, GearLook.Cannon, body: GearLook.Greatcoat, mount: MountKind.Crawler, crest: "Gold"), false),
+        ("Automaton", Skin(Fig(B, GearLook.BoilerHelm, GearLook.PistonHammer, body: GearLook.BrassPlate, scale: 1.3f), "Brass"), false),
+        ("Saboteur", Fig(Rd, GearLook.Goggles, GearLook.Wrench, body: GearLook.Jerkin, raider: true), true),
+        ("BanditRifleman", Fig(Rd, GearLook.Cap, GearLook.Rifle, body: GearLook.Jerkin, raider: true), true),
+        ("SteamBrute", Fig(Rd, GearLook.Goggles, GearLook.PistonHammer, body: GearLook.BrassPlate, scale: 1.2f, raider: true), true),
     };
+
+    private static FigureStyle Medic(FigureStyle s) { s.medic = true; return s; }
+    private static FigureStyle Skin(FigureStyle s, string skin) { s.skin = skin; return s; }
 
     /// <summary>Tower crews (drawn from the waist up; they stand behind a parapet).</summary>
     private static (string building, string name, FigureStyle style)[] PixelCrews => new[]
@@ -102,8 +116,11 @@ public static partial class PlaceholderArt
         Debug.Log("Unit art generated.");
     }
 
-    /// <summary>Generate every unit's frames and prefab, and every crewed tower's operator and projectile.</summary>
-    private static void GenerateWarriorsAndCrews(GameDatabase database)
+    /// <summary>
+    /// Generate units' frames and prefabs, and crewed towers' operators and projectiles. 'only' limits it
+    /// to those unit and tower ids (an age's setup redraws just what it adds); null redraws everything.
+    /// </summary>
+    private static void GenerateWarriorsAndCrews(GameDatabase database, ICollection<string> only = null)
     {
         var arrow = PixelProjectile("Arrow", 12, 5, DrawArrow);
         var bolt = PixelProjectile("Bolt", 16, 6, DrawBolt);
@@ -117,8 +134,21 @@ public static partial class PlaceholderArt
             c.Ellipse(new Vector2(4, 3.5f), 3, 3, new[] { PixelPalette.Green[0], PixelPalette.Green[2], PixelPalette.Green[3], PixelPalette.White });
             c.Rect(3, 6, 4, 8, PixelPalette.Linen[3]); c.Put(4, 8, PixelPalette.Fire[2]);
         });
+        var grenade = PixelProjectile("Grenade", 7, 8, c =>
+        {
+            c.Ellipse(new Vector2(3.5f, 3.5f), 3, 3, PixelPalette.Iron); c.Put(2, 5, PixelPalette.Steel[3]);
+            c.Put(5, 6, PixelPalette.Linen[2]); c.Put(6, 7, PixelPalette.Fire[3]);
+        });
+        var aetherBolt = PixelProjectile("AetherBolt", 12, 7, c =>
+        {
+            var a = PixelPalette.Aether;
+            c.LineRaw(new Vector2(1, 3), new Vector2(4, 4), a[1]); c.LineRaw(new Vector2(4, 4), new Vector2(6, 2), a[2]);
+            c.LineRaw(new Vector2(6, 2), new Vector2(8, 3), a[2]);
+            c.Ellipse(new Vector2(9, 3), 2.2f, 2.2f, a); c.Put(9, 4, a[3]);
+        });
         foreach (var (id, style, enemy) in PixelWarriors)
         {
+            if (only != null && !only.Contains(id)) continue;
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>($"Assets/Data/Units/{id}.asset");
             if (def == null) continue;
             string name = id == "EnemyClubman" ? "Raider" : id;   // keep existing prefab names
@@ -127,7 +157,8 @@ public static partial class PlaceholderArt
             def.projectile = style.weapon == GearLook.Bow ? arrow : style.weapon == GearLook.Sling ? stone
                 : style.weapon == GearLook.Javelin ? javelin : style.weapon == GearLook.Crossbow ? bolt
                 : style.weapon == GearLook.RuneStaff ? runeBolt
-                : style.weapon == GearLook.Arquebus || style.weapon == GearLook.Pistol ? ball
+                : style.weapon == GearLook.Arquebus || style.weapon == GearLook.Pistol || style.weapon == GearLook.Rifle ? ball
+                : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
                 : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball : null;
             SetFlight(def, style.weapon);
             EditorUtility.SetDirty(def);
@@ -135,6 +166,7 @@ public static partial class PlaceholderArt
         if (database == null) return;
         foreach (var (buildingId, name, style) in PixelCrews)
         {
+            if (only != null && !only.Contains(buildingId)) continue;
             var tower = database.GetBuilding(buildingId);
             if (tower == null) continue;
             string dir = $"Units/{name}";
@@ -172,6 +204,9 @@ public static partial class PlaceholderArt
             case GearLook.RuneStaff: def.projectileArc = 0f; def.projectileSpeed = 12f; break;
             case GearLook.Javelin: def.projectileArc = 0.22f; break;
             case GearLook.Arquebus: case GearLook.Pistol: def.projectileArc = 0f; def.projectileSpeed = 22f; def.muzzleSmoke = true; break;
+            case GearLook.Rifle: def.projectileArc = 0f; def.projectileSpeed = 26f; def.muzzleSmoke = true; break;
+            case GearLook.Grenade: def.projectileArc = 0.4f; def.projectileSpeed = 8f; def.splashRadius = 1.5f; break;
+            case GearLook.AetherRod: def.projectileArc = 0f; def.projectileSpeed = 18f; def.splashRadius = 0.8f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
@@ -400,13 +435,31 @@ public static partial class PlaceholderArt
             health = 4200, attack = 60, speed = 0.85f, cooldown = 1.6f, range = 4.5f, detection = 5f,
             ability = BossAbility.Slam, abilityCooldown = 8f, abilityRadius = 2.4f, abilityPower = 1.2f,
         },
+        new BossSpec
+        {
+            id = "BossIronBaron", name = "Baron Ferrous in his Iron Suit", age = "IndustrialAge",
+            style = Fig(Rd, GearLook.BoilerHelm, GearLook.PistonHammer, body: GearLook.BrassPlate, cape: "Coal", scale: 1.8f, raider: true),
+            health = 6800, attack = 96, speed = 0.8f, cooldown = 1.3f, range = 0.95f, detection = 3.5f,
+            ability = BossAbility.Slam, abilityCooldown = 6.5f, abilityRadius = 2.6f, abilityPower = 1.35f,
+        },
+        new BossSpec
+        {
+            id = "BossMadEngineer", name = "Professor Cogsworth, Mad Engineer", age = "IndustrialAge",
+            style = Fig(Rd, GearLook.TopHat, GearLook.AetherRod, body: GearLook.Greatcoat, crest: "Aether", cape: "Purple", scale: 1.6f, raider: true),
+            health = 5200, attack = 72, speed = 0.85f, cooldown = 1.5f, range = 5f, detection = 5.5f,
+            ability = BossAbility.Summon, abilityCooldown = 13f, summons = "Saboteur", summonCount = 3,
+        },
     };
 
     [MenuItem("Tools/Age of Stickman/Setup Bosses")]
-    public static void SetupBosses()
+    public static void SetupBosses() => SetupBosses(null);
+
+    /// <summary>Set up raider chiefs; 'onlyAge' limits it to that age's chiefs.</summary>
+    private static void SetupBosses(string onlyAge)
     {
         foreach (var spec in BossSpecs)
         {
+            if (onlyAge != null && spec.age != onlyAge) continue;
             string path = $"Assets/Data/Units/{spec.id}.asset";
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>(path);
             if (def == null)
@@ -437,7 +490,8 @@ public static partial class PlaceholderArt
             string shot = spec.style.weapon switch
             {
                 GearLook.Bow => "Arrow", GearLook.Crossbow => "Bolt", GearLook.Flask => "FireFlask",
-                GearLook.Arquebus or GearLook.Pistol => "MusketBall", GearLook.RuneStaff => "RuneBolt", _ => null,
+                GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle => "MusketBall", GearLook.RuneStaff => "RuneBolt",
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);

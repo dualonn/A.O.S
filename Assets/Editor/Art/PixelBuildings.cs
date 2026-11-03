@@ -47,7 +47,7 @@ public static partial class PlaceholderArt
     private static void GenerateBuildingLooks(BuildingDefinition def)
     {
         if (!PixelBuildingArt.TryGetValue(def.id, out var art) && !MedievalBuildingArt.TryGetValue(def.id, out art)
-            && !RenaissanceBuildingArt.TryGetValue(def.id, out art)) return;
+            && !RenaissanceBuildingArt.TryGetValue(def.id, out art) && !IndustrialBuildingArt.TryGetValue(def.id, out art)) return;
         string dir = $"Buildings/{def.id}";
         ResetDir(dir);
         int artW = Mathf.RoundToInt(def.ArtSize.x * TilePx), artH = Mathf.RoundToInt(def.ArtSize.y * TilePx);

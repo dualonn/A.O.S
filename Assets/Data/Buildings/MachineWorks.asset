@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: MachineWorks
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: MachineWorks
+  displayName: Machine Works
+  description: 'A machine shop of lathes and belts: turns Steel and Coal into Gears.'
+  icon: {fileID: 21300000, guid: 7b39b6479414e004893d73cbed36b794, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7b39b6479414e004893d73cbed36b794, type: 3}
+    - {fileID: 21300000, guid: ce5c1943e4fdf3b40af0bd618bba51bb, type: 3}
+    - {fileID: 21300000, guid: f19cebc76e4176043b3fa3d861a95b41, type: 3}
+    - {fileID: 21300000, guid: 60297df98b6858742916ca434f188749, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 25c52c4da904f3b4585a263d733f66c4, type: 3}
+    - {fileID: 21300000, guid: e45d1ef699a0c48489e565d6aab3d85f, type: 3}
+    - {fileID: 21300000, guid: 0661fb0f8918f4e4c8064d537cf477eb, type: 3}
+    - {fileID: 21300000, guid: 44f0ee0b6799f0e42a6ea025ec857e42, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 3f0de84b908d9eb448f5945d97390204, type: 3}
+    - {fileID: 21300000, guid: 08c79902789533f47913ddb9d4d8a929, type: 3}
+    - {fileID: 21300000, guid: 88c32ae84dc8eea4fb724e50fcd34ded, type: 3}
+    - {fileID: 21300000, guid: 718023dd349d8574e83138c1ffe7d4b7, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d33a436df33ca4443b01c4db1612aa2e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 100
+  upgrades:
+  - name: Line Shafting
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 160
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steam Hammers
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+        amount: 120
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 600
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+    perSecond: 0.1
+  inputs:
+  - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+    perSecond: 0.06
+  - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+    perSecond: 0.1
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

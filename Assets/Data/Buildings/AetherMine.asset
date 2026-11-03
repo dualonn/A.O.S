@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AetherMine
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AetherMine
+  displayName: Aether Mine
+  description: A drift into the hill, lit violet. Must be built on or next to Aether,
+    or right on a rich aether vein found in the wild.
+  icon: {fileID: 21300000, guid: 17e01efcf5b2dee41a9c959cef53771c, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 17e01efcf5b2dee41a9c959cef53771c, type: 3}
+    - {fileID: 21300000, guid: add3ff9a48e3d8249bb3aa436374f5e2, type: 3}
+    - {fileID: 21300000, guid: ef646cd395c388b4992916fb1d28674b, type: 3}
+    - {fileID: 21300000, guid: 87da49ced9f880b4f955919fe099aa06, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 82c55275098326b4587e5373d69f441c, type: 3}
+    - {fileID: 21300000, guid: 6e0bde1e268cc244cb20d1772629d6e4, type: 3}
+    - {fileID: 21300000, guid: 2cd64074575e90048ae19cb96d8e08b1, type: 3}
+    - {fileID: 21300000, guid: 02464408c49e1bc409a0a1021f990909, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 7ad331628c7fd654381c3c2600e1c1fe, type: 3}
+    - {fileID: 21300000, guid: 6bb16dc478dc26643adeabdfb75875cb, type: 3}
+    - {fileID: 21300000, guid: 85abd4fa9634c8f47ae0eb3c275b8dfc, type: 3}
+    - {fileID: 21300000, guid: c9e07e80e7b2e434ba248d70e083eef5, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2320d60080af74149b0b11e06d14cb6d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 20
+  upgrades:
+  - name: Brass Pumps
+    description: +30% aether.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Resonance Drills
+    description: +30% aether.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 11400000, guid: 190774014c431874a9e298bf52f89add, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 8
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 500
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+    perSecond: 0.08
+  inputs: []
+  runsWithoutInputs: 0.5
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

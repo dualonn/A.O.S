@@ -11,7 +11,7 @@ using static Painter;
 /// </summary>
 public static partial class PlaceholderArt
 {
-    private enum Ore { None, Copper, Iron, Gold, Rune, Saltpetre, Quicksilver }
+    private enum Ore { None, Copper, Iron, Gold, Rune, Saltpetre, Quicksilver, Coal, Aether }
 
     private const int StoneVariants = 4;
     private const int OreVariants = 3;

@@ -437,7 +437,7 @@ public static partial class PlaceholderArt
             return;
         }
         var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : P.Rock;
-        if (ore == Ore.Quicksilver) rock = P.Stone;
+        if (ore == Ore.Quicksilver || ore == Ore.Aether) rock = P.Stone;
         (float x, float y, float rx, float ry)[] stones = variant switch
         {
             0 => new (float x, float y, float rx, float ry)[] { (16, 10, 10, 7) },
@@ -458,6 +458,8 @@ public static partial class PlaceholderArt
             Ore.Gold => new[] { P.Gold[1], P.Gold[2], P.Gold[3] },
             Ore.Rune => new[] { P.Rune[2], P.Rune[1], P.Rune[3] },
             Ore.Quicksilver => new[] { P.Red[1], P.Red[2], P.Steel[3] },   // red cinnabar, silver beads
+            Ore.Coal => new[] { P.Coal[0], P.Coal[1], P.Iron[3] },          // black seams with an oily sheen
+            Ore.Aether => new[] { P.Aether[1], P.Aether[2], P.Aether[3] },
             _ => null,
         };
         if (ore == Ore.Rune)
@@ -472,7 +474,16 @@ public static partial class PlaceholderArt
                 c.Put(x + 1, gy + 2, P.Rune[3]); c.Put(x - 1, gy + 1, P.Rune[2]);
             }
         }
-        for (int i = 0; i < (vein != null ? 10 : 4); i++)
+        if (ore == Ore.Aether)
+        {
+            // violet crystals jutting from the rock
+            foreach (var (x, y, h) in new[] { (12, 12, 5), (17, 14, 7), (22, 11, 4) })
+            {
+                for (int d = 0; d < h; d++) { c.Put(x, y + d, P.Aether[2]); c.Put(x + 1, y + d, d == h - 1 ? P.Aether[3] : P.Aether[1]); }
+                c.Put(x, y + h, P.Aether[3]);
+            }
+        }
+        for (int i = 0; i < (vein != null ? (ore == Ore.Coal ? 16 : 10) : 4); i++)
         {
             int x = rng.Next(4, 28), y = rng.Next(4, 20);
             if (c.Get(x, y).a < 200) continue;

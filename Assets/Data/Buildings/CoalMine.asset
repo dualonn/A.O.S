@@ -1,0 +1,157 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CoalMine
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CoalMine
+  displayName: Coal Mine
+  description: A pithead and winding gear over a deep shaft. Must be built on or
+    next to Coal (black seams in the hills).
+  icon: {fileID: 21300000, guid: 3b12e62ada6f75f4584dc87fec0ecd61, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3b12e62ada6f75f4584dc87fec0ecd61, type: 3}
+    - {fileID: 21300000, guid: 835dfa60395a69b42a98b1a9992193b1, type: 3}
+    - {fileID: 21300000, guid: 8d37f1dd5cd1c314cb79aaebb9dc5538, type: 3}
+    - {fileID: 21300000, guid: 0a51fcd28196005429efb2b5757fba50, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: c62b52bf8ca4bf44cb03653a9fa7712a, type: 3}
+    - {fileID: 21300000, guid: e3a29708850f1cb4aaa10da8614ef319, type: 3}
+    - {fileID: 21300000, guid: 37b6f5a7313e3f84195fa2ab258026e3, type: 3}
+    - {fileID: 21300000, guid: 5302c30d1d3b31242bb8fab32a726087, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 71dc7d6919bac85499b99bac77f66177, type: 3}
+    - {fileID: 21300000, guid: 8bdff36dfe7fabe40a4fd279208491d6, type: 3}
+    - {fileID: 21300000, guid: 3bebfd050b8dd634f9f42b4bd51123f9, type: 3}
+    - {fileID: 21300000, guid: 88752ddfe0e45034ca3930341e6b287e, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bb79679fe86a4d94499c4dd40649d567, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 280
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 80
+  upgrades:
+  - name: Pumping Engine
+    description: +30% coal.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 200
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Shaft
+    description: +30% coal.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 100
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 11400000, guid: 3301da96046dada4aa0fa8f2dbe1d60d, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 8
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 450
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+    perSecond: 0.25
+  inputs: []
+  runsWithoutInputs: 0.5
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

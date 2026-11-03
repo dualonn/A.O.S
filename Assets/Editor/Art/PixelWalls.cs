@@ -16,7 +16,7 @@ public static partial class PlaceholderArt
     {
         public Color32[] ramp;
         public int height;        // face height in pixels
-        public int kind;          // 0 palisade, 1 mud brick, 2 stone, 3 ashlar
+        public int kind;          // 0 palisade, 1 mud brick, 2 stone, 3 ashlar, 4 castle, 5 iron plate
         public bool crenels, towers;
     }
 
@@ -31,7 +31,8 @@ public static partial class PlaceholderArt
         2 => new PxWallStyle { ramp = P.Stone, height = 29, kind = 2, crenels = true, towers = true },
         3 => new PxWallStyle { ramp = P.Plaster, height = 32, kind = 3, crenels = true, towers = true },
         4 => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
-        _ => new PxWallStyle { ramp = BastionRamp, height = 26, kind = 1, crenels = false, towers = true }, // low, thick brick bastion wall
+        5 => new PxWallStyle { ramp = BastionRamp, height = 26, kind = 1, crenels = false, towers = true }, // low, thick brick bastion wall
+        _ => new PxWallStyle { ramp = P.Iron, height = 30, kind = 5, crenels = false, towers = true },     // riveted iron-plated wall
     };
 
     /// <summary>Red brick for Renaissance bastion walls.</summary>
@@ -65,6 +66,15 @@ public static partial class PlaceholderArt
                 if (tone < 0) tone += 4;
                 Color32 face = tone == 0 ? r[3] : r[2];
                 return rv == course - 1 ? PixelCanvas.Mix(face, P.White, 0.12f) : face;
+            }
+            case 5:   // riveted iron plates, 8 wide and 6 high, a brass band near the top
+            {
+                int pu = ((u % 8) + 8) % 8, pv = v % 6;
+                if (v >= s.height - 3 && v < s.height - 1) return P.Brass[pv % 2 == 0 ? 1 : 2];
+                if (v < 2) return r[0];
+                if (pu == 0 || pv == 0) return r[0];
+                if ((pu == 2 || pu == 6) && (pv == 1 || pv == 5)) return P.Brass[2];   // rivets
+                return pu < 3 ? r[3] : r[2];
             }
         }
         return r[2];
@@ -298,12 +308,16 @@ public static partial class PlaceholderArt
     }
 
     [MenuItem("Tools/Age of Stickman/Generate Wall Art")]
-    public static void GenerateWallArt()
+    public static void GenerateWallArt() => GenerateWallArt(-1);
+
+    /// <summary>Draw wall and gate pieces; 'onlyTier' limits it to one age's pair (-1 = all).</summary>
+    private static void GenerateWallArt(int onlyTier)
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("IroncladWall", "IroncladGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
+            if (onlyTier >= 0 && age != onlyTier) continue;
             var wall = db.GetBuilding(tiers[age].Item1);
             var gate = db.GetBuilding(tiers[age].Item2);
             if (wall != null) { wall.pieces = WallPieces(wall.id, age); wall.icon = wall.pieces[3]; EditorUtility.SetDirty(wall); }

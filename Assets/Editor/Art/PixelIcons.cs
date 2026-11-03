@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -149,6 +149,38 @@ public static partial class PlaceholderArt
         c.Rect(8, 12, 11, 17, P.Linen[3]);
         c.Rect(7, 17, 12, 18, P.Wood[2]);
         c.Put(7, 9, P.White);
+    }
+
+    private static void IcCoal(PixelCanvas c)
+    {
+        // a heap of glossy black lumps
+        c.Ellipse(Iv(7, 6), 5, 4, P.Coal); c.Ellipse(Iv(13, 6), 5, 4, P.Coal); c.Ellipse(Iv(10, 11), 5, 4.5f, P.Coal);
+        c.Put(9, 13, P.Iron[3]); c.Put(14, 8, P.Iron[2]); c.Put(5, 7, P.Iron[2]);
+    }
+
+    private static void IcGears(PixelCanvas c)
+    {
+        // two meshing brass gears
+        foreach (var (x, y, r) in new[] { (7f, 11f, 5f), (14f, 6f, 4f) })
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                float a = i / 8f * Mathf.PI * 2f;
+                c.Put(Iv(x + Mathf.Cos(a) * (r + 1), y + Mathf.Sin(a) * (r + 1)), P.Brass[1]);
+            }
+            c.Ellipse(Iv(x, y), r, r, P.Brass);
+            c.Ellipse(Iv(x, y), r * 0.35f, r * 0.35f, new[] { P.Coal[1], P.Coal[1], P.Brass[0], P.Brass[0] });
+        }
+    }
+
+    private static void IcAether(PixelCanvas c)
+    {
+        // a cluster of glowing violet crystals
+        foreach (var (x, h) in new[] { (6, 9), (10, 14), (14, 8) })
+        {
+            for (int y = 2; y < 2 + h; y++) { c.Put(x, y, P.Aether[2]); c.Put(x + 1, y, P.Aether[1]); c.Put(x - 1, y, P.Aether[3]); }
+            c.Put(x, 2 + h, P.Aether[3]);
+        }
     }
 
     private static void IcCoin(PixelCanvas c)
