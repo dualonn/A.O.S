@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Nanoassembler
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Nanoassembler
+  displayName: Nanoassembler
+  description: Parts slide out of a glowing assembler. Gears without end.
+  icon: {fileID: 21300000, guid: 53f43f392b0208e4ab8cab5127ec7e1e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 53f43f392b0208e4ab8cab5127ec7e1e, type: 3}
+    - {fileID: 21300000, guid: 68d6f56ecc6bfc44f8c2057fdad1163c, type: 3}
+    - {fileID: 21300000, guid: a78470ec9d1ad764fb94da2ee8cb14c3, type: 3}
+    - {fileID: 21300000, guid: ea3f3422ac37a1e4b8c42be3dc722ce7, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: d31b8597ecd200a4d895eb53ba219829, type: 3}
+    - {fileID: 21300000, guid: c5acff08b360e374b9d1c61e842eb451, type: 3}
+    - {fileID: 21300000, guid: a54524813754252409e7934d8d291486, type: 3}
+    - {fileID: 21300000, guid: 1f32594010897114db3cf192201f6e73, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a043e2851083b104f9d36bbbea42bfbd, type: 3}
+    - {fileID: 21300000, guid: de103dc547fd3e146b261b1cb75abba2, type: 3}
+    - {fileID: 21300000, guid: f9d26e6af31a9df4db87b43d90a3c398, type: 3}
+    - {fileID: 21300000, guid: 2d7823e5986909a458feb410d3967d8a, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bd555015ccb4a17458babaf077b596cd, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 60
+  upgrades:
+  - name: Parallel Lines
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 100
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Self-Repair
+    description: +30% gears.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1100
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+    perSecond: 0.36
+  inputs:
+  - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+    perSecond: 0.14
+  - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+    perSecond: 0.02
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

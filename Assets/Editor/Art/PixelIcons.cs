@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -149,6 +149,24 @@ public static partial class PlaceholderArt
         c.Rect(8, 12, 11, 17, P.Linen[3]);
         c.Rect(7, 17, 12, 18, P.Wood[2]);
         c.Put(7, 9, P.White);
+    }
+
+    private static void IcSilicon(PixelCanvas c)
+    {
+        // a cluster of clear quartz crystals
+        foreach (var (x, h) in new[] { (6, 8), (10, 13), (14, 9) })
+        {
+            for (int y = 2; y < 2 + h; y++) { c.Put(x, y, P.Linen[3]); c.Put(x + 1, y, P.Stone[2]); c.Put(x - 1, y, P.White); }
+            c.Put(x, 2 + h, P.White);
+        }
+    }
+
+    private static void IcMicrochips(PixelCanvas c)
+    {
+        // a black chip with silver legs and a glowing die
+        c.Rect(5, 5, 14, 14, P.Coal[1]);
+        for (int i = 0; i < 4; i++) { c.Put(4, 6 + i * 2, P.Steel[3]); c.Put(15, 6 + i * 2, P.Steel[3]); c.Put(6 + i * 2, 4, P.Steel[3]); c.Put(6 + i * 2, 15, P.Steel[3]); }
+        c.Rect(8, 8, 11, 11, P.Neon[2]);
     }
 
     private static void IcUranium(PixelCanvas c)

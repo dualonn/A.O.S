@@ -32,7 +32,9 @@ public enum GearLook
     // Tunnellers
     Pick,
     // Electric Age (retro-futuristic)
-    BubbleHelmet, RobotHead, Jumpsuit, ChromePlate, RayGun, RayRifle, Claw
+    BubbleHelmet, RobotHead, Jumpsuit, ChromePlate, RayGun, RayRifle, Claw,
+    // Information Age (cyber)
+    TacHelmet, SynthHead, TacVest, SynthBody, AssaultRifle, PlasmaRifle, EnergyBlade
 }
 
 /// <summary>

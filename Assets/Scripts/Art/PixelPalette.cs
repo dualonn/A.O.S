@@ -68,6 +68,12 @@ public static class PixelPalette
     public static readonly Color32[] Chrome = { H("3a4656"), H("7a8ca0"), H("c2d2e0"), H("f2f8ff") };
     /// <summary>Neon ray-gun green.</summary>
     public static readonly Color32[] Ray = { H("0a5c2a"), H("22b04a"), H("7cff7c"), H("e0ffe0") };
+    /// <summary>Neon cyan: holograms, visors and circuit lines.</summary>
+    public static readonly Color32[] Neon = { H("0a3a5c"), H("1a8ac8"), H("5ad8ff"), H("d8f6ff") };
+    /// <summary>The pale synthetic skin of androids.</summary>
+    public static readonly Color32[] Synth = { H("8a94a0"), H("c4ccd6"), H("e6ecf2"), H("ffffff") };
+    /// <summary>Matte black tactical gear.</summary>
+    public static readonly Color32[] Tactical = { H("16181c"), H("2a2e34"), H("454b54"), H("6a727e") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -87,7 +93,7 @@ public static class PixelPalette
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
-        "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray,
+        "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,
         _ => Blue,
     };
 }

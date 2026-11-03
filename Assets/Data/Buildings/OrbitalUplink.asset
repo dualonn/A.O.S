@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: OrbitalUplink
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: OrbitalUplink
+  displayName: Orbital Uplink
+  description: 'A mast and a dish aimed at the sky: it calls down a beam from a satellite
+    overhead. Reaches further than anything.'
+  icon: {fileID: 21300000, guid: 51fc48c448fffd243abbb48dead3fae7, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 51fc48c448fffd243abbb48dead3fae7, type: 3}
+    - {fileID: 21300000, guid: c806fc37a5f4e634a815ddfd314731d6, type: 3}
+    - {fileID: 21300000, guid: 2b4536a0410faee4cabf3ec6d7d90e44, type: 3}
+    - {fileID: 21300000, guid: cddcb14b4970aa14d824c74c3e0202ca, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: ec626136684387e4a85eaf8771644bfe, type: 3}
+    - {fileID: 21300000, guid: 3fb93617440dc6642a5d2ea2b55e8433, type: 3}
+    - {fileID: 21300000, guid: be397d48d1ab74f43a5f2b2a52ac0d18, type: 3}
+    - {fileID: 21300000, guid: 153048234c756ce448683ee1fba11f20, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: aabca598fb14a3e41a9dcfee83c9eaca, type: 3}
+    - {fileID: 21300000, guid: f308238d4cc087149bfdfd44ab99b06e, type: 3}
+    - {fileID: 21300000, guid: 2b5317dafc7989d4faec81bf17fa3ef9, type: 3}
+    - {fileID: 21300000, guid: b7e8fb928e3f2b04b8cff2414ec6bfd7, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d4c418f4144459c4fb32bcf97221647d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 100
+  upgrades:
+  - name: Second Satellite
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+        amount: 100
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Focused Beam
+    description: +100 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 80
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 100
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1300
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 19
+  towerDamage: 320
+  towerCooldown: 3
+  towerProjectile: {fileID: 21300000, guid: 9cde60c9e26e12b40975cf4f78c36345, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 70
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.78125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

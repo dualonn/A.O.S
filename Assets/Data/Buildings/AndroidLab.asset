@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AndroidLab
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AndroidLab
+  displayName: Android Lab
+  description: A white lab where androids are brought online in glass cradles. The
+    robot, made in our image.
+  icon: {fileID: 21300000, guid: d055b33fa71208f459a7d40f9abe8f16, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d055b33fa71208f459a7d40f9abe8f16, type: 3}
+    - {fileID: 21300000, guid: 3cba5d7c833ce0242b1d4c674e94ba41, type: 3}
+    - {fileID: 21300000, guid: 60c963e9e95c8dd41ad0468758c6554a, type: 3}
+    - {fileID: 21300000, guid: 1b3f915a284b9eb49ab1e0470390fcbd, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 0849a8606efbda949bf128e08e5d0620, type: 3}
+    - {fileID: 21300000, guid: 4d0386da5396b43499d508c531e535cb, type: 3}
+    - {fileID: 21300000, guid: bff198f8be1affa4ca36b97c7f5df59a, type: 3}
+    - {fileID: 21300000, guid: 7115001a46459924a90204213728540f, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 2ccc365c83437e143bf176641c2ea1e2, type: 3}
+    - {fileID: 21300000, guid: 3abc35df66a6c0c4b94084c12a8abae1, type: 3}
+    - {fileID: 21300000, guid: b52c0101f35c15c41ac4fe0d6ac3a4e2, type: 3}
+    - {fileID: 21300000, guid: 9aa25b15e1929bb439c3107c981713b7, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: f250bbbbe2086354da94a0c6c793d1fd, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 80
+  upgrades:
+  - name: Second Cradle
+    description: +1 android.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Neural Lattice
+    description: Androids hit 25% harder and are 20% faster.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 80
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1.2
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1300
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 2c4d01b56f6452743816a1dc9c081d15, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

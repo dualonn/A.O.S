@@ -112,13 +112,18 @@ MonoBehaviour:
     extraTowerRange: 0
     extraTowerDamage: 0
     operatorLift: 0
-  rankUpTo: {fileID: 0}
+  rankUpTo: {fileID: 11400000, guid: 64dfdeb29081a4b48a1955563184dcbc, type: 2}
   rankUpRequirements:
     minimumAge: {fileID: 0}
-    technologies: []
+    technologies:
+    - {fileID: 11400000, guid: bd555015ccb4a17458babaf077b596cd, type: 2}
     buildings: []
     population: 0
-    cost: []
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 30
   rankUpTime: 40
   isTownCenter: 0
   wallKind: 0

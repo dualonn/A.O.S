@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PlasmaTurret
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PlasmaTurret
+  displayName: Plasma Turret
+  description: A black dome turret with twin plasma barrels. A stream of star-hot
+    bolts.
+  icon: {fileID: 21300000, guid: 3e09a0ac34b7fc74eba17c5ac9d8ebd6, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3e09a0ac34b7fc74eba17c5ac9d8ebd6, type: 3}
+    - {fileID: 21300000, guid: 9aedc302cf49c3d48b893eab03d9a788, type: 3}
+    - {fileID: 21300000, guid: 138bc8c254e2f044cb589e95d5956971, type: 3}
+    - {fileID: 21300000, guid: cdada89659e07ba41899a199a2814a8b, type: 3}
+    fps: 8
+  - frames:
+    - {fileID: 21300000, guid: 18fdea5cbfb8f81449ab77c0834dda39, type: 3}
+    - {fileID: 21300000, guid: 3fb0332a1b946794aa5b818c5e2df4c6, type: 3}
+    - {fileID: 21300000, guid: bccf0d0af3f7fed4e9d95e926a9f292c, type: 3}
+    - {fileID: 21300000, guid: ef540cd3784081144bfaef64fe22a2ce, type: 3}
+    fps: 8
+  - frames:
+    - {fileID: 21300000, guid: fa0c5c6b245e7d24ea61f6caa6334d6b, type: 3}
+    - {fileID: 21300000, guid: 9c790381d676e9d4f91c2d97fe0c8a33, type: 3}
+    - {fileID: 21300000, guid: 9aef9b08458266044a282766dad3f45f, type: 3}
+    - {fileID: 21300000, guid: 43e0c4808d3ba1a4abcdd2fd5539abab, type: 3}
+    fps: 8
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b6fa6b5ebaf8e0848937608ebaaed298, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 80
+  upgrades:
+  - name: Targeting Computer
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 80
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Hotter Plasma
+    description: +14 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 14
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1900
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 10
+  towerDamage: 40
+  towerCooldown: 0.4
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 34
+  towerSplash: 0.5
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1.875, y: 0.640625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

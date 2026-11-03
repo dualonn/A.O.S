@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -67,7 +67,7 @@ public class FigureStyle
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
         GearLook.AetherRod or GearLook.LeydenRod => WeaponClass.Staff,
-        GearLook.RayGun or GearLook.RayRifle => WeaponClass.Musket,
+        GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
     };
@@ -120,6 +120,8 @@ public static class PixelFigure
             case MountKind.HoverTank: w = 96; h = 60; cx = 32; gy = 4; break;
             case MountKind.HoverCar: w = 80; h = 56; cx = 32; gy = 4; break;
             case MountKind.Jetpack: w = 56; h = 76; cx = 26; gy = 4; break;   // flying on a rocket pack
+            case MountKind.Drone: w = 40; h = 56; cx = 20; gy = 4; break;     // a pilotless quad-rotor
+            case MountKind.Jet: w = 84; h = 80; cx = 40; gy = 4; break;       // a jet fighter, the pilot under its canopy
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -175,15 +177,20 @@ public static class PixelFigure
 
     /// <summary>Two-handed shoulder guns (arquebus, rifle).</summary>
     private static bool LongGun(FigureStyle s) => s.weapon == GearLook.Arquebus || s.weapon == GearLook.Rifle || s.weapon == GearLook.Musket
-        || s.weapon == GearLook.BoltRifle || s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun || s.weapon == GearLook.RayRifle;
+        || s.weapon == GearLook.BoltRifle || s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun || s.weapon == GearLook.RayRifle
+        || s.weapon == GearLook.AssaultRifle || s.weapon == GearLook.PlasmaRifle;
 
     /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
     private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
         || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill || m == MountKind.HoverTank || m == MountKind.HoverCar;
 
+    /// <summary>Machines with nobody visible aboard: only the machine is drawn.</summary>
+    private static bool Pilotless(MountKind m) => m == MountKind.Drone || m == MountKind.Jet;
+
     /// <summary>How high a flying craft is drawn above its shadow (pixels, before scaling).</summary>
     private static int Altitude(FigureStyle s) => s.mount == MountKind.Airship ? 50 : s.mount == MountKind.Biplane ? 40
-        : s.mount == MountKind.Jetpack ? 28 : s.mount == MountKind.HoverTank || s.mount == MountKind.HoverCar ? 6 : 0;
+        : s.mount == MountKind.Jetpack ? 28 : s.mount == MountKind.HoverTank || s.mount == MountKind.HoverCar ? 6
+        : s.mount == MountKind.Drone ? 30 : s.mount == MountKind.Jet ? 42 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -288,6 +295,11 @@ public static class PixelFigure
             return c;
         }
         var pose = PoseFor(s, frame);
+        if (Pilotless(s.mount))
+        {
+            MachineRig.Draw(c, s, pose.attack, pose.release, frame, cx, gy + Mathf.RoundToInt(Altitude(s) * s.scale), gy);
+            return c;
+        }
         new Rig(c, s, pose, cx, gy + Mathf.RoundToInt(Altitude(s) * s.scale), gy).Draw();
         return c;
     }
@@ -428,8 +440,9 @@ public static class PixelFigure
 
         private void StandingLegs()
         {
-            bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm;   // robots and automatons
-            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : P.Brass) : s.raider ? P.Leather : P.Cloth;
+            bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody;   // robots, automatons, androids
+            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : P.Brass)
+                : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
             Color32[] boots = metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
             Leg(footNear, pants[2], boots[2], 1);
@@ -455,6 +468,8 @@ public static class PixelFigure
                 GearLook.BrassPlate => P.Brass,
                 GearLook.Fatigues => P.Olive,
                 GearLook.Jumpsuit => team,
+                GearLook.TacVest => P.Tactical,
+                GearLook.SynthBody => P.Synth,
                 GearLook.ChromePlate => P.Chrome,
                 GearLook.TrenchCoat => P.Khaki,
                 GearLook.Robe => crest,
@@ -560,6 +575,22 @@ public static class PixelFigure
                     c.Line(V(a.x + X(0.4f), a.y + 1), V(b.x + X(0.4f), b.y - 2), team[3]);
                     Vector2 badge = Vector2.Lerp(a, b, 0.6f) + V(X(1.2f), 0);
                     c.Put(c.T(badge), Trim(GearSlot.Body, P.Gold[3])); c.Put(c.T(badge + V(-0.5f, -1)), P.Gold[2]);
+                    break;
+                }
+                case GearLook.TacVest:
+                {
+                    // a plate carrier: pouches across the front, a team-colour flash on the shoulder
+                    for (int i = -1; i <= 1; i++) c.FillLocal(new Rect(a.x + i * X(1.6f) - X(0.6f), a.y + X(1), X(1.2f), X(1.6f)), _ => P.Tactical[3]);
+                    c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), P.Tactical[2]);
+                    c.Put(c.T(shNear + V(0, -0.5f)), team[2]); c.Put(c.T(shNear + V(0.5f, -1.5f)), team[2]);
+                    break;
+                }
+                case GearLook.SynthBody:
+                {
+                    // a smooth synthetic torso with glowing circuit seams
+                    c.Line(V(a.x, a.y + 1), V(b.x, b.y - 1), P.Neon[2]);
+                    c.Line(V(a.x - X(1.5f), a.y + X(2)), V(a.x - X(0.2f), a.y + X(3.5f)), P.Neon[1]);
+                    c.Put(c.T(Vector2.Lerp(a, b, 0.65f) + V(X(1.2f), 0)), Trim(GearSlot.Body, P.Neon[3]));
                     break;
                 }
                 case GearLook.ChromePlate:
@@ -867,6 +898,23 @@ public static class PixelFigure
                     }
                     break;
                 }
+                case GearLook.TacHelmet:
+                {
+                    Hair(false);
+                    // a matte combat helmet with a glowing visor strip and a little camera on the side
+                    c.Ellipse(hd + V(0, X(0.8f)), r + 0.5f, X(3.4f), P.Tactical, l => l.y > hd.y - X(0.2f));
+                    c.Line(V(hd.x - X(0.2f), hd.y + X(0.2f)), V(hd.x + r + 0.4f, hd.y + X(0.2f)), Trim(GearSlot.Head, P.Neon[2]), S > 1.3f ? 2 : 1);
+                    c.Put(c.T(hd + V(X(-r * 0.6f), X(2))), P.Red[3]);
+                    break;
+                }
+                case GearLook.SynthHead:
+                {
+                    // a smooth, featureless synthetic head with a cyan visor band
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.4f, X(3.6f) + 0.3f, P.Synth);
+                    c.Line(V(hd.x - X(0.6f), hd.y + X(0.6f)), V(hd.x + r + 0.3f, hd.y + X(0.6f)), Trim(GearSlot.Head, P.Neon[2]), S > 1.3f ? 2 : 1);
+                    c.Line(V(hd.x - r * 0.4f, hd.y + X(3.2f)), V(hd.x - r * 0.4f, hd.y - X(2)), P.Synth[1]);   // a seam
+                    break;
+                }
                 case GearLook.BubbleHelmet:
                 {
                     Hair(false);
@@ -1083,10 +1131,11 @@ public static class PixelFigure
             {
                 var sl = s.body == GearLook.Mail || s.body == GearLook.Plate || s.body == GearLook.Surcoat ? P.Steel : s.body == GearLook.Scale ? P.Bronze
                     : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass
-                    : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome : team;
+                    : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome
+                    : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
-                    || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate;
+                    || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1241,6 +1290,17 @@ public static class PixelFigure
                     if (p.loaded && p.attack)
                         foreach (var (t, side) in new[] { (3f, 2.2f), (2f, -2.6f), (4f, -0.6f) })
                             c.Put(c.T(at(len + X(t), X(side))), orb[3]);
+                    break;
+                }
+                case GearLook.EnergyBlade:
+                {
+                    // a glowing energy sword: a black hilt and a blade of cyan light
+                    float len = X(10);
+                    c.Line(at(-2), at(0), P.Tactical[2], ww);
+                    c.Line(at(1, -X(1)), at(1, X(1)), Trim(GearSlot.Weapon, P.Tactical[3]));
+                    c.Line(at(2), at(len), P.Neon[3], ww + 1);
+                    c.Line(at(2, -0.8f), at(len - 1, -0.8f), P.Neon[2]);
+                    c.Put(c.T(at(len + 1)), P.Neon[2]);
                     break;
                 }
                 case GearLook.RayGun:
@@ -1410,6 +1470,19 @@ public static class PixelFigure
             Vector2 butt = aiming ? hFar + V(X(-1.5f), 0) : hFar + V(X(-1), X(-1));
             Vector2 d = aiming ? V(1, 0) : V(0.8f, 0.6f);
             bool rifle = s.weapon == GearLook.Rifle || s.weapon == GearLook.BoltRifle, musket = s.weapon == GearLook.Musket;
+            if (s.weapon == GearLook.AssaultRifle || s.weapon == GearLook.PlasmaRifle)
+            {
+                // a matte black assault rifle (or a plasma rifle with a glowing coil), a curved magazine below
+                bool plasma = s.weapon == GearLook.PlasmaRifle;
+                Vector2 rear = butt + d * X(2.5f), front = butt + d * X(13);
+                c.Line(butt, rear, P.Tactical[1], limb + 1);
+                c.Line(rear, front, P.Tactical[2], limb);
+                c.Line(rear + d * X(2) + V(0, -X(0.5f)), rear + d * X(3) + V(0, -X(2.5f)), P.Tactical[1], 2);   // magazine
+                c.Put(c.T(rear + d * X(4) + V(0, X(1.2f))), Trim(GearSlot.Weapon, P.Tactical[3]));               // sight
+                if (plasma) for (int i = 0; i < 3; i++) c.Put(c.T(rear + d * X(6 + i * 2)), P.Neon[2]);
+                muzzle = front + d * X(1);
+                return;
+            }
             if (s.weapon == GearLook.RayRifle)
             {
                 // a long chrome ray rifle: a ribbed barrel, red fins, a glowing emitter
@@ -2172,6 +2245,55 @@ public static class PixelFigure
                 float y = tip.y + (i - 1) * X(2.5f);
                 c.LineRaw(V(tip.x + X(1), y), V(tip.x + X(5), y), new Color32(255, 255, 255, (byte)(i == 1 ? 200 : 120)));
             }
+        }
+    }
+
+    /// <summary>Pilotless machines (drones, jets): drawn whole, with their shadow on the ground below.</summary>
+    private static class MachineRig
+    {
+        public static void Draw(PixelCanvas c, FigureStyle s, bool attack, bool release, int frame, int cx, int alt, int groundY)
+        {
+            float S = s.scale;
+            float X(float v) => v * S;
+            var team = P.Named(s.team);
+            var body = s.raider ? P.Tactical : P.Synth;
+            int death = frame >= 9 ? frame - 8 : 0;
+            float drop = death * X(6);
+            Vector2 o = new Vector2(cx + 0.5f, alt - drop);
+            if (s.mount == MountKind.Drone)
+            {
+                // a quad-rotor: a body, four arms with spinning rotors, a camera and a gun underneath
+                c.Ellipse(o + new Vector2(0, X(2)), X(5), X(3), body);
+                c.Line(o + new Vector2(X(-2), X(2)), o + new Vector2(X(2), X(2)), team[2], 2);
+                for (int i = -1; i <= 1; i += 2)
+                {
+                    Vector2 arm = o + new Vector2(i * X(9), X(4));
+                    c.Line(o + new Vector2(i * X(3), X(3)), arm, body[1], 2);
+                    bool blur = death == 0 && (frame + (i > 0 ? 1 : 0)) % 2 == 0;
+                    c.Line(arm + new Vector2(blur ? X(-4) : X(-2), X(1)), arm + new Vector2(blur ? X(4) : X(2), X(1)), blur ? new Color32(220, 230, 240, 150) : P.Tactical[2], 1);
+                }
+                c.Ellipse(o + new Vector2(X(3), X(0.5f)), X(1.4f), X(1.4f), P.Neon);   // the camera eye
+                c.Line(o + new Vector2(X(1), X(-1)), o + new Vector2(X(6), X(-1)), P.Tactical[2], 2);
+                if (release) { c.Put(o + new Vector2(X(7), X(-1)), P.Glow[3]); c.Put(o + new Vector2(X(8), X(-1)), P.White); }
+                if (death >= 2) c.Ellipse(o + new Vector2(0, X(6)), X(2), X(1.6f), P.Stone, null, 0.4f);
+                c.Outline(P.Ink, 0.6f);
+                c.Shadow(cx + X(1), groundY, X(6), X(1.4f));
+                return;
+            }
+            // a jet: a swept delta wing, a canopy with the pilot's helmet, an engine glow at the tail
+            var hull = s.raider ? P.Tactical : P.Chrome;
+            c.Capsule(o + new Vector2(X(-18), X(3)), o + new Vector2(X(16), X(3)), X(3), hull, 0.1f);
+            c.Polygon(new[] { o + new Vector2(X(-8), X(2)), o + new Vector2(X(6), X(2)), o + new Vector2(X(-12), X(-6)) }, _ => hull[1]);   // wing
+            c.Polygon(new[] { o + new Vector2(X(-14), X(4)), o + new Vector2(X(-20), X(11)), o + new Vector2(X(-17), X(4)) }, _ => team[2]);   // tail fin
+            c.Ellipse(o + new Vector2(X(6), X(5.5f)), X(4), X(2), new[] { P.Neon[0], P.Neon[1], P.Neon[2], P.Neon[3] });   // canopy
+            c.Ellipse(o + new Vector2(X(5), X(5.5f)), X(1.2f), X(1.2f), P.Tactical);
+            c.Line(o + new Vector2(X(-12), X(1)), o + new Vector2(X(2), X(1)), team[2], 2);
+            bool burn = death == 0;
+            if (burn) { c.Line(o + new Vector2(X(-22), X(3)), o + new Vector2(X(-19), X(3)), frame % 2 == 0 ? P.Fire[3] : P.Fire[2], 2); }
+            if (release) { c.Put(o + new Vector2(X(19), X(2)), P.Glow[3]); c.Put(o + new Vector2(X(20), X(2)), P.White); }
+            if (death >= 2) c.Ellipse(o + new Vector2(X(-14), X(7)), X(3), X(2), P.Stone, null, 0.4f);
+            c.Outline(P.Ink, 0.6f);
+            c.Shadow(cx + X(1), groundY, X(14), X(1.6f));
         }
     }
 

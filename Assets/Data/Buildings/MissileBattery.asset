@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: MissileBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: MissileBattery
+  displayName: Missile Battery
+  description: A rack of guided missiles. Each salvo bursts wide among the raiders.
+  icon: {fileID: 21300000, guid: 5669055f5f32da9478a8ce800343e69b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 5669055f5f32da9478a8ce800343e69b, type: 3}
+    - {fileID: 21300000, guid: cfc820fc2b928da4e81bfed74242c87c, type: 3}
+    - {fileID: 21300000, guid: bfc68b9c8c9493441b558429ace321a2, type: 3}
+    - {fileID: 21300000, guid: 834fee28fa3b3564799a2892ebf48c20, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 13dd83ae1f9cd6145a00eb88bd5db566, type: 3}
+    - {fileID: 21300000, guid: b92349c2c6ae7004ab8587b3015693c2, type: 3}
+    - {fileID: 21300000, guid: 22561118db2531c45b52929f7ffbd33c, type: 3}
+    - {fileID: 21300000, guid: 4bd6ea26e2cee5b40a3038987d0fd531, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: ba544a38f81965847aa0ccbaffc20572, type: 3}
+    - {fileID: 21300000, guid: 4f699e5a3b383cd43a1a343339a3fe88, type: 3}
+    - {fileID: 21300000, guid: 0ff4d2731db4ce14a83d5291b1c085f9, type: 3}
+    - {fileID: 21300000, guid: 92727c0f5c08f29439b9d290a9e938b1, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 796b8114c8b98fa4ebf27825ed6218ab, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 560
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+      amount: 120
+  upgrades:
+  - name: Longer Range
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Cluster Warheads
+    description: +100 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 100
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2300
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 14.5
+  towerDamage: 320
+  towerCooldown: 3.6
+  towerProjectile: {fileID: 21300000, guid: 21d2e0b4dff6fe94bae8b90f2ef7e063, type: 3}
+  towerProjectileArc: 0.25
+  towerProjectileSpeed: 18
+  towerSplash: 2.4
+  towerMuzzleSmoke: 1
+  towerMuzzle: {x: 1.4375, y: 0.46875}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

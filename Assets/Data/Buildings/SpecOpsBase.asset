@@ -1,0 +1,190 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SpecOpsBase
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SpecOpsBase
+  displayName: Spec-Ops Base
+  description: A low black compound with a radar mast. Trains Commandos.
+  icon: {fileID: 21300000, guid: 404d5b615b515174794a4af6d935d3d6, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 404d5b615b515174794a4af6d935d3d6, type: 3}
+    - {fileID: 21300000, guid: 2ebedfe9f8180f14d94e97b6b5905e59, type: 3}
+    - {fileID: 21300000, guid: d6357efe9f0c22f4bb8d1d09d57852b8, type: 3}
+    - {fileID: 21300000, guid: c6ea80d094f314746947bf53eec745ac, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: a847408e78b11e64593f615353afb26a, type: 3}
+    - {fileID: 21300000, guid: 7c145feca42c8b74f88d9d6d79e839e3, type: 3}
+    - {fileID: 21300000, guid: e9620baf894dc06419a335ce25608ea4, type: 3}
+    - {fileID: 21300000, guid: 6ae5f9e89cb2f4f40affe6d8b280fea2, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 91a52af846fcab041b0df90365f90a3e, type: 3}
+    - {fileID: 21300000, guid: a1125094edad62441aa44b26699bab6a, type: 3}
+    - {fileID: 21300000, guid: ec45c4e3f7d487948a800069adcf5126, type: 3}
+    - {fileID: 21300000, guid: 1261e6814ba58764d8879b4661060644, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: fcdb763dcd091d647a322a03457584f6, type: 3}
+    - {fileID: 21300000, guid: ca95bd0ab119984498a25649fc0a4e12, type: 3}
+    - {fileID: 21300000, guid: 4e19cef34c91e2b43b76c9795285981d, type: 3}
+    - {fileID: 21300000, guid: 634fe643611d7fc41916fbce153c373a, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 165fd4937c50c0644a679538caca6868, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 550
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 40
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1400
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 4
+  trainsUnit: {fileID: 11400000, guid: 289d6cc6011fc4e4f840e91e2340eee0, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

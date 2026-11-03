@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FusionReactor
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FusionReactor
+  displayName: Fusion Reactor
+  description: A ring of magnets holding a star. Power cells by the thousand, from
+    a trickle of uranium.
+  icon: {fileID: 21300000, guid: 0f3ede79fe126aa4ca2897b172a346d9, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 0f3ede79fe126aa4ca2897b172a346d9, type: 3}
+    - {fileID: 21300000, guid: 4b0edd45e894e7d4fb589390e3cf97aa, type: 3}
+    - {fileID: 21300000, guid: 11a94e0ac2aaa394895ca3ef1a6b1fac, type: 3}
+    - {fileID: 21300000, guid: 35e8c06ab47400d4a87f44f53482c6ba, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 65fb17d61c81758439f5d4ffed987c4d, type: 3}
+    - {fileID: 21300000, guid: 5c1236e656c494a478e3a6ff1bb19fe9, type: 3}
+    - {fileID: 21300000, guid: 6c532fbef7ef05541b0528bac4aa7f62, type: 3}
+    - {fileID: 21300000, guid: 3630f8c85ba98924e97e32e1363bf04e, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 8c8ddc1d344a6e64ca2fbb422d5c6f1d, type: 3}
+    - {fileID: 21300000, guid: f82bc3198744d0b4c9d69b29638d3a5a, type: 3}
+    - {fileID: 21300000, guid: 0d2684c117df7aa4a8ebd4f0847d9e4c, type: 3}
+    - {fileID: 21300000, guid: 93b0c31f40e011e4bb0acb4104a85957, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 98d7e6f3f6d826040ac93e6f18660138, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+      amount: 60
+  upgrades:
+  - name: Stronger Magnets
+    description: +30% power cells.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 80
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Ring
+    description: +30% power cells.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 400
+      - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+        amount: 60
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1500
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+    perSecond: 0.4
+  inputs:
+  - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+    perSecond: 0.04
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

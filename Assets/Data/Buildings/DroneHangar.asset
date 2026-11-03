@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: DroneHangar
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: DroneHangar
+  displayName: Drone Hangar
+  description: 'A flat roof of landing circles. Builds Drones: pilotless flyers with
+    a gun.'
+  icon: {fileID: 21300000, guid: fbe19c6b32da8b2459b3ae082d6875bd, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: fbe19c6b32da8b2459b3ae082d6875bd, type: 3}
+    - {fileID: 21300000, guid: 18865f3cbec5ddf48b5b94bb4ffc84da, type: 3}
+    - {fileID: 21300000, guid: 63b7ef30d4160814abffdd62dc996535, type: 3}
+    - {fileID: 21300000, guid: 895418301828b9446a8f012156cd8f37, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 0de360eceda98cf43b1fd40ef77e4cde, type: 3}
+    - {fileID: 21300000, guid: c5836c232b822bf43bc6380940a2abc3, type: 3}
+    - {fileID: 21300000, guid: 907b4d565c9b237428163e632ad592c4, type: 3}
+    - {fileID: 21300000, guid: b3ff69375fae7674ea1a190a833c75ac, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 1679c32eef6066745997bde952a4cc9c, type: 3}
+    - {fileID: 21300000, guid: a996769beadc0104e9ff082b543ddcc8, type: 3}
+    - {fileID: 21300000, guid: d27acacc57ec1db428c35b12a3a9e82a, type: 3}
+    - {fileID: 21300000, guid: e5c44fe6dac72f64c9c1584d317447c4, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 9f75b466998074f4689d4798289c7b3a, type: 3}
+    - {fileID: 21300000, guid: 57b9c25a6e2ead243a289b07bd8797fd, type: 3}
+    - {fileID: 21300000, guid: 8c4f8d245aaea5e4daf07e0ea4fdc843, type: 3}
+    - {fileID: 21300000, guid: 70292c2236d3495488c5f64b5ca09ba2, type: 3}
+    fps: 6
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 571cbfaf24a05384f9d25298002a6094, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 340
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 60
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1100
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: dd84750efdb54cf4fa5ab742a06fb208, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

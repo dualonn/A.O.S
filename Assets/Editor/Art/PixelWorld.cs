@@ -452,7 +452,7 @@ public static partial class PlaceholderArt
             return;
         }
         var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : P.Rock;
-        if (ore == Ore.Quicksilver || ore == Ore.Aether) rock = P.Stone;
+        if (ore == Ore.Quicksilver || ore == Ore.Aether || ore == Ore.Silicon) rock = P.Stone;
         (float x, float y, float rx, float ry)[] stones = variant switch
         {
             0 => new (float x, float y, float rx, float ry)[] { (16, 10, 10, 7) },
@@ -476,6 +476,7 @@ public static partial class PlaceholderArt
             Ore.Coal => new[] { P.Coal[0], P.Coal[1], P.Iron[3] },          // black seams with an oily sheen
             Ore.Aether => new[] { P.Aether[1], P.Aether[2], P.Aether[3] },
             Ore.Uranium => new[] { P.Ray[1], P.Ray[2], P.Ray[3] },          // ore that glows green
+            Ore.Silicon => new[] { P.Linen[3], P.White, P.Neon[3] },        // glittering quartz
             _ => null,
         };
         if (ore == Ore.Rune)
