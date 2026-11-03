@@ -254,7 +254,7 @@ public class Troop : Unit
     }
 
     private bool InDefendArea(Vector3 p) =>
-        defendArea != null ? defendArea.DistanceTo(p) <= alertRange : defendZone.Contains(p);
+        defendArea != null ? defendArea.Near(p, alertRange) : defendZone.Contains(p);
 
     protected override void Awake()
     {
@@ -577,14 +577,20 @@ public class Troop : Unit
     /// <summary>How close a raider must be before a troop set on a camp turns to fight it.</summary>
     private const float CampGuardReach = 1.3f;
 
+    // Filtering targets happens in this reused list, in place (a new list each pick made a lot of garbage).
+    private readonly List<Unit> candidatesWork = new List<Unit>();
+
     protected override Unit SelectTarget(List<Unit> candidates)
     {
         if (IsHealer) return null;   // medics don't fight
+        candidatesWork.Clear();
+        candidatesWork.AddRange(candidates);
+        candidates = candidatesWork;
         // Underground: fight what's in this room, not through the walls.
         if (Dungeon != null)
         {
             var me = transform.position;
-            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) < 9f && Mathf.Abs(u.transform.position.x - me.x) < 9f);
+            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, me) < 9f && Mathf.Abs(u.transform.position.x - me.x) < 9f));
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
         }
         // On Attack, camps come first: raiders keep setting out from them, so chasing each one never
@@ -602,7 +608,7 @@ public class Troop : Unit
         if (TargetCamp != null && TargetCamp.IsStanding)
         {
             float reach = CampClose(TargetCamp) ? CampGuardReach + personalSpace : OrderFightRange;
-            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, transform.position) <= reach);
+            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, transform.position) <= reach));
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
         }
 
@@ -610,7 +616,7 @@ public class Troop : Unit
         if (HasOrder)
         {
             var me = transform.position;
-            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) <= OrderFightRange);
+            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, me) <= OrderFightRange));
             if (candidates.Count == 0) return null;
         }
 
@@ -621,8 +627,9 @@ public class Troop : Unit
         {
             var me = transform.position;
             var controller = FreeModeController.Instance;
-            candidates = candidates.FindAll(u => InDefendArea(u.transform.position) || Vector2.Distance(u.transform.position, me) <= OrderFightRange
-                || (controller != null && controller.InRaidOn(defendArea, u)));
+            bool raidOnHome = controller != null && controller.RaidTargets(defendArea);   // once per pick, not per raider
+            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, me) <= OrderFightRange
+                || (raidOnHome && u is Enemy en && en.InLiveWave) || InDefendArea(u.transform.position)));
             if (candidates.Count == 0)
             {
                 return null;
@@ -633,7 +640,7 @@ public class Troop : Unit
         // (Troops you've sent somewhere fight whatever they meet there.)
         if (hasDefendZone && Stance == TroopStance.Defend && !HasOrder)
         {
-            candidates = candidates.FindAll(u => InDefendArea(u.transform.position));
+            candidates.RemoveAll(u => !(InDefendArea(u.transform.position)));
             if (candidates.Count == 0)
             {
                 return null;

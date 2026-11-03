@@ -168,6 +168,7 @@ public static class Items
         foreach (var t in templates)
         {
             if (t == null || t.xeno != xeno || t.minPower > power + 0.25f) continue;   // xeno-artefacts only drop from alien finds
+            if (t.tradeOnly && templates.Count > 1) continue;   // native goods: only when bought by name
             float behind = Mathf.Max(0, power - t.minPower - 1f);
             float w = 1f / ((1f + 2f * behind) * (1f + 2f * behind)); // gear from long-past ages fades out fast
             fits.Add(t);

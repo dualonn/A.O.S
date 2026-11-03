@@ -24,6 +24,8 @@ public class BuildingView : MonoBehaviour
     private bool hovered;
     private readonly List<Troop> troops = new List<Troop>();
     private float trainTimer;
+    private float nextTroopSync;           // keeping troops' orders in line runs a few times a second, not every frame
+    private Settlement.BuildingStats? syncedStats;
 
     /// <summary>Sorting order shared by building sprites and villagers; depth within it comes from z.</summary>
     public const int SortingOrder = -6;
@@ -607,9 +609,16 @@ public class BuildingView : MonoBehaviour
         {
             controller.Settlement.ReportLiveTroops(State, troops.Count);
         }
-        var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
-        // Keep the troops' orders, upgrades and home settlement's bounds in line with this building.
-        if (troops.Count > 0)
+        // Keep the troops' orders, upgrades and home settlement's bounds in line with this building
+        // (a few times a second is plenty, and it's costly with a big army).
+        bool sync = syncedStats == null || Time.unscaledTime >= nextTroopSync;
+        if (sync)
+        {
+            nextTroopSync = Time.unscaledTime + 0.4f;
+            syncedStats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        }
+        var stats = syncedStats.Value;
+        if (sync && troops.Count > 0)
         {
             var zone = controller.TownZoneFor(transform.position);
             var defendArea = controller.SettlementFor(transform.position);
@@ -626,8 +635,8 @@ public class BuildingView : MonoBehaviour
                 t.SetBuildingModifier(stats.trainedUnits);
             }
         }
-        KeepHeroes(stats);
-        foreach (var h in heroes.Values)
+        if (sync) KeepHeroes(stats);
+        if (sync) foreach (var h in heroes.Values)
         {
             if (h == null || !h.IsAlive) continue;
             if (h.Stance != State.stance)

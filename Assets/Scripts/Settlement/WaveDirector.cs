@@ -66,6 +66,7 @@ public class WaveDirector : MonoBehaviour
     public Wave Generate()
     {
         var wave = new Wave();
+        if (settlement.RaidsPaused) return wave;   // tribute paid / bandits bought off
         var pool = new List<UnitDefinition>();
         for (int i = 0; i <= State.ageIndex; i++)
         {
@@ -82,7 +83,7 @@ public class WaveDirector : MonoBehaviour
                 }
             }
         }
-        foreach (var native in settlement.NativeUnits())
+        foreach (var native in settlement.NativesAtPeace ? new List<UnitDefinition>() : settlement.NativeUnits())
         {
             pool.Add(native); pool.Add(native);
         }
@@ -108,7 +109,7 @@ public class WaveDirector : MonoBehaviour
             }
         }
         agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
-        float budget = settlement.ThreatLevel * agePower * settlement.WorldThreatFactor;
+        float budget = settlement.ThreatLevel * agePower * settlement.WorldThreatFactor * settlement.DiplomacyThreatFactor;
         wave.boss = PickBoss();
         if (wave.boss != null)
         {
@@ -146,7 +147,7 @@ public class WaveDirector : MonoBehaviour
         {
             if (b != null && b.IsAlive && b.Unit.IsRaider) return null;
         }
-        var nativeChief = settlement.NativeChief();
+        var nativeChief = settlement.NativesAtPeace ? null : settlement.NativeChief();
         if (nativeChief != null && UnityEngine.Random.value < 0.5f) return nativeChief;
         for (int i = State.ageIndex; i >= 0; i--)
         {

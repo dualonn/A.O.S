@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GreatSunforge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GreatSunforge
+  displayName: Sunforge
+  description: 'A forge round a captured piece of the sun that melts anything. +25%
+    steel and +20% sunfire. A Great Wonder: there can only be one.'
+  icon: {fileID: 21300000, guid: 69d569bdfde8c4d42bcc45b584d3b679, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 69d569bdfde8c4d42bcc45b584d3b679, type: 3}
+    - {fileID: 21300000, guid: 9d4fc5c407bc4414f82c794ea4faf57e, type: 3}
+    - {fileID: 21300000, guid: e13fdaca96477864987524064623be66, type: 3}
+    - {fileID: 21300000, guid: b491ec9da6704bc43b04c862bc324f27, type: 3}
+    fps: 6
+  size: {x: 5, y: 5}
+  artSize: {x: 5, y: 7}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: ad8598ca86c72f147a15f5251207f112, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 12000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 13000
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 4500
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 1000
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 600
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 1
+  wonderEffect: {fileID: 11400000, guid: b65ac92149a764f4aa6588b0d6f2e367, type: 2}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 660
+  maxCount: 1
+  maxHealth: 16000
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

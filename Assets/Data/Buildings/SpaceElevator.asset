@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SpaceElevator
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SpaceElevator
+  displayName: Space Elevator
+  description: 'A tether from the ground to a station in orbit. Ships fly faster
+    and reach further, and +20% starmetal. A Great Wonder: there can only be one.'
+  icon: {fileID: 21300000, guid: f1a09a427880ddd418454b23571b5d7a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f1a09a427880ddd418454b23571b5d7a, type: 3}
+    - {fileID: 21300000, guid: 20127ab8a5416ac42a92bd528f0cc3df, type: 3}
+    - {fileID: 21300000, guid: 46166cb11ee14424f89911c2cf63be46, type: 3}
+    - {fileID: 21300000, guid: 5c2188c1b020bfa42aa99fa67f720eeb, type: 3}
+    fps: 4
+  size: {x: 4, y: 4}
+  artSize: {x: 4, y: 9}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 1dc010438dd13a74685dc6079968a958, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 11000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 12000
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 4000
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 900
+    - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+      amount: 500
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 1
+  wonderEffect: {fileID: 11400000, guid: 4c30e74d5b70df64e9b120efa28661f0, type: 2}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 640
+  maxCount: 1
+  maxHealth: 15000
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

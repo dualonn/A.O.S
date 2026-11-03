@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e50b2bc4c682504f846fcd5d0669cd3, type: 3}
+  m_Name: EventArt
+  m_EditorClassIdentifier: Assembly-CSharp::EventArt
+  iconIds:
+  - Merchant
+  - Festival
+  - Harvest
+  - Drought
+  - Plague
+  - Meteor
+  - Refugees
+  - WanderingHero
+  - Stranger
+  - GoldRush
+  - Wildfire
+  - Eclipse
+  - Rival
+  - LostCaravan
+  - Scholars
+  - SolarFlare
+  - Derelict
+  - Comet
+  icons:
+  - {fileID: 21300000, guid: 68d46efe0d23628408c49f62678ff49a, type: 3}
+  - {fileID: 21300000, guid: 45cf9f39fd4113a41be1194385c39f5c, type: 3}
+  - {fileID: 21300000, guid: 77ca05e2fbd2a474b8560b9997b23f45, type: 3}
+  - {fileID: 21300000, guid: c0380fb32f3595b47a44e07d04890ad8, type: 3}
+  - {fileID: 21300000, guid: 37f267cc702879640b73a02c8e189161, type: 3}
+  - {fileID: 21300000, guid: 65c1d96b8b4070243b5597858081e681, type: 3}
+  - {fileID: 21300000, guid: f51b9ca4d153215428d2dc469811c970, type: 3}
+  - {fileID: 21300000, guid: bc0de98b296f03a45bacfaf7702434b2, type: 3}
+  - {fileID: 21300000, guid: 43d34b07e78c2d44f8b166336761e287, type: 3}
+  - {fileID: 21300000, guid: df29eb9a5bc389c4884c011772f1f231, type: 3}
+  - {fileID: 21300000, guid: 476e99b2a3040a247b723dd8821b6a0a, type: 3}
+  - {fileID: 21300000, guid: 64fc7fd429bc0e14b8793b6e4f780e6e, type: 3}
+  - {fileID: 21300000, guid: 1f3780039ced8ad449d6e7043df2021f, type: 3}
+  - {fileID: 21300000, guid: 37555da9ad1c86f4fb02c5420ca6277d, type: 3}
+  - {fileID: 21300000, guid: fac5018fdbdfbba499fd5e8ff5be5d30, type: 3}
+  - {fileID: 21300000, guid: 9bfacfc1eba92f442a56f48524783bc3, type: 3}
+  - {fileID: 21300000, guid: b1ed8367fa300db4687f5be6f8e0d0ab, type: 3}
+  - {fileID: 21300000, guid: 5613777544534f348a4b944957c8ec93, type: 3}
+  meteor: {fileID: 21300000, guid: 4d3890c0a9a8ec541945bfd45ad05d0b, type: 3}
+  cart: {fileID: 21300000, guid: 43ee3091fe4cd794da77a45392888ce2, type: 3}
+  caravanWalk:
+  - {fileID: 21300000, guid: b09c3590f8a35544cb2c426aef37e28c, type: 3}
+  - {fileID: 21300000, guid: ad75f0f0d8308294e972d972a1ecf0e4, type: 3}
+  - {fileID: 21300000, guid: ff02fc96d44604b44b32a7bd8edfd23c, type: 3}
+  - {fileID: 21300000, guid: c33ecaff41d77f642b8d9ee2a8deb78e, type: 3}
+  starTrader: {fileID: 21300000, guid: 544533d08d379904a8432f36076bd1e3, type: 3}

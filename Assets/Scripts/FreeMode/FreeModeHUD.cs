@@ -130,7 +130,7 @@ public class FreeModeHUD : MonoBehaviour
         var chips = UIBuilder.Row("Chips", bar, 16);
         UIBuilder.Stretch(chips);
         chips.offsetMin = new Vector2(16, 0);
-        chips.offsetMax = new Vector2(-610, 0);   // room for the star map button
+        chips.offsetMax = new Vector2(-806, 0);   // room for the star map and sound buttons, and the season and weather
 
         ageText = Chip(chips, null);
         foreach (var res in settlement.Database.resources)
@@ -183,6 +183,8 @@ public class FreeModeHUD : MonoBehaviour
 
         canvasRect = (RectTransform)root;
         WorldSwitcher.Create(root, settlement);   // appears once you have more than one world
+        EventPanel.Create(root, settlement);      // random events: a card with choices, and a badge
+        DiplomacyPanel.Create(root, settlement);  // a badge on worlds with natives; opens from it or a camp
         starMap = StarMapPanel.Create(root, settlement);
         StarMapPanel.Actions.Clear();   // (statics survive between plays: always point at this game)
         {
@@ -195,6 +197,7 @@ public class FreeModeHUD : MonoBehaviour
             new Vector2(-510, 0), new Vector2(90, 40));
         starLabel.text = "Stars"; starLabel.alignment = TextAlignmentOptions.Center;
         UIBuilder.OnHover(starMapButton.gameObject, () => tooltipSource = () => "<b>Star map</b>\nThe galaxy round your worlds: scan systems, send ships, and go to your other worlds.", HideTooltip);
+        WeatherIndicator.Create(bar, settlement, f => tooltipSource = f, HideTooltip, -716f);   // left of the sound button (-710 to -610)
         var db = settlement.Database;
 
         // Build menu (left): search, then folding sections by type (or by age), in a scroll list.
@@ -746,9 +749,10 @@ public class FreeModeHUD : MonoBehaviour
                 hidden |= Outdated(def); // grouped by type, show only the newest version of each
             }
             if (button.gameObject.activeSelf == hidden) button.gameObject.SetActive(!hidden);
+            if (hidden) continue;   // locked or filtered out: nothing to check or draw
             bool can = settlement.CanBuild(def, out string missing);
             button.interactable = can;   // (section headers count the ready ones, so this runs for all shown)
-            if (hidden || !button.gameObject.activeInHierarchy) continue;   // folded away: no text to redraw
+            if (!button.gameObject.activeInHierarchy) continue;   // folded away: no text to redraw
             bool placingThis = controller.Placer.Current == def;
             string ageTag = groupByType && def.age != null
                 ? $"  <size=70%><color=#{ColorUtility.ToHtmlStringRGB(AgeAccents[Mathf.Clamp(ageOrder, 0, AgeAccents.Length - 1)])}>{def.age.displayName.Replace(" Age", "")}</color></size>" : "";
@@ -788,7 +792,7 @@ public class FreeModeHUD : MonoBehaviour
 
     // ---------- Build menu grouping and search ----------
 
-    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls }
+    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls, Wonders }
 
     private static string CategoryName(BuildCategory c) => c switch
     {
@@ -805,12 +809,14 @@ public class FreeModeHUD : MonoBehaviour
         BuildCategory.Industry => new Color(0.95f, 0.6f, 0.35f),
         BuildCategory.Military => new Color(0.95f, 0.45f, 0.4f),
         BuildCategory.Defence => new Color(0.6f, 0.75f, 0.95f),
+        BuildCategory.Wonders => new Color(1f, 0.84f, 0.42f),
         _ => new Color(0.75f, 0.75f, 0.78f),
     };
 
     /// <summary>What kind of building this is, worked out from what it does.</summary>
     private static BuildCategory CategoryOf(BuildingDefinition def)
     {
+        if (def.wonder) return BuildCategory.Wonders;
         if (def.IsWall) return BuildCategory.Walls;
         if (def.isTownCenter) return BuildCategory.Settlement;
         if (def.trainsUnit != null) return BuildCategory.Military;

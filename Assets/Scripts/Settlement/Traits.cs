@@ -85,7 +85,8 @@ public partial class Settlement
     public float WorldProductionFactor(ResourceType r)
     {
         if (r == null) return 1f;
-        float f = GenesisFactor;
+        float f = GenesisFactor * SeasonProductionFactor(r);
+        f *= NaturalWonderFactor(r);
         bool domes = Researched("Domes");
         if (HasTrait(ThinAir) && !domes) f *= 0.9f;
         string id = r.id;
@@ -101,6 +102,7 @@ public partial class Settlement
         if ((id == "Stone" || id == "Iron" || id == "Gold") && HasTrait(RichVeins)) f *= 1.15f;
         if (id == "Stone" && HasTrait(RedDust)) f *= 1.15f;
         if ((id == "Coal" || id == "Fuel") && HasTrait(Scorching)) f *= 1.2f;
+        f *= EventProductionFactor(r);   // random events (droughts, gold rushes, festivals...)
         return f;
     }
 
@@ -109,22 +111,24 @@ public partial class Settlement
     {
         get
         {
-            float f = 1f;
+            float f = SeasonGrowthFactor;
             if (HasTrait(ToxicAir) && !Researched("Domes")) f *= 0.5f;
             if (HasTrait(Fertile)) f *= 1.2f;
             if (AlienHere) f *= 1f + 0.06f * Levels("Terraforming");
+            f *= EventGrowthFactor;   // random events (festivals, feasts...)
+            f *= NaturalWonderGrowth;
             return f;
         }
     }
 
     /// <summary>Gravity: how fast units move on the world you're looking at.</summary>
-    public float UnitSpeedFactor => HasTrait(LowGravity) ? 1.12f : HasTrait(HighGravity) ? 0.9f : 1f;
+    public float UnitSpeedFactor => (HasTrait(LowGravity) ? 1.12f : HasTrait(HighGravity) ? 0.9f : 1f) * WeatherFx.Speed;
 
     /// <summary>High gravity makes squat, tough buildings.</summary>
     public float WorldBuildingHealthFactor => HasTrait(HighGravity) ? 1.15f : 1f;
 
     /// <summary>Raids are fiercer where the wildlife joins in.</summary>
-    public float WorldThreatFactor => HasTrait(HostileFauna) ? 1.2f : 1f;
+    public float WorldThreatFactor => (HasTrait(HostileFauna) ? 1.2f : 1f) * EventThreatFactor;
 
     /// <summary>Xenology: your troops hit the natives of other worlds harder.</summary>
     public float XenologyFactor => 1f + 0.08f * Levels("Xenology");

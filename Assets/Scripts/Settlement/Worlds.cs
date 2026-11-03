@@ -44,8 +44,21 @@ public class WorldState
     [Tooltip("Troops stationed here from other worlds (brought by troopship).")]
     public List<GarrisonStock> garrison = new List<GarrisonStock>();
 
+    [Tooltip("Where you stand with the people of this world (gifts, peace, trade, alliance).")]
+    public DiplomacyState diplomacy = new DiplomacyState();
+
     [Tooltip("Biomes your explorers have reached on this world (as Biome values).")]
     public List<int> biomesVisited = new List<int>();
+
+    [Tooltip("Seconds into this world's year (seasons follow from it).")]
+    public float seasonTime;
+
+    [Tooltip("The weather now (a WeatherKind), and seconds until it changes.")]
+    public int weather;
+    public float weatherLeft;
+
+    [Tooltip("Seconds until lightning strikes again, in a storm.")]
+    public float lightningIn = 30f;
 }
 
 /// <summary>

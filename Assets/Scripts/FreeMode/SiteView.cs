@@ -98,6 +98,7 @@ public class SiteView : MonoBehaviour
             SiteKind.Shrine => done ? art.siteShrineUsed : art.siteShrine,
             SiteKind.Cache => State.variant % 3 == 0 ? art.siteCaravan : art.siteCache,
             SiteKind.Vein => art.siteVeinIds.IndexOf(State.veinId) is int v && v >= 0 && v < art.siteVeins.Count ? art.siteVeins[v] : art.siteRuinsLooted,
+            SiteKind.NaturalWonder => State.variant >= 0 && State.variant < art.naturalWonders.Count ? art.naturalWonders[State.variant] : art.siteRuins,
             _ => done ? art.siteLoreStoneRead : art.siteLoreStone,
         };
         body.sprite = s;
@@ -136,6 +137,9 @@ public class SiteView : MonoBehaviour
                 break;
             case SiteKind.LoreStone:
                 if (NearestPlayerUnit(1.8f) != null) Done(() => controller.Settlement.ReadLore(State));
+                break;
+            case SiteKind.NaturalWonder:
+                if (NearestPlayerUnit(3.2f) != null) Done(() => controller.Settlement.DiscoverNaturalWonder(State));
                 break;
         }
     }
@@ -301,6 +305,11 @@ public class SiteView : MonoBehaviour
             case SiteKind.Cache:
                 title = alien ? "Crash site" : State.variant % 3 == 0 ? "Lost caravan" : "Buried cache";
                 hint = "Walk any unit over it.";
+                break;
+            case SiteKind.NaturalWonder:
+                var wonder = Settlement.NaturalWonderOf(State);
+                title = wonder.name;
+                hint = State.done ? $"Natural wonder. {wonder.effect}" : $"A natural wonder! Send any unit to see it: {wonder.effect}";
                 break;
             default:
                 title = "Lore stone";

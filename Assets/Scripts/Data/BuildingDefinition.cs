@@ -108,6 +108,12 @@ public class BuildingDefinition : GameData
     [Tooltip("A Genesis Engine: while it stands, every one of your worlds produces 5% more (up to 5 engines).")]
     public bool genesisEngine;
 
+    [Tooltip("A Great Wonder: only one in the whole game (across all your worlds).")]
+    public bool wonder;
+
+    [Tooltip("A Great Wonder's power: works like research while the wonder stands.")]
+    public Technology wonderEffect;
+
     [Header("Walls and gates (1x1, placed in lines)")]
     [Tooltip("Wall: blocks everyone. Gate: lets your units through, blocks raiders.")]
     public WallTile wallKind;

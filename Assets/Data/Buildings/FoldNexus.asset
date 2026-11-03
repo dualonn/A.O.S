@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FoldNexus
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FoldNexus
+  displayName: Fold Nexus
+  description: 'A knot of a thousand folds of space, doors to everywhere. Ships fly
+    much faster, and troops move 8% faster. A Great Wonder: there can only be one.'
+  icon: {fileID: 21300000, guid: 50d45db744dc73747b3adfe46e6c172e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 50d45db744dc73747b3adfe46e6c172e, type: 3}
+    - {fileID: 21300000, guid: bf5df99c2df111d43b7297ed9a7af7d1, type: 3}
+    - {fileID: 21300000, guid: 6668a0bb90ad52d439d41b334a884a75, type: 3}
+    - {fileID: 21300000, guid: 0cca44276add7074198a4d9fe9623aa8, type: 3}
+    fps: 5
+  size: {x: 5, y: 5}
+  artSize: {x: 5, y: 7}
+  age: {fileID: 11400000, guid: ea539fe3524281648b131ea7543964d4, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9e5b22188b354954795215a26f9c3472, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 13000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 14000
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 5000
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 1100
+    - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+      amount: 600
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 1
+  wonderEffect: {fileID: 11400000, guid: b0ae2b2fb22eab14983e8731d4264a28, type: 2}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 680
+  maxCount: 1
+  maxHealth: 17000
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

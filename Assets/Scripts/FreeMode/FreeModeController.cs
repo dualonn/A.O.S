@@ -71,7 +71,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     /// <summary>Is this raider one of the raid in progress, and is that raid heading for this settlement?</summary>
     public bool InRaidOn(Settlement.SettlementZone zone, Unit unit) =>
-        unit is Enemy e && RaidTargets(zone) && liveEnemies.Contains(e);
+        unit is Enemy e && e.InLiveWave && RaidTargets(zone);
 
     private void Awake()
     {
@@ -292,6 +292,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public void CampDestroyed(CampView view)
     {
         Settlement.ClearCamp(view.State);
+        Settlement.NativeCampBurnt();
         view.BurnDown(instant: false);   // it burns, then stays as a ruin until raiders return
         GameAudio.Play("camp_destroyed", view.transform.position);
     }
@@ -905,6 +906,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             return;
         }
         var clicked = BuildingAt(grid.WorldToCell(now));
+        if (clicked == null && unitSelection.Count == 0 && CampView.At(now) != null && DiplomacyPanel.Open(Settlement)) return;
         if (clicked == null && unitSelection.Count > 0 && !ShiftHeld)
         {
             SetUnitSelection(null);
@@ -1329,6 +1331,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
                 {
                     enemy.StartRaid(this);
                     liveEnemies.Add(enemy);
+                    enemy.InLiveWave = true;
                 }
             }
             yield return new WaitForSeconds(secondsBetweenWaveSpawns);

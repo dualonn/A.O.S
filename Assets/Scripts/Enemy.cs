@@ -83,6 +83,14 @@ public class Enemy : Unit
 
     public bool IsGuard => guarding;
 
+    /// <summary>One of the raid in progress (set when its wave spawns it).</summary>
+    public bool InLiveWave { get; set; }
+
+    /// <summary>Posted at a camp (its people's diplomacy decides whether it fights you).</summary>
+    public bool CampGuard { get; set; }
+
+    public override bool Peaceful => CampGuard && !Charmed && Settlement.Instance != null && Settlement.Instance.NativesAtPeace;
+
     /// <summary>Take on the same job as another raider (a boss's summoned help).</summary>
     public void JoinSameJob(Enemy leader)
     {
@@ -270,5 +278,6 @@ public class Enemy : Unit
     {
         base.Die();
         raid?.RaiderKilled(this);
+        Settlement.Instance?.NativeKilled(this);   // their people remember
     }
 }

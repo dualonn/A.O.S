@@ -89,4 +89,6 @@ public class ItemTemplate : GameData
     public float regen;
     [Tooltip("Extra damage share against the natives of other worlds.")]
     public float xenobane;
+    [Tooltip("Only bought from the people who make it (diplomacy), never a random find.")]
+    public bool tradeOnly;
 }

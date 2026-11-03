@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>A kind of place in the wild.</summary>
-public enum SiteKind { Ruins, Dungeon, Lair, Shrine, Cache, LoreStone, Vein }
+public enum SiteKind { Ruins, Dungeon, Lair, Shrine, Cache, LoreStone, Vein, NaturalWonder }
 
 /// <summary>A place in the wild found on the map: placed from the map seed, saved so what you did there sticks.</summary>
 [Serializable]
@@ -29,6 +29,7 @@ public class SiteState
     {
         SiteKind.Ruins or SiteKind.Dungeon or SiteKind.Lair or SiteKind.Vein => 3,
         SiteKind.Shrine => 2,
+        SiteKind.NaturalWonder => 4,
         _ => 1,
     };
 
@@ -104,6 +105,7 @@ public partial class Settlement
                 break;
             }
         }
+        RollNaturalWonders(zones);
     }
 
     /// <summary>Deposits with rich veins whose resource you can already use (what new veins can hold).</summary>

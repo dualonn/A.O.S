@@ -72,6 +72,9 @@ public class SettlementState
     [Tooltip("Mines in orbit over belts and gas giants.")]
     public List<OrbitalMineState> orbitalMines = new List<OrbitalMineState>();
 
+    [Tooltip("Random events: cards waiting, effects in force, things to fetch, and what happened.")]
+    public EventLog events = new EventLog();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>

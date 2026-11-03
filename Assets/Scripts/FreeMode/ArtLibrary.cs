@@ -96,6 +96,9 @@ public class ArtLibrary : ScriptableObject
     [Tooltip("Map icons, by SiteKind.")]
     public List<Sprite> siteIcons = new List<Sprite>();
 
+    [Tooltip("Natural wonders, by variant (see Settlement.NaturalWonders).")]
+    public List<Sprite> naturalWonders = new List<Sprite>();
+
 
     private static ArtLibrary cached;
 

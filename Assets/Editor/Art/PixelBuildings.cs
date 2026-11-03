@@ -57,6 +57,7 @@ public static partial class PlaceholderArt
             && !InterstellarBuildingArt.TryGetValue(def.id, out art)
             && !GalacticBuildingArt.TryGetValue(def.id, out art)
             && !EarlyDepthBuildingArt.TryGetValue(def.id, out art)
+            && !WonderBuildingArt.TryGetValue(def.id, out art)
             && !UniversalBuildingArt.TryGetValue(def.id, out art)) return;
         string dir = $"Buildings/{def.id}";
         ResetDir(dir);

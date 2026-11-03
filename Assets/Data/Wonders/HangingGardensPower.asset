@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: HangingGardensPower
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: HangingGardensPower
+  displayName: Hanging Gardens
+  description: +25% food, and all troops have 5% more health.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  researchTime: 30
+  unitModifiers:
+  - troopClass: {fileID: 0}
+    healthMultiplier: 1.05
+    attackMultiplier: 1
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+    rangeMultiplier: 1
+  productionModifiers:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    multiplier: 1.25
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ArchmagesSpire
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ArchmagesSpire
+  displayName: Archmage's Spire
+  description: 'A tower that grows a floor for every spell ever written, past the
+    clouds. +30% mana, and all troops hit 6% harder. A Great Wonder: there can only
+    be one.'
+  icon: {fileID: 21300000, guid: 06103009c7226774ba61df17087a08ee, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 06103009c7226774ba61df17087a08ee, type: 3}
+    - {fileID: 21300000, guid: 0865fa1b6e01aa347b19a154ca509174, type: 3}
+    - {fileID: 21300000, guid: 60802bff2a70f99448df89102e30c890, type: 3}
+    - {fileID: 21300000, guid: b143d1ef1b752b74a8dd8e0c8a547409, type: 3}
+    fps: 4
+  size: {x: 4, y: 4}
+  artSize: {x: 4, y: 8}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 9e9edaa7fda90fa43b1622f403cd3d6a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 10000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 11000
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 3000
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 1000
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 900
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 1
+  wonderEffect: {fileID: 11400000, guid: 3f8a3ef443f80084a86b24b9a9b6337f, type: 2}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 600
+  maxCount: 1
+  maxHealth: 14000
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

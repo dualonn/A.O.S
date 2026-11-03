@@ -141,7 +141,10 @@ public abstract class Unit : MonoBehaviour
     public Vector3 AimPoint => transform.position + Vector3.up * (Moves == Movement.Air && definition != null ? definition.flyHeight : 0.4f);
 
     /// <summary>Can this unit attack that one? Melee can't reach flyers; nothing can reach a burrowed tunneller.</summary>
-    public bool CanHit(Unit other) => other != null && other.Targetable && (other.Moves != Movement.Air || IsRanged || Moves == Movement.Air);
+    public bool CanHit(Unit other) => other != null && other.Targetable && !other.Peaceful && !Peaceful && (other.Moves != Movement.Air || IsRanged || Moves == Movement.Air);
+
+    /// <summary>At peace with you (a native camp's guard while you have a treaty): neither side fights.</summary>
+    public virtual bool Peaceful => false;
 
     private float lastMoveTime = -10f, surfacedUntil, nextDust;
 
@@ -194,39 +197,56 @@ public abstract class Unit : MonoBehaviour
             return;
         }
 
+        UnityEngine.Profiling.Profiler.BeginSample("Unit.Health");
         if (healthSlider != null)
         {
             healthSlider.value = health;
         }
         visual?.SetHealth(health / (float)Mathf.Max(1, maxHealth));
+        UnityEngine.Profiling.Profiler.EndSample();
 
         // A swing in progress lands when the club connects; the unit keeps moving meanwhile.
         if (swingPending && Time.time >= swingHitTime)
         {
+            UnityEngine.Profiling.Profiler.BeginSample("Unit.LandHit");
             LandHit();
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
         UnityEngine.Profiling.Profiler.BeginSample("Unit.Nudges");
         ApplyNudges();
         UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Unit.Auras");
         Auras();
         UpdateBurrow();
+        UnityEngine.Profiling.Profiler.EndSample();
 
+        bool scanned = false;
         if (Time.time >= nextScanTime)
         {
-            // At high speed, scan every 0.05 real seconds at most rather than every frame.
-            nextScanTime = Time.time + ScanInterval * Mathf.Max(1f, Time.timeScale * 0.5f);
+            // On real time: about ten scans a second whatever the game speed (at 5x, scanning on
+            // game time meant every unit looking round, and choosing a target, nearly every frame).
+            nextScanTime = Time.time + ScanInterval * Mathf.Max(1f, Time.timeScale);
             UnityEngine.Profiling.Profiler.BeginSample("Unit.Scan");
             ScanForTargets();
             UnityEngine.Profiling.Profiler.EndSample();
+            scanned = true;
         }
-        targetsInRange.RemoveAll(u => u == null || !CanHit(u));
-        if (unreachableTarget != null)
+        // Pick who to fight after each scan, or straight away if the target is gone; not every
+        // frame (with a big army, choosing among everyone in sight each frame is costly).
+        UnityEngine.Profiling.Profiler.BeginSample("Unit.Select");
+        bool repick = scanned || currentTarget == null || !currentTarget.IsAlive || !CanHit(currentTarget);
+        if (repick)
         {
-            if (Time.time >= skipTargetUntil) unreachableTarget = null;
-            else targetsInRange.Remove(unreachableTarget);
+            targetsInRange.RemoveAll(u => u == null || !u.IsAlive || !CanHit(u));
+            if (unreachableTarget != null)
+            {
+                if (Time.time >= skipTargetUntil) unreachableTarget = null;
+                else targetsInRange.Remove(unreachableTarget);
+            }
+            currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
         }
-        currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
+        UnityEngine.Profiling.Profiler.EndSample();
 
         UnityEngine.Profiling.Profiler.BeginSample("Unit.Act");
         if (currentTarget != null && ShouldEngage())
@@ -454,7 +474,7 @@ public abstract class Unit : MonoBehaviour
         var nav = MapNavigator.Current;
         if (nav != null && Moves == Movement.Ground && !nav.IsWalkable(spot, Team)) spot = targetPos;
 
-        bool inReach = distance <= attackRange;
+        bool inReach = distance <= (IsRanged ? attackRange * WeatherFx.RangedReach : attackRange);
         if (inReach) chaseCheckAt = 0f;
         else if (Moves == Movement.Ground && nav != null && ChaseStuck(target, distance)) return;
         float speed = inReach ? moveSpeed * 0.4f : moveSpeed;
@@ -613,7 +633,7 @@ public abstract class Unit : MonoBehaviour
         if (IsRanged)
         {
             // Loose an arrow: it does the damage when it lands.
-            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this, definition.projectileArc,
+            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, WeatherFx.Ranged(attackPower), this, definition.projectileArc,
                 definition.splashRadius, definition.splashFire);
             GameAudio.Fire(GameAudio.WeaponOf(this), transform.position);
             if (definition.muzzleSmoke)
@@ -861,6 +881,20 @@ public abstract class Unit : MonoBehaviour
     private void ScanForTargets()
     {
         targetsInRange.Clear();
+        // Troops see a long way (the map is endless): a physics query that far returns everyone
+        // anyway, so just go through the living list (much cheaper with a big army, no duplicates).
+        if (detectionRange >= 12f)
+        {
+            Vector2 me = transform.position;
+            float reach2 = detectionRange * detectionRange;
+            foreach (var other in All)
+            {
+                if (other == null || other.Team == Team) continue;
+                if (((Vector2)other.transform.position - me).sqrMagnitude > reach2 || !CanHit(other)) continue;
+                targetsInRange.Add(other);
+            }
+            return;
+        }
         overlapResults.Clear();
         Physics2D.OverlapCircle(transform.position, detectionRange, ScanFilter, overlapResults);
         foreach (var col in overlapResults)

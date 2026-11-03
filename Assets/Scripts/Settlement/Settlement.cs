@@ -571,7 +571,10 @@ public partial class Settlement : MonoBehaviour
         TickAutomation(dt);
         TickCamps(dt);
         TickSites(dt);
+        TickWonders(dt);
         TickHazards(dt);
+        TickSeasons(dt);
+        TickEvents(dt);
         TickGoals(dt);
         TickAges();
     }
@@ -1063,7 +1066,7 @@ public partial class Settlement : MonoBehaviour
             return;
         }
 
-        float upkeep = State.population * Database.foodPerPersonPerSecond * dt;
+        float upkeep = State.population * Database.foodPerPersonPerSecond * dt * SeasonFoodUpkeepFactor;
         float available = GetAmount(food);
         bool starving = available < upkeep;
         AddResource(food, -Mathf.Min(upkeep, available));
@@ -1166,6 +1169,25 @@ public partial class Settlement : MonoBehaviour
                 best = Mathf.Min(best, dx * dx + dy * dy);
             }
             return Mathf.Sqrt(best);
+        }
+
+        private Rect? nearBox;
+
+        /// <summary>
+        /// Within 'reach' of the zone's buildings? A quick box test first, so units far outside
+        /// the town (most of them, in a big fight) never walk the whole building list.
+        /// </summary>
+        public bool Near(Vector2 point, float reach)
+        {
+            if (nearBox == null)
+            {
+                float x0 = float.MaxValue, y0 = float.MaxValue, x1 = float.MinValue, y1 = float.MinValue;
+                foreach (var r in buildings) { x0 = Mathf.Min(x0, r.xMin); y0 = Mathf.Min(y0, r.yMin); x1 = Mathf.Max(x1, r.xMax); y1 = Mathf.Max(y1, r.yMax); }
+                nearBox = buildings.Count > 0 ? Rect.MinMaxRect(x0, y0, x1, y1) : Rect.zero;
+            }
+            var b = nearBox.Value;
+            if (point.x < b.xMin - reach || point.x > b.xMax + reach || point.y < b.yMin - reach || point.y > b.yMax + reach) return false;
+            return DistanceTo(point) <= reach;
         }
 
         /// <summary>How far outside the zone 'point' is (negative inside).</summary>
@@ -1624,6 +1646,11 @@ public partial class Settlement : MonoBehaviour
             missing = $"You can only have {def.maxCount} {def.displayName}";
             return false;
         }
+        if (def.wonder && WonderTaken(def, out string wonderWhere))
+        {
+            missing = $"There is only one {def.displayName} (it's on {wonderWhere})";
+            return false;
+        }
         return Meets(def.requirements, out missing);
     }
 
@@ -1859,6 +1886,7 @@ public partial class Settlement : MonoBehaviour
                 }
             }
             total += GarrisonPower();   // troops stationed here from other worlds
+            total += AllyDefencePower();   // allied natives come to help
             return total * (1f + 0.15f * OrbitalLevel);   // orbital defence platforms over Starport worlds
         }
     }

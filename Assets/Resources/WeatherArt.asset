@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfd93ade3fd075945b18bb4b4577b0f1, type: 3}
+  m_Name: WeatherArt
+  m_EditorClassIdentifier: Assembly-CSharp::WeatherArt
+  seasons:
+  - {fileID: 21300000, guid: af2f1d1c4f6b77349b6545fbdf131bc8, type: 3}
+  - {fileID: 21300000, guid: 71d51071216a5b547ac5aa28103443d0, type: 3}
+  - {fileID: 21300000, guid: 08ffefa2ef759e346b8fa021d2435055, type: 3}
+  - {fileID: 21300000, guid: f91e2a0c9edc0d440ac87af2260b1123, type: 3}
+  - {fileID: 21300000, guid: 046fd3b4dececd048b17da95624e3fdd, type: 3}
+  - {fileID: 21300000, guid: a44962c800fc88643b81a87f75e41661, type: 3}
+  - {fileID: 21300000, guid: d856bb696d104b740bd26bbf10fe1310, type: 3}
+  - {fileID: 21300000, guid: 9e992eb7d7484b0448bd79c275e0a225, type: 3}
+  weather:
+  - {fileID: 21300000, guid: b092d6d11f4fdbc4785711acd0dfea57, type: 3}
+  - {fileID: 21300000, guid: 005dfd9892ff18345950f90a364d5b3c, type: 3}
+  - {fileID: 21300000, guid: 6b3b841425099764f8b5fe50aa7ddf7b, type: 3}
+  - {fileID: 21300000, guid: 0da8a754fe93c8546b02604c19206271, type: 3}
+  - {fileID: 21300000, guid: 81e796175d8cfce4aa9abc3c3cb4b401, type: 3}
+  - {fileID: 21300000, guid: 2805355b8d39a31428fd7f637710aa1d, type: 3}
+  - {fileID: 21300000, guid: e9bdddadee4087644af523f01738981b, type: 3}
+  - {fileID: 21300000, guid: c1a01ac5cc18c574ab1f2d09360e5fe4, type: 3}
+  - {fileID: 21300000, guid: 0006cfa08a89e164a872920301493a70, type: 3}

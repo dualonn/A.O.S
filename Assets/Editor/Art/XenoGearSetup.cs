@@ -70,7 +70,7 @@ public static partial class PlaceholderArt
     private static System.Action<PixelCanvas> XenoIconFor(string id)
     {
         foreach (var spec in XenoSpecs) if (spec.id == id) return spec.icon;
-        return null;
+        return NativeGoodIcon(id);   // the native peoples' crafts (Setup Diplomacy)
     }
 
     // ---------- Icons (20 px) ----------

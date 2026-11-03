@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 01b1de5f1ed3ca5499fde1d7ba14a99d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6262031921393020676
+    second: CradleOfCreation_L0_F3_0
+  - first:
+      213: -3267864748341019192
+    second: CradleOfCreation_L0_F3_1
+  - first:
+      213: -3453528512114837080
+    second: CradleOfCreation_L0_F3_2
+  - first:
+      213: 7988724924661021226
+    second: CradleOfCreation_L0_F3_3
+  - first:
+      213: -5556188547683221441
+    second: CradleOfCreation_L0_F3_4
+  - first:
+      213: 5366296164229346604
+    second: CradleOfCreation_L0_F3_5
+  - first:
+      213: -1216267616252363765
+    second: CradleOfCreation_L0_F3_6
+  - first:
+      213: 8009873088262001396
+    second: CradleOfCreation_L0_F3_7
+  - first:
+      213: 6450693492099606316
+    second: CradleOfCreation_L0_F3_8
+  - first:
+      213: -740790845898680900
+    second: CradleOfCreation_L0_F3_9
+  - first:
+      213: -6864483908600283356
+    second: CradleOfCreation_L0_F3_10
+  - first:
+      213: 4911043680431515474
+    second: CradleOfCreation_L0_F3_11
+  - first:
+      213: 4587274759913345102
+    second: CradleOfCreation_L0_F3_12
+  - first:
+      213: -5726222417438454439
+    second: CradleOfCreation_L0_F3_13
+  - first:
+      213: 8044815238866352955
+    second: CradleOfCreation_L0_F3_14
+  - first:
+      213: 1380350936694952100
+    second: CradleOfCreation_L0_F3_15
+  - first:
+      213: 4674038707945213011
+    second: CradleOfCreation_L0_F3_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 9
+  spritePivot: {x: 0.055555556, y: 0.012048192}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_0
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 161
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf05639252bc819a0800000000000000
+      internalID: -6262031921393020676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 167
+        width: 18
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cdbc15435636a2d0800000000000000
+      internalID: -3267864748341019192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_2
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 167
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a936b5ad1a9210d0800000000000000
+      internalID: -3453528512114837080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_3
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 161
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2ababe2ef6adde60800000000000000
+      internalID: 7988724924661021226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_4
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 136
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f308f3e24f374e2b0800000000000000
+      internalID: -5556188547683221441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_5
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 145
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c257e64fde9e87a40800000000000000
+      internalID: 5366296164229346604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_6
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 140
+        width: 24
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0c777d0c03fe1fe0800000000000000
+      internalID: -1216267616252363765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_7
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 140
+        width: 48
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f251d9b229c82f60800000000000000
+      internalID: 8009873088262001396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_8
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 145
+        width: 20
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c276587cd87758950800000000000000
+      internalID: 6450693492099606316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_9
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 136
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb5195986ae28b5f0800000000000000
+      internalID: -740790845898680900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_10
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 89
+        width: 40
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42fbe7531447cb0a0800000000000000
+      internalID: -6864483908600283356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_11
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 137
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2572c802538872440800000000000000
+      internalID: 4911043680431515474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_12
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 132
+        width: 18
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4010c7f61649af30800000000000000
+      internalID: 4587274759913345102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_13
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 132
+        width: 22
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95dc3b7dc0f5880b0800000000000000
+      internalID: -5726222417438454439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_14
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 89
+        width: 40
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3b374426dce4af60800000000000000
+      internalID: 8044815238866352955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_15
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 137
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a0941f0dddf72310800000000000000
+      internalID: 1380350936694952100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CradleOfCreation_L0_F3_16
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 2
+        width: 196
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35c0085d0758dd040800000000000000
+      internalID: 4674038707945213011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CradleOfCreation_L0_F3_0: -6262031921393020676
+      CradleOfCreation_L0_F3_1: -3267864748341019192
+      CradleOfCreation_L0_F3_10: -6864483908600283356
+      CradleOfCreation_L0_F3_11: 4911043680431515474
+      CradleOfCreation_L0_F3_12: 4587274759913345102
+      CradleOfCreation_L0_F3_13: -5726222417438454439
+      CradleOfCreation_L0_F3_14: 8044815238866352955
+      CradleOfCreation_L0_F3_15: 1380350936694952100
+      CradleOfCreation_L0_F3_16: 4674038707945213011
+      CradleOfCreation_L0_F3_2: -3453528512114837080
+      CradleOfCreation_L0_F3_3: 7988724924661021226
+      CradleOfCreation_L0_F3_4: -5556188547683221441
+      CradleOfCreation_L0_F3_5: 5366296164229346604
+      CradleOfCreation_L0_F3_6: -1216267616252363765
+      CradleOfCreation_L0_F3_7: 8009873088262001396
+      CradleOfCreation_L0_F3_8: 6450693492099606316
+      CradleOfCreation_L0_F3_9: -740790845898680900
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

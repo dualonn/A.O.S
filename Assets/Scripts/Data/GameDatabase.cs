@@ -138,6 +138,9 @@ public class GameDatabase : ScriptableObject
     [Tooltip("Shrine blessings: technologies outside the research tree, granted at shrines.")]
     public List<Technology> blessings = new List<Technology>();
 
+    [Tooltip("Great Wonders' powers: technologies outside the research tree, held while a wonder stands.")]
+    public List<Technology> wonderEffects = new List<Technology>();
+
     [Tooltip("Creatures of the wild.")]
     public UnitDefinition skeleton, skeletonArcher, wolf, giantSpider, troll, barrowKing;
 
@@ -167,13 +170,15 @@ public class GameDatabase : ScriptableObject
     public BuildingDefinition GetBuilding(string id) => Lookup(buildings, ref buildingIndex, ref buildingCount, id, b => b.id);
 
     public Technology GetTechnology(string id) =>
-        Lookup(technologies, ref techIndex, ref techCount, id, t => t.id) ?? Lookup(blessings, ref blessingIndex, ref blessingCount, id, t => t.id);
+        Lookup(technologies, ref techIndex, ref techCount, id, t => t.id) ?? Lookup(blessings, ref blessingIndex, ref blessingCount, id, t => t.id)
+        ?? Lookup(wonderEffects, ref wonderIndex, ref wonderCount, id, t => t.id);
 
     // Lookups by id run thousands of times a frame, so they use dictionaries, rebuilt whenever a list changes size
     // (setup tools add entries in the editor).
     [System.NonSerialized] private Dictionary<string, ResourceType> resourceIndex;
     [System.NonSerialized] private Dictionary<string, BuildingDefinition> buildingIndex;
-    [System.NonSerialized] private Dictionary<string, Technology> techIndex, blessingIndex;
+    [System.NonSerialized] private Dictionary<string, Technology> techIndex, blessingIndex, wonderIndex;
+    [System.NonSerialized] private int wonderCount = -1;
     [System.NonSerialized] private int resourceCount = -1, buildingCount = -1, techCount = -1, blessingCount = -1;
 
     private static T Lookup<T>(List<T> list, ref Dictionary<string, T> index, ref int count, string id, System.Func<T, string> key) where T : Object

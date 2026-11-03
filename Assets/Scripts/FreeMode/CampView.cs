@@ -163,12 +163,16 @@ public class CampView : MonoBehaviour
         return new Vector3(Mathf.Clamp(from.x, min.x, max.x), Mathf.Clamp(from.y, min.y, max.y), 0);
     }
 
+    /// <summary>A camp of a people you're at peace with.</summary>
+    public bool Peaceful => controller != null && controller.Settlement.NativesAtPeace;
+
     public void TakeHit(float amount)
     {
         if (health <= 0)
         {
             return;
         }
+        if (Peaceful) controller.Settlement.BreakPeace("You attacked one of their camps.");
         health = Mathf.Max(0, health - amount);
         shake = 0.15f;
         if (health <= 0)
@@ -194,7 +198,7 @@ public class CampView : MonoBehaviour
         float bestDistance = range;
         foreach (var camp in Live)
         {
-            if (camp == null || !camp.IsStanding) continue;
+            if (camp == null || !camp.IsStanding || camp.Peaceful) continue;   // troops leave camps at peace alone
             float d = Vector2.Distance(from, camp.ClosestPoint(from));
             if (d < bestDistance)
             {
@@ -231,7 +235,7 @@ public class CampView : MonoBehaviour
         barFill.transform.localScale = new Vector3(barBack.transform.localScale.x * health / maxHealth, barFill.transform.localScale.y, 1);
         string age = controller.Settlement.Database.GetAge(Tier)?.displayName ?? "";
         label.text = hovered
-            ? $"<color=#ff9a8a>Raider camp</color>\n<size=75%>{age} raiders{(Chief != null ? $", led by <color=#ff8a70>{Chief.definition.displayName}</color>" : "")}. Select troops and right-click it to burn it down.</size>"
+            ? controller.Settlement.DiplomacyCampLabel(Chief) ?? $"<color=#ff9a8a>Raider camp</color>\n<size=75%>{age} raiders{(Chief != null ? $", led by <color=#ff8a70>{Chief.definition.displayName}</color>" : "")}. Select troops and right-click it to burn it down.</size>"
             : "";
 
         KeepGuards();
@@ -277,6 +281,7 @@ public class CampView : MonoBehaviour
                 if (e != null)
                 {
                     e.StartGuard(Centre, GuardRadius);
+                    e.CampGuard = true;
                     chief = e;
                 }
             }
@@ -295,6 +300,7 @@ public class CampView : MonoBehaviour
             if (enemy != null)
             {
                 enemy.StartGuard(Centre, GuardRadius);
+                enemy.CampGuard = true;
                 guards.Add(enemy);
             }
         }
@@ -321,7 +327,7 @@ public class CampView : MonoBehaviour
     private UnitDefinition PickGuard()
     {
         var natives = controller.Settlement.NativeUnits();
-        if (natives.Count > 0 && Random.value < 0.7f) return natives[Random.Range(0, natives.Count)];
+        if (natives.Count > 0 && (Random.value < 0.7f || controller.Settlement.NativesAtPeace)) return natives[Random.Range(0, natives.Count)];   // at peace: only their own people
         var pool = new List<UnitDefinition>();
         var db = controller.Settlement.Database;
         for (int i = 0; i <= Tier; i++)

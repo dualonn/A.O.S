@@ -95,7 +95,7 @@ public class Projectile : MonoBehaviour
             if (splash > 0f)
             {
                 Puff.Blast(end, splash, fire);
-                int share = Mathf.Max(1, Mathf.RoundToInt(damage * SplashShare));
+                int share = Mathf.Max(1, Mathf.RoundToInt(damage * SplashShare * (fire ? WeatherFx.Fire : 1f)));
                 var caught = new System.Collections.Generic.List<Unit>();
                 foreach (var u in Unit.Living)
                     if (u != null && u != target && u.IsAlive && u.Team != team && Vector2.Distance(u.transform.position, end) <= splash) caught.Add(u);
