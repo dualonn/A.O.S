@@ -10,7 +10,6 @@ using UnityEngine;
 public class SettlementState
 {
     public int ageIndex;
-    public float population;
 
     [Tooltip("The map is regenerated from this seed, so only the seed is saved.")]
     public int mapSeed;
@@ -18,36 +17,27 @@ public class SettlementState
     [Tooltip("Save format version (old saves are upgraded when loaded).")]
     public int saveVersion;
 
-    [Tooltip("Explored zones of the map, as (column, row); tiles are regenerated from the seed on load.")]
-    public List<Vector2Int> explored = new List<Vector2Int>();
+    [Tooltip("Every world you've settled or visited; each has its own map, economy and raids.")]
+    public List<WorldState> worlds = new List<WorldState>();
 
-    [Tooltip("Old saves only: explored zones as row * 128 + column, from when the map had an edge.")]
-    public List<int> exploredZones = new List<int>();
-    public List<ResourceStock> resources = new List<ResourceStock>();
-    public List<BuildingState> buildings = new List<BuildingState>();
+    [Tooltip("The world you're looking at (index into worlds).")]
+    public int currentWorld;
+
     public List<string> researched = new List<string>();
 
     public string researchingId;
     public float researchProgress;
 
-    public float secondsUntilWave;
-    public int wavesSurvived;
     public int nextBuildingId = 1;
 
     [Tooltip("New buildings start with auto-repair on.")]
     public bool autoRepairNew;
-
-    [Tooltip("Raider camps found on the map (generated from the seed; saved so cleared ones stay cleared).")]
-    public List<CampState> camps = new List<CampState>();
 
     [Tooltip("Seconds of play so far (heroes' recovery times count against this).")]
     public float playTime;
 
     public List<HeroState> heroes = new List<HeroState>();
     public List<ItemInstance> inventory = new List<ItemInstance>();
-
-    [Tooltip("Ruins, dungeons, lairs, shrines, caches and lore stones found on the map.")]
-    public List<SiteState> sites = new List<SiteState>();
 
     [Tooltip("Lore entries found (indexes into Lore.Entries), in the order found.")]
     public List<int> journal = new List<int>();
@@ -58,10 +48,38 @@ public class SettlementState
     public int campsCleared;
     public int sitesDone;
     public int chiefsKilled;
-    [Tooltip("Biomes your explorers have reached (as Biome values).")]
-    public List<int> biomesVisited = new List<int>();
     public int nextItemId = 1;
     public int nextHeroId = 1;
+
+    [Tooltip("Star systems your probes and ships have scanned (their worlds are known).")]
+    public List<Vector2Int> scannedSystems = new List<Vector2Int>();
+
+    [Tooltip("Ships in flight between the stars.")]
+    public List<ShipState> ships = new List<ShipState>();
+    public int nextShipId = 1;
+
+    // ----- The current world's fields (each world keeps its own; see WorldState) -----
+
+    /// <summary>The world you're looking at.</summary>
+    public WorldState World
+    {
+        get
+        {
+            if (worlds.Count == 0) worlds.Add(new WorldState { seed = mapSeed });
+            return worlds[Mathf.Clamp(currentWorld, 0, worlds.Count - 1)];
+        }
+    }
+
+    public float population { get => World.population; set => World.population = value; }
+    public List<Vector2Int> explored { get => World.explored; set => World.explored = value; }
+    public List<int> exploredZones { get => World.exploredZones; set => World.exploredZones = value; }
+    public List<ResourceStock> resources { get => World.resources; set => World.resources = value; }
+    public List<BuildingState> buildings { get => World.buildings; set => World.buildings = value; }
+    public List<CampState> camps { get => World.camps; set => World.camps = value; }
+    public List<SiteState> sites { get => World.sites; set => World.sites = value; }
+    public float secondsUntilWave { get => World.secondsUntilWave; set => World.secondsUntilWave = value; }
+    public int wavesSurvived { get => World.wavesSurvived; set => World.wavesSurvived = value; }
+    public List<int> biomesVisited { get => World.biomesVisited; set => World.biomesVisited = value; }
 }
 
 /// <summary>A promoted troop: named, saved, levels up, wears gear, and recovers when it falls.</summary>

@@ -17,8 +17,58 @@ public partial class Settlement : MonoBehaviour
     public SettlementState State { get; private set; }
     public WaveDirector Waves { get; private set; }
 
-    /// <summary>The generated map (rebuilt from State.mapSeed; never saved itself).</summary>
+    /// <summary>The current world's map (rebuilt from its seed and profile; never saved itself).</summary>
     public MapData Map { get; private set; }
+
+    // Maps of other worlds already generated this session (by world index).
+    private readonly Dictionary<int, MapData> worldMaps = new Dictionary<int, MapData>();
+
+    /// <summary>The world you're looking at.</summary>
+    public WorldState CurrentWorld => State.World;
+
+    /// <summary>Raised after switching to another world (the scene rebuilds itself for its map).</summary>
+    public event Action WorldSwitched;
+
+    /// <summary>The map of a world, generated (from its seed and profile) the first time it's needed.</summary>
+    public MapData MapOf(int world)
+    {
+        if (world == State.currentWorld && Map != null) return Map;
+        if (worldMaps.TryGetValue(world, out var map)) return map;
+        var w = State.worlds[world];
+        map = MapGenerator.Create(w.seed, Database, w.explored, WorldProfile.Get(w.profile));
+        worldMaps[world] = map;
+        return map;
+    }
+
+    /// <summary>Add a world (not yet visited) and return its index.</summary>
+    public int AddWorld(WorldState world)
+    {
+        State.worlds.Add(world);
+        return State.worlds.Count - 1;
+    }
+
+    /// <summary>
+    /// Look at another world: its map becomes the current one and the scene rebuilds round it.
+    /// Every world keeps running either way.
+    /// </summary>
+    public void SwitchWorld(int world)
+    {
+        if (world < 0 || world >= State.worlds.Count || world == State.currentWorld) return;
+        State.explored = Map.RevealedZones();
+        worldMaps[State.currentWorld] = Map;
+        State.currentWorld = world;
+        Map = null;   // (so MapOf builds or fetches the new world's map, not this one)
+        Map = MapOf(world);
+        worldMaps.Remove(world);
+        State.explored = Map.RevealedZones();
+        zonesCache = null;
+        wallsDirty = true;
+        RecalculateDerived();
+        RollCamps(Map.RevealedZones());
+        RollSites(Map.RevealedZones());
+        Save();
+        WorldSwitched?.Invoke();   // the scene rebuilds itself round the new map
+    }
 
     /// <summary>True once the player has placed their town center (Campfire).</summary>
     public bool IsFounded => State.buildings.Exists(b => Database.GetBuilding(b.definitionId)?.isTownCenter == true);
@@ -280,7 +330,7 @@ public partial class Settlement : MonoBehaviour
         camp.reoccupyIn = Database.campReoccupySeconds;
         State.secondsUntilWave += 90f;
         Notify($"Raider camp destroyed! You took {Describe(loot)}, and raids will hold off a while.");
-        Changed?.Invoke();
+        RaiseChanged();
         return loot;
     }
 
@@ -296,8 +346,8 @@ public partial class Settlement : MonoBehaviour
                 camp.bossDefeated = false;
                 camp.extraTier++;
                 Notify("Raiders have moved back into one of the camps you cleared, stronger than before.");
-                CampReoccupied?.Invoke(camp);
-                Changed?.Invoke();
+                if (!offWorld) CampReoccupied?.Invoke(camp);
+                RaiseChanged();
             }
         }
     }
@@ -350,7 +400,7 @@ public partial class Settlement : MonoBehaviour
             State.mapSeed = NewSeed();
         }
         UpgradeOldSave();
-        Map = MapGenerator.Create(State.mapSeed, Database, State.explored);
+        Map = MapGenerator.Create(CurrentWorld.seed, Database, State.explored, WorldProfile.Get(CurrentWorld.profile));
         State.explored = Map.RevealedZones();
         // Older saves could hold fractional building health; snap it to whole points.
         foreach (var building in State.buildings)
@@ -366,7 +416,7 @@ public partial class Settlement : MonoBehaviour
     }
 
     /// <summary>The save format this build writes.</summary>
-    private const int CurrentSaveVersion = 1;
+    private const int CurrentSaveVersion = 2;
 
     /// <summary>
     /// Bring an older save up to date. Version 0 stored zones as a single number from when the
@@ -377,6 +427,12 @@ public partial class Settlement : MonoBehaviour
     {
         if (State.saveVersion >= CurrentSaveVersion)
         {
+            return;
+        }
+        if (CurrentWorld.seed == 0) CurrentWorld.seed = State.mapSeed;   // the home world keeps the old map seed
+        if (State.saveVersion >= 1)
+        {
+            State.saveVersion = CurrentSaveVersion;   // (version 1 to 2: worlds were split out when loading)
             return;
         }
         int perRow = MapGenerator.LegacyZonesPerRow(Database);
@@ -398,11 +454,15 @@ public partial class Settlement : MonoBehaviour
     {
         var state = new SettlementState
         {
-            population = Database.startingPopulation,
-            secondsUntilWave = Database.firstWaveDelay,
             mapSeed = NewSeed(),
             saveVersion = CurrentSaveVersion
         };
+        state.worlds.Add(new WorldState
+        {
+            seed = state.mapSeed,
+            population = Database.startingPopulation,
+            secondsUntilWave = Database.firstWaveDelay,
+        });
         foreach (var start in Database.startingResources)
         {
             if (start.resource != null)
@@ -478,6 +538,8 @@ public partial class Settlement : MonoBehaviour
     public void Tick(float dt)
     {
         State.playTime += dt;
+        TickShips();
+        TickOtherWorlds(dt);
         UpdateWallLayer();
         if (!IsFounded)
         {
@@ -646,7 +708,7 @@ public partial class Settlement : MonoBehaviour
         Spend(NextUpgrade(building).requirements.cost);
         building.upgrading = true;
         building.upgradeProgress = 0;
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -713,7 +775,7 @@ public partial class Settlement : MonoBehaviour
         building.upgrading = true;
         building.rankingUp = true;
         building.upgradeProgress = 0;
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -741,7 +803,7 @@ public partial class Settlement : MonoBehaviour
         building.health = Mathf.Max(1, Mathf.Round(healthShare * stats.maxHealth));
         building.siteQuality = SiteQuality(target, new RectInt(building.cell, target.size), stats.catchment);
         Notify($"{Name(def)} ranked up into a {Name(target)}!");
-        Changed?.Invoke();
+        RaiseChanged();
     }
 
     private void TickUpgrades(float dt)
@@ -779,7 +841,7 @@ public partial class Settlement : MonoBehaviour
                 building.siteQuality = SiteQuality(def, new RectInt(building.cell, def.size), StatsOf(building).catchment);
             }
             Notify($"{Name(def)} upgraded: {next.name}.");
-            Changed?.Invoke();
+            RaiseChanged();
         }
     }
 
@@ -800,7 +862,7 @@ public partial class Settlement : MonoBehaviour
                 {
                     Notify($"{Name(def)} finished building."); // walls go up in dozens: no message each
                 }
-                Changed?.Invoke();
+                RaiseChanged();
             }
         }
     }
@@ -1046,7 +1108,7 @@ public partial class Settlement : MonoBehaviour
             Notify(tech.IsLevelled
                 ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{MaxLevel(tech)})."
                 : $"Research complete: {tech.displayName}.");
-            Changed?.Invoke();
+            RaiseChanged();
         }
     }
 
@@ -1579,7 +1641,7 @@ public partial class Settlement : MonoBehaviour
             RollCamps(Map.RevealedZones());
             RollSites(Map.RevealedZones());
         }
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -1587,7 +1649,7 @@ public partial class Settlement : MonoBehaviour
     {
         if (State.buildings.Remove(building))
         {
-            Changed?.Invoke();
+            RaiseChanged();
         }
     }
 
@@ -1623,7 +1685,7 @@ public partial class Settlement : MonoBehaviour
         Spend(cost);
         building.health = StatsOf(building).maxHealth;
         reason = null;
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -1662,7 +1724,7 @@ public partial class Settlement : MonoBehaviour
         Spend(ResearchCost(tech));
         State.researchingId = tech.id;
         State.researchProgress = 0;
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -1835,7 +1897,7 @@ public partial class Settlement : MonoBehaviour
         }
 
         Notify(report.ToString());
-        Changed?.Invoke();
+        RaiseChanged();
     }
 
     /// <summary>A raider hits one building (live fights in the free mode scene).</summary>
@@ -1850,7 +1912,7 @@ public partial class Settlement : MonoBehaviour
         {
             var def = Database.GetBuilding(building.definitionId);
             Notify($"Raiders ruined a {Name(def)}! Repair it to use it again.");
-            Changed?.Invoke();
+            RaiseChanged();
         }
     }
 
@@ -1932,7 +1994,16 @@ public partial class Settlement : MonoBehaviour
         }
         try
         {
-            return JsonUtility.FromJson<SettlementState>(File.ReadAllText(SavePath));
+            string json = File.ReadAllText(SavePath);
+            var state = JsonUtility.FromJson<SettlementState>(json);
+            if (state != null && state.saveVersion < 2 && state.worlds.Count == 0)
+            {
+                // Older saves kept the one world's map and economy at the top level: it becomes world 0.
+                var legacy = JsonUtility.FromJson<LegacyWorldFields>(json);
+                state.worlds.Add(legacy.ToWorld(state.mapSeed));
+                state.currentWorld = 0;
+            }
+            return state;
         }
         catch (Exception e)
         {
@@ -1968,8 +2039,16 @@ public partial class Settlement : MonoBehaviour
 
     private void Notify(string message)
     {
+        // News from a world you're not looking at says where it's from.
+        if (offWorld) message = $"<color=#9cf>[{CurrentWorld.name}]</color> {message}";
         Debug.Log($"[Settlement] {message}");
         Message?.Invoke(message);
+    }
+
+    /// <summary>Tell the scene something changed (not while a world in the background is ticking).</summary>
+    private void RaiseChanged()
+    {
+        if (!offWorld) Changed?.Invoke();
     }
 
     private static string Name(BuildingDefinition def) => def != null ? def.displayName : "Building";

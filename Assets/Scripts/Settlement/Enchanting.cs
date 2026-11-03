@@ -77,7 +77,7 @@ public partial class Settlement
         if (!Pay(EnhanceCost(item), out why)) return false;
         item.enhance++;
         Notify($"{Items.DisplayName(item)} is stronger.");
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -90,7 +90,7 @@ public partial class Settlement
         item.enchant = Items.RollEnchantment(item, rng);
         item.enchanted = true;
         Notify($"{Items.DisplayName(item)} glows: {Items.EnchantmentName(item.enchant.trait)}.");
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -104,7 +104,7 @@ public partial class Settlement
         var rng = new System.Random(State.mapSeed ^ item.uid * 104729 ^ (int)(State.playTime * 10));
         Items.RerollTraits(item, template, rng);
         Notify($"New traits: {Items.DisplayName(item)}.");
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 
@@ -138,7 +138,7 @@ public partial class Settlement
         {
             AddResource(essence, total);
             Notify($"Salvaged {items.Count} item{(items.Count == 1 ? "" : "s")} into {total} Essence.");
-            Changed?.Invoke();
+            RaiseChanged();
         }
         return total;
     }

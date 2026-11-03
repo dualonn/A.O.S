@@ -137,7 +137,7 @@ public partial class Settlement
         {
             State.ageIndex++;
             Notify($"Your civilisation has entered the <color=#fd6>{CurrentAge.displayName}</color>! New research and buildings are open to you.");
-            Changed?.Invoke();
+            RaiseChanged();
             return;
         }
         if (masteredNotified != State.ageIndex && CurrentAgeProgress >= 0.999f)

@@ -210,6 +210,6 @@ public partial class Settlement
             State.goals.Add(g);
             changed = true;
         }
-        if (changed) Changed?.Invoke();
+        if (changed) RaiseChanged();
     }
 }

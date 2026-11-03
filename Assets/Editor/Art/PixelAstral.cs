@@ -19,6 +19,7 @@ public static partial class PlaceholderArt
             { "StarFoundry", (PxStarFoundry, 4, 6f) }, { "ConstructWorks", (PxConstructWorks, 4, 5f) }, { "ThroneWorks", (PxThroneWorks, 4, 4f) },
             { "ConstructVault", (PxConstructVault, 4, 4f) }, { "Starport", (PxStarport, 4, 4f) }, { "AstralReactor", (PxAstralReactor, 4, 6f) },
             { "MeteorMine", (PxMeteorMine, 4, 5f) }, { "CoreForge", (PxCoreForge, 4, 6f) },
+            { "ColonyHub", (PxColonyHub, 4, 4f) },
         };
 
     private static Color32[] Star => P.Astral;
@@ -353,6 +354,32 @@ public static partial class PlaceholderArt
         int lift = cut * 3;
         k.VLine(52, 48 - lift, 59, P.Steel[2]); k.Rect(49, 44 - lift, 55, 47 - lift, P.Starmetal[2]);
         for (int i = 0; i < 2 + k.Level; i++) k.Ellipse(14 + i * 9, 8, 4, 3, P.Starmetal);
+        k.Finish();
+    }
+
+    private static void PxColonyHub(K k)
+    {
+        // The landed colony ship opened into a hub: its hull on landing legs, a glass dome over the
+        // hold, a ramp down to the ground, solar wings and a beacon blinking on a mast.
+        k.Ground(2, 2, 94, 40, P.Dirt);
+        foreach (int x in new[] { 18, 34, 62, 78 }) { k.Line(x, 4, x + (x < 48 ? 4 : -4), 12, Star[1], 2); k.HLine(x - 3, x + 3, 3, Star[2]); }
+        k.Ellipse(48, 18, 36, 9, Star, l => l.y >= 12);
+        StarSteel(k, 14, 12, 82, 24);
+        k.Line(46, 4, 56, 12, P.Steel[2], 3);   // the ramp
+        k.Rect(44, 12, 54, 20, P.Coal[1]);
+        GlassDome(k, 48, 24, 18, 11);
+        for (int i = 0; i < 3; i++) k.Px(40 + i * 6, 28 + (i % 2) * 2, P.Leaf[2]);   // gardens under the dome
+        // solar wings either side
+        for (int side = -1; side <= 1; side += 2)
+        {
+            int x0 = side < 0 ? 2 : 80, x1 = side < 0 ? 16 : 94;
+            k.Rect(x0, 20, x1, 26, P.Mana[0]);
+            for (int x = x0 + 2; x < x1; x += 3) k.VLine(x, 20, 26, P.Mana[1]);
+            k.HLine(x0, x1, 26, P.Gold[2]);
+        }
+        k.VLine(70, 24, 44, P.Steel[2]);
+        k.Px(70, 45, k.Frame % 2 == 0 ? P.Red[3] : P.Red[1]);
+        k.Px(71, 45, k.Frame % 2 == 0 ? P.Red[2] : P.Red[0]);
         k.Finish();
     }
 

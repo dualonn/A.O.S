@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: Starport
   displayName: Starport
-  description: 'A landing pad with a control tower and a docking cradle. Builds Star
-    Frigates: mana-drive gunships.'
+  description: A landing pad with a control tower and a docking cradle. Builds Star
+    Frigates, and launches probes and colony ships to other worlds (open the star
+    map).
   icon: {fileID: 21300000, guid: 79576bb776a03a743b2724b467362cf1, type: 3}
   prefab: {fileID: 0}
   looks:
@@ -121,6 +122,8 @@ MonoBehaviour:
     cost: []
   rankUpTime: 40
   isTownCenter: 0
+  launchesShips: 1
+  foundsColonies: 0
   wallKind: 0
   pieces: []
   sortLine: 0

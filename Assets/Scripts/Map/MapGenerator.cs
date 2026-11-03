@@ -21,12 +21,22 @@ public static class MapGenerator
         // Biomes (drawn last from the seed so nothing above changes for old maps)
         public float tx, ty, wx, wy, ex, ey;
         public Vector2 home;
+        /// <summary>The kind of world (biome rules, water and hills, deposits, colours).</summary>
+        public WorldProfile profile = WorldProfile.Home;
     }
 
     /// <summary>How wide a biome region is (lower = bigger regions).</summary>
     private const float BiomeScale = 0.0032f;
-    /// <summary>Round the starting area the land stays temperate; biomes fade in beyond.</summary>
-    private const float HomeRadius = 110f, BiomeBlend = 70f;
+    /// <summary>The noise values each landing biome is pulled towards round the landing site.</summary>
+    private static Vector3 HomeLean(Biome b) => b switch
+    {
+        Biome.Desert => new Vector3(0.75f, 0.4f, 0.5f),
+        Biome.Tundra => new Vector3(0.2f, 0.5f, 0.5f),
+        Biome.Swamp => new Vector3(0.5f, 0.8f, 0.5f),
+        Biome.Volcanic => new Vector3(0.5f, 0.5f, 0.1f),
+        Biome.Crystal => new Vector3(0.5f, 0.5f, 0.9f),
+        _ => new Vector3(0.5f, 0.5f, 0.5f),
+    };
 
     /// <summary>
     /// The biome at a tile: from large, slow noise for warmth, wetness and wildness (the strange
@@ -36,22 +46,21 @@ public static class MapGenerator
     public static Biome BiomeAt(Settings s, int x, int y)
     {
         if (s == null) return Biome.Temperate;
+        var p = s.profile ?? WorldProfile.Home;
         float d = Vector2.Distance(new Vector2(x, y), s.home);
-        if (d < HomeRadius) return Biome.Temperate;
-        float k = Mathf.Clamp01((d - HomeRadius) / BiomeBlend);
-        float warm = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale + s.tx, y * BiomeScale + s.ty), k);
-        float wet = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale * 1.3f + s.wx, y * BiomeScale * 1.3f + s.wy), k);
-        float wild = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale * 1.8f + s.ex, y * BiomeScale * 1.8f + s.ey), k);
+        if (d < p.homeRadius) return p.homeBiome;
+        float k = Mathf.Clamp01((d - p.homeRadius) / p.homeBlend);
+        // Near the landing site the land leans to the world's home biome; further out, the noise
+        // (shifted by the world's own leanings) takes over. (The home world leans to temperate.)
+        Vector3 lean = HomeLean(p.homeBiome);
+        float warm = Mathf.Lerp(lean.x, Mathf.PerlinNoise(x * BiomeScale + s.tx, y * BiomeScale + s.ty) + p.warmBias, k);
+        float wet = Mathf.Lerp(lean.y, Mathf.PerlinNoise(x * BiomeScale * 1.3f + s.wx, y * BiomeScale * 1.3f + s.wy) + p.wetBias, k);
+        float wild = Mathf.Lerp(lean.z, Mathf.PerlinNoise(x * BiomeScale * 1.8f + s.ex, y * BiomeScale * 1.8f + s.ey) + p.wildBias, k);
         // Ragged borders: a little fine noise so lands blend into each other instead of meeting in a line.
         float j = (Mathf.PerlinNoise(x * 0.09f + s.tx * 0.37f, y * 0.09f + s.ty * 0.37f) - 0.5f) * 0.05f
                 + (Mathf.PerlinNoise(x * 0.31f + s.wx * 0.21f, y * 0.31f + s.wy * 0.21f) - 0.5f) * 0.025f;
         warm += j; wet -= j; wild += j;
-        if (wild > 0.74f) return Biome.Crystal;
-        if (wild < 0.26f) return Biome.Volcanic;
-        if (warm > 0.58f && wet < 0.56f) return Biome.Desert;
-        if (warm < 0.37f) return Biome.Tundra;
-        if (wet > 0.62f) return Biome.Swamp;
-        return Biome.Temperate;
+        return p.Pick(warm, wet, wild);
     }
 
     private const float RiverScale = 0.011f;
@@ -79,12 +88,12 @@ public static class MapGenerator
     public static int LegacyZonesPerRow(GameDatabase db) => Mathf.CeilToInt(Limit(db).x / (float)Mathf.Max(4, db.chunkSize));
 
     /// <summary>Create the map: the starting area plus any zones explored in a saved game.</summary>
-    public static MapData Create(int seed, GameDatabase db, List<Vector2Int> savedZones)
+    public static MapData Create(int seed, GameDatabase db, List<Vector2Int> savedZones, WorldProfile profile = null)
     {
         var deposits = new List<DepositType>(db.deposits.FindAll(d => d != null));
         var map = new MapData(seed, Mathf.Max(4, db.chunkSize), deposits);
         var initial = InitialArea(db);
-        map.Settings = BuildSettings(seed, db, initial, deposits.Count);
+        map.Settings = BuildSettings(seed, db, initial, deposits.Count, profile ?? WorldProfile.Home);
 
         var zones = new List<Vector2Int>();
         int c = map.ChunkSize;
@@ -131,14 +140,15 @@ public static class MapGenerator
     // ---------- Settings ----------
 
     /// <summary>Fix noise offsets and levels by sampling the starting area once.</summary>
-    private static Settings BuildSettings(int seed, GameDatabase db, RectInt sampleArea, int depositCount)
+    private static Settings BuildSettings(int seed, GameDatabase db, RectInt sampleArea, int depositCount, WorldProfile profile)
     {
         var rng = new System.Random(seed);
         var s = new Settings
         {
             hx = Offset(rng), hy = Offset(rng), mx = Offset(rng), my = Offset(rng), rx = Offset(rng), ry = Offset(rng),
-            terrainScale = db.terrainScale,
-            riverWidth = 0.0045f * Mathf.Max(0, db.riverCount),
+            terrainScale = db.terrainScale * profile.terrainScaleMultiplier,
+            riverWidth = 0.0045f * Mathf.Max(0, profile.Rivers(db)),
+            profile = profile,
             depositX = new float[depositCount],
             depositY = new float[depositCount]
         };
@@ -164,8 +174,8 @@ public static class MapGenerator
         s.heightMax = heights[heights.Count - 1];
         s.moistMin = moists[0];
         s.moistMax = moists[moists.Count - 1];
-        s.waterLine = Normalize(heights[Index(heights.Count, db.waterShare)], s.heightMin, s.heightMax);
-        s.hillLine = Normalize(heights[Index(heights.Count, 1f - db.hillShare)], s.heightMin, s.heightMax);
+        s.waterLine = Normalize(heights[Index(heights.Count, profile.WaterShare(db))], s.heightMin, s.heightMax);
+        s.hillLine = Normalize(heights[Index(heights.Count, 1f - profile.HillShare(db))], s.heightMin, s.heightMax);
         s.tx = Offset(rng); s.ty = Offset(rng); s.wx = Offset(rng); s.wy = Offset(rng); s.ex = Offset(rng); s.ey = Offset(rng);
         s.home = sampleArea.center;
         return s;
@@ -209,7 +219,7 @@ public static class MapGenerator
                     }
                     float patch = Mathf.PerlinNoise(x * type.patchScale + s.depositX[i], y * type.patchScale + s.depositY[i]);
                     patch += (Hash01(x, y, map.Seed, i) - 0.5f) * 0.08f; // ragged edges
-                    if (patch > type.rarity)
+                    if (patch > type.rarity - (s.profile != null ? s.profile.DepositBoost(type.id) : 0f))
                     {
                         map.SetDeposit(x, y, type);
                         break;

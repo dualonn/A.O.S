@@ -228,7 +228,7 @@ public partial class Settlement
         if (!CanChooseClass(hero, cls, out why)) return false;
         hero.heroClass = cls;
         Notify($"{hero.name} takes the path of the {cls}.");
-        Changed?.Invoke();
+        RaiseChanged();
         return true;
     }
 

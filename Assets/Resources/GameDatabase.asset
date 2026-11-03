@@ -248,6 +248,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 09ae49a2239f67c4b97027c3aeb87b0a, type: 2}
   - {fileID: 11400000, guid: 50146058faf1b964595bb716b496788b, type: 2}
   - {fileID: 11400000, guid: f62f7a5756362a54fb83e1a36fdd884a, type: 2}
+  - {fileID: 11400000, guid: 3c2fe78478e5bbc438cf704a3c9789df, type: 2}
   technologies:
   - {fileID: 11400000, guid: 07333c1ca972dd541b1d9557cb0fb5b5, type: 2}
   - {fileID: 11400000, guid: 765d6fe896291f843b5e32d94575c018, type: 2}
@@ -412,6 +413,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a0ec6293f41e7ec49b49064266ef4794, type: 2}
   - {fileID: 11400000, guid: 9159b6636cf9b7641a4c5d531f9ce0b5, type: 2}
   - {fileID: 11400000, guid: 09b5a84841af6e04f87e59465b780ba0, type: 2}
+  - {fileID: 11400000, guid: 7bc93770d768c92409778b1171d1033b, type: 2}
+  - {fileID: 11400000, guid: 869be6093a84e3d4d8b3ce641af2c43f, type: 2}
   itemTemplates:
   - {fileID: 11400000, guid: dc9247bfeb79374448b791f65132d071, type: 2}
   - {fileID: 11400000, guid: 1f663026c005b4945b4162e0397d3f44, type: 2}

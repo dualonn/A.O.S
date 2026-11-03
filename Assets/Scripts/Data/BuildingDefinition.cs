@@ -96,6 +96,12 @@ public class BuildingDefinition : GameData
     [Tooltip("The settlement's founding building (Campfire). Nothing else can be built until one exists.")]
     public bool isTownCenter;
 
+    [Tooltip("Builds and launches ships to other worlds (probes, colony ships, freighters).")]
+    public bool launchesShips;
+
+    [Tooltip("A town centre only offered to found a settlement on a new world.")]
+    public bool foundsColonies;
+
     [Header("Walls and gates (1x1, placed in lines)")]
     [Tooltip("Wall: blocks everyone. Gate: lets your units through, blocks raiders.")]
     public WallTile wallKind;

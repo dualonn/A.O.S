@@ -65,6 +65,13 @@ public class Technology : GameData
     [Tooltip("Research goes this many times as fast (1.03 = 3% faster).")]
     public float researchSpeedMultiplier = 1f;
 
+    [Header("Space")]
+    [Tooltip("Ships reach this many more light-years from your settled systems.")]
+    public float navigationRange;
+
+    [Tooltip("Ships fly this much faster (adds up: 1 = the first drives).")]
+    public float driveSpeed;
+
     [Header("Levels (Mastery research you can take more than once)")]
     [Tooltip("How many times this can be researched. Each level adds its effects again.")]
     public int maxLevel = 1;

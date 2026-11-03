@@ -91,9 +91,17 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         Settlement.Changed += SyncViews;
         Settlement.Message += ShowMessage;
         Settlement.MapGrown += OnMapGrown;
+        Settlement.WorldSwitched += OnWorldSwitched;
         Settlement.Waves.LiveBattlefield = this;
         Settlement.RaidUnderway = () => waveInProgress;
         SyncViews();
+    }
+
+    /// <summary>Another world is now in view: rebuild the whole scene round its map.</summary>
+    private void OnWorldSwitched()
+    {
+        enabled = false;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(gameObject.scene.buildIndex);
     }
 
     private void OnDestroy()
@@ -106,6 +114,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         Settlement.Changed -= SyncViews;
         Settlement.Message -= ShowMessage;
         Settlement.MapGrown -= OnMapGrown;
+        Settlement.WorldSwitched -= OnWorldSwitched;
         if (ReferenceEquals(Settlement.Waves.LiveBattlefield, this))
         {
             Settlement.Waves.LiveBattlefield = null;

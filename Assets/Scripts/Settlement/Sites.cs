@@ -213,8 +213,8 @@ public partial class Settlement
         site.done = true;
         State.sitesDone++;
         site.resetIn = resetSeconds;
-        SiteChanged?.Invoke(site);
-        Changed?.Invoke();
+        if (!offWorld) SiteChanged?.Invoke(site);
+        RaiseChanged();
     }
 
     /// <summary>The ruins' guardians are gone and someone opened the old chest.</summary>
@@ -316,8 +316,8 @@ public partial class Settlement
             {
                 site.done = false;
                 site.extraTier++;
-                SiteChanged?.Invoke(site);
-                Changed?.Invoke();
+                if (!offWorld) SiteChanged?.Invoke(site);
+                RaiseChanged();
             }
         }
     }

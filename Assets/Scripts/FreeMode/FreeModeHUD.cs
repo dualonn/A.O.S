@@ -60,6 +60,8 @@ public class FreeModeHUD : MonoBehaviour
     private TextMeshProUGUI demolishLabel;
     private float demolishArmedUntil = -1f;
     private TextMeshProUGUI speedLabel;
+    private StarMapPanel starMap;
+    private Button starMapButton;
     private Button advanceButton;
     private TextMeshProUGUI advanceLabel;
 
@@ -128,7 +130,7 @@ public class FreeModeHUD : MonoBehaviour
         var chips = UIBuilder.Row("Chips", bar, 16);
         UIBuilder.Stretch(chips);
         chips.offsetMin = new Vector2(16, 0);
-        chips.offsetMax = new Vector2(-520, 0);
+        chips.offsetMax = new Vector2(-610, 0);   // room for the star map button
 
         ageText = Chip(chips, null);
         foreach (var res in settlement.Database.resources)
@@ -179,6 +181,18 @@ public class FreeModeHUD : MonoBehaviour
         speedLabel.text = "Speed x1";
 
         canvasRect = (RectTransform)root;
+        WorldSwitcher.Create(root, settlement);   // appears once you have more than one world
+        starMap = StarMapPanel.Create(root, settlement);
+        StarMapPanel.Actions.Clear();   // (statics survive between plays: always point at this game)
+        {
+            StarMapPanel.Actions.Add(("Send a probe", p => !settlement.IsScanned(p.system), p => settlement.Launch(Settlement.Probe, p)));
+            StarMapPanel.Actions.Add(("Send a colony ship", p => p.CanLand && settlement.IsScanned(p.system) && settlement.WorldIndexOf(p) < 0, p => settlement.Launch(Settlement.ColonyShip, p)));
+        }
+        starMapButton = UIBuilder.Button("StarMap", bar, () => starMap.Toggle(), out var starLabel, 40, 18);
+        UIBuilder.Anchor((RectTransform)starMapButton.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
+            new Vector2(-510, 0), new Vector2(90, 40));
+        starLabel.text = "Stars"; starLabel.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(starMapButton.gameObject, () => tooltipSource = () => "<b>Star map</b>\nThe galaxy round your worlds: scan systems, send ships, and go to your other worlds.", HideTooltip);
         var db = settlement.Database;
 
         // Build menu (left): search, then folding sections by type (or by age), in a scroll list.
@@ -345,6 +359,7 @@ public class FreeModeHUD : MonoBehaviour
         {
             case 0:
                 RefreshTopBar();
+                RefreshStarMapButton();
                 foundingBanner.gameObject.SetActive(!settlement.IsFounded);
                 RefreshAllStanceButton();
                 break;
@@ -359,6 +374,14 @@ public class FreeModeHUD : MonoBehaviour
                 break;
         }
         UnityEngine.Profiling.Profiler.EndSample();
+    }
+
+    /// <summary>The star map opens up once your people look to the sky (the Astral Age), or once you have other worlds.</summary>
+    private void RefreshStarMapButton()
+    {
+        var astral = settlement.Database.ages.Find(a => a != null && a.name == "AstralAge");
+        bool show = settlement.State.worlds.Count > 1 || (astral != null && settlement.State.ageIndex >= astral.order);
+        if (starMapButton.gameObject.activeSelf != show) starMapButton.gameObject.SetActive(show);
     }
 
     private void RefreshAll()
@@ -707,7 +730,9 @@ public class FreeModeHUD : MonoBehaviour
             bool locked = ageOrder > settlement.State.ageIndex + 1;
             // Before founding only the town center is offered; afterwards it's hidden once built.
             bool founded = settlement.IsFounded;
-            bool hidden = locked || (founded ? def.isTownCenter && settlement.CountAll(def) > 0 : !def.isTownCenter);
+            // Before founding only the town centre is offered; afterwards it's hidden once built
+            // (and the colony hub, which only founds new worlds, is hidden once a world is founded).
+            bool hidden = locked || (founded ? def.isTownCenter && (def.foundsColonies || settlement.CountAll(def) > 0) : !def.isTownCenter);
             if (searching)
             {
                 hidden |= !Matches(def, buildFilter);
