@@ -22,7 +22,7 @@ public class WeatherView : MonoBehaviour
     private readonly List<Vector2> particleOffsets = new List<Vector2>();   // in view units (0..1)
     private Transform aurora;
     private readonly List<SpriteRenderer> auroraBands = new List<SpriteRenderer>();
-    private Sprite rainSprite, snowSprite, flakeSprite, sandSprite, pixelSprite, boltSprite, bandSprite;
+    private Sprite rainSprite, stormSprite, snowSprite, flakeSprite, sandSprite, pixelSprite, boltSprite, bandSprite;
     private WeatherKind shown = (WeatherKind)(-1);
     private int activeCount;
     private float flashLeft, boltLeft;
@@ -108,12 +108,28 @@ public class WeatherView : MonoBehaviour
         return Sprite.Create(tex, new Rect(0, 0, w, h), pivot, 32f, 0, SpriteMeshType.FullRect);
     }
 
+    /// <summary>A one-pixel line 'length' tall along the direction 'fall' (which points downwards).</summary>
+    private static Sprite Streak(Vector2 fall, int length, Color32 colour)
+    {
+        float slope = fall.y != 0f ? fall.x / -fall.y : 0f;   // sideways pixels per pixel down
+        int w = Mathf.Max(1, Mathf.RoundToInt(Mathf.Abs(slope) * (length - 1)) + 1);
+        // Falling left: the top of the streak is to the right (it trails behind the drop).
+        System.Func<int, int, Color32> px = (x, y) =>
+        {
+            int at = Mathf.RoundToInt(Mathf.Abs(slope) * y);
+            if (slope > 0f) at = w - 1 - at;
+            return x == at ? colour : new Color32(0, 0, 0, 0);
+        };
+        return MakeSprite(w, length, px, new Vector2(0.5f, 0.5f));
+    }
+
     private void MakeSprites()
     {
         var mid = new Vector2(0.5f, 0.5f);
         pixelSprite = MakeSprite(1, 1, (x, y) => new Color32(255, 255, 255, 255), mid);
-        // a slanted streak of rain
-        rainSprite = MakeSprite(3, 7, (x, y) => x == (6 - y) / 3 ? new Color32(190, 210, 255, 200) : new Color32(0, 0, 0, 0), mid);
+        // streaks of rain, slanted the way the drops actually fall (storms blow them further over)
+        rainSprite = Streak(Drift(WeatherKind.Rain), 8, new Color32(190, 210, 255, 200));
+        stormSprite = Streak(Drift(WeatherKind.Storm), 10, new Color32(175, 195, 245, 215));
         snowSprite = MakeSprite(2, 2, (x, y) => new Color32(250, 252, 255, 230), mid);
         flakeSprite = MakeSprite(3, 3, (x, y) => (x == 1 || y == 1) ? new Color32(245, 248, 255, 220) : new Color32(0, 0, 0, 0), mid);
         sandSprite = MakeSprite(3, 1, (x, y) => new Color32(226, 186, 120, 190), mid);
@@ -231,7 +247,7 @@ public class WeatherView : MonoBehaviour
         switch (k)
         {
             case WeatherKind.Rain: activeCount = 110; tint = new Color(0.3f, 0.35f, 0.45f, 0.1f); break;
-            case WeatherKind.Storm: activeCount = 150; tint = new Color(0.1f, 0.12f, 0.2f, 0.22f); break;
+            case WeatherKind.Storm: activeCount = 150; sprite = stormSprite; tint = new Color(0.1f, 0.12f, 0.2f, 0.22f); break;
             case WeatherKind.Snow: activeCount = 110; sprite = snowSprite; tint = new Color(0.9f, 0.95f, 1f, 0.07f); break;
             case WeatherKind.Fog: tint = new Color(0.82f, 0.85f, 0.88f, 0.3f); break;
             case WeatherKind.HeatWave: tint = new Color(1f, 0.7f, 0.3f, 0.08f); break;

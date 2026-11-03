@@ -792,8 +792,8 @@ MonoBehaviour:
   taxPerPersonPerSecond: 0.004
   foodPerPersonPerSecond: 0.02
   secondsPerNewPerson: 8
-  firstWaveDelay: 180
-  waveIntervalRange: {x: 150, y: 240}
+  firstWaveDelay: 240
+  waveIntervalRange: {x: 300, y: 480}
   waveBaseUnits: 2
   waveUnitsPerTech: 0.3
   waveUnitsPerWaveSurvived: 0.2

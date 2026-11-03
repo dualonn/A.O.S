@@ -51,6 +51,14 @@ public class WaveDirector : MonoBehaviour
         {
             return;
         }
+        // The countdown to the next raid waits while one is still being fought, so there's always a
+        // breather after it (up to a few minutes per raid, in case a raider is stuck somewhere).
+        var live = FreeModeController.Instance;
+        if (live != null && live.WaveInProgress && heldFor < MaxHoldPerRaid)
+        {
+            heldFor += Time.deltaTime;
+            return;
+        }
         State.secondsUntilWave -= Time.deltaTime;
         if (State.secondsUntilWave <= 0)
         {
@@ -58,9 +66,15 @@ public class WaveDirector : MonoBehaviour
                 Database.waveIntervalRange.x,
                 Database.waveIntervalRange.y
             );
+            heldFor = 0f;
             Launch(Generate());
         }
     }
+
+    private float heldFor;
+
+    /// <summary>The longest the raid countdown waits for one raid to be over (game seconds).</summary>
+    private const float MaxHoldPerRaid = 240f;
 
     /// <summary>Build a random wave from enemy units of the current and earlier ages.</summary>
     public Wave Generate()

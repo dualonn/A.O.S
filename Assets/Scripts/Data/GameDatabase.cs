@@ -67,8 +67,8 @@ public class GameDatabase : ScriptableObject
     public float secondsPerNewPerson = 8f;
 
     [Header("Free mode: waves")]
-    public float firstWaveDelay = 180f;
-    public Vector2 waveIntervalRange = new Vector2(150f, 240f);
+    public float firstWaveDelay = 240f;
+    public Vector2 waveIntervalRange = new Vector2(300f, 480f);
 
     [Tooltip("Waves are sized in 'current-age enemies': this many, plus the bonuses below.")]
     public float waveBaseUnits = 2f;
