@@ -130,6 +130,9 @@ public partial class Settlement
         Biome.Swamp => "swamps",
         Biome.Volcanic => "volcanic wastes",
         Biome.Crystal => "crystal lands",
+        Biome.Barren => "barren plains",
+        Biome.Jungle => "jungle",
+        Biome.Fungal => "fungal forests",
         _ => b.ToString(),
     };
 

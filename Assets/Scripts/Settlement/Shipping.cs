@@ -125,6 +125,12 @@ public partial class Settlement
             Notify($"The probe reached {system.name}: {system.bodies.Count} bodies, {lands} worlds you could land on. (See the star map.)");
             return;
         }
+        if (ship.kind == Freighter && planet != null)
+        {
+            int to = WorldIndexOf(planet);
+            if (to >= 0) Unload(ship, State.worlds[to]);
+            return;
+        }
         if (ship.kind == ColonyShip && planet != null)
         {
             MarkScanned(system);

@@ -82,6 +82,10 @@ public class WaveDirector : MonoBehaviour
                 }
             }
         }
+        foreach (var native in settlement.NativeUnits())
+        {
+            pool.Add(native); pool.Add(native);
+        }
         if (pool.Count == 0)
         {
             return wave;
@@ -142,6 +146,8 @@ public class WaveDirector : MonoBehaviour
         {
             if (b != null && b.IsAlive && b.Unit.IsRaider) return null;
         }
+        var nativeChief = settlement.NativeChief();
+        if (nativeChief != null && UnityEngine.Random.value < 0.5f) return nativeChief;
         for (int i = State.ageIndex; i >= 0; i--)
         {
             var age = Database.GetAge(i);

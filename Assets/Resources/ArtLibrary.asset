@@ -166,6 +166,13 @@ MonoBehaviour:
   siteCaravan: {fileID: 21300000, guid: 4afa8c9c109a7294ab2a769ae4a39bc6, type: 3}
   siteLoreStone: {fileID: 21300000, guid: 3549841bf5cb55844a84d4d61b310c0d, type: 3}
   siteLoreStoneRead: {fileID: 21300000, guid: 52c9ee861f3e6df4688635c52e330a20, type: 3}
+  alienRuins: {fileID: 21300000, guid: 94b3023e92220d64fa47a252f31f1c5c, type: 3}
+  alienRuinsLooted: {fileID: 21300000, guid: 5008fe1a0525a4347838fced4fc78fab, type: 3}
+  alienVault: {fileID: 21300000, guid: 69979f170cc679b42a74d296d566d0ac, type: 3}
+  alienVaultSealed: {fileID: 21300000, guid: ffc34253343ee744cb87cf46252dce5b, type: 3}
+  alienMonolith: {fileID: 21300000, guid: 409e76af8b8531242b81e267c2039d4f, type: 3}
+  alienMonolithUsed: {fileID: 21300000, guid: 10cc64308374cf945a306c50a912642b, type: 3}
+  alienCrash: {fileID: 21300000, guid: 8954a5ccf28eb1d47a0f38b59faa7dd9, type: 3}
   siteLairs:
   - {fileID: 21300000, guid: cc93ad5c5f7fae14492b2003b8183103, type: 3}
   - {fileID: 21300000, guid: dc95bccb0bfba3840ba69a5315537a19, type: 3}
@@ -196,6 +203,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 776f5b5e7ddb581478557dfaecc556c1, type: 3}
   - {fileID: 21300000, guid: 257a2510bcba0d842b33cd840aaed145, type: 3}
   - {fileID: 21300000, guid: b6431020d00d8124daf2225208ceeeb3, type: 3}
+  - {fileID: 21300000, guid: ca240f8e8a28e364bb95e97677ce5548, type: 3}
+  - {fileID: 21300000, guid: 0ef3f0351cf34954f921f55d55443d5c, type: 3}
+  - {fileID: 21300000, guid: 85c68d4797f78b9468193c5e3c312a5d, type: 3}
+  - {fileID: 21300000, guid: 2080605f2e28ef34587496086d8a8f30, type: 3}
+  - {fileID: 21300000, guid: 327fffafbd8be2b4c89ceac6f2f16c18, type: 3}
+  - {fileID: 21300000, guid: c8e59687d07188c47930c3f82aaa8f13, type: 3}
+  - {fileID: 21300000, guid: 528762a468778454e96d06db671d7b7a, type: 3}
+  - {fileID: 21300000, guid: 69efa91c8695f824da8dc24cc961174a, type: 3}
+  - {fileID: 21300000, guid: 81be6f1a50833624b9b52cc3f67d96ca, type: 3}
+  - {fileID: 21300000, guid: 90df1147af8bd5b4b870fb653e4475f4, type: 3}
+  - {fileID: 21300000, guid: 046a3e60b49449441b9d96bd062b4058, type: 3}
+  - {fileID: 21300000, guid: 44c2a62ae010edc41bcb21acfad58d5a, type: 3}
+  - {fileID: 21300000, guid: dc10cd8709c2cc043a9c8ed489a41eed, type: 3}
+  - {fileID: 21300000, guid: f134546d50034ca4bbaf12414cb4f544, type: 3}
+  - {fileID: 21300000, guid: 1eaca6ab6b4c11d488723dbcf5858ef3, type: 3}
   biomeTrees:
   - {fileID: 21300000, guid: 7caf0f61f64782641a972ac508a00c9f, type: 3}
   - {fileID: 21300000, guid: 2d3c2e0da7c7dd443846b1313654a2f2, type: 3}
@@ -207,12 +229,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: eea534c5d581e7642aa4539348ce6682, type: 3}
   - {fileID: 21300000, guid: d12c1782a44d0e342807cebf12d42ba7, type: 3}
   - {fileID: 21300000, guid: eeb395c3ca5791548aa97c62437fc1d6, type: 3}
+  - {fileID: 21300000, guid: 46c580804d06ccc479b97a4871ea689e, type: 3}
+  - {fileID: 21300000, guid: aea3624a9ee1d574bb7994d9d4ef442f, type: 3}
+  - {fileID: 21300000, guid: 6d817c877b484194db00ed8efa854563, type: 3}
+  - {fileID: 21300000, guid: e2af21ca9d8066d4186ac261834223d7, type: 3}
+  - {fileID: 21300000, guid: 2d9b6f4d4e929734fb5a4983431924de, type: 3}
+  - {fileID: 21300000, guid: 2a9c16fa90d8b1d41ab38c14a8bca1e0, type: 3}
   biomeBushes:
   - {fileID: 21300000, guid: 8c46b6bcf4ef00b43b7784c75c78ada4, type: 3}
   - {fileID: 21300000, guid: 4ee17ccfb29bc2747be5a54851198aec, type: 3}
   - {fileID: 21300000, guid: 36bcca2cd36f4c844bb61e55d9a7bdc7, type: 3}
   - {fileID: 21300000, guid: 78dbe5c72c58b0f41a497d9476ed9dae, type: 3}
   - {fileID: 21300000, guid: d079cb86870f2b443b49bdc2dd07bd24, type: 3}
+  - {fileID: 21300000, guid: bcc62c7a91481ea4a9b8b593743a3167, type: 3}
+  - {fileID: 21300000, guid: b44792cd712976341b892f6133970170, type: 3}
+  - {fileID: 21300000, guid: c12e5a99d15526247a51221fdcdd5327, type: 3}
   siteVeins:
   - {fileID: 21300000, guid: 196fc3ab1255c8545983e31931789717, type: 3}
   - {fileID: 21300000, guid: 63a4b5f95afc73049951222d951bcaaf, type: 3}

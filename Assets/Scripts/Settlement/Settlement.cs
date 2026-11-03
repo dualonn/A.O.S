@@ -197,7 +197,7 @@ public partial class Settlement : MonoBehaviour
     {
         unchecked
         {
-            int h = State.mapSeed * 73856093 ^ zone.x * 19349663 ^ zone.y * 49979693 ^ salt * 83492791;
+            int h = CurrentWorld.seed * 73856093 ^ zone.x * 19349663 ^ zone.y * 49979693 ^ salt * 83492791;   // (the home world's seed is the map seed)
             h = (h ^ (h >> 13)) * 1274126177;
             return ((h ^ (h >> 16)) & 0xFFFFFF) / (float)0x1000000;
         }
@@ -338,7 +338,9 @@ public partial class Settlement : MonoBehaviour
     {
         foreach (var camp in State.camps)
         {
-            if (!camp.cleared) continue;
+            if (!camp.cleared || camp.claimed) continue;
+            // You built on the ashes: the land is yours now, and raiders never come back to it.
+            if (CampBuiltOver(camp)) { camp.claimed = true; continue; }
             camp.reoccupyIn -= dt;
             if (camp.reoccupyIn <= 0)
             {
@@ -350,6 +352,18 @@ public partial class Settlement : MonoBehaviour
                 RaiseChanged();
             }
         }
+    }
+
+    /// <summary>Does any of your buildings stand on this camp's ground?</summary>
+    private bool CampBuiltOver(CampState camp)
+    {
+        var area = new RectInt(camp.cell, Vector2Int.one * CampState.Size);
+        foreach (var b in State.buildings)
+        {
+            var def = Database.GetBuilding(b.definitionId);
+            if (def != null && new RectInt(b.cell, def.size).Overlaps(area)) return true;
+        }
+        return false;
     }
 
     /// <summary>Live camps within raiding range of a settlement, nearest first.</summary>
@@ -539,6 +553,7 @@ public partial class Settlement : MonoBehaviour
     {
         State.playTime += dt;
         TickShips();
+        TickRoutes();
         TickOtherWorlds(dt);
         UpdateWallLayer();
         if (!IsFounded)

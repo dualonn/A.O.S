@@ -88,6 +88,14 @@ public static class PixelPalette
     public static readonly Color32[] Void = { H("10060f"), H("2c1038"), H("5e1c6e"), H("e85ad8") };
     /// <summary>Meteoric starmetal: dark iron with a gold-white sheen.</summary>
     public static readonly Color32[] Starmetal = { H("2a2c34"), H("4c505e"), H("6e7486"), H("9aa0b2"), H("f2e6b8") };
+    /// <summary>Skins of the peoples native to other worlds.</summary>
+    public static readonly Color32[] Sandskin = { H("6e4a22"), H("a8783c"), H("d6a860"), H("f2d49a") };
+    public static readonly Color32[] Frostskin = { H("3a5470"), H("6a8cb0"), H("a8c8e4"), H("e6f2ff") };
+    public static readonly Color32[] Bogskin = { H("2a3a1a"), H("4e6a2c"), H("7a9a46"), H("b0c878") };
+    public static readonly Color32[] Ashskin = { H("2a1a1a"), H("5a2a22"), H("8a4030"), H("c86a4a") };
+    public static readonly Color32[] Shardskin = { H("3a2a5a"), H("6a4aa0"), H("a080e0"), H("e0d0ff") };
+    public static readonly Color32[] Reefskin = { H("1a4a4a"), H("2e7a72"), H("4ab0a0"), H("9ae0d0") };
+    public static readonly Color32[] Barkskin = { H("3a2a18"), H("5e4a2a"), H("8a7a42"), H("b8b070") };
     /// <summary>A war drake's crimson scales.</summary>
     public static readonly Color32[] Drake = { H("2e0c0c"), H("5e1a16"), H("9a3324"), H("d8704a") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
@@ -111,6 +119,8 @@ public static class PixelPalette
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
         "Arcane" => Arcane, "Mana" => Mana, "Moonstone" => Moonstone, "Griffin" => Griffin, "Wyvern" => Wyvern,
         "Astral" => Astral, "Void" => Void, "Starmetal" => Starmetal, "Drake" => Drake,
+        "Sandskin" => Sandskin, "Frostskin" => Frostskin, "Bogskin" => Bogskin, "Ashskin" => Ashskin,
+        "Shardskin" => Shardskin, "Reefskin" => Reefskin, "Barkskin" => Barkskin,
         "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,
         _ => Blue,
     };

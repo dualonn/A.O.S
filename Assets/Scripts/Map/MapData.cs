@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>The look and life of a region: its ground, trees and creatures (terrain types are unchanged).</summary>
-public enum Biome : byte { Temperate, Desert, Tundra, Swamp, Volcanic, Crystal }
+public enum Biome : byte { Temperate, Desert, Tundra, Swamp, Volcanic, Crystal, Barren, Jungle, Fungal }
 
 public enum TerrainType : byte
 {

@@ -303,6 +303,8 @@ public class CampView : MonoBehaviour
     /// <summary>A chief of the camp's age (or the latest age that has one).</summary>
     private UnitDefinition PickChief()
     {
+        var native = controller.Settlement.NativeChief();
+        if (native != null) return native;
         var db = controller.Settlement.Database;
         for (int i = Tier; i >= 0; i--)
         {
@@ -318,6 +320,8 @@ public class CampView : MonoBehaviour
 
     private UnitDefinition PickGuard()
     {
+        var natives = controller.Settlement.NativeUnits();
+        if (natives.Count > 0 && Random.value < 0.7f) return natives[Random.Range(0, natives.Count)];
         var pool = new List<UnitDefinition>();
         var db = controller.Settlement.Database;
         for (int i = 0; i <= Tier; i++)

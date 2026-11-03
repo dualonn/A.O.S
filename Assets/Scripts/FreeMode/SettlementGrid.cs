@@ -36,7 +36,13 @@ public class SettlementGrid : MonoBehaviour
 
     private static readonly Color LinesIdle = new Color(1, 1, 1, 0f);
     private static readonly Color LinesPlacing = new Color(1, 1, 1, 0.35f);
-    private static readonly Color32 FogColor = new Color32(24, 32, 22, 255);
+    private static readonly Color32 HomeFog = new Color32(24, 32, 22, 255);
+
+    /// <summary>The unexplored colour: the home world's dark green, or another world's own sky.</summary>
+    private Color32 FogColor => Profile.id == WorldProfile.HomeId ? HomeFog : (Color32)Profile.sky;
+
+    /// <summary>The kind of world this map is (its colours).</summary>
+    private WorldProfile Profile => Map?.Settings?.profile ?? WorldProfile.Home;
     private static readonly Color32 GrassColor = new Color32(108, 153, 79, 255);
     private static readonly Color32 WaterColor = new Color32(69, 133, 204, 255);
     private static readonly Color32 HillColor = new Color32(143, 130, 110, 255);
@@ -491,6 +497,7 @@ public class SettlementGrid : MonoBehaviour
             hillRenderers.Add(renderer);
         }
         waterTilemap = MakeEdgeLayer("Water", -23, out waterRenderer);
+        waterTilemap.color = Profile.water;   // other worlds' seas take their own tint
         if (art.waterMaterial != null)
         {
             waterRenderer.sharedMaterial = art.waterMaterial;
@@ -531,6 +538,9 @@ public class SettlementGrid : MonoBehaviour
         Biome.Swamp => new Color(0.72f, 0.8f, 0.62f),
         Biome.Volcanic => new Color(0.55f, 0.45f, 0.45f),
         Biome.Crystal => new Color(0.8f, 0.72f, 1f),
+        Biome.Barren => new Color(0.78f, 0.78f, 0.84f),
+        Biome.Jungle => new Color(0.72f, 0.95f, 0.68f),
+        Biome.Fungal => new Color(0.95f, 0.75f, 0.95f),
         _ => Color.white,
     };
 
@@ -544,7 +554,7 @@ public class SettlementGrid : MonoBehaviour
             int start = (b - 1) * 5;
             if (art.biomeGround.Count >= start + 5)
                 biomeGrass[b] = art.biomeGround.GetRange(start, 5).ConvertAll(sprite => MakeTile(sprite, Color.white)).ToArray();
-            var tint = HillTint((Biome)b);
+            var tint = HillTint((Biome)b) * Profile.hills;
             biomeHillTiers[b] = new TileBase[hillTiers.Count][];
             for (int tier = 0; tier < hillTiers.Count; tier++)
             {
@@ -711,6 +721,9 @@ public class SettlementGrid : MonoBehaviour
             Biome.Swamp => new Color32(86, 102, 64, 255),
             Biome.Volcanic => new Color32(80, 66, 66, 255),
             Biome.Crystal => new Color32(130, 116, 190, 255),
+            Biome.Barren => new Color32(120, 120, 126, 255),
+            Biome.Jungle => new Color32(40, 92, 48, 255),
+            Biome.Fungal => new Color32(140, 80, 140, 255),
             _ => normal,
         };
         return deposit ? Color32.Lerp(normal, ground, 0.35f) : Color32.Lerp(normal, ground, 0.85f);

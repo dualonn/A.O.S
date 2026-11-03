@@ -108,6 +108,21 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Natives of other worlds
+        ("Sandfolk_Skirmisher", Skin(Fig(Rd, GearLook.Hood, GearLook.Javelin, body: GearLook.Jerkin, raider: true), "Sandskin"), true),
+        ("Sandfolk_Archer", Skin(Fig(Rd, GearLook.Headband, GearLook.Bow, body: GearLook.Jerkin, raider: true), "Sandskin"), true),
+        ("Frostkin_Brute", Skin(Fig(Rd, GearLook.BearPelt, GearLook.Club, body: GearLook.Bare, scale: 1.3f, raider: true), "Frostskin"), true),
+        ("Frostkin_Hurler", Skin(Fig(Rd, GearLook.Hood, GearLook.Javelin, body: GearLook.HideVest, raider: true), "Frostskin"), true),
+        ("Bogfolk_Lurker", Skin(Fig(Rd, GearLook.None, GearLook.Spear, body: GearLook.Bare, raider: true), "Bogskin"), true),
+        ("Bogfolk_Witch", Skin(Fig(Rd, GearLook.Hood, GearLook.RuneStaff, body: GearLook.Robe, crest: "Green", raider: true), "Bogskin"), true),
+        ("Ashborn_Brute", Skin(Fig(Rd, GearLook.None, GearLook.Axe, body: GearLook.Bare, scale: 1.2f, raider: true, warpaint: true), "Ashskin"), true),
+        ("Ashborn_Thrower", Skin(Fig(Rd, GearLook.Hood, GearLook.Flask, body: GearLook.Jerkin, raider: true), "Ashskin"), true),
+        ("Shardkin_Warden", Skin(Fig(Rd, GearLook.GolemHead, GearLook.Sword, body: GearLook.GolemBody, scale: 1.2f, raider: true), "Shardskin"), true),
+        ("Shardkin_Slinger", Skin(Fig(Rd, GearLook.None, GearLook.Sling, body: GearLook.Bare, raider: true), "Shardskin"), true),
+        ("Tidefolk_Raider", Skin(Fig(Rd, GearLook.None, GearLook.Spear, GearLook.OvalShield, body: GearLook.Bare, raider: true, necklace: true), "Reefskin"), true),
+        ("Tidefolk_Archer", Skin(Fig(Rd, GearLook.Headband, GearLook.Bow, body: GearLook.Bare, raider: true), "Reefskin"), true),
+        ("Wildfolk_Warden", Skin(Fig(Rd, GearLook.Hood, GearLook.Sword, body: GearLook.Jerkin, raider: true), "Barkskin"), true),
+        ("Wildfolk_Hunter", Skin(Fig(Rd, GearLook.Feather, GearLook.Bow, body: GearLook.HideVest, raider: true), "Barkskin"), true),
         // Astral Age (magic and sci-fi fused)
         ("Starknight", Fig(B, GearLook.StarHelm, GearLook.StarBlade, body: GearLook.StarPlate, cape: "Astral"), false),
         ("Technomancer", Fig(B, GearLook.Cowl, GearLook.BeamStaff, body: GearLook.Spellweave, crest: "Astral"), false),
@@ -520,10 +535,62 @@ public static partial class PlaceholderArt
         public float abilityCooldown, abilityRadius, abilityPower;
         public string summons;
         public int summonCount;
+        /// <summary>A native chief of another world: kept on the natives list, not its age's chiefs.</summary>
+        public bool native;
     }
 
     private static BossSpec[] BossSpecs => new[]
     {
+        // Chiefs of the native peoples of other worlds (they lead their camps and raids there, never at home).
+        new BossSpec
+        {
+            id = "Sandfolk_Chief", name = "The Dune Warlord", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.Crown, GearLook.Axe, body: GearLook.Scale, cape: "Gold", scale: 1.7f, raider: true), "Sandskin"),
+            health = 12000, attack = 160, speed = 0.9f, cooldown = 1.3f, range = 1.1f, detection = 4f,
+            ability = BossAbility.WarCry, abilityCooldown = 11f, abilityPower = 1.35f,
+        },
+        new BossSpec
+        {
+            id = "Frostkin_Chief", name = "The Frost Matriarch", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.Crown, GearLook.Spear, body: GearLook.HideVest, cape: "Wolf", scale: 1.8f, raider: true), "Frostskin"),
+            health = 13000, attack = 150, speed = 0.85f, cooldown = 1.3f, range = 1.3f, detection = 4f,
+            ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 2.8f, abilityPower = 1.4f,
+        },
+        new BossSpec
+        {
+            id = "Bogfolk_Chief", name = "The Mire King", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.Crown, GearLook.Mace, body: GearLook.Bare, scale: 1.9f, raider: true, necklace: true), "Bogskin"),
+            health = 14000, attack = 150, speed = 0.75f, cooldown = 1.4f, range = 1.1f, detection = 4f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "Bogfolk_Lurker", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "Ashborn_Chief", name = "The Cinder Lord", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.GreatHelm, GearLook.Zweihander, body: GearLook.Plate, cape: "Coal", scale: 1.8f, raider: true), "Ashskin"),
+            health = 14500, attack = 175, speed = 0.8f, cooldown = 1.4f, range = 1.2f, detection = 4f,
+            ability = BossAbility.Slam, abilityCooldown = 6.5f, abilityRadius = 3f, abilityPower = 1.5f,
+        },
+        new BossSpec
+        {
+            id = "Shardkin_Chief", name = "The Prism Colossus", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.GolemHead, GearLook.None, body: GearLook.GolemBody, scale: 2.3f, raider: true), "Shardskin"),
+            health = 16000, attack = 170, speed = 0.6f, cooldown = 1.4f, range = 1.2f, detection = 3.5f,
+            ability = BossAbility.Slam, abilityCooldown = 6f, abilityRadius = 3f, abilityPower = 1.5f,
+        },
+        new BossSpec
+        {
+            id = "Tidefolk_Chief", name = "The Tide Caller", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.Crown, GearLook.ManaStaff, body: GearLook.Robe, crest: "Mana", cape: "Mana", scale: 1.7f, raider: true), "Reefskin"),
+            health = 11000, attack = 140, speed = 0.85f, cooldown = 1.6f, range = 7f, detection = 7.5f,
+            ability = BossAbility.Summon, abilityCooldown = 12f, summons = "Tidefolk_Raider", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "Wildfolk_Chief", name = "The Green Knight", age = "AstralAge", native = true,
+            style = Skin(Fig(Rd, GearLook.GreatHelm, GearLook.Sword, GearLook.KiteShield, body: GearLook.Plate, crest: "Green", cape: "Green", scale: 1.7f, raider: true), "Barkskin"),
+            health = 13000, attack = 155, speed = 0.9f, cooldown = 1.2f, range = 1.1f, detection = 4f,
+            ability = BossAbility.WarCry, abilityCooldown = 11f, abilityPower = 1.4f,
+        },
         new BossSpec
         {
             id = "BossCaveBear", name = "Ugruk the Cave-Bear", age = "StoneAge",
@@ -687,9 +754,11 @@ public static partial class PlaceholderArt
     /// <summary>Set up raider chiefs; 'onlyAge' limits it to that age's chiefs.</summary>
     private static void SetupBosses(string onlyAge)
     {
+        var natives = onlyAge == "Natives";
+        var nativeDb = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         foreach (var spec in BossSpecs)
         {
-            if (onlyAge != null && spec.age != onlyAge) continue;
+            if (natives ? !spec.native : onlyAge != null && (spec.age != onlyAge || spec.native)) continue;
             string path = $"Assets/Data/Units/{spec.id}.asset";
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>(path);
             if (def == null)
@@ -732,7 +801,15 @@ public static partial class PlaceholderArt
             def.prefab = BuildPixelUnit(spec.id, spec.style, true, def, boss: true);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{spec.id}/{spec.id}_Idle.png");
             EditorUtility.SetDirty(def);
-            if (age != null)
+            if (spec.native)
+            {
+                // Native chiefs only lead their own people, on their own worlds.
+                if (age != null && age.bosses.Remove(def)) EditorUtility.SetDirty(age);
+                nativeDb.natives.RemoveAll(n => n == null);
+                if (!nativeDb.natives.Contains(def)) nativeDb.natives.Add(def);
+                EditorUtility.SetDirty(nativeDb);
+            }
+            else if (age != null)
             {
                 age.bosses.RemoveAll(b => b == null);
                 if (!age.bosses.Contains(def)) age.bosses.Add(def);

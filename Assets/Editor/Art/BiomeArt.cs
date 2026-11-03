@@ -16,6 +16,9 @@ public static partial class PlaceholderArt
         Biome.Tundra => new[] { P.Hex("7a90a6"), P.Hex("a8bccc"), P.Hex("d4e0ea"), P.Hex("eef4f8"), P.Hex("ffffff") },
         Biome.Swamp => new[] { P.Hex("26301e"), P.Hex("3a4628"), P.Hex("4e5a34"), P.Hex("667246"), P.Hex("86905c") },
         Biome.Volcanic => new[] { P.Hex("221c1e"), P.Hex("362c2e"), P.Hex("4a3e3e"), P.Hex("62544e"), P.Hex("7e6c62") },
+        Biome.Barren => new[] { P.Hex("3a3a3e"), P.Hex("55555a"), P.Hex("74747a"), P.Hex("96969c"), P.Hex("c0c0c6") },
+        Biome.Jungle => new[] { P.Hex("14301a"), P.Hex("1e4426"), P.Hex("2a5c30"), P.Hex("3e7a3e"), P.Hex("5a9a50") },
+        Biome.Fungal => new[] { P.Hex("3a1e3a"), P.Hex("5a2e58"), P.Hex("7a4278"), P.Hex("9a5e96"), P.Hex("c08abc") },
         _ => new[] { P.Hex("2c2648"), P.Hex("403a68"), P.Hex("5a528c"), P.Hex("776eb0"), P.Hex("9e96d8") },   // crystal
     };
 
@@ -27,7 +30,7 @@ public static partial class PlaceholderArt
         art.biomeGround = new List<Sprite>();
         art.biomeTrees = new List<Sprite>();
         art.biomeBushes = new List<Sprite>();
-        foreach (Biome b in new[] { Biome.Desert, Biome.Tundra, Biome.Swamp, Biome.Volcanic, Biome.Crystal })
+        foreach (Biome b in new[] { Biome.Desert, Biome.Tundra, Biome.Swamp, Biome.Volcanic, Biome.Crystal, Biome.Barren, Biome.Jungle, Biome.Fungal })
         {
             var biome = b;
             for (int v = 0; v < 5; v++)
@@ -45,6 +48,33 @@ public static partial class PlaceholderArt
         EditorUtility.SetDirty(art);
         AssetDatabase.SaveAssets();
         Debug.Log("Biome art generated.");
+    }
+
+    /// <summary>Add art only for lands that don't have it yet (the others are left as they are).</summary>
+    [MenuItem("Tools/Age of Stickman/Add New Biome Art")]
+    public static void AddNewBiomeArt()
+    {
+        var art = AssetDatabase.LoadAssetAtPath<ArtLibrary>("Assets/Resources/ArtLibrary.asset");
+        int have = art.biomeGround.Count / 5;   // biomes with art, after Temperate
+        int all = System.Enum.GetValues(typeof(Biome)).Length - 1;
+        for (int i = have + 1; i <= all; i++)
+        {
+            var biome = (Biome)i;
+            for (int v = 0; v < 5; v++)
+            {
+                int variant = v;
+                art.biomeGround.Add(TilePixel($"World/Biomes/{biome}Ground{v}.png", c => BiomeGround(c, biome, variant)));
+            }
+            for (int t = 0; t < 2; t++)
+            {
+                int kind = t;
+                art.biomeTrees.Add(PropPixel($"World/Biomes/{biome}Tree{t}.png", 48, 70, c => BiomeTree(c, biome, kind)));
+            }
+            art.biomeBushes.Add(PropPixel($"World/Biomes/{biome}Bush.png", 30, 24, c => BiomeBush(c, biome)));
+        }
+        EditorUtility.SetDirty(art);
+        AssetDatabase.SaveAssets();
+        Debug.Log($"Added biome art for {all - have} new lands.");
     }
 
     /// <summary>Ground for a biome: a main tone with scattered specks, and a feature on the detailed variants.</summary>
@@ -75,6 +105,20 @@ public static partial class PlaceholderArt
                 // cracks glowing with lava, or a scatter of black glass
                 if (variant % 2 == 1) { int x = rng.Next(4, 20), y = rng.Next(6, 26); for (int i = 0; i < 9; i++) { c.Put(x + i, y + (i % 3 == 0 ? 1 : 0), i % 2 == 0 ? P.Fire[2] : P.Fire[1]); } }
                 else for (int i = 0; i < 4; i++) { int x = rng.Next(2, 30), y = rng.Next(2, 30); c.Put(x, y, P.Coal[0]); c.Put(x, y + 1, P.Steel[3]); }
+                break;
+            case Biome.Barren:
+                // a small crater, or scattered grey stones
+                if (variant % 2 == 1) { c.Ellipse(new Vector2(rng.Next(10, 22), rng.Next(10, 22)), 5, 3.5f, new[] { g[1], g[1], g[0], g[3] }); }
+                else for (int i = 0; i < 4; i++) { int x = rng.Next(2, 30), y = rng.Next(2, 30); c.Put(x, y, g[4]); c.Put(x + 1, y, g[1]); }
+                break;
+            case Biome.Jungle:
+                // fallen leaves and a red flower
+                for (int i = 0; i < 4 + variant; i++) { int x = rng.Next(2, 30), y = rng.Next(2, 30); c.Put(x, y, P.Leaf[3]); c.Put(x + 1, y + 1, P.Leaf[1]); }
+                if (variant >= 3) { c.Put(16, 16, P.Red[3]); c.Put(17, 16, P.Red[2]); c.Put(16, 17, P.Red[2]); c.Put(15, 16, P.Red[2]); c.Put(16, 15, P.Glow[3]); }
+                break;
+            case Biome.Fungal:
+                // spore dots glowing in the spongy ground
+                for (int i = 0; i < 3 + variant; i++) { int x = rng.Next(2, 30), y = rng.Next(2, 30); c.Put(x, y, i % 2 == 0 ? P.Hex("f0a0e8") : P.Neon[3]); }
                 break;
             default:
                 // little crystal shards glinting in the violet grass
@@ -188,6 +232,64 @@ public static partial class PlaceholderArt
                         l => l.x < x - 1 ? P.Aether[3] : l.x < x + 2 ? P.Aether[2] : P.Aether[1]);
                 break;
             }
+            case Biome.Barren when kind == 0:
+            {
+                // a jagged spire of grey rock
+                c.Polygon(new[] { new Vector2(cx - 10, 3), new Vector2(cx + 9, 3), new Vector2(cx + 3, 40), new Vector2(cx - 1, 46), new Vector2(cx - 4, 30) },
+                    l => l.x < cx - 3 ? P.Stone[3] : l.x < cx + 2 ? P.Stone[2] : P.Stone[1]);
+                c.Line(new Vector2(cx - 2, 8), new Vector2(cx + 1, 36), P.Stone[4]);
+                break;
+            }
+            case Biome.Barren:
+            {
+                // a boulder balanced on a stone pillar
+                c.Rect(cx - 3, 3, cx + 3, 26, P.Stone[2]); c.Line(new Vector2(cx - 3, 3), new Vector2(cx - 3, 26), P.Stone[3]);
+                c.Ellipse(new Vector2(cx, 34), 11, 8, P.Stone);
+                break;
+            }
+            case Biome.Jungle when kind == 0:
+            {
+                // a giant broad-crowned jungle tree hung with vines
+                c.Capsule(new Vector2(cx, 3), new Vector2(cx, 40), 4, P.Wood);
+                for (int i = -2; i <= 2; i++) c.Line(new Vector2(cx + i * 3, 3), new Vector2(cx + i, 10), P.Wood[1], 2);   // buttress roots
+                var crown = new[] { P.Hex("103018"), P.Hex("1a4422"), P.Hex("28602e"), P.Hex("3a7c3a"), P.Hex("58a04c") };
+                c.Ellipse(new Vector2(cx - 8, 48), 13, 9, crown); c.Ellipse(new Vector2(cx + 8, 50), 13, 9, crown); c.Ellipse(new Vector2(cx, 56), 14, 9, crown);
+                foreach (int x in new[] { cx - 14, cx - 4, cx + 10 }) for (int h = 0; h < 12; h++) c.Put(x + (h % 4 == 0 ? 1 : 0), 42 - h, P.Leaf[2]);
+                break;
+            }
+            case Biome.Jungle:
+            {
+                // a tree fern: a slim trunk and a burst of arching fronds
+                for (int y = 3; y < 38; y++) { c.Put(cx, y, y % 3 == 0 ? P.Wood[1] : P.Wood[2]); c.Put(cx + 1, y, P.Wood[1]); }
+                Vector2 top = new Vector2(cx, 39);
+                for (int f = 0; f < 8; f++)
+                {
+                    float a = f * Mathf.PI / 7f;
+                    Vector2 tip = top + new Vector2(Mathf.Cos(a) * 15, Mathf.Sin(a) * 9 - 4);
+                    c.Line(top, tip, P.Leaf[2], 2);
+                    c.Line(top + new Vector2(0, 1), tip + new Vector2(0, 1), P.Leaf[3]);
+                }
+                break;
+            }
+            case Biome.Fungal when kind == 0:
+            {
+                // a towering mushroom with a pink cap spotted white
+                c.Capsule(new Vector2(cx, 3), new Vector2(cx + 2, 40), 4, P.Linen);
+                var cap = new[] { P.Hex("5a1e46"), P.Hex("8a2e6a"), P.Hex("c04a90"), P.Hex("e07ab4"), P.Hex("f8b8dc") };
+                c.Ellipse(new Vector2(cx + 2, 44), 19, 11, cap, l => l.y >= 38);
+                for (int i = 0; i < 6; i++) c.Ellipse(new Vector2(cx - 12 + rng.Next(0, 26), 44 + rng.Next(0, 7)), 1.5f, 1.2f, new[] { P.Linen[3], P.White, P.White, P.White });
+                break;
+            }
+            case Biome.Fungal:
+            {
+                // a cluster of tall puffball stalks
+                foreach (var (x, h, r) in new[] { (cx - 8, 28, 6f), (cx + 1, 40, 7f), (cx + 10, 22, 5f) })
+                {
+                    c.Line(new Vector2(x, 3), new Vector2(x, 3 + h), P.Hex("c8a8c0"), 3);
+                    c.Ellipse(new Vector2(x, 3 + h + r * 0.5f), r, r, new[] { P.Hex("6a3a5e"), P.Hex("9a5a88"), P.Hex("c886b4"), P.Hex("eab8da") });
+                }
+                break;
+            }
             default:
             {
                 // a giant glowing mushroom
@@ -227,6 +329,23 @@ public static partial class PlaceholderArt
             case Biome.Volcanic:
                 c.Ellipse(new Vector2(cx, 9), 9, 6, P.Coal);
                 for (int i = 0; i < 6; i++) { int x = cx - 7 + i * 3; c.Line(new Vector2(x, 9), new Vector2(x, 15 + i % 2 * 2), P.Fire[1]); c.Put(x, 16 + i % 2 * 2, P.Fire[3]); }
+                break;
+            case Biome.Barren:
+                // grey stones furred with glowing lichen
+                c.Ellipse(new Vector2(cx - 4, 7), 6, 4.5f, P.Stone); c.Ellipse(new Vector2(cx + 5, 9), 5, 4, P.Stone);
+                for (int i = 0; i < 6; i++) c.Put(cx - 8 + i * 3, 9 + (i % 2) * 2, P.Ray[2]);
+                break;
+            case Biome.Jungle:
+                // broad leaves round a bunch of red fruit
+                c.Ellipse(new Vector2(cx - 6, 9), 7, 4, P.Leaf); c.Ellipse(new Vector2(cx + 6, 10), 7, 4, P.Leaf); c.Ellipse(new Vector2(cx, 14), 6, 4, P.Leaf);
+                foreach (var (x, y) in new[] { (cx - 1, 11), (cx + 1, 12), (cx, 9) }) { c.Put(x, y, P.Red[2]); c.Put(x + 1, y, P.Red[3]); }
+                break;
+            case Biome.Fungal:
+                foreach (var (x, h, r) in new[] { (cx - 6, 5, 3.5f), (cx + 1, 9, 4.5f), (cx + 8, 6, 3f) })
+                {
+                    c.Line(new Vector2(x, 3), new Vector2(x, 3 + h), P.Linen[3], 2);
+                    c.Ellipse(new Vector2(x, 3 + h), r, r * 0.7f, new[] { P.Hex("8a2e6a"), P.Hex("c04a90"), P.Hex("e07ab4"), P.Hex("f8b8dc") });
+                }
                 break;
             default:
                 foreach (var (x, h, r) in new[] { (cx - 6, 6, 3f), (cx + 1, 10, 4.5f), (cx + 8, 7, 3f) })

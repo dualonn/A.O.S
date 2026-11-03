@@ -58,6 +58,17 @@ public class SettlementState
     public List<ShipState> ships = new List<ShipState>();
     public int nextShipId = 1;
 
+    [Tooltip("Standing cargo orders between your worlds' Starports.")]
+    public List<CargoRoute> routes = new List<CargoRoute>();
+    public int nextRouteId = 1;
+
+    [Tooltip("Systems whose anomaly you've dealt with.")]
+    public List<Vector2Int> anomaliesDone = new List<Vector2Int>();
+    [Tooltip("Charted wormholes, as pairs of system keys (each pair is linked).")]
+    public List<Vector2Int> wormholes = new List<Vector2Int>();
+    [Tooltip("Discoveries among the stars, newest last.")]
+    public List<string> codex = new List<string>();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>
@@ -135,6 +146,9 @@ public class CampState
 
     [Tooltip("Its chief has been killed (a new one comes when raiders move back in).")]
     public bool bossDefeated;
+
+    [Tooltip("Cleared and built over: raiders never move back in.")]
+    public bool claimed;
 
     public const int Size = 3;
 

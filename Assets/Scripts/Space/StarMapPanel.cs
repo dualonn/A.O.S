@@ -20,6 +20,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     private float zoom = 9f;         // pixels per light-year
     private StarSystem openSystem;
     private Planet picked;
+    private bool showAnomaly;
     private float redrawAt;
     private static Sprite dot;
 
@@ -155,6 +156,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
                     var c = StarColour(s.star);
                     if (!inReach) c = Color.Lerp(c, Color.black, 0.6f);
                     var sys = s;
+                    if (settlement.PendingAnomaly(s) != AnomalyKind.None) Mark(s.position, 22, new Color(1f, 0.8f, 0.3f, 0.35f), null);
                     Mark(s.position, settled ? 18 : s.star == StarType.BlueGiant ? 14 : 11, c, () => { openSystem = sys; picked = null; Redraw(); });
                     if (zoom > 5f && (known || settled || inReach))
                         Label(s.position + new Vector2(0, -1.2f), settled ? $"<b>{s.name}</b>" : s.name, settled ? new Color(0.6f, 1f, 0.7f) : new Color(0.75f, 0.75f, 0.8f));
@@ -168,6 +170,18 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         Vector2 size = viewport.rect.size;
         float maxR = Mathf.Min(size.x, size.y) * 0.46f;
         AddLocal(Vector2.zero, 34, StarColour(s.star), null);
+        var anomaly = settlement.PendingAnomaly(s);
+        if (anomaly != AnomalyKind.None)
+        {
+            Vector2 at = new Vector2(-maxR * 0.75f, maxR * 0.75f);
+            AddLocal(at, 26, new Color(1f, 0.8f, 0.3f, 0.5f), () => { picked = null; showAnomaly = true; ShowInfo(); });
+            AddLocal(at, 12, new Color(1f, 0.95f, 0.7f), () => { picked = null; showAnomaly = true; ShowInfo(); });
+            var label = UIBuilder.Text("Anomaly", content, Galaxy.Describe(anomaly).title, 14, TextAlignmentOptions.Center);
+            label.color = new Color(1f, 0.85f, 0.5f);
+            label.rectTransform.anchoredPosition = at + new Vector2(0, -24);
+            label.rectTransform.sizeDelta = new Vector2(160, 20);
+            marks.Add(label.gameObject);
+        }
         foreach (var p in s.bodies)
         {
             float r = 40 + p.orbit * (maxR - 40);
@@ -178,7 +192,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
             bool settled = settlement.WorldIndexOf(p) >= 0;
             Color c = known || settled ? BodyColour(p) : new Color(0.35f, 0.35f, 0.4f);
             float sz = p.kind == BodyKind.GasGiant ? 22 : p.kind == BodyKind.AsteroidBelt ? 8 : p.kind == BodyKind.Moon ? 9 : 14;
-            AddLocal(at, sz, c, () => { picked = planet; ShowInfo(); });
+            AddLocal(at, sz, c, () => { picked = planet; showAnomaly = false; ShowInfo(); });
             if (settled) AddLocal(at + new Vector2(sz * 0.6f, sz * 0.6f), 7, new Color(0.5f, 1f, 0.6f), null);
             var label = UIBuilder.Text("Name", content, known || settled ? p.name : "?", 14, TextAlignmentOptions.Center);
             label.rectTransform.anchoredPosition = at + new Vector2(0, -sz - 8);
@@ -191,11 +205,29 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     private void ShowInfo()
     {
         foreach (Transform child in info) if (child != infoText.transform) Destroy(child.gameObject);
+        if (picked == null && showAnomaly && openSystem != null && settlement.PendingAnomaly(openSystem) is AnomalyKind pending && pending != AnomalyKind.None)
+        {
+            var a = Galaxy.Describe(pending);
+            infoText.text = $"<b><size=120%>{a.title}</size></b>\n<color=#fc8>at {openSystem.name}</color>\n\n{a.text}\n\n<color=#aaa>Rewards go to the world you're on.</color>";
+            var sys = openSystem;
+            foreach (var (label, choice) in new[] { (a.choiceA, 0), (a.choiceB, 1) })
+            {
+                int c = choice;
+                var b = UIBuilder.Button("Choice", info, () => { settlement.ResolveAnomaly(sys, c); showAnomaly = false; Redraw(); }, out var bl, 44, 16);
+                bl.text = label; bl.alignment = TextAlignmentOptions.Center;
+            }
+            return;
+        }
         if (picked == null)
         {
-            infoText.text = openSystem == null
-                ? $"<b>Your worlds</b>\n{settlement.WorldsSummary()}\n\n<color=#aaa>Ships reach {settlement.ShipReach:0.#} light-years from your settled systems, at speed x{settlement.ShipSpeed:0.##}. Research Navigation and Star Drives to go further and faster.</color>"
-                : "<color=#aaa>Click a world for what's known about it.</color>";
+            if (openSystem == null)
+            {
+                var codex = settlement.State.codex;
+                string found = codex.Count == 0 ? "" : "\n\n<b>Discoveries</b> <color=#aaa>(" + codex.Count + ")</color>\n<size=85%>"
+                    + string.Join("\n", codex.GetRange(Mathf.Max(0, codex.Count - 5), Mathf.Min(5, codex.Count))) + "</size>";
+                infoText.text = $"<b>Your worlds</b>\n{settlement.WorldsSummary()}\n\n<color=#aaa>Ships reach {settlement.ShipReach:0.#} light-years from your settled systems, at speed x{settlement.ShipSpeed:0.##}. Research Navigation and Star Drives to go further and faster. Gold rings mark anomalies your probes have found.</color>{found}";
+            }
+            else infoText.text = "<color=#aaa>Click a world for what's known about it.</color>";
             return;
         }
         var p = picked;
@@ -222,6 +254,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         {
             var go = UIBuilder.Button("Visit", info, () => { Toggle(); settlement.SwitchWorld(world); }, out var l, 40, 18);
             l.text = "Go to this world"; l.alignment = TextAlignmentOptions.Center;
+            if (settlement.IsWorldFounded(settlement.State.worlds[world])) CargoRoutes(world);
         }
         foreach (var (label, shown, act) in Actions)
         {
@@ -230,6 +263,41 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
             var b = UIBuilder.Button(label, info, () => { a(p); Redraw(); }, out var l2, 40, 18);
             l2.text = label; l2.alignment = TextAlignmentOptions.Center;
         }
+    }
+
+    /// <summary>The cargo routes from the world you're on to this one: what each carries, how much, and a way to add more.</summary>
+    private void CargoRoutes(int to)
+    {
+        int from = settlement.State.currentWorld;
+        float trip = settlement.RoundTripSeconds(new CargoRoute { fromWorld = from, toWorld = to });
+        var header = UIBuilder.Text("Cargo", info, $"<b>Cargo from {settlement.CurrentWorld.name}</b>  <size=80%><color=#aaa>(a freighter every {FormatTime(trip)}; needs a Starport at both ends and 10 Power Cells a trip)</color></size>", 15);
+        header.textWrappingMode = TextWrappingModes.Normal;
+        header.gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
+        foreach (var route in settlement.RoutesBetween(from, to))
+        {
+            var r = route;
+            var row = UIBuilder.Row("Route", info, 4);
+            row.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+            void Btn(string text, UnityEngine.Events.UnityAction act, float width)
+            {
+                var b = UIBuilder.Button(text, row, () => { act(); ShowInfo(); }, out var lb, 30, 15);
+                b.GetComponent<LayoutElement>().preferredWidth = width;
+                lb.text = text; lb.alignment = TextAlignmentOptions.Center;
+            }
+            var res = settlement.Database.GetResource(r.resourceId);
+            Btn("<", () => settlement.CycleRouteResource(r, -1), 24);
+            var name = UIBuilder.Text("Res", row, $"{(res != null ? res.displayName : r.resourceId)}", 15, TextAlignmentOptions.Center);
+            name.gameObject.AddComponent<LayoutElement>().preferredWidth = 90;
+            Btn(">", () => settlement.CycleRouteResource(r, 1), 24);
+            Btn("-", () => r.amount = Mathf.Max(Settlement.RouteStep, r.amount - Settlement.RouteStep), 24);
+            var amt = UIBuilder.Text("Amount", row, r.amount.ToString(), 15, TextAlignmentOptions.Center);
+            amt.gameObject.AddComponent<LayoutElement>().preferredWidth = 46;
+            Btn("+", () => r.amount = Mathf.Min(Settlement.RouteMax, r.amount + Settlement.RouteStep), 24);
+            Btn(r.paused ? "Go" : "||", () => r.paused = !r.paused, 30);
+            Btn("x", () => settlement.RemoveRoute(r), 24);
+        }
+        var add = UIBuilder.Button("AddRoute", info, () => { settlement.AddRoute(from, to); ShowInfo(); }, out var al, 34, 16);
+        al.text = "+ Add a cargo route"; al.alignment = TextAlignmentOptions.Center;
     }
 
     public static string FormatTime(float seconds) =>
@@ -312,6 +380,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         {
             "Desert" => new Color(0.9f, 0.6f, 0.35f), "Ice" => new Color(0.85f, 0.95f, 1f), "Swamp" => new Color(0.45f, 0.6f, 0.35f),
             "Volcanic" => new Color(0.85f, 0.35f, 0.25f), "Crystal" => new Color(0.75f, 0.55f, 1f), "Ocean" => new Color(0.3f, 0.55f, 0.95f),
+            "Barren" => new Color(0.6f, 0.6f, 0.62f), "Jungle" => new Color(0.2f, 0.6f, 0.25f), "Fungal" => new Color(0.8f, 0.45f, 0.8f),
             _ => new Color(0.4f, 0.8f, 0.45f),
         };
     }

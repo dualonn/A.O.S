@@ -35,6 +35,7 @@ public static class MapGenerator
         Biome.Swamp => new Vector3(0.5f, 0.8f, 0.5f),
         Biome.Volcanic => new Vector3(0.5f, 0.5f, 0.1f),
         Biome.Crystal => new Vector3(0.5f, 0.5f, 0.9f),
+        // (barren, jungle and fungal lands come from a world's swaps: they lean like the land they replace)
         _ => new Vector3(0.5f, 0.5f, 0.5f),
     };
 

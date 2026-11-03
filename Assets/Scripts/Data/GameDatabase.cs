@@ -141,6 +141,9 @@ public class GameDatabase : ScriptableObject
     [Tooltip("Creatures of the wild.")]
     public UnitDefinition skeleton, skeletonArcher, wolf, giantSpider, troll, barrowKing;
 
+    [Tooltip("Peoples native to other worlds (named Faction_Unit; chiefs are bosses).")]
+    public List<UnitDefinition> natives = new List<UnitDefinition>();
+
     [Tooltip("Raiders spawn in a band this many tiles wide just outside a settlement's safe zone.")]
     public float raidSpawnBand = 12f;
 

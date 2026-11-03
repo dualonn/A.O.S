@@ -77,6 +77,9 @@ public class ArtLibrary : ScriptableObject
     [Header("Wild sites")]
     public Sprite siteRuins, siteRuinsLooted, siteDungeon, siteDungeonSealed, siteShrine, siteShrineUsed;
     public Sprite siteCache, siteCaravan, siteLoreStone, siteLoreStoneRead;
+
+    [Header("Sites on other worlds")]
+    public Sprite alienRuins, alienRuinsLooted, alienVault, alienVaultSealed, alienMonolith, alienMonolithUsed, alienCrash;
     [Tooltip("Wolf den, spider nest, troll cave.")]
     public List<Sprite> siteLairs = new List<Sprite>();
     [Tooltip("Ground tiles for each biome after Temperate, five each in Biome order (Desert, Tundra, Swamp, Volcanic, Crystal).")]

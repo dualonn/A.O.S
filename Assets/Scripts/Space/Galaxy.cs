@@ -43,7 +43,7 @@ public class StarSystem
 /// star systems at fixed spots. Nothing is stored except what you've found or settled; every
 /// system can be rebuilt at any time from its key. The home system is the seven worlds of the lore.
 /// </summary>
-public static class Galaxy
+public static partial class Galaxy
 {
     /// <summary>Width of a sector, in light-years.</summary>
     public const float SectorSize = 40f;
@@ -166,11 +166,11 @@ public static class Galaxy
         if (star == StarType.VoidTouched) return r < 0.5f ? "Crystal" : "Volcanic";
         if (star == StarType.Neutron && r < 0.4f) return "Crystal";
         float heat = 1f - orbit + (star == StarType.BlueGiant ? 0.25f : star == StarType.RedDwarf ? -0.2f : 0f);
-        if (moon && r < 0.5f) return heat > 0.6f ? "Volcanic" : "Ice";
+        if (moon) return r < 0.5f ? "Barren" : heat > 0.6f ? "Volcanic" : "Ice";
         if (heat > 0.8f) return r < 0.6f ? "Volcanic" : "Desert";
-        if (heat > 0.6f) return r < 0.5f ? "Desert" : r < 0.75f ? "Swamp" : "Temperate";
-        if (heat > 0.4f) return r < 0.35f ? "Temperate" : r < 0.55f ? "Swamp" : r < 0.75f ? "Ocean" : "Crystal";
-        return r < 0.6f ? "Ice" : r < 0.8f ? "Ocean" : "Crystal";
+        if (heat > 0.6f) return r < 0.4f ? "Desert" : r < 0.6f ? "Jungle" : r < 0.8f ? "Swamp" : "Temperate";
+        if (heat > 0.4f) return r < 0.25f ? "Temperate" : r < 0.4f ? "Jungle" : r < 0.55f ? "Fungal" : r < 0.75f ? "Ocean" : "Crystal";
+        return r < 0.45f ? "Ice" : r < 0.6f ? "Barren" : r < 0.8f ? "Ocean" : "Crystal";
     }
 
     private static readonly string[] TraitPool =

@@ -516,6 +516,28 @@ MonoBehaviour:
   giantSpider: {fileID: 11400000, guid: aac816aac7964df4eb65d6359fc06857, type: 2}
   troll: {fileID: 11400000, guid: 7b336aba4c9c11f4b8c47b6221f9809a, type: 2}
   barrowKing: {fileID: 11400000, guid: 183be144c5cd67148b4d7d5fbe020dca, type: 2}
+  natives:
+  - {fileID: 11400000, guid: 726cc841bb10df84b94c5655727f61ef, type: 2}
+  - {fileID: 11400000, guid: 4c98f3874cb4c2948a5f0472d83ab95d, type: 2}
+  - {fileID: 11400000, guid: 8bc68f91197419a40842b175bd9888ed, type: 2}
+  - {fileID: 11400000, guid: a0998c3c4bd51c544ba695bd40e9f94f, type: 2}
+  - {fileID: 11400000, guid: d9d33f1f50cbae74aa238adc5c5ee794, type: 2}
+  - {fileID: 11400000, guid: 50af380ada5c14c47b7b45695eff0c5b, type: 2}
+  - {fileID: 11400000, guid: cf34c07f1ee25db439d73ceba5ebe47d, type: 2}
+  - {fileID: 11400000, guid: 4c803eac2564c3a4b86822dbc671816b, type: 2}
+  - {fileID: 11400000, guid: 71e4d89435f15a44faf0709aab710a77, type: 2}
+  - {fileID: 11400000, guid: cd684c183bd738f4ca1c53c09ef0bc50, type: 2}
+  - {fileID: 11400000, guid: 174dee8f9d42b2e43b3305a9883eb6cd, type: 2}
+  - {fileID: 11400000, guid: cce6b3ead8f3c1d49b3fb7959b39a0bd, type: 2}
+  - {fileID: 11400000, guid: feff5c8b7ba07534999f3628312ca75f, type: 2}
+  - {fileID: 11400000, guid: 782b249a28653be49a7f2f6336567d24, type: 2}
+  - {fileID: 11400000, guid: 4d93043e7dd84144780845c5ff1687f5, type: 2}
+  - {fileID: 11400000, guid: ee536f9ee9f95924e9fc6dc62bb20333, type: 2}
+  - {fileID: 11400000, guid: 8f839c145905ab34c8198f95bea75616, type: 2}
+  - {fileID: 11400000, guid: f311d7d349081444d8ef2eaef13db634, type: 2}
+  - {fileID: 11400000, guid: 9c02ac2107d24104a86faf6711d8395c, type: 2}
+  - {fileID: 11400000, guid: ae6b1cb2e7433d54f8a3b0ac225f50b1, type: 2}
+  - {fileID: 11400000, guid: b4e9fae1a9191624f80603ca97752f8e, type: 2}
   raidSpawnBand: 12
   maxResourceLossShare: 0.3
   maxBuildingDamageShare: 0.4

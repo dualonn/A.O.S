@@ -81,7 +81,16 @@ public class SiteView : MonoBehaviour
         var art = ArtLibrary.Load();
         if (art == null) return;
         bool done = State.done;
-        Sprite s = State.kind switch
+        bool alien = controller.Settlement.OnAlienWorld;
+        Sprite s = alien ? State.kind switch
+        {
+            SiteKind.Ruins => done ? art.alienRuinsLooted : art.alienRuins,
+            SiteKind.Dungeon => done ? art.alienVaultSealed : art.alienVault,
+            SiteKind.Shrine => done ? art.alienMonolithUsed : art.alienMonolith,
+            SiteKind.Cache => art.alienCrash,
+            _ => null,
+        } : null;
+        if (s == null) s = State.kind switch
         {
             SiteKind.Ruins => done ? art.siteRuinsLooted : art.siteRuins,
             SiteKind.Dungeon => done ? art.siteDungeonSealed : art.siteDungeon,
@@ -251,14 +260,15 @@ public class SiteView : MonoBehaviour
     {
         string age = controller.Settlement.Database.GetAge(Tier)?.displayName ?? "";
         string title, hint;
+        bool alien = controller.Settlement.OnAlienWorld;
         switch (State.kind)
         {
             case SiteKind.Ruins:
-                title = "Ancient ruins";
+                title = alien ? "Precursor ruins" : "Ancient ruins";
                 hint = State.done ? "Already searched." : $"{age} dangers. Something guards an old chest.";
                 break;
             case SiteKind.Dungeon:
-                title = "Dungeon";
+                title = alien ? "Precursor vault" : "Dungeon";
                 hint = State.done ? $"Quiet for now. It fills up again in {Mathf.CeilToInt(State.resetIn / 60f)} min." : "Select troops and right-click it to send them down. Fight room by room to the king and his hoard.";
                 break;
             case SiteKind.Lair:
@@ -267,8 +277,8 @@ public class SiteView : MonoBehaviour
                 hint = State.done ? "Empty, for now." : "Its creatures attack anything that comes close.";
                 break;
             case SiteKind.Shrine:
-                title = "Shrine";
-                hint = State.done ? "Its blessing is given." : "Bring a hero here to kneel for a blessing.";
+                title = alien ? "Alien monolith" : "Shrine";
+                hint = State.done ? "Its blessing is given." : alien ? "Bring a hero to touch it: its makers left a gift in it." : "Bring a hero here to kneel for a blessing.";
                 break;
             case SiteKind.Vein:
                 var dep = controller.Settlement.VeinDeposit(State);
@@ -280,7 +290,7 @@ public class SiteView : MonoBehaviour
                     : $"{age} dangers lurk in the tunnels. Clear them to work the seam.";
                 break;
             case SiteKind.Cache:
-                title = State.variant % 3 == 0 ? "Lost caravan" : "Buried cache";
+                title = alien ? "Crash site" : State.variant % 3 == 0 ? "Lost caravan" : "Buried cache";
                 hint = "Walk any unit over it.";
                 break;
             default:

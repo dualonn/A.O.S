@@ -7,6 +7,25 @@ using UnityEngine;
 /// </summary>
 public partial class Settlement
 {
+    /// <summary>Is the world you're on another world (not the home world)? Its wild places are alien.</summary>
+    public bool OnAlienWorld => State != null && CurrentWorld.profile != WorldProfile.HomeId;
+
+    /// <summary>The native people's fighters on the world you're on (none at home).</summary>
+    public List<UnitDefinition> NativeUnits()
+    {
+        string prefix = WorldProfile.Get(CurrentWorld.profile).natives;
+        if (string.IsNullOrEmpty(prefix)) return new List<UnitDefinition>();
+        return Database.natives.FindAll(u => u != null && !u.isBoss && u.name.StartsWith(prefix + "_"));
+    }
+
+    /// <summary>The native people's chief on the world you're on (null at home).</summary>
+    public UnitDefinition NativeChief()
+    {
+        string prefix = WorldProfile.Get(CurrentWorld.profile).natives;
+        if (string.IsNullOrEmpty(prefix)) return null;
+        return Database.natives.Find(u => u != null && u.isBoss && u.name.StartsWith(prefix + "_"));
+    }
+
     /// <summary>The galaxy is built from the save's seed.</summary>
     private void EnsureGalaxy() => Galaxy.Init(State.mapSeed);
 
@@ -85,7 +104,9 @@ public partial class Settlement
     }
 
     /// <summary>Can ships reach this system (it's yours, or within reach of one of your settled systems)?</summary>
-    public bool InReach(StarSystem s)
+    public bool InReach(StarSystem s) => InReachDirect(s) || (WormholeFrom(s) is StarSystem other && InReachDirect(other));
+
+    private bool InReachDirect(StarSystem s)
     {
         float reach = ShipReach;
         foreach (var home in SettledSystems())
