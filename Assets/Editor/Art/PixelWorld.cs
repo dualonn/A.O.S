@@ -250,6 +250,8 @@ public static partial class PlaceholderArt
         var iron = PixelDeposits("Iron", 3, Ore.Iron);
         var gold = PixelDeposits("Gold", 3, Ore.Gold);
         var runes = PixelDeposits("Runestone", 3, Ore.Rune);
+        var saltpetre = PixelDeposits("Saltpetre", 3, Ore.Saltpetre);
+        var quicksilver = PixelDeposits("Quicksilver", 3, Ore.Quicksilver);
         if (database == null) return;
         foreach (var deposit in database.deposits)
         {
@@ -261,6 +263,8 @@ public static partial class PlaceholderArt
                 case "IronOre": deposit.sprites = iron; break;
                 case "GoldOre": deposit.sprites = gold; break;
                 case "Runestone": deposit.sprites = runes; break;
+                case "Saltpetre": deposit.sprites = saltpetre; break;
+                case "Quicksilver": deposit.sprites = quicksilver; break;
                 case "Forest": deposit.sprites = new List<Sprite>(art.trees); break;
                 case "Berries": deposit.sprites = new List<Sprite> { berry }; break;
                 default: continue;
@@ -418,7 +422,22 @@ public static partial class PlaceholderArt
     private static void PixelDeposit(PixelCanvas c, int variant, Ore ore)
     {
         var rng = new System.Random(variant * 31 + (int)ore * 7);
+        if (ore == Ore.Saltpetre)
+        {
+            // not rock: a white crust of nitre on bare dry earth, with a few glinting crystals
+            c.Ellipse(new Vector2(16, 8), 12 - variant, 5.5f, P.Dirt);
+            for (int i = 0; i < 28; i++)
+            {
+                int x = rng.Next(6, 27), y = rng.Next(4, 13);
+                if (c.Get(x, y).a < 200) continue;
+                c.Put(x, y, i % 4 == 0 ? P.White : P.Linen[3]);
+                if (i % 5 == 0) c.Put(x, y + 1, P.Linen[2]);
+            }
+            c.Outline(P.Ink, 0.4f);
+            return;
+        }
         var rock = ore == Ore.None ? P.Stone : ore == Ore.Rune ? Slate : P.Rock;
+        if (ore == Ore.Quicksilver) rock = P.Stone;
         (float x, float y, float rx, float ry)[] stones = variant switch
         {
             0 => new (float x, float y, float rx, float ry)[] { (16, 10, 10, 7) },
@@ -438,6 +457,7 @@ public static partial class PlaceholderArt
             Ore.Iron => new[] { P.Hex("6e2e22"), P.Hex("a4503a"), P.Hex("c8785a") },
             Ore.Gold => new[] { P.Gold[1], P.Gold[2], P.Gold[3] },
             Ore.Rune => new[] { P.Rune[2], P.Rune[1], P.Rune[3] },
+            Ore.Quicksilver => new[] { P.Red[1], P.Red[2], P.Steel[3] },   // red cinnabar, silver beads
             _ => null,
         };
         if (ore == Ore.Rune)

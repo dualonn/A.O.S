@@ -94,10 +94,11 @@ public static class Items
             bool bow = template.look == GearLook.Bow;
             if (kind == WeaponClass.Bow && !bow) why = $"A {who} fights with a bow";
             else if (kind == WeaponClass.Melee && bow) why = $"A {who} fights hand to hand";
-            else if (kind == WeaponClass.Thrown || kind == WeaponClass.None || kind == WeaponClass.Crossbow || kind == WeaponClass.Staff)
+            else if (kind == WeaponClass.Thrown || kind == WeaponClass.None || kind == WeaponClass.Crossbow || kind == WeaponClass.Staff
+                || kind == WeaponClass.Musket || kind == WeaponClass.Cannon)
                 why = $"A {who} keeps their own weapon";
         }
-        else if (template.slot == GearSlot.Shield && (kind == WeaponClass.Bow || kind == WeaponClass.Crossbow))
+        else if (template.slot == GearSlot.Shield && (kind == WeaponClass.Bow || kind == WeaponClass.Crossbow || kind == WeaponClass.Musket || kind == WeaponClass.Cannon))
         {
             why = $"A {who} needs both hands for the bow";
         }

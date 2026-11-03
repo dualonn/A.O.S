@@ -16,7 +16,7 @@ public interface IUnitVisual
 }
 
 /// <summary>What kind of weapon a unit's animation is built around, so heroes only take gear that fits it.</summary>
-public enum WeaponClass { Melee, Bow, Thrown, None, Crossbow, Staff }
+public enum WeaponClass { Melee, Bow, Thrown, None, Crossbow, Staff, Musket, Cannon }
 
 /// <summary>
 /// Frame-by-frame sprite animation for units in pixel art:

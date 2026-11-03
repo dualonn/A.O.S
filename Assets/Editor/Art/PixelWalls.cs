@@ -30,8 +30,12 @@ public static partial class PlaceholderArt
         1 => new PxWallStyle { ramp = P.Mud, height = 22, kind = 1 },
         2 => new PxWallStyle { ramp = P.Stone, height = 29, kind = 2, crenels = true, towers = true },
         3 => new PxWallStyle { ramp = P.Plaster, height = 32, kind = 3, crenels = true, towers = true },
-        _ => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
+        4 => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
+        _ => new PxWallStyle { ramp = BastionRamp, height = 26, kind = 1, crenels = false, towers = true }, // low, thick brick bastion wall
     };
+
+    /// <summary>Red brick for Renaissance bastion walls.</summary>
+    private static Color32[] BastionRamp => new[] { P.Hex("4a1e18"), P.Hex("7a3424"), P.Hex("a8503a"), P.Hex("cf7556") };
 
     private static Color32 Edge(Color32[] r) => PixelCanvas.Mix(r[0], P.Ink, 0.5f);
 
@@ -297,7 +301,7 @@ public static partial class PlaceholderArt
     public static void GenerateWallArt()
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
             var wall = db.GetBuilding(tiers[age].Item1);

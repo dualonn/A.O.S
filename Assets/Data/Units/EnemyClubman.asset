@@ -29,6 +29,10 @@ MonoBehaviour:
   detectionRange: 2.5
   projectile: {fileID: 0}
   projectileSpeed: 10
+  projectileArc: 0.15
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
   healer: 0
   healRange: 8
   isBoss: 0

@@ -301,9 +301,9 @@ public static partial class PlaceholderArt
         dep.rarity = 0.66f;   // measured: about 4% of hills, like iron (4.8%) and copper (3.6%)
         dep.minMoisture = 0f;
         dep.maxMoisture = 1f;
-        // Always last: deposits are placed in list order, so a new one only fills empty tiles.
-        db.deposits.Remove(dep);
-        db.deposits.Add(dep);
+        // Added at the end: deposits are placed in list order, so a new one only fills empty tiles.
+        // Never moved afterwards (later deposits come after it, and moving it would shift the map).
+        if (!db.deposits.Contains(dep)) db.deposits.Add(dep);
         EditorUtility.SetDirty(dep);
         return dep;
     }

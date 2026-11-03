@@ -50,6 +50,15 @@ public class UnitDefinition : ScriptableObject
     [Tooltip("How high it's lobbed, as a share of the shot's length: 0 flies straight (bolts), 0.15 a bow's arc.")]
     public float projectileArc = 0.15f;
 
+    [Tooltip("Blast radius in tiles (0 = hits only its target). Cannonballs and fire flasks hurt everyone close by.")]
+    public float splashRadius;
+
+    [Tooltip("The blast sets things alight (orange flash) rather than just exploding.")]
+    public bool splashFire;
+
+    [Tooltip("A puff of gun smoke at the muzzle with every shot.")]
+    public bool muzzleSmoke;
+
     [Header("Healer (medics)")]
     [Tooltip("Never fights: tends wounded troops instead, healing its attack power with each go.")]
     public bool healer;

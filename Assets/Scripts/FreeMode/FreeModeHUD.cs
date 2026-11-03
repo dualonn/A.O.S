@@ -21,6 +21,8 @@ public class FreeModeHUD : MonoBehaviour
     private TextMeshProUGUI waveText;
     private TextMeshProUGUI researchText;
     private readonly Dictionary<ResourceType, TextMeshProUGUI> resourceChips = new Dictionary<ResourceType, TextMeshProUGUI>();
+    private TextMeshProUGUI moreText;
+    private readonly List<ResourceType> overflowResources = new List<ResourceType>();
     private TextMeshProUGUI messageLog;
     private RectTransform tooltip;
     private TextMeshProUGUI tooltipText;
@@ -123,7 +125,7 @@ public class FreeModeHUD : MonoBehaviour
         // Top bar: a row of icon + value chips, with view controls on the right
         var bar = UIBuilder.Panel("TopBar", root, UIBuilder.PanelColor).rectTransform;
         UIBuilder.Anchor(bar, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(-8, 56));
-        var chips = UIBuilder.Row("Chips", bar, 26);
+        var chips = UIBuilder.Row("Chips", bar, 16);
         UIBuilder.Stretch(chips);
         chips.offsetMin = new Vector2(16, 0);
         chips.offsetMax = new Vector2(-520, 0);
@@ -131,8 +133,18 @@ public class FreeModeHUD : MonoBehaviour
         ageText = Chip(chips, null);
         foreach (var res in settlement.Database.resources)
         {
+            var r = res;
             resourceChips[res] = Chip(chips, res.icon);
+            // Hover a resource for its name, exact stock and rate (the bar itself stays compact).
+            var chipObject = resourceChips[res].transform.parent.gameObject;
+            chipObject.AddComponent<Image>().color = Color.clear;
+            UIBuilder.OnHover(chipObject, () => tooltipSource = () => ResourceTooltip(r), HideTooltip);
         }
+        // Resources that don't fit on the bar fold into one "+N" chip; hover it to see them all.
+        moreText = Chip(chips, null);
+        var moreChip = moreText.transform.parent.gameObject;
+        moreChip.AddComponent<Image>().color = Color.clear;
+        UIBuilder.OnHover(moreChip, () => tooltipSource = OverflowTooltip, HideTooltip);
         peopleText = Chip(chips, art != null ? art.peopleIcon : null);
         // Hovering the people chip explains who's working; the bar itself stays short.
         var peopleChip = peopleText.transform.parent.gameObject;
@@ -418,6 +430,72 @@ public class FreeModeHUD : MonoBehaviour
         rateTimer = 0;
     }
 
+    private static readonly string[] BasicResources = { "Food", "Wood", "Stone" };
+
+    /// <summary>
+    /// Keep the bar to what fits: food, wood and stone always, then the newest resources (the ones
+    /// this age is about), and the rest folded into the "+N" chip.
+    /// </summary>
+    private void FitResourceChips()
+    {
+        var row = (RectTransform)moreText.transform.parent.parent;
+        var layout = row.GetComponent<HorizontalLayoutGroup>();
+        float available = row.rect.width, spacing = layout != null ? layout.spacing : 0;
+        float Width(TextMeshProUGUI t) => LayoutUtility.GetPreferredWidth((RectTransform)t.transform.parent) + spacing;
+
+        float used = 70f;   // room for the "+N" chip
+        foreach (var t in new[] { ageText, peopleText, waveText, researchText })
+            if (t != null && t.transform.parent.gameObject.activeSelf) used += Width(t);
+
+        var shown = resourceChips.Where(p => p.Value.transform.parent.gameObject.activeSelf).Select(p => p.Key)
+            .OrderBy(r => System.Array.IndexOf(BasicResources, r.id) is int i && i >= 0 ? i : 99)
+            .ThenByDescending(r => r.unlockedIn != null ? r.unlockedIn.order : 0)
+            .ToList();
+        overflowResources.Clear();
+        foreach (var res in shown)
+        {
+            float w = Width(resourceChips[res]);
+            if (used + w <= available || System.Array.IndexOf(BasicResources, res.id) >= 0) used += w;
+            else
+            {
+                resourceChips[res].transform.parent.gameObject.SetActive(false);
+                overflowResources.Add(res);
+            }
+        }
+        overflowResources.Sort((a, b) => settlement.Database.resources.IndexOf(a).CompareTo(settlement.Database.resources.IndexOf(b)));
+        moreText.transform.parent.gameObject.SetActive(overflowResources.Count > 0);
+        moreText.text = $"<b>+{overflowResources.Count}</b>";
+    }
+
+    private string OverflowTooltip()
+    {
+        var sb = new StringBuilder("<b>More resources</b>");
+        foreach (var res in overflowResources)
+        {
+            float rate = rates.TryGetValue(res, out float r) ? r : 0;
+            string rateText = Mathf.Abs(rate) < 0.05f ? "" : rate > 0 ? $"  <color=#8f8>+{rate:0.0}/s</color>" : $"  <color=#f88>{rate:0.0}/s</color>";
+            sb.Append($"\n{res.displayName}: <b>{Short(settlement.GetAmount(res))}</b>{rateText}");
+        }
+        return sb.ToString();
+    }
+
+    /// <summary>A stock in a few characters: 950, 9,870, 23.8k, 1.2M.</summary>
+    private static string Short(float value)
+    {
+        float v = Mathf.Floor(value);
+        if (v < 10000f) return v.ToString("#,0");
+        if (v < 1000000f) return (v / 1000f).ToString(v < 100000f ? "0.0" : "0") + "k";
+        return (v / 1000000f).ToString("0.0") + "M";
+    }
+
+    private string ResourceTooltip(ResourceType res)
+    {
+        float rate = rates.TryGetValue(res, out float r) ? r : 0;
+        string rateText = Mathf.Abs(rate) < 0.05f ? "<color=#aaa>steady</color>" :
+            rate > 0 ? $"<color=#8f8>+{rate:0.00} a second</color>" : $"<color=#f88>{rate:0.00} a second</color>";
+        return $"<b>{res.displayName}</b>\n{Mathf.FloorToInt(settlement.GetAmount(res)):#,0} in store, {rateText}";
+    }
+
     /// <summary>An icon followed by a text value, added to a row. Returns the text.</summary>
     private static TextMeshProUGUI Chip(Transform row, Sprite icon)
     {
@@ -426,7 +504,10 @@ public class FreeModeHUD : MonoBehaviour
         {
             UIBuilder.Icon("Icon", chip, icon, 34);
         }
-        return UIBuilder.Text("Value", chip, "", 22, TextAlignmentOptions.MidlineLeft);
+        var text = UIBuilder.Text("Value", chip, "", 22, TextAlignmentOptions.MidlineLeft);
+        text.lineSpacing = -28;   // the small rate line tucks up under the stock
+        text.enableWordWrapping = false;
+        return text;
     }
 
     private void RefreshTopBar()
@@ -437,13 +518,19 @@ public class FreeModeHUD : MonoBehaviour
         foreach (var pair in resourceChips)
         {
             var res = pair.Key;
-            pair.Value.transform.parent.gameObject.SetActive(visible.Contains(res));
             float rate = rates.TryGetValue(res, out float r) ? r : 0;
+            float amount = settlement.GetAmount(res);
+            // Nothing in stock and nothing coming in: leave it off the bar (hover the build menu for costs).
+            bool show = visible.Contains(res) && (amount >= 1f || Mathf.Abs(rate) >= 0.05f);
+            pair.Value.transform.parent.gameObject.SetActive(show);
+            if (!show) continue;
+            // The stock, and the rate small underneath, so a full bar of resources still fits.
             string rateText = Mathf.Abs(rate) < 0.05f ? "" :
-                rate > 0 ? $" <color=#8f8><size=70%>+{rate:0.0}/s</size></color>" : $" <color=#f88><size=70%>{rate:0.0}/s</size></color>";
+                rate > 0 ? $"\n<color=#8f8><size=62%>+{rate:0.0}/s</size></color>" : $"\n<color=#f88><size=62%>{rate:0.0}/s</size></color>";
             string name = res.icon == null ? res.displayName + " " : "";
-            pair.Value.text = $"{name}<b>{Mathf.FloorToInt(settlement.GetAmount(res))}</b>{rateText}";
+            pair.Value.text = $"{name}<b>{Short(amount)}</b>{rateText}";
         }
+        FitResourceChips();
 
         // People / room, plus one small note: idle people, or how many jobs are going unfilled.
         int idle = settlement.Population - settlement.WorkersNeeded;

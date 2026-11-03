@@ -33,6 +33,10 @@ MonoBehaviour:
   detectionRange: 3
   projectile: {fileID: 0}
   projectileSpeed: 9
+  projectileArc: 0.15
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
   healer: 1
   healRange: 9
   isBoss: 0

@@ -79,6 +79,10 @@ MonoBehaviour:
   towerDamage: 10
   towerCooldown: 1.5
   towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
   operatorIdle: {fileID: 0}
   operatorShoot: []
   operatorReleaseFrame: 2

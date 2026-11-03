@@ -1,0 +1,192 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CuirassierStables
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CuirassierStables
+  displayName: Cuirassier Stables
+  description: Brick stables for heavy horse. Trains Cuirassiers, who ride in close
+    and fire their pistols.
+  icon: {fileID: 21300000, guid: ff3798b66296f114890e5a73b28aa65a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: ff3798b66296f114890e5a73b28aa65a, type: 3}
+    - {fileID: 21300000, guid: 19d3c87deb896fa4995607674f764f46, type: 3}
+    - {fileID: 21300000, guid: 63cf00e940ff4f94d9f3e1e105f1c956, type: 3}
+    - {fileID: 21300000, guid: e114b2ffd8ff87f439e5f2eda0bee016, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 8ebedb68a6d025f41a749dfcc891fa7e, type: 3}
+    - {fileID: 21300000, guid: a3abb431e42a1d148a7077e54bd87f4f, type: 3}
+    - {fileID: 21300000, guid: fab0eb758756f1a48a26f193bccb8f02, type: 3}
+    - {fileID: 21300000, guid: 59c47a373689ded4ab7f56e266c485c1, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 68e62f0bcba8d5e48a9bdd1558eb0731, type: 3}
+    - {fileID: 21300000, guid: 8ce39c3a4ea2aeb4687bc53a016a34f3, type: 3}
+    - {fileID: 21300000, guid: e0bbc7cc977c5c64c9ec57e44a4d4115, type: 3}
+    - {fileID: 21300000, guid: 564f01b9af400ca428a9fe5b340a9965, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 49f16aceb0ed10741b6c18638eb16519, type: 3}
+    - {fileID: 21300000, guid: 6cdf85fcb7db72a4a8328a35e097d68a, type: 3}
+    - {fileID: 21300000, guid: d75f671af546ab34b8bc3c59cb0c3280, type: 3}
+    - {fileID: 21300000, guid: 21faa9ac3ebc5a4469a6d5a065028bf5, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c15054a039665d941b38a24c345d4f4d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 320
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 300
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 700
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 2e9ed81c20c4d2d418c7eb4d7fdf84b8, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

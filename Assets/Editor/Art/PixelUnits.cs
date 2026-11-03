@@ -71,6 +71,16 @@ public static partial class PlaceholderArt
         ("Brigand", Fig(Rd, GearLook.Cap, GearLook.Mace, GearLook.RoundShield, GearLook.Jerkin, raider: true, shieldColor: "Leather"), true),
         ("Reaver", Fig(Rd, GearLook.KettleHat, GearLook.Sword, GearLook.KiteShield, GearLook.Mail, MountKind.Horse, raider: true, coat: "DarkHorse", shieldColor: "Coal"), true),
         ("BanditCrossbow", Fig(Rd, GearLook.Hood, GearLook.Crossbow, body: GearLook.Jerkin, raider: true), true),
+        // Renaissance
+        ("Arquebusier", Fig(B, GearLook.Morion, GearLook.Arquebus, body: GearLook.Doublet, crest: "Gold"), false),
+        ("Halberdier", Fig(B, GearLook.Morion, GearLook.Halberd, body: GearLook.Cuirass), false),
+        ("Cuirassier", Fig(B, GearLook.Morion, GearLook.Pistol, body: GearLook.Cuirass, mount: MountKind.Horse, coat: "DarkHorse"), false),
+        ("Physician", Fig(B, GearLook.PlagueMask, GearLook.None, body: GearLook.Robe, crest: "Coal"), false),
+        ("Alchemist", Fig(B, GearLook.Cowl, GearLook.Flask, body: GearLook.Robe, crest: "Green"), false),
+        ("FieldCannon", Fig(B, GearLook.FeatheredCap, GearLook.Cannon, body: GearLook.Doublet, mount: MountKind.Cannon, crest: "Gold"), false),
+        ("Landsknecht", Fig(Rd, GearLook.FeatheredCap, GearLook.Zweihander, body: GearLook.Doublet, raider: true, crest: "Gold"), true),
+        ("Highwayman", Fig(Rd, GearLook.FeatheredCap, GearLook.Pistol, body: GearLook.Jerkin, mount: MountKind.Horse, raider: true, coat: "DarkHorse", crest: "Coal"), true),
+        ("BrigandMusketeer", Fig(Rd, GearLook.Cap, GearLook.Arquebus, body: GearLook.Jerkin, raider: true), true),
     };
 
     /// <summary>Tower crews (drawn from the waist up; they stand behind a parapet).</summary>
@@ -80,6 +90,7 @@ public static partial class PlaceholderArt
         ("StoneTower", "TowerArcherIron", Fig(B, GearLook.ConeHelm, GearLook.Bow)),
         ("BallistaTower", "BallistaCrew", Fig(B, GearLook.CrestedHelm, GearLook.Ballista, crest: "Blue")),
         ("CastleTower", "TowerCrossbowman", Fig(B, GearLook.KettleHat, GearLook.Crossbow, body: GearLook.Mail)),
+        ("CannonBastion", "BastionGunner", Fig(B, GearLook.Morion, GearLook.Cannon, body: GearLook.Cuirass)),
     };
 
     [MenuItem("Tools/Age of Stickman/Generate Unit Art")]
@@ -99,6 +110,13 @@ public static partial class PlaceholderArt
         var stone = PixelProjectile("SlingStone", 5, 5, DrawStone);
         var javelin = PixelProjectile("Javelin", 18, 5, DrawJavelin);
         var runeBolt = PixelProjectile("RuneBolt", 12, 7, DrawRuneBolt);
+        var ball = PixelProjectile("MusketBall", 4, 4, c => { c.Rect(1, 1, 2, 2, PixelPalette.Iron[2]); c.Put(1, 2, PixelPalette.Steel[3]); });
+        var cannonball = PixelProjectile("Cannonball", 8, 8, c => { c.Ellipse(new Vector2(4, 4), 3, 3, PixelPalette.Iron); c.Put(3, 5, PixelPalette.Steel[3]); });
+        var flask = PixelProjectile("FireFlask", 8, 9, c =>
+        {
+            c.Ellipse(new Vector2(4, 3.5f), 3, 3, new[] { PixelPalette.Green[0], PixelPalette.Green[2], PixelPalette.Green[3], PixelPalette.White });
+            c.Rect(3, 6, 4, 8, PixelPalette.Linen[3]); c.Put(4, 8, PixelPalette.Fire[2]);
+        });
         foreach (var (id, style, enemy) in PixelWarriors)
         {
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>($"Assets/Data/Units/{id}.asset");
@@ -108,7 +126,9 @@ public static partial class PlaceholderArt
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{name}/{name}_Idle.png");
             def.projectile = style.weapon == GearLook.Bow ? arrow : style.weapon == GearLook.Sling ? stone
                 : style.weapon == GearLook.Javelin ? javelin : style.weapon == GearLook.Crossbow ? bolt
-                : style.weapon == GearLook.RuneStaff ? runeBolt : null;
+                : style.weapon == GearLook.RuneStaff ? runeBolt
+                : style.weapon == GearLook.Arquebus || style.weapon == GearLook.Pistol ? ball
+                : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball : null;
             SetFlight(def, style.weapon);
             EditorUtility.SetDirty(def);
         }
@@ -129,9 +149,12 @@ public static partial class PlaceholderArt
             tower.operatorIdle = Frame("Idle", 0);
             tower.operatorShoot = new List<Sprite> { Frame("Shoot0", 5), Frame("Shoot1", 6), Frame("Shoot2", 7), Frame("Shoot3", 8) };
             bool bolts = style.weapon == GearLook.Ballista || style.weapon == GearLook.Crossbow;
-            tower.towerProjectile = bolts ? bolt : arrow;
-            tower.towerProjectileArc = bolts ? 0f : Projectile.BowArc;   // bolts fly straight, arrows are lobbed
-            tower.towerProjectileSpeed = bolts ? 15f : 11f;
+            bool gun = style.weapon == GearLook.Cannon;
+            tower.towerProjectile = gun ? cannonball : bolts ? bolt : arrow;
+            tower.towerProjectileArc = gun ? 0.06f : bolts ? 0f : Projectile.BowArc;   // bolts fly straight, arrows are lobbed
+            tower.towerProjectileSpeed = gun ? 16f : bolts ? 15f : 11f;
+            tower.towerSplash = gun ? 1.6f : 0f;
+            tower.towerMuzzleSmoke = gun;
             tower.operatorReleaseFrame = 2;
             EditorUtility.SetDirty(tower);
         }
@@ -140,11 +163,17 @@ public static partial class PlaceholderArt
     /// <summary>How each kind of shot flies: bolts straight and fast, arrows in an arc, javelins lobbed high, stones low.</summary>
     private static void SetFlight(UnitDefinition def, GearLook weapon)
     {
+        def.splashRadius = 0f;
+        def.splashFire = false;
+        def.muzzleSmoke = false;
         switch (weapon)
         {
             case GearLook.Crossbow: def.projectileArc = 0f; def.projectileSpeed = 15f; break;
             case GearLook.RuneStaff: def.projectileArc = 0f; def.projectileSpeed = 12f; break;
             case GearLook.Javelin: def.projectileArc = 0.22f; break;
+            case GearLook.Arquebus: case GearLook.Pistol: def.projectileArc = 0f; def.projectileSpeed = 22f; def.muzzleSmoke = true; break;
+            case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
+            case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
             default: def.projectileArc = Projectile.BowArc; break;
         }
@@ -357,6 +386,20 @@ public static partial class PlaceholderArt
             health = 4200, attack = 64, speed = 0.9f, cooldown = 1.0f, range = 0.85f, detection = 3.5f,
             ability = BossAbility.Summon, abilityCooldown = 14f, summons = "Brigand", summonCount = 3,
         },
+        new BossSpec
+        {
+            id = "BossCondottiere", name = "Sforza the Condottiere", age = "RenaissanceAge",
+            style = Fig(Rd, GearLook.Morion, GearLook.Zweihander, body: GearLook.Cuirass, crest: "Gold", cape: "Purple", scale: 1.7f, raider: true),
+            health = 5200, attack = 78, speed = 0.95f, cooldown = 1.1f, range = 0.9f, detection = 3.5f,
+            ability = BossAbility.Summon, abilityCooldown = 14f, summons = "Landsknecht", summonCount = 3,
+        },
+        new BossSpec
+        {
+            id = "BossMadAlchemist", name = "Paracel the Mad Alchemist", age = "RenaissanceAge",
+            style = Fig(Rd, GearLook.PlagueMask, GearLook.Flask, body: GearLook.Robe, crest: "Green", cape: "Coal", scale: 1.6f, raider: true),
+            health = 4200, attack = 60, speed = 0.85f, cooldown = 1.6f, range = 4.5f, detection = 5f,
+            ability = BossAbility.Slam, abilityCooldown = 8f, abilityRadius = 2.4f, abilityPower = 1.2f,
+        },
     };
 
     [MenuItem("Tools/Age of Stickman/Setup Bosses")]
@@ -390,6 +433,14 @@ public static partial class PlaceholderArt
             def.abilityPower = spec.abilityPower > 0 ? spec.abilityPower : 1.3f;
             def.summons = spec.summons != null ? AssetDatabase.LoadAssetAtPath<UnitDefinition>($"Assets/Data/Units/{spec.summons}.asset") : null;
             def.summonCount = spec.summonCount;
+            // A chief with a ranged weapon shoots like the troops who carry it.
+            string shot = spec.style.weapon switch
+            {
+                GearLook.Bow => "Arrow", GearLook.Crossbow => "Bolt", GearLook.Flask => "FireFlask",
+                GearLook.Arquebus or GearLook.Pistol => "MusketBall", GearLook.RuneStaff => "RuneBolt", _ => null,
+            };
+            def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
+            SetFlight(def, spec.style.weapon);
             def.prefab = BuildPixelUnit(spec.id, spec.style, true, def, boss: true);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{spec.id}/{spec.id}_Idle.png");
             EditorUtility.SetDirty(def);

@@ -172,6 +172,10 @@ public class BuildingDefinition : GameData
     public float towerProjectileArc = 0.15f;
     [Tooltip("How fast the tower's shot flies (tiles per second).")]
     public float towerProjectileSpeed = 11f;
+    [Tooltip("Blast radius of the tower's shot in tiles (0 = hits only its target).")]
+    public float towerSplash;
+    [Tooltip("A puff of smoke from the tower with every shot (cannons).")]
+    public bool towerMuzzleSmoke;
 
     [Tooltip("The unit seen operating the tower (until the Renaissance, ranged buildings are crewed).")]
     public Sprite operatorIdle;

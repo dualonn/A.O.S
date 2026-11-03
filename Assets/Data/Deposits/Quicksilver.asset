@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dcc1aff82e4ea4caf035c765b340a8, type: 3}
+  m_Name: Quicksilver
+  m_EditorClassIdentifier: Assembly-CSharp::DepositType
+  id: Quicksilver
+  displayName: Quicksilver
+  resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: 811241ef781e1584cbdb0cd6ad676dc4, type: 3}
+  - {fileID: 21300000, guid: d670badcb4dfe20418ad30226df4dc74, type: 3}
+  - {fileID: 21300000, guid: 8339785fc41c8b04bbf0c702614c8716, type: 3}
+  onHills: 1
+  patchScale: 0.22
+  rarity: 0.64
+  minMoisture: 0
+  maxMoisture: 1

@@ -1,0 +1,192 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CannonBastion
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CannonBastion
+  displayName: Cannon Bastion
+  description: A low, thick brick bastion with a cannon on top. Its shot bursts among
+    the raiders. (The last tower with a crew in the open.)
+  icon: {fileID: 21300000, guid: 749b6ab39cad6814990d65dbbf471ace, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 749b6ab39cad6814990d65dbbf471ace, type: 3}
+    - {fileID: 21300000, guid: ef7f77fe54c17884790a3d65ea94b191, type: 3}
+    - {fileID: 21300000, guid: f6d3e32581c442c408c47c5b04a82411, type: 3}
+    - {fileID: 21300000, guid: cf55e2b77e70fdc4f81d4cf868181a0e, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 94e55d7a31ebd6f43973ce8109d710bd, type: 3}
+    - {fileID: 21300000, guid: f7cdbcd4a3b326d419a7bbdfb5f1b9e5, type: 3}
+    - {fileID: 21300000, guid: 457d44bbf5ab67d49a65f2e5e6df1a5a, type: 3}
+    - {fileID: 21300000, guid: fca0a072c66b45848856d73029f41e73, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 738afdc5cb402034495b4297017dee36, type: 3}
+    - {fileID: 21300000, guid: a1a5b03a862966b44b66884eaebaa655, type: 3}
+    - {fileID: 21300000, guid: b7d5e27bb1904844bb3c4e4ef6ac05e9, type: 3}
+    - {fileID: 21300000, guid: febc4f7abf2a2984da82998ecfd0e071, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: b7a92500ec2dbec419b148baa4508645, type: 3}
+    - {fileID: 21300000, guid: 2ba48033865f3ae4f86ff41ebe314eb3, type: 3}
+    - {fileID: 21300000, guid: deb5cee8f51d5864a8e08fa14a2bc29e, type: 3}
+    - {fileID: 21300000, guid: 3b4eabaa235ba844cb1ff4711865627f, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 29e5c83a86579264e81cac8cc3f5efb7, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 40
+  upgrades:
+  - name: Longer Barrel
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Chain Shot
+    description: +35 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 35
+    operatorLift: 0
+  - name: Earth Rampart
+    description: +500 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 250
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 500
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1000
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 11
+  towerDamage: 110
+  towerCooldown: 3.4
+  towerProjectile: {fileID: 21300000, guid: 6d2b20e5091d5584a937364e11060c0c, type: 3}
+  towerProjectileArc: 0.06
+  towerProjectileSpeed: 16
+  towerSplash: 1.6
+  towerMuzzleSmoke: 1
+  operatorIdle: {fileID: 21300000, guid: 323126c7c4f3b5f4981d8acdde26782f, type: 3}
+  operatorShoot:
+  - {fileID: 21300000, guid: d661c85f0b3eb1c4cbf7807ab82cd84e, type: 3}
+  - {fileID: 21300000, guid: 6caaea0f4793dd54494baf5cc697ee19, type: 3}
+  - {fileID: 21300000, guid: 3edc8cdf6500a4e46aa7b19dd91c6366, type: 3}
+  - {fileID: 21300000, guid: 09107acf19b8c7647927407d2ea9b126, type: 3}
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

@@ -190,6 +190,8 @@ MonoBehaviour:
   towerProjectile: {fileID: 21300000, guid: 9abcfbdfe46c20245962535b6dd316f5, type: 3}
   towerProjectileArc: 0.15
   towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
   operatorIdle: {fileID: 21300000, guid: 49364285e64a6e94f91e36c14d348f09, type: 3}
   operatorShoot:
   - {fileID: 21300000, guid: 10140992b8ed68f4f895b07b728f0f1f, type: 3}

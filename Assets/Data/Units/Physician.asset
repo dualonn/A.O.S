@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: Physician
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Physician
+  icon: {fileID: 21300000, guid: 12d0cd0a7052a784386ca54ea7d97678, type: 3}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 3149119863826840532, guid: 26041087125d0a94cb8ddbc1ca3931e5, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.01
+  - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+    perSecond: 0.05
+  maxHealth: 260
+  moveSpeed: 1
+  attackPower: 28
+  attackCooldown: 1.1
+  attackRange: 0.8
+  hitDelay: 0.4
+  detectionRange: 3
+  projectile: {fileID: 0}
+  projectileSpeed: 9
+  projectileArc: 0.15
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 1
+  healRange: 10
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

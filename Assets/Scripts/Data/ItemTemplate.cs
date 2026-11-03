@@ -20,7 +20,9 @@ public enum GearLook
     // Unit kits only (no items use these yet)
     Headband, Feather, BearPelt, Crown, PlumedHelm, Sling, Javelin, Ballista, OvalShield, Bare,
     // Medieval
-    GreatHelm, KettleHat, Cowl, Robe, Surcoat, Crossbow, Pike, Lance, Mace, RuneStaff, KiteShield
+    GreatHelm, KettleHat, Cowl, Robe, Surcoat, Crossbow, Pike, Lance, Mace, RuneStaff, KiteShield,
+    // Renaissance
+    Morion, FeatheredCap, PlagueMask, Doublet, Cuirass, Arquebus, Pistol, Halberd, Zweihander, Flask, Cannon
 }
 
 /// <summary>

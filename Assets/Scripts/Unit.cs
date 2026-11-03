@@ -497,7 +497,13 @@ public abstract class Unit : MonoBehaviour
         if (IsRanged)
         {
             // Loose an arrow: it does the damage when it lands.
-            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this, definition.projectileArc);
+            Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this, definition.projectileArc,
+                definition.splashRadius, definition.splashFire);
+            if (definition.muzzleSmoke)
+            {
+                Vector3 toward = (target.transform.position - transform.position).normalized;
+                Puff.Smoke(LaunchPoint + toward * 0.35f);
+            }
             return;
         }
         // Melee: missed if the target stepped well out of reach during the wind-up.

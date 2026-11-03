@@ -32,6 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -122,6 +123,32 @@ public static partial class PlaceholderArt
         c.Polygon(new[] { Iv(5, 2), Iv(15, 2), Iv(14, 17), Iv(9, 19), Iv(6, 16) }, l => l.x < 8 ? P.Coal[3] : l.x > 12 ? P.Coal[1] : P.Coal[2]);
         for (int y = 6; y < 14; y++) c.Put(10, y, P.Rune[3]);
         c.Put(11, 11, P.Rune[2]); c.Put(12, 12, P.Rune[2]); c.Put(9, 8, P.Rune[2]); c.Put(8, 7, P.Rune[2]);
+    }
+
+    private static void IcSaltpetre(PixelCanvas c)
+    {
+        // a sack spilling white crystals
+        c.Ellipse(Iv(10, 8), 6.5f, 6, P.Linen);
+        c.Line(Iv(7, 14), Iv(13, 14), P.Leather[2], 2);
+        for (int i = 0; i < 6; i++) c.Put(4 + i * 2, 2 + (i % 2), i % 2 == 0 ? P.White : P.Linen[3]);
+    }
+
+    private static void IcGunpowder(PixelCanvas c)
+    {
+        // a powder keg with a red cross, a little black powder spilt beside it
+        c.Rect(5, 3, 14, 15, P.Wood[2]); c.Rect(5, 3, 6, 15, P.Wood[3]);
+        c.Line(Iv(5, 6), Iv(14, 6), P.Iron[1]); c.Line(Iv(5, 12), Iv(14, 12), P.Iron[1]);
+        c.Line(Iv(8, 7), Iv(11, 11), P.Red[2]); c.Line(Iv(11, 7), Iv(8, 11), P.Red[2]);
+        for (int i = 0; i < 4; i++) c.Put(14 + i, 2 + (i % 2), P.Coal[1]);
+    }
+
+    private static void IcQuicksilver(PixelCanvas c)
+    {
+        // a glass flask of liquid silver
+        c.Ellipse(Iv(10, 7), 6, 6, new[] { P.Steel[0], P.Steel[1], P.Steel[3], P.White });
+        c.Rect(8, 12, 11, 17, P.Linen[3]);
+        c.Rect(7, 17, 12, 18, P.Wood[2]);
+        c.Put(7, 9, P.White);
     }
 
     private static void IcCoin(PixelCanvas c)

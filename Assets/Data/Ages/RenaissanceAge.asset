@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: RenaissanceAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Renaissance
+  order: 5
+  description: Gunpowder and printing, banks and painted domes, and alchemists bent
+    over their green fires.
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 58805191e1e64704fbbdd3ccf21bffb4, type: 2}
+    buildings: []
+    population: 400
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 4500
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 3500
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 3500
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 1000
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+  playerUnits:
+  - {fileID: 11400000, guid: 80a26f283e5678e428c43cfbb38f1e1d, type: 2}
+  - {fileID: 11400000, guid: 7e45972a3a1bdc14fbc4c4d0bcfd736d, type: 2}
+  - {fileID: 11400000, guid: 2e9ed81c20c4d2d418c7eb4d7fdf84b8, type: 2}
+  - {fileID: 11400000, guid: bb2b5b9a25e29f549ba9014ddb8662d6, type: 2}
+  - {fileID: 11400000, guid: 93bed665796f0c849baee8e98a9d4856, type: 2}
+  - {fileID: 11400000, guid: 6d18761210727c34e9183f0e8044f1f7, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: d9a206e92a5956a4fbf437c68ee22ce4, type: 2}
+  - {fileID: 11400000, guid: 3a332d7e284b50b4ca1b6ecd918c685a, type: 2}
+  - {fileID: 11400000, guid: ab551272bdc9e6d4884f7ae501ae3427, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 8c6f29a35ec17aa42892de93c1fad29c, type: 2}
+  - {fileID: 11400000, guid: 66254b329e95f1c4a872f15e9f90771c, type: 2}

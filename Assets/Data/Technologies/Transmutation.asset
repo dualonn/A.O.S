@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: Transmutation
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: Transmutation
+  displayName: Transmutation
+  description: Alchemists who take their fire to war. Unlocks the Alchemist's Lab.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: dec8d334f336eef47bbfbe98666a4f4f, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 200
+  researchTime: 100
+  unitModifiers: []
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

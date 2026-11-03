@@ -16,19 +16,32 @@ public class Projectile : MonoBehaviour
     private Unit source;
     private System.Action onArrive;
     private float arc;
+    private float splash;
+    private bool fire;
+    private Team team;
 
     /// <summary>A bow's arc: the height of the flight as a share of its length.</summary>
     public const float BowArc = 0.15f;
 
     /// <summary>Fire at a unit (tracks it in flight).</summary>
-    public static Projectile Fire(Sprite sprite, Vector3 from, Unit target, float speed, int damage, Unit source, float arc = BowArc)
+    /// <param name="splash">Blast radius (0 = hits only its target): everyone of the other side
+    /// within it takes part of the damage too (cannonballs, fire flasks).</param>
+    /// <param name="team">The shooter's side, when there's no shooting unit (towers are yours).</param>
+    public static Projectile Fire(Sprite sprite, Vector3 from, Unit target, float speed, int damage, Unit source, float arc = BowArc,
+        float splash = 0f, bool fire = false, Team team = Team.Player)
     {
         var p = Create(sprite, from, target.transform.position + Vector3.up * 0.4f, speed, arc);
         p.target = target;
         p.damage = damage;
         p.source = source;
+        p.splash = splash;
+        p.fire = fire;
+        p.team = source != null ? source.Team : team;
         return p;
     }
+
+    /// <summary>Share of the damage that others caught in a blast take.</summary>
+    private const float SplashShare = 0.6f;
 
     /// <summary>Fire at a point; 'onArrive' runs when it lands (e.g. hitting a building).</summary>
     public static Projectile FireAt(Sprite sprite, Vector3 from, Vector3 to, float speed, System.Action onArrive, float arc = BowArc)
@@ -77,6 +90,15 @@ public class Projectile : MonoBehaviour
             if (target != null && target.IsAlive)
             {
                 target.TakeDamage(damage, source);
+            }
+            if (splash > 0f)
+            {
+                Puff.Blast(end, splash, fire);
+                int share = Mathf.Max(1, Mathf.RoundToInt(damage * SplashShare));
+                var caught = new System.Collections.Generic.List<Unit>();
+                foreach (var u in Unit.Living)
+                    if (u != null && u != target && u.IsAlive && u.Team != team && Vector2.Distance(u.transform.position, end) <= splash) caught.Add(u);
+                foreach (var u in caught) u.TakeDamage(share, source);
             }
             onArrive?.Invoke();
             Destroy(gameObject);

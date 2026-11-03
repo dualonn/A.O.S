@@ -34,6 +34,9 @@ MonoBehaviour:
   projectile: {fileID: 21300000, guid: 53206d01ac7c0c54e820a03eea25a94f, type: 3}
   projectileSpeed: 12
   projectileArc: 0
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
   healer: 0
   healRange: 8
   isBoss: 0

@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: BastionWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: BastionWall
+  displayName: Bastion Wall
+  description: A low, thick brick wall, angled to turn cannon shot.
+  icon: {fileID: 21300000, guid: 3485f2ea832524648ac462a644e82e27, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 29e5c83a86579264e81cac8cc3f5efb7, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 30
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: 1b51b986e67e14547a5f08465a0a4074, type: 3}
+  - {fileID: 21300000, guid: 58c7435676f515e4cad9087a3abb352b, type: 3}
+  - {fileID: 21300000, guid: f9adff558d2f3fb4d84d7baa9653a4d5, type: 3}
+  - {fileID: 21300000, guid: 3485f2ea832524648ac462a644e82e27, type: 3}
+  - {fileID: 21300000, guid: f347abb8651b9ff4baf07fc288ac2176, type: 3}
+  - {fileID: 21300000, guid: 33d0097044c892d47b9f46195f4cd955, type: 3}
+  - {fileID: 21300000, guid: 641fb126cc10ec14cbbe7a89aee9aa10, type: 3}
+  - {fileID: 21300000, guid: f8cddce1053ffff40b043940eecf2254, type: 3}
+  - {fileID: 21300000, guid: f7cc6745b0272b64aa63146918dc8022, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 7
+  maxCount: 0
+  maxHealth: 2400
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.15
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -378,7 +378,10 @@ public class BuildingView : MonoBehaviour
             {
                 if (Definition.towerProjectile != null)
                 {
-                    Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc);
+                    Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc,
+                        Definition.towerSplash);
+                    if (Definition.towerMuzzleSmoke)
+                        Puff.Smoke(launch + (pendingTarget.transform.position - launch).normalized * 0.5f);
                 }
                 else
                 {

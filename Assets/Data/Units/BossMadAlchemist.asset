@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossMadAlchemist
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Paracel the Mad Alchemist
+  icon: {fileID: 21300000, guid: 03ba145171ab55448ae2ddf2231285c7, type: 3}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 8430334672425475467, guid: f16b996188659ae449999a869542e4ca, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 4200
+  moveSpeed: 0.85
+  attackPower: 60
+  attackCooldown: 1.6
+  attackRange: 4.5
+  hitDelay: 0.3
+  detectionRange: 5
+  projectile: {fileID: 21300000, guid: f0a9b16f7f0404b4a97eb5574ffde130, type: 3}
+  projectileSpeed: 8
+  projectileArc: 0.35
+  splashRadius: 1.4
+  splashFire: 1
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isBoss: 1
+  bossAbility: 1
+  abilityCooldown: 8
+  abilityRadius: 2.4
+  abilityPower: 1.2
+  summons: {fileID: 0}
+  summonCount: 0
