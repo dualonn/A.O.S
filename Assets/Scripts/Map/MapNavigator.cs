@@ -26,18 +26,22 @@ public class MapNavigator
 
     // Searches run in a fixed window of tiles around the trip (the map itself has no edge).
     private const int Window = 512;
-    private int originX, originY;
 
-    // Reused search buffers, one entry per tile of the window
-    private readonly float[] cost = new float[Window * Window];
-    private readonly int[] parent = new int[Window * Window];
-    private readonly int[] stamp = new int[Window * Window];
-    private int searchId;
+    // Most trips are planned at once by the quick search. One that needs a long way round (a river
+    // with its crossing far off) is handed to the full search, which runs a little each frame.
+    private const int LongExpansions = Window * Window / 2;
+    private const double LongMsPerFrame = 1.5;
+    private readonly Search quick, full;
+    private readonly Queue<PathFollower> longQueue = new Queue<PathFollower>();
+    private PathFollower longFor;
+    private readonly System.Diagnostics.Stopwatch longClock = new System.Diagnostics.Stopwatch();
 
     public MapNavigator(MapData map, float hillSpeed)
     {
         this.map = map;
         this.hillSpeed = hillSpeed;
+        quick = new Search(map);
+        full = new Search(map);
     }
 
     public bool IsWalkable(Vector3 world, Team team = Team.Player) => map.Passable(world, team);
@@ -151,123 +155,50 @@ public class MapNavigator
 
     /// <summary>
     /// World-space waypoints from 'from' to 'to' (the last one is 'to' itself, or the nearest
-    /// reachable tile to it). Empty if no route was found.
+    /// reachable tile to it). Empty if no route was found. A quick search: a trip that needs a
+    /// very long way round comes back unfinished (see RequestLongPath).
     /// </summary>
-    public List<Vector3> FindPath(Vector3 from, Vector3 to, Team team = Team.Player)
+    public List<Vector3> FindPath(Vector3 from, Vector3 to, Team team = Team.Player) => FindPath(from, to, team, out _);
+
+    public List<Vector3> FindPath(Vector3 from, Vector3 to, Team team, out bool reached)
     {
-        var result = new List<Vector3>();
-        const int w = Window;
-        // Centre the window on the trip; a goal beyond it is approached as far as the window goes.
-        Vector3 goalPoint = NearestWalkable(to, team);
-        Vector2 reach = goalPoint - from;
-        float limit = Window * 0.5f - 4f;
-        if (Mathf.Abs(reach.x) > limit * 2f || Mathf.Abs(reach.y) > limit * 2f)
-        {
-            float k = limit * 2f / Mathf.Max(Mathf.Abs(reach.x), Mathf.Abs(reach.y));
-            goalPoint = NearestWalkable(from + (Vector3)(reach * k), team);
-        }
-        Vector3 mid = (from + goalPoint) * 0.5f;
-        originX = Mathf.FloorToInt(mid.x) - Window / 2;
-        originY = Mathf.FloorToInt(mid.y) - Window / 2;
-        int start = TileIndex(from);
-        int goal = TileIndex(goalPoint);
-        // Raiders may plan through walls (at a cost); everyone else goes round them.
-        bool breaksWalls = team == Team.Enemy;
-        if (start < 0 || goal < 0)
-        {
-            return result;
-        }
+        quick.Begin(from, NearestWalkable(to, team), to, team, MaxExpansions, 1f, this);
+        quick.Run(int.MaxValue);
+        return quick.Result(out reached);
+    }
 
-        searchId++;
-        var open = new MinHeap();
-        cost[start] = 0;
-        parent[start] = -1;
-        stamp[start] = searchId;
-        open.Push(start, Heuristic(start, goal));
+    /// <summary>Plan this follower's trip in full, in the background (a little each frame).</summary>
+    public void RequestLongPath(PathFollower follower)
+    {
+        if (follower.longQueued) return;
+        follower.longQueued = true;
+        longQueue.Enqueue(follower);
+    }
 
-        int closest = start;
-        float closestH = Heuristic(start, goal);
-        int expansions = 0;
-        bool found = false;
-
-        while (open.Count > 0 && expansions++ < MaxExpansions)
+    /// <summary>Run the background search for up to a moment of real time (once a frame).</summary>
+    public void PumpLong()
+    {
+        longClock.Restart();
+        while (longClock.Elapsed.TotalMilliseconds < LongMsPerFrame)
         {
-            int current = open.Pop();
-            if (current == goal)
+            if (longFor == null)
             {
-                found = true;
-                break;
+                if (longQueue.Count == 0) return;
+                var next = longQueue.Dequeue();
+                if (next.Abandoned) { next.longQueued = false; continue; }
+                longFor = next;
+                // A little greedy (weight 1.2): far fewer tiles looked at, paths barely longer.
+                full.Begin(next.askedFrom, NearestWalkable(next.askedGoal, next.askedTeam), next.askedGoal, next.askedTeam, LongExpansions, 1.2f, this);
             }
-            int cx = current % w, cy = current / w;
-            float h = Heuristic(current, goal);
-            if (h < closestH)
+            if (full.Run(768))
             {
-                closestH = h;
-                closest = current;
-            }
-
-            for (int dy = -1; dy <= 1; dy++)
-            {
-                for (int dx = -1; dx <= 1; dx++)
-                {
-                    if (dx == 0 && dy == 0)
-                    {
-                        continue;
-                    }
-                    int nx = cx + dx, ny = cy + dy;
-                    if (nx < 0 || ny < 0 || nx >= Window || ny >= Window)
-                    {
-                        continue;
-                    }
-                    int wx = nx + originX, wy = ny + originY;
-                    bool clear = Passable(wx, wy, team);
-                    if (!clear && !(breaksWalls && map.IsWalkable(wx, wy)))
-                    {
-                        continue;
-                    }
-                    // No cutting corners past water or walls.
-                    if (dx != 0 && dy != 0 && (!Passable(wx, cy + originY, team) || !Passable(cx + originX, wy, team)))
-                    {
-                        continue;
-                    }
-                    int next = ny * w + nx;
-                    float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * map.MoveCost(wx, wy) + (clear ? 0f : WallBreakCost);
-                    float newCost = cost[current] + step;
-                    if (stamp[next] != searchId || newCost < cost[next])
-                    {
-                        stamp[next] = searchId;
-                        cost[next] = newCost;
-                        parent[next] = current;
-                        open.Push(next, newCost + Heuristic(next, goal));
-                    }
-                }
+                var path = full.Result(out bool reached);
+                var f = longFor;
+                longFor = null;
+                f.longQueued = false;
+                f.ReceiveLong(path, reached, full.Asked);
             }
         }
-
-        // Walk back from the goal (or the closest point reached if the goal was cut off).
-        int node = found ? goal : closest;
-        var tiles = new List<int>();
-        while (node >= 0)
-        {
-            tiles.Add(node);
-            node = parent[node];
-        }
-        tiles.Reverse();
-
-        // Smooth: keep only the points needed to stay off water.
-        Vector3 anchor = from;
-        for (int i = 1; i < tiles.Count; i++)
-        {
-            Vector3 candidate = Center(tiles[i]);
-            if (!ClearLine(anchor, candidate, team))
-            {
-                Vector3 previous = Center(tiles[i - 1]);
-                result.Add(previous);
-                anchor = previous;
-            }
-        }
-        result.Add(found && Passable(goalPoint, team) ? new Vector3(goalPoint.x, goalPoint.y, 0) : Center(tiles[tiles.Count - 1]));
-        return result;
     }
 
     /// <summary>'p' if it's dry, otherwise the centre of the nearest dry tile.</summary>
@@ -294,25 +225,201 @@ public class MapNavigator
         return p;
     }
 
-    /// <summary>Index of a world tile inside the search window (-1 if outside it or unexplored).</summary>
-    private int TileIndex(Vector3 p)
+    /// <summary>
+    /// One A* search over the window round a trip, with its own buffers, so the quick search and
+    /// the background one can both be under way. Each tile's terrain is looked up once per search
+    /// and remembered, which is most of what makes searching fast.
+    /// </summary>
+    private class Search
     {
-        int x = Mathf.FloorToInt(p.x), y = Mathf.FloorToInt(p.y);
-        int lx = x - originX, ly = y - originY;
-        if (lx < 0 || ly < 0 || lx >= Window || ly >= Window || !map.InBounds(x, y))
+        private readonly MapData map;
+        private readonly float[] cost = new float[Window * Window];
+        private readonly int[] parent = new int[Window * Window];
+        private readonly int[] stamp = new int[Window * Window];
+        private readonly byte[] info = new byte[Window * Window];
+        private readonly int[] infoStamp = new int[Window * Window];
+        private readonly MinHeap open = new MinHeap();
+        private int id, originX, originY, start, goal, closest, expansions, maxExpansions;
+        private float closestH, weight;
+        private bool found, done, breaksWalls;
+        private Team team;
+        private Vector3 from, goalPoint;
+        private MapNavigator nav;
+
+        /// <summary>Where the trip was asked to go (before snapping to dry land).</summary>
+        public Vector3 Asked { get; private set; }
+
+        private const byte Clear = 1, Dry = 2, Hill = 4;
+
+        public Search(MapData map) { this.map = map; }
+
+        public void Begin(Vector3 from, Vector3 goalPoint, Vector3 asked, Team team, int maxExpansions, float weight, MapNavigator nav)
         {
-            return -1;
+            this.nav = nav;
+            this.from = from;
+            this.team = team;
+            this.maxExpansions = maxExpansions;
+            this.weight = weight;
+            Asked = asked;
+            // Centre the window on the trip; a goal beyond it is approached as far as the window goes.
+            Vector2 reach = goalPoint - from;
+            float limit = Window * 0.5f - 4f;
+            if (Mathf.Abs(reach.x) > limit * 2f || Mathf.Abs(reach.y) > limit * 2f)
+            {
+                float k = limit * 2f / Mathf.Max(Mathf.Abs(reach.x), Mathf.Abs(reach.y));
+                goalPoint = nav.NearestWalkable(from + (Vector3)(reach * k), team);
+            }
+            this.goalPoint = goalPoint;
+            Vector3 mid = (from + goalPoint) * 0.5f;
+            originX = Mathf.FloorToInt(mid.x) - Window / 2;
+            originY = Mathf.FloorToInt(mid.y) - Window / 2;
+            // Raiders may plan through walls (at a cost); everyone else goes round them.
+            breaksWalls = team == Team.Enemy;
+            id++;
+            open.Clear();
+            expansions = 0;
+            found = false;
+            start = TileIndex(from);
+            goal = TileIndex(goalPoint);
+            done = start < 0 || goal < 0;
+            if (done) return;
+            cost[start] = 0;
+            parent[start] = -1;
+            stamp[start] = id;
+            closest = start;
+            closestH = Heuristic(start, goal);
+            open.Push(start, closestH * weight);
         }
-        return ly * Window + lx;
-    }
 
-    private Vector3 Center(int index) => new Vector3(index % Window + originX + 0.5f, index / Window + originY + 0.5f, 0);
+        /// <summary>What we know of a window tile: passable, dry, hill.</summary>
+        private byte Info(int lx, int ly)
+        {
+            int i = ly * Window + lx;
+            if (infoStamp[i] == id) return info[i];
+            int wx = lx + originX, wy = ly + originY;
+            byte b = 0;
+            if (map.IsWalkable(wx, wy))
+            {
+                b |= Dry;
+                if (map.Passable(wx, wy, team)) b |= Clear;
+                if (map.GetTerrain(wx, wy) == TerrainType.Hill) b |= Hill;
+            }
+            info[i] = b;
+            infoStamp[i] = id;
+            return b;
+        }
 
-    private float Heuristic(int a, int b)
-    {
-        int ax = a % Window, ay = a / Window, bx = b % Window, by = b / Window;
-        int dx = Mathf.Abs(ax - bx), dy = Mathf.Abs(ay - by);
-        return Mathf.Max(dx, dy) + 0.414f * Mathf.Min(dx, dy);
+        private bool PassableAt(Vector2 p)
+        {
+            int wx = Mathf.FloorToInt(p.x), wy = Mathf.FloorToInt(p.y);
+            int lx = wx - originX, ly = wy - originY;
+            if (lx < 0 || ly < 0 || lx >= Window || ly >= Window) return map.Passable(wx, wy, team);
+            return (Info(lx, ly) & Clear) != 0;
+        }
+
+        /// <summary>Search on for up to 'budget' more tiles. True once finished (found, or given up).</summary>
+        public bool Run(int budget)
+        {
+            const int w = Window;
+            while (!done && budget-- > 0)
+            {
+                if (open.Count == 0 || expansions++ >= maxExpansions) { done = true; break; }
+                int current = open.Pop();
+                if (current == goal) { found = true; done = true; break; }
+                int cx = current % w, cy = current / w;
+                float h = Heuristic(current, goal);
+                if (h < closestH) { closestH = h; closest = current; }
+                for (int dy = -1; dy <= 1; dy++)
+                {
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        if (dx == 0 && dy == 0) continue;
+                        int nx = cx + dx, ny = cy + dy;
+                        if (nx < 0 || ny < 0 || nx >= w || ny >= w) continue;
+                        byte inf = Info(nx, ny);
+                        bool clear = (inf & Clear) != 0;
+                        if (!clear && !(breaksWalls && (inf & Dry) != 0)) continue;
+                        // No cutting corners past water or walls.
+                        if (dx != 0 && dy != 0 && ((Info(nx, cy) & Clear) == 0 || (Info(cx, ny) & Clear) == 0)) continue;
+                        int next = ny * w + nx;
+                        float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * ((inf & Hill) != 0 ? 2f : 1f) + (clear ? 0f : WallBreakCost);
+                        float newCost = cost[current] + step;
+                        if (stamp[next] != id || newCost < cost[next])
+                        {
+                            stamp[next] = id;
+                            cost[next] = newCost;
+                            parent[next] = current;
+                            open.Push(next, newCost + Heuristic(next, goal) * weight);
+                        }
+                    }
+                }
+            }
+            return done;
+        }
+
+        /// <summary>The waypoints found (to the goal, or as near it as the search got).</summary>
+        public List<Vector3> Result(out bool reached)
+        {
+            var result = new List<Vector3>();
+            reached = found;
+            if (start < 0 || goal < 0) return result;
+            int node = found ? goal : closest;
+            var tiles = new List<int>();
+            while (node >= 0) { tiles.Add(node); node = parent[node]; }
+            tiles.Reverse();
+            // Smooth: keep only the points needed to stay off water (and a point every so often on
+            // a long straight, so checking lines stays cheap).
+            Vector3 anchor = from;
+            for (int i = 1; i < tiles.Count; i++)
+            {
+                Vector3 candidate = Center(tiles[i]);
+                if ((candidate - anchor).sqrMagnitude > 28f * 28f || !ClearLine(anchor, candidate))
+                {
+                    Vector3 previous = Center(tiles[i - 1]);
+                    result.Add(previous);
+                    anchor = previous;
+                }
+            }
+            result.Add(found && PassableAt(goalPoint) ? new Vector3(goalPoint.x, goalPoint.y, 0) : Center(tiles[tiles.Count - 1]));
+            return result;
+        }
+
+        /// <summary>Same test as MapNavigator.ClearLine, on the tiles this search already knows.</summary>
+        private bool ClearLine(Vector3 a, Vector3 b)
+        {
+            Vector2 delta = b - a;
+            float distance = delta.magnitude;
+            if (distance < 0.0001f) return PassableAt(b);
+            Vector2 side = new Vector2(-delta.y, delta.x) / distance * 0.25f;
+            int steps = Mathf.CeilToInt(distance / 0.15f);
+            for (int i = 1; i <= steps; i++)
+            {
+                float t = i / (float)steps;
+                Vector2 p = Vector2.Lerp(a, b, t);
+                if (!PassableAt(p)) return false;
+                float along = t * distance;
+                if (along > 0.35f && distance - along > 0.35f && (!PassableAt(p + side) || !PassableAt(p - side))) return false;
+            }
+            return true;
+        }
+
+        /// <summary>Index of a world tile inside the search window (-1 if outside it or unexplored).</summary>
+        private int TileIndex(Vector3 p)
+        {
+            int x = Mathf.FloorToInt(p.x), y = Mathf.FloorToInt(p.y);
+            int lx = x - originX, ly = y - originY;
+            if (lx < 0 || ly < 0 || lx >= Window || ly >= Window || !map.InBounds(x, y)) return -1;
+            return ly * Window + lx;
+        }
+
+        private Vector3 Center(int index) => new Vector3(index % Window + originX + 0.5f, index / Window + originY + 0.5f, 0);
+
+        private static float Heuristic(int a, int b)
+        {
+            int ax = a % Window, ay = a / Window, bx = b % Window, by = b / Window;
+            int dx = Mathf.Abs(ax - bx), dy = Mathf.Abs(ay - by);
+            return Mathf.Max(dx, dy) + 0.414f * Mathf.Min(dx, dy);
+        }
     }
 
     /// <summary>A small binary min-heap of (node, priority).</summary>
@@ -320,6 +427,8 @@ public class MapNavigator
     {
         private readonly List<(int node, float priority)> items = new List<(int, float)>();
         public int Count => items.Count;
+
+        public void Clear() => items.Clear();
 
         public void Push(int node, float priority)
         {
@@ -357,7 +466,8 @@ public class MapNavigator
 
 /// <summary>
 /// Per-unit helper: gives the next point to walk towards on the way to a goal,
-/// re-planning when the goal moves or the old plan gets stale.
+/// re-planning when the goal moves or the old plan gets stale. A trip that needs a long way
+/// round (the crossing of a river far off) is planned in full in the background, and kept.
 /// </summary>
 public class PathFollower
 {
@@ -365,7 +475,17 @@ public class PathFollower
     private Vector3 plannedGoal;
     private float plannedAt = -99f;
     private int plannedWalls = -1;
-    private float retryAfter = -99f;   // after a search that couldn't reach the goal, wait before trying again
+    private float retryAfter = -99f;   // after a trip found to be cut off, wait before trying again
+    private bool longPlan;             // the plan we're on came from the full search
+
+    // For the background search: the trip as last asked, and whether one is queued for us.
+    internal bool longQueued;
+    internal Vector3 askedFrom, askedGoal;
+    internal Team askedTeam;
+    private float askedAt;
+
+    /// <summary>Not asked for directions for a while (the unit stopped, or died): drop its search.</summary>
+    internal bool Abandoned => Time.unscaledTime - askedAt > 3f;
 
     // The straight-line check is costly over long distances: reuse its answer for a moment.
     private Vector3 lineFrom, lineGoal;
@@ -377,8 +497,12 @@ public class PathFollower
     // once is spread out instead of freezing the game.
     private const int SearchesPerFrame = 6;
     private const double SearchMsPerFrame = 3.0;
-    private static int searchFrame = -1, searchesThisFrame;
+    private static int searchFrame = -1, searchesThisFrame, pumpFrame = -1;
     private static readonly System.Diagnostics.Stopwatch searchClock = new System.Diagnostics.Stopwatch();
+
+    // Domain reload is off in this project, so clear statics at each Play.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() { searchFrame = -1; searchesThisFrame = 0; pumpFrame = -1; }
 
     private static bool TakeSearch()
     {
@@ -396,8 +520,16 @@ public class PathFollower
         {
             return goal;
         }
-        // Straight shot available: no need to plan. (Checked again every 0.15 real seconds, or when things move a lot.)
         float now = Time.unscaledTime;
+        askedFrom = position; askedGoal = goal; askedTeam = team; askedAt = now;
+        if (pumpFrame != Time.frameCount)
+        {
+            pumpFrame = Time.frameCount;
+            UnityEngine.Profiling.Profiler.BeginSample("PathFollower.LongSearch");
+            nav.PumpLong();
+            UnityEngine.Profiling.Profiler.EndSample();
+        }
+        // Straight shot available: no need to plan. (Checked again every 0.15 real seconds, or when things move a lot.)
         if (now - lineAt > 0.15f || (lineGoal - goal).sqrMagnitude > 0.25f || (lineFrom - position).sqrMagnitude > 1f)
         {
             lineClear = nav.ClearLine(position, goal, team);
@@ -406,21 +538,33 @@ public class PathFollower
         if (lineClear)
         {
             path.Clear();
+            longPlan = false;
             return goal;
         }
         // Plans go stale on real time, so a faster game doesn't mean more searches per second.
-        bool stale = now - plannedAt > 2f || plannedWalls != nav.WallVersion;
+        // A long way round, once found, is kept until the goal moves off or the walls change.
         bool wallsChanged = plannedWalls != nav.WallVersion;
-        if ((path.Count == 0 || stale || Vector2.Distance(plannedGoal, goal) > 1.5f) && (now >= retryAfter || wallsChanged) && TakeSearch())
+        bool stale = !longPlan && now - plannedAt > 2f;
+        bool goalMoved = Vector2.Distance(plannedGoal, goal) > (longPlan ? 4f : 1.5f);
+        if ((path.Count == 0 || stale || goalMoved || wallsChanged) && (now >= retryAfter || wallsChanged) && !longQueued && TakeSearch())
         {
             UnityEngine.Profiling.Profiler.BeginSample("PathFollower.FindPath");
             searchClock.Start();
-            path = nav.FindPath(position, goal, team);
+            var found = nav.FindPath(position, goal, team, out bool reached);
             searchClock.Stop();
             UnityEngine.Profiling.Profiler.EndSample();
-            // No route all the way (water, or a long way round): failed searches are the costly ones, so back off.
-            bool reached = path.Count > 0 && Vector2.Distance(path[path.Count - 1], goal) < 2f;
-            retryAfter = reached ? -99f : now + 3f;
+            if (reached)
+            {
+                path = found;
+                longPlan = false;
+            }
+            else
+            {
+                // Too far round for a quick search (or cut off): plan the whole way in the background.
+                // Meanwhile head as near as the quick search got, unless we're already on a long plan.
+                if (!longPlan || path.Count == 0) path = found;
+                nav.RequestLongPath(this);
+            }
             plannedGoal = goal;
             plannedAt = now;
             plannedWalls = nav.WallVersion;
@@ -430,5 +574,17 @@ public class PathFollower
             path.RemoveAt(0);
         }
         return path.Count > 0 ? path[0] : goal;
+    }
+
+    /// <summary>The background search is done: take its route (or, cut off, the nearest it got).</summary>
+    internal void ReceiveLong(List<Vector3> found, bool reached, Vector3 goal)
+    {
+        float now = Time.unscaledTime;
+        if (found.Count > 0) path = found;
+        longPlan = reached;
+        plannedGoal = goal;
+        plannedAt = now;
+        // Cut off for real (an island, unexplored land between): don't keep searching.
+        retryAfter = reached ? -99f : now + 8f;
     }
 }
