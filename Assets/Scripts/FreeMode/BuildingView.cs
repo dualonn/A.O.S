@@ -380,10 +380,10 @@ public class BuildingView : MonoBehaviour
                 {
                     if (op == null && Definition.towerMuzzle != Vector2.zero)
                     {
-                        // Out of the gun's barrel (or, for a target behind it, from the turret's middle).
+                        // Out of the gun's barrel, which the turret has swung round to face the target.
                         Vector3 corner = controller.Grid.CellToWorld(State.cell);
-                        bool behind = pendingTarget.transform.position.x < corner.x + Definition.size.x * 0.5f;
-                        launch = corner + new Vector3(behind ? Definition.size.x * 0.5f : Definition.towerMuzzle.x, Definition.towerMuzzle.y, 0);
+                        float mx = turretFacesLeft ? Definition.size.x - Definition.towerMuzzle.x : Definition.towerMuzzle.x;
+                        launch = corner + new Vector3(mx, Definition.towerMuzzle.y, 0);
                     }
                     Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc,
                         Definition.towerSplash);
@@ -417,11 +417,29 @@ public class BuildingView : MonoBehaviour
         nextTowerShot = Time.time + Definition.towerCooldown / Mathf.Max(0.25f, staff);
         pendingTarget = target;
         releasePending = true;
+        if (op == null && Definition.towerMuzzle != Vector2.zero)
+            FaceTurret(target.transform.position.x < controller.Grid.CellToWorld(State.cell).x + Definition.size.x * 0.5f);
         shootStart = Time.time;
         if (op != null)
         {
             op.flipX = target.transform.position.x < op.transform.position.x;
         }
+    }
+
+    private bool turretFacesLeft;
+
+    /// <summary>
+    /// Swing a crewless turret round to face left or right: its art is mirrored about the
+    /// footprint's middle (the base is symmetrical, so it reads as the gun turning).
+    /// </summary>
+    private void FaceTurret(bool left)
+    {
+        if (body == null || left == turretFacesLeft) return;
+        turretFacesLeft = left;
+        body.flipX = left;
+        if (!bodyRestKnown) { bodyRestPosition = body.transform.localPosition; bodyRestKnown = true; }
+        bodyRestPosition.x = left ? Definition.size.x * controller.Grid.cellSize : 0f;
+        body.transform.localPosition = bodyRestPosition;
     }
 
     private void AnimateOperator(SpriteRenderer op)
