@@ -445,12 +445,12 @@ public class AudioHost : MonoBehaviour
         float dt = Time.unscaledDeltaTime;
         if (now >= nextCheck)
         {
-            nextCheck = now + 1f;
+            nextCheck = now + 0.5f;
             UpdateMusic(now);
             UpdateAmbience();
             UpdateWeather();
         }
-        Fade(musicA, musicB, GameAudio.MusicLevel, dt, 0.4f);
+        Fade(musicA, musicB, GameAudio.MusicLevel, dt, 0.8f);   // ~0.5 s cross-fades
         Fade(ambA, ambB, GameAudio.AmbienceLevel, dt, 0.5f);
         Fade(wxA, wxB, weatherLoop != null ? GameAudio.AmbienceLevel * 1.1f : 0f, dt, 0.25f);
     }
@@ -469,11 +469,11 @@ public class AudioHost : MonoBehaviour
     void UpdateMusic(float now)
     {
         string want = GameAudio.MusicEra();
-        if (want == "battle") battleHoldUntil = now + 15f;
+        if (want == "battle") battleHoldUntil = now + 3f;
         else if (era == "battle" && now < battleHoldUntil) want = "battle";   // don't flicker between short raids
 
         bool ended = musicA.clip != null && !musicA.isPlaying;
-        bool nearEnd = musicA.isPlaying && musicA.clip != null && musicA.time > musicA.clip.length - 4f;
+        bool nearEnd = musicA.isPlaying && musicA.clip != null && musicA.time > musicA.clip.length - 1f;
         if (want != era)
         {
             era = want;
@@ -484,7 +484,7 @@ public class AudioHost : MonoBehaviour
             // let the track finish, then a quiet gap before the next one
             Swap(ref musicA, ref musicB);
             musicA.clip = null;
-            silenceUntil = now + Random.Range(12f, 35f);
+            silenceUntil = now + Random.Range(3f, 8f);
         }
         else if ((ended || musicA.clip == null) && now >= silenceUntil)
             StartTrack(want);
