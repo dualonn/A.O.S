@@ -59,6 +59,12 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     private readonly List<ResourceAmount> stolenThisWave = new List<ResourceAmount>();
     private bool waveInProgress;
     private Vector3 raidOrigin;
+    // Where the current raid is heading: the nearest building to where it set out.
+    private Vector3 raidTargetPoint;
+
+    /// <summary>Is the raid in progress heading for this settlement (from the moment it sets out)?</summary>
+    public bool RaidTargets(Settlement.SettlementZone zone) =>
+        waveInProgress && zone != null && zone.DistanceTo(raidTargetPoint) <= 1f;
 
     private void Awake()
     {
@@ -1231,6 +1237,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         // settlement's safe zone, on explored land.
         var camp = CampForRaid();
         raidOrigin = camp != null ? BesideCamp(camp) : RaidSpawnPoint();
+        var aim = NearestTarget(raidOrigin);
+        raidTargetPoint = aim != null ? ClosestPointOn(aim, raidOrigin) : TownCenterPosition;
 
         unspawned.AddRange(wave.units);
         waveInProgress = true;

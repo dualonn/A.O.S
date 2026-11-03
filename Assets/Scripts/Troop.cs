@@ -443,9 +443,8 @@ public class Troop : Unit
     private const float HomeAttackReach = 10f;
 
     /// <summary>
-    /// Is this troop's home settlement being attacked: raiders at the town itself (within the
-    /// alert range of its buildings, plus a little)? Raiders that have only just set out from a
-    /// camp far away don't count. (Checked once a second.)
+    /// Is this troop's home settlement being attacked: a raid heading for it (from the moment it
+    /// sets out), or raiders at the town itself? (Checked once a second.)
     /// </summary>
     private bool HomeUnderRaid()
     {
@@ -453,6 +452,12 @@ public class Troop : Unit
         raidCheckAt = Time.time + 1f;
         homeRaided = false;
         if (defendArea == null) return false;
+        var controller = FreeModeController.Instance;
+        if (controller != null && controller.RaidTargets(defendArea))
+        {
+            homeRaided = true;
+            return true;
+        }
         float reach = alertRange + HomeAttackReach;
         foreach (var u in Living)
         {
@@ -570,6 +575,18 @@ public class Troop : Unit
             var me = transform.position;
             candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) <= OrderFightRange);
             if (candidates.Count == 0) return null;
+        }
+
+        // On Attack with a raid heading home: go back. Fight raiders at home, or ones that come
+        // close on the way, but don't chase anything out in the field.
+        if (hasDefendZone && Stance == TroopStance.Attack && !HasOrder && HomeUnderRaid())
+        {
+            var me = transform.position;
+            candidates = candidates.FindAll(u => InDefendArea(u.transform.position) || Vector2.Distance(u.transform.position, me) <= OrderFightRange);
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
         }
 
         // Defending: ignore raiders outside the town; return home once they leave it.
