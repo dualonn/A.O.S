@@ -1855,6 +1855,26 @@ public partial class Settlement : MonoBehaviour
 
     public float ProductionMultiplier(ResourceType resource)
     {
+        if (State.researched.Count != productionCacheCount || productionCacheTechs != State.researched)
+        {
+            productionCache.Clear();
+            productionCacheCount = State.researched.Count;
+            productionCacheTechs = State.researched;
+        }
+        var cacheKey = resource != null ? resource.id ?? "" : "";
+        if (productionCache.TryGetValue(cacheKey, out float cached)) return cached;
+        float result = ProductionMultiplierNow(resource);
+        productionCache[cacheKey] = result;
+        return result;
+    }
+
+    // Research bonus per resource id, cleared whenever the research list changes.
+    private readonly Dictionary<string, float> productionCache = new Dictionary<string, float>();
+    private int productionCacheCount = -1;
+    private List<string> productionCacheTechs;
+
+    private float ProductionMultiplierNow(ResourceType resource)
+    {
         float multiplier = 1f;
         foreach (var id in State.researched)
         {

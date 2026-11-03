@@ -184,18 +184,35 @@ public class GameDatabase : ScriptableObject
     private static T Lookup<T>(List<T> list, ref Dictionary<string, T> index, ref int count, string id, System.Func<T, string> key) where T : Object
     {
         if (id == null) return null;
-        if (index == null || count != list.Count)
+        if (index == null || count != list.Count || indexSession != session)
         {
             index = new Dictionary<string, T>();
             foreach (var item in list)
                 if (item != null && key(item) != null) index.TryAdd(key(item), item);
             count = list.Count;
+            if (indexSession != session) { indexSession = session; misses.Clear(); }
         }
-        if (index.TryGetValue(id, out var found) && found != null && key(found) == id) return found;
-        // Not found, or renamed by a setup tool: fall back to a plain search (rare).
-        foreach (var item in list) if (item != null && key(item) == id) return item;
+        if (index.TryGetValue(id, out var found))
+        {
+            if (found != null && key(found) == id) return found;
+            index.Remove(id);   // renamed by a setup tool: look it up properly below
+        }
+        // Not in this list. Search it once (a setup tool may have renamed something), then remember
+        // the miss: ids in the other lists (blessings, wonder effects, boons) come through here a lot.
+        var missKey = (list, id);
+        if (misses.Contains(missKey)) return null;
+        foreach (var item in list)
+            if (item != null && key(item) == id) { index[id] = item; return item; }
+        misses.Add(missKey);
         return null;
     }
+
+    // Misses remembered per list (forgotten each time play starts, when setup tools may have changed things).
+    private static readonly HashSet<(object, string)> misses = new HashSet<(object, string)>();
+    private static int session, indexSession = -1;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void NewSession() { session++; misses.Clear(); }
 
     private static GameDatabase cached;
 
