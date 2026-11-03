@@ -66,6 +66,9 @@ public static class MapGenerator
 
     private const float RiverScale = 0.011f;
 
+    /// <summary>How many kinds of deposit the biome layout is pinned to (see BuildSettings).</summary>
+    private const int BiomeLayoutDeposits = 16;
+
     /// <summary>
     /// The starting area: the configured map size, on chunk lines. It sits where it always has
     /// (centred in the old size limit), so existing saves keep their terrain and buildings.
@@ -177,7 +180,13 @@ public static class MapGenerator
         s.moistMax = moists[moists.Count - 1];
         s.waterLine = Normalize(heights[Index(heights.Count, profile.WaterShare(db))], s.heightMin, s.heightMax);
         s.hillLine = Normalize(heights[Index(heights.Count, 1f - profile.HillShare(db))], s.heightMin, s.heightMax);
-        s.tx = Offset(rng); s.ty = Offset(rng); s.wx = Offset(rng); s.wy = Offset(rng); s.ex = Offset(rng); s.ey = Offset(rng);
+        // Biome offsets come from their own fixed place in the seed's sequence. They used to be drawn
+        // straight after the deposits', so every new kind of ore an age added moved every biome on
+        // every map. They're pinned to where they were with 16 kinds of deposit (before the Stellar
+        // Age), which is the layout existing maps were played with.
+        var biomeRng = new System.Random(seed);
+        for (int i = 0; i < 6 + 2 * BiomeLayoutDeposits; i++) Offset(biomeRng);
+        s.tx = Offset(biomeRng); s.ty = Offset(biomeRng); s.wx = Offset(biomeRng); s.wy = Offset(biomeRng); s.ex = Offset(biomeRng); s.ey = Offset(biomeRng);
         s.home = sampleArea.center;
         return s;
     }

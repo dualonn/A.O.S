@@ -731,13 +731,37 @@ public class SettlementGrid : MonoBehaviour
 
     private static Color32 OverviewColor(DepositType deposit)
     {
+        // Each kind its own colour, close to how it looks up close, so ores can be told apart
+        // zoomed out.
         switch (deposit.id)
         {
             case "Forest": return new Color32(46, 98, 48, 255);
             case "Berries": return new Color32(176, 52, 66, 255);
             case "Stone": return new Color32(196, 196, 202, 255);
             case "CopperOre": return new Color32(214, 128, 60, 255);
-            default: return new Color32(230, 220, 120, 255);
+            case "IronOre": return new Color32(150, 96, 80, 255);       // rusty red-brown
+            case "GoldOre": return new Color32(245, 200, 50, 255);
+            case "Runestone": return new Color32(80, 130, 210, 255);    // blue runes
+            case "Saltpetre": return new Color32(240, 236, 222, 255);   // white crust
+            case "Quicksilver": return new Color32(150, 168, 186, 255); // silver pools
+            case "Coal": return new Color32(58, 54, 58, 255);
+            case "Aether": return new Color32(165, 120, 255, 255);      // violet crystals
+            case "Oil": return new Color32(24, 20, 38, 255);            // black pools
+            case "Uranium": return new Color32(120, 232, 90, 255);      // green glow
+            case "Silicon": return new Color32(196, 226, 250, 255);     // pale glassy blue
+            case "Manastone": return new Color32(70, 210, 240, 255);    // bright cyan
+            case "Starmetal": return new Color32(104, 112, 140, 255);   // dark steel-blue
+            case "Heliolite": return new Color32(255, 160, 40, 255);    // sun-orange
+            case "Riftstone": return new Color32(190, 60, 200, 255);    // magenta
+            case "Stardust": return new Color32(214, 214, 255, 255);    // pale lilac glitter
+            case "Primordium": return new Color32(50, 168, 184, 255);   // deep teal
+            default:
+            {
+                // A new kind: a colour of its own from its name, rather than all the same.
+                uint h = 2166136261u;
+                foreach (char ch in deposit.id ?? "") h = (h ^ ch) * 16777619u;
+                return (Color32)Color.HSVToRGB((h % 360) / 360f, 0.65f, 0.9f);
+            }
         }
     }
 
