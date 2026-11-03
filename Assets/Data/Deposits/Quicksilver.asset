@@ -19,8 +19,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 811241ef781e1584cbdb0cd6ad676dc4, type: 3}
   - {fileID: 21300000, guid: d670badcb4dfe20418ad30226df4dc74, type: 3}
   - {fileID: 21300000, guid: 8339785fc41c8b04bbf0c702614c8716, type: 3}
+  richVeins: 1
   onHills: 1
   patchScale: 0.22
-  rarity: 0.64
+  rarity: 0.7
   minMoisture: 0
   maxMoisture: 1

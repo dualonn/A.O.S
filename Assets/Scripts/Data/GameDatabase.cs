@@ -124,6 +124,10 @@ public class GameDatabase : ScriptableObject
     [Header("Free mode: wild sites")]
     [Tooltip("Chance that a newly explored zone (without a camp) holds a ruin, dungeon, lair, shrine, cache or lore stone.")]
     [Range(0, 1)] public float siteChance = 0.22f;
+    [Tooltip("Share of guarded sites that are rich veins (old mines on a seam of a rare resource).")]
+    [Range(0, 1)] public float veinChance = 0.25f;
+    [Tooltip("Output of a normal mine built on a cleared rich vein (compared with a full deposit).")]
+    public float veinOutput = 3f;
 
     [Tooltip("Seconds of play before a cleared dungeon fills up again.")]
     public float dungeonResetSeconds = 3600f;

@@ -88,6 +88,7 @@ public class SiteView : MonoBehaviour
             SiteKind.Lair => art.siteLairs.Count > 0 ? art.siteLairs[State.variant % art.siteLairs.Count] : null,
             SiteKind.Shrine => done ? art.siteShrineUsed : art.siteShrine,
             SiteKind.Cache => State.variant % 3 == 0 ? art.siteCaravan : art.siteCache,
+            SiteKind.Vein => art.siteVeinIds.IndexOf(State.veinId) is int v && v >= 0 && v < art.siteVeins.Count ? art.siteVeins[v] : art.siteRuinsLooted,
             _ => done ? art.siteLoreStoneRead : art.siteLoreStone,
         };
         body.sprite = s;
@@ -108,12 +109,16 @@ public class SiteView : MonoBehaviour
             UpdateSprite();
         }
         UpdateLabel();
-        if (State.done || Time.time < nextCheck) return;
+        if (Time.time < nextCheck) return;
         nextCheck = Time.time + 0.25f;
+        // A mine built on a cleared vein covers it.
+        if (State.kind == SiteKind.Vein) body.enabled = !(State.done && controller.Settlement.BuildingOn(State) != null);
+        if (State.done) return;
 
         switch (State.kind)
         {
             case SiteKind.Ruins: TickRuins(); break;
+            case SiteKind.Vein: TickVein(); break;
             case SiteKind.Dungeon: break;   // a level of its own: see DungeonRun
             case SiteKind.Lair: TickLair(); break;
             case SiteKind.Shrine: TickShrine(); break;
@@ -146,6 +151,23 @@ public class SiteView : MonoBehaviour
         if (spawned && guards.Count == 0 && NearestPlayerUnit(2.6f) != null)
         {
             Done(() => controller.Settlement.OpenRuins(State));
+        }
+    }
+
+    /// <summary>An old mine: spiders and the restless dead of its miners guard the seam.</summary>
+    private void TickVein()
+    {
+        var db = controller.Settlement.Database;
+        if (!spawned && NearestPlayerUnit(12f) != null)
+        {
+            spawned = true;
+            for (int i = 0; i < 3 + Tier; i++)
+                SpawnGuard(i % 3 == 1 && db.giantSpider != null ? db.giantSpider : i % 3 == 2 && db.skeletonArcher != null ? db.skeletonArcher : db.skeleton, GuardRadius);
+        }
+        guards.RemoveAll(g => g == null || !g.IsAlive);
+        if (spawned && guards.Count == 0 && NearestPlayerUnit(3f) != null)
+        {
+            Done(() => controller.Settlement.ClearVein(State));
         }
     }
 
@@ -247,6 +269,15 @@ public class SiteView : MonoBehaviour
             case SiteKind.Shrine:
                 title = "Shrine";
                 hint = State.done ? "Its blessing is given." : "Bring a hero here to kneel for a blessing.";
+                break;
+            case SiteKind.Vein:
+                var dep = controller.Settlement.VeinDeposit(State);
+                var mine = controller.Settlement.VeinMineFor(State);
+                if (State.done && controller.Settlement.BuildingOn(State) != null) return "";
+                title = $"Old mine: rich {(dep != null ? dep.displayName : "ore")} seam";
+                hint = State.done
+                    ? $"Cleared. A {(mine != null ? mine.displayName : "mine")} built on it makes {controller.Settlement.Database.veinOutput:0}x as much as on a full deposit."
+                    : $"{age} dangers lurk in the tunnels. Clear them to work the seam.";
                 break;
             case SiteKind.Cache:
                 title = State.variant % 3 == 0 ? "Lost caravan" : "Buried cache";

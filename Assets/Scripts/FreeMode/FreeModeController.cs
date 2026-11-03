@@ -412,6 +412,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             foreach (var site in Settlement.State.sites)
             {
                 if (site.kind == SiteKind.Cache && site.done) continue;
+                if ((int)site.kind >= art.siteIcons.Count) continue;
                 var icon = art.siteIcons[(int)site.kind];
                 if (icon == null) continue;
                 if (siteMarkers.Count <= i) siteMarkers.Add(MakeMarker("SiteMarker", icon));

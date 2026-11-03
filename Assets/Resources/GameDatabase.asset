@@ -229,6 +229,8 @@ MonoBehaviour:
   campReoccupySeconds: 1800
   campTierDistance: 45
   siteChance: 0.22
+  veinChance: 0.25
+  veinOutput: 3
   dungeonResetSeconds: 3600
   lairResetSeconds: 1800
   blessings:

@@ -47,6 +47,7 @@ public static partial class PlaceholderArt
             IconPixel("World/Sites/Icon_Lair.png", IcLair), IconPixel("World/Sites/Icon_Shrine.png", IcShrine),
             IconPixel("World/Sites/Icon_Cache.png", IcCache), IconPixel("World/Sites/Icon_Lore.png", IcLore),
         };
+        GenerateVeinSiteArt(art);
     }
 
     private static Sprite SitePx(string name, int tiles, System.Action<K> draw)

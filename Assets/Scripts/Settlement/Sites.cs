@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>A kind of place in the wild.</summary>
-public enum SiteKind { Ruins, Dungeon, Lair, Shrine, Cache, LoreStone }
+public enum SiteKind { Ruins, Dungeon, Lair, Shrine, Cache, LoreStone, Vein }
 
 /// <summary>A place in the wild found on the map: placed from the map seed, saved so what you did there sticks.</summary>
 [Serializable]
@@ -22,10 +22,12 @@ public class SiteState
     public float resetIn;
     [Tooltip("Tougher each time it comes back.")]
     public int extraTier;
+    [Tooltip("Rich veins: the deposit id of the seam.")]
+    public string veinId;
 
     public int Size => kind switch
     {
-        SiteKind.Ruins or SiteKind.Dungeon or SiteKind.Lair => 3,
+        SiteKind.Ruins or SiteKind.Dungeon or SiteKind.Lair or SiteKind.Vein => 3,
         SiteKind.Shrine => 2,
         _ => 1,
     };
@@ -33,7 +35,7 @@ public class SiteState
     public Vector2 Centre => cell + Vector2.one * (Size * 0.5f);
 
     /// <summary>Sites with creatures to fight.</summary>
-    public bool Guarded => kind == SiteKind.Ruins || kind == SiteKind.Dungeon || kind == SiteKind.Lair;
+    public bool Guarded => kind == SiteKind.Ruins || kind == SiteKind.Dungeon || kind == SiteKind.Lair || kind == SiteKind.Vein;
 }
 
 /// <summary>Wild sites: ruins, dungeons, lairs, shrines, caches and lore stones.</summary>
@@ -59,6 +61,13 @@ public partial class Settlement
             var kind = k < 0.24f ? SiteKind.Cache : k < 0.44f ? SiteKind.LoreStone : k < 0.64f ? SiteKind.Ruins
                 : k < 0.80f ? SiteKind.Lair : k < 0.90f ? SiteKind.Shrine : SiteKind.Dungeon;
             var site = new SiteState { kind = kind, zoneXY = zone, variant = (int)(CampHash(zone, 303) * 1000) };
+            // Some guarded sites are old mines on a rich seam of a rare resource you can already use.
+            var veins = VeinDeposits();
+            if (site.Guarded && kind != SiteKind.Dungeon && veins.Count > 0 && CampHash(zone, 304) < Database.veinChance)
+            {
+                site.kind = SiteKind.Vein;
+                site.veinId = veins[site.variant % veins.Count].id;
+            }
             var rect = Map.ZoneRect(zone.x, zone.y);
             int size = site.Size;
             for (int attempt = 0; attempt < 24; attempt++)
@@ -80,6 +89,72 @@ public partial class Settlement
                 break;
             }
         }
+    }
+
+    /// <summary>Deposits with rich veins whose resource you can already use (what new veins can hold).</summary>
+    public List<DepositType> VeinDeposits()
+    {
+        var list = new List<DepositType>();
+        foreach (var d in Database.deposits)
+        {
+            if (d == null || !d.richVeins) continue;
+            var res = d.resource;
+            if (res != null && res.unlockedIn != null && res.unlockedIn.order > State.ageIndex) continue;
+            list.Add(d);
+        }
+        return list;
+    }
+
+    public DepositType VeinDeposit(SiteState site) =>
+        site.kind == SiteKind.Vein ? Database.deposits.Find(d => d != null && d.id == site.veinId) : null;
+
+    /// <summary>The newest building you can put on this vein (the normal mine for its deposit).</summary>
+    public BuildingDefinition VeinMineFor(SiteState site)
+    {
+        if (site.kind != SiteKind.Vein) return null;
+        BuildingDefinition best = null;
+        foreach (var b in Database.buildings)
+        {
+            if (b == null || b.requiredDeposit == null || b.requiredDeposit.id != site.veinId) continue;
+            if (b.age != null && b.age.order > State.ageIndex) continue;
+            if (best == null || (b.age != null ? b.age.order : 0) >= (best.age != null ? best.age.order : 0)) best = b;
+        }
+        return best;
+    }
+
+    /// <summary>A cleared rich vein of this building's deposit that 'area' sits exactly on, if any.</summary>
+    public SiteState VeinUnder(BuildingDefinition def, RectInt area)
+    {
+        if (def == null || def.requiredDeposit == null || !def.requiredDeposit.richVeins) return null;
+        foreach (var s in State.sites)
+            if (s.kind == SiteKind.Vein && s.done && s.veinId == def.requiredDeposit.id && s.cell == area.position) return s;
+        return null;
+    }
+
+    /// <summary>The building standing on a site, if any (a mine on a cleared vein).</summary>
+    public BuildingState BuildingOn(SiteState site)
+    {
+        var area = new RectInt(site.cell, Vector2Int.one * site.Size);
+        foreach (var b in State.buildings)
+        {
+            var def = Database.GetBuilding(b.definitionId);
+            if (def != null && area.Overlaps(new RectInt(b.cell, def.size))) return b;
+        }
+        return null;
+    }
+
+    /// <summary>The old mine's guardians are dead: the seam is yours to work.</summary>
+    public void ClearVein(SiteState site)
+    {
+        if (site.done) return;
+        int t = SiteTier(site);
+        var dep = VeinDeposit(site);
+        var mine = VeinMineFor(site);
+        var loot = GiveResources((dep != null && dep.resource != null ? dep.resource.id : "Stone", 30 + 20 * t), ("Stone", 60 * (t + 1)));
+        Notify($"The old mine is clear: {Describe(loot)}. " +
+               (mine != null ? $"A <color=#fd6>{mine.displayName}</color> built on it makes {Database.veinOutput:0}x as much." : ""));
+        if (SiteRng(site).NextDouble() < 0.3) GainLoot(0.1f * t, 0.2f, "in the old mine");
+        Finish(site, 0f);
     }
 
     /// <summary>A site (not a looted cache) overlapping this area, if any.</summary>

@@ -17,6 +17,9 @@ public class DepositType : GameData
     [Tooltip("Sprites scattered on deposit tiles; one is picked per tile.")]
     public List<Sprite> sprites = new List<Sprite>();
 
+    [Tooltip("Rich veins of it turn up in the wild: old mines where its normal building works several times faster.")]
+    public bool richVeins;
+
     [Header("Generation")]
     [Tooltip("Where it grows: on grass, or on hills.")]
     public bool onHills;

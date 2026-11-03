@@ -506,7 +506,7 @@ public class FreeModeHUD : MonoBehaviour
         }
         var text = UIBuilder.Text("Value", chip, "", 22, TextAlignmentOptions.MidlineLeft);
         text.lineSpacing = -28;   // the small rate line tucks up under the stock
-        text.enableWordWrapping = false;
+        text.textWrappingMode = TextWrappingModes.NoWrap;
         return text;
     }
 
@@ -1392,6 +1392,8 @@ public class FreeModeHUD : MonoBehaviour
         {
             sb.Append($"<color=#fe8>Build near {def.requiredDeposit.displayName}</color>: needs {def.minDepositTiles}+ tiles " +
                       $"within {def.catchmentRadius}; full output at {def.fullOutputTiles}\n");
+            if (def.requiredDeposit.richVeins)
+                sb.Append("<color=#fd6>Or on a cleared rich vein in the wild</color>: several times the output\n");
         }
         if (def.waterBonus > 0)
         {

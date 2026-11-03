@@ -79,6 +79,10 @@ public class ArtLibrary : ScriptableObject
     public Sprite siteCache, siteCaravan, siteLoreStone, siteLoreStoneRead;
     [Tooltip("Wolf den, spider nest, troll cave.")]
     public List<Sprite> siteLairs = new List<Sprite>();
+    [Tooltip("Rich vein sites, one per deposit id in siteVeinIds.")]
+    public List<Sprite> siteVeins = new List<Sprite>();
+    public List<string> siteVeinIds = new List<string>();
+
     [Tooltip("Map icons, by SiteKind.")]
     public List<Sprite> siteIcons = new List<Sprite>();
 

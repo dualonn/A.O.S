@@ -174,6 +174,19 @@ public class BuildingPlacer : MonoBehaviour
     private Vector2Int CellUnderMouse(SettlementGrid grid)
     {
         Vector3 mouse = SettlementGrid.MouseWorld();
+        if (Current.requiredDeposit != null && Current.requiredDeposit.richVeins && Current.size == Vector2Int.one * 3)
+        {
+            // Mines snap onto a rich vein of their deposit when the mouse is over it.
+            float best = 2.5f;
+            Vector2Int? snap = null;
+            foreach (var site in controller.Settlement.State.sites)
+            {
+                if (site.kind != SiteKind.Vein || site.veinId != Current.requiredDeposit.id) continue;
+                float d = Vector2.Distance(site.Centre, mouse);
+                if (d < best) { best = d; snap = site.cell; }
+            }
+            if (snap.HasValue) return snap.Value;
+        }
         Vector3 halfFootprint = new Vector3(Current.size.x - 1, Current.size.y - 1, 0) * grid.cellSize * 0.5f;
         return grid.WorldToCell(mouse - halfFootprint);
     }

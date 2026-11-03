@@ -170,6 +170,14 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cc93ad5c5f7fae14492b2003b8183103, type: 3}
   - {fileID: 21300000, guid: dc95bccb0bfba3840ba69a5315537a19, type: 3}
   - {fileID: 21300000, guid: 6602193cb31bd574580585cc3e31f90e, type: 3}
+  siteVeins:
+  - {fileID: 21300000, guid: 196fc3ab1255c8545983e31931789717, type: 3}
+  - {fileID: 21300000, guid: 63a4b5f95afc73049951222d951bcaaf, type: 3}
+  - {fileID: 21300000, guid: 1290b05562b243446a7e62b98a612298, type: 3}
+  siteVeinIds:
+  - GoldOre
+  - Runestone
+  - Quicksilver
   siteIcons:
   - {fileID: 21300000, guid: 83034151085e0d94b97a7a3ed034255d, type: 3}
   - {fileID: 21300000, guid: 2e985ef847e9e27408d14d34a472314f, type: 3}
@@ -177,3 +185,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: be1b4cdcff1a5be42a4e2b35a9992f9e, type: 3}
   - {fileID: 21300000, guid: 1c645bf04fcbe684ab4bc4a0c5a99b5d, type: 3}
   - {fileID: 21300000, guid: 9327325a6a37c7340914eda140b15378, type: 3}
+  - {fileID: 21300000, guid: a43cd28a2c9974046b982b966241565e, type: 3}

@@ -1435,12 +1435,21 @@ public partial class Settlement : MonoBehaviour
             reason = "There's a raider camp here: clear it first";
             return false;
         }
-        if (SiteAt(area) != null)
+        var siteHere = SiteAt(area);
+        // A mine can go right on top of a cleared rich vein of its deposit.
+        bool onVein = siteHere != null && siteHere.kind == SiteKind.Vein && def.requiredDeposit != null
+                      && def.requiredDeposit.richVeins && siteHere.veinId == def.requiredDeposit.id && siteHere.cell == cell;
+        if (onVein && !siteHere.done)
+        {
+            reason = "Clear the old mine's guardians first";
+            return false;
+        }
+        if (siteHere != null && !onVein)
         {
             reason = "Something old stands here";
             return false;
         }
-        if (def.requiredDeposit != null)
+        if (def.requiredDeposit != null && !onVein)
         {
             int count = Map.CountDeposit(def.requiredDeposit, area, def.catchmentRadius);
             if (count < def.minDepositTiles)
@@ -1458,7 +1467,11 @@ public partial class Settlement : MonoBehaviour
     public float SiteQuality(BuildingDefinition def, RectInt area, int radius)
     {
         float quality = 1f;
-        if (def.requiredDeposit != null)
+        if (VeinUnder(def, area) != null)
+        {
+            quality = Database.veinOutput;   // a rich vein: several times a full deposit
+        }
+        else if (def.requiredDeposit != null)
         {
             int count = Map.CountDeposit(def.requiredDeposit, area, radius);
             quality = Mathf.Clamp01(count / (float)Mathf.Max(1, def.fullOutputTiles));
