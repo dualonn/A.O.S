@@ -1,0 +1,209 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverShipyard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverShipyard
+  displayName: Shipyard
+  description: A galleon rising in its frame of props, a sheer-legs crane and stacks
+    of oak. Trains Galleons with broadsides of cannon; its ferry seats 8. Build it
+    on the shore of open water. Its boats patrol the water and shoot at raiders near
+    the shore; send troops to land the water cuts off and its ferry carries them
+    across.
+  icon: {fileID: 21300000, guid: 48295a5d4dd92cb43a0832d14a47cb5b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 48295a5d4dd92cb43a0832d14a47cb5b, type: 3}
+    - {fileID: 21300000, guid: 1924c8960f65cdd488b3ba98b86beef5, type: 3}
+    - {fileID: 21300000, guid: 78431b798d113f4498b8ca345d8b469d, type: 3}
+    - {fileID: 21300000, guid: 24f574620fb989e4b979e5caa555a1ad, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 435fc12f59fe7814b8a832a54f943dee, type: 3}
+    - {fileID: 21300000, guid: 2cb4a8669e462a644b0876f512251834, type: 3}
+    - {fileID: 21300000, guid: 522450b6f30f15541b8e19181213eb1e, type: 3}
+    - {fileID: 21300000, guid: afb76f80c7b017c4c9aa307cf108d1d4, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 38d877b332701b743a3348e633c7c3de, type: 3}
+    - {fileID: 21300000, guid: 9b3715b6bb6bf6a4c8c2e029a9cfcfd3, type: 3}
+    - {fileID: 21300000, guid: 19b1de724da3e804d8e601e529f56204, type: 3}
+    - {fileID: 21300000, guid: f1c3a19de6ea25a47ada4d6cfc0396dd, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 12e6ac6dc825b534ab1a95a15189d8f2, type: 3}
+    - {fileID: 21300000, guid: b6694ba264eda604e8433e1f90d4aa55, type: 3}
+    - {fileID: 21300000, guid: 559e867ebeea3cd43b675478ccf18eb1, type: 3}
+    - {fileID: 21300000, guid: 6abee10a4874e384d98ac75faa6f9cdb, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 56df5ff2d925b7c41a63513050f30a28, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+  upgrades:
+  - name: Dry Dock
+    description: +1 galleon, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 500
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 300
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Bronze Cannon
+    description: Galleons hit 25% harder, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Copper Sheathing
+    description: Galleons are 20% faster, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1.2
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 1e9916bb982b9934ea62089fdc5cb7ad, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c2837539961e4f747acfdf6e979ed82e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 90
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 180
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 4
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1500
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: c40943fe71823a84f8e2839f2c4c3b35, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

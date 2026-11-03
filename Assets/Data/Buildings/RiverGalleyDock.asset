@@ -1,0 +1,206 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverGalleyDock
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverGalleyDock
+  displayName: Galley Dock
+  description: A stone quay and a boathouse, a galley on the slip. Trains War Galleys
+    with archers on deck; its ferry seats 5. Build it on the shore of open water.
+    Its boats patrol the water and shoot at raiders near the shore; send troops to
+    land the water cuts off and its ferry carries them across.
+  icon: {fileID: 21300000, guid: ae7e5537bf619e14bb2823c5ef3711f4, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: ae7e5537bf619e14bb2823c5ef3711f4, type: 3}
+    - {fileID: 21300000, guid: e7b059a6a3724fd4793b048f021bf6bb, type: 3}
+    - {fileID: 21300000, guid: 056ee606459915346bd50c2218e30d3f, type: 3}
+    - {fileID: 21300000, guid: 1bb54e213524b12429a7c5e166d92d7e, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 2557c471cad27b8419ea6686e4439c02, type: 3}
+    - {fileID: 21300000, guid: e7ca4f32a17b71c469b907437e03d963, type: 3}
+    - {fileID: 21300000, guid: 902ab0b94890ed5408ff326ec81331bf, type: 3}
+    - {fileID: 21300000, guid: 4c89dbf8ef03bbb4ca7286ef7d2b8513, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 76b3717d5ae3f254c9b0ab45800f680f, type: 3}
+    - {fileID: 21300000, guid: d4ce83610c5ce0745a66a9d0bc9418f9, type: 3}
+    - {fileID: 21300000, guid: 545aae8cefdf1ea4e810ea6a160123d3, type: 3}
+    - {fileID: 21300000, guid: 0e7c33d5c53466445b4bd0f413295547, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: de490328e3857114f8cf2aa4eceeaf9c, type: 3}
+    - {fileID: 21300000, guid: 76255c20e9cdf1740b698beaeecb3bb1, type: 3}
+    - {fileID: 21300000, guid: af14f25062d67324eb2d9355a7850bfb, type: 3}
+    - {fileID: 21300000, guid: b88b3879aa295424b81261631b6a6c8f, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 7553500f2115f444499eeaf121710986, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 40
+  upgrades:
+  - name: Second Slip
+    description: +1 galley, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Bronze Rams
+    description: Galleys hit 25% harder, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Oar Banks
+    description: Galleys are 20% faster, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 30
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1.2
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: feca2e0da76d7db42928116839516e6d, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 954e63e9a20b04c4983ac5990f68c7f9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 48
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 4
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 700
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 9fd2621dddc3c604b8d9877ab6cd226b, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

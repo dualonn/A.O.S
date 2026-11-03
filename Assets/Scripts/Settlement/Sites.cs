@@ -51,6 +51,7 @@ public partial class Settlement
     public void RollSites(IEnumerable<Vector2Int> zones)
     {
         if (!IsFounded || Map == null) return;
+        RiverRollIslands(zones);   // islands get their finds first
         var settlements = SettlementZones();
         foreach (var zone in zones)
         {
@@ -217,6 +218,7 @@ public partial class Settlement
     {
         site.done = true;
         State.sitesDone++;
+        QuestSiteFinished(site);
         site.resetIn = resetSeconds;
         if (!offWorld) SiteChanged?.Invoke(site);
         RaiseChanged();

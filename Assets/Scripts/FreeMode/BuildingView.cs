@@ -190,6 +190,7 @@ public class BuildingView : MonoBehaviour
         {
             return;
         }
+        if (RiverWorks.BridgePiece(this, wallMask, body, force)) return;   // bridges and fords
         if (Definition.wallKind == WallTile.Gate && Time.time >= nextGateCheck)
         {
             // Open for any of your units close by (and always shown open once ruined).
@@ -554,6 +555,8 @@ public class BuildingView : MonoBehaviour
     private void KeepHeroes(Settlement.BuildingStats stats)
     {
         var settlement = controller.Settlement;
+        // Not while the scene is being rebuilt for another world (this building belongs to the old one).
+        if (!controller.enabled || settlement == null || settlement.Map == null) return;
         if (Definition.trainsUnit == null || !settlement.IsWorking(State, Definition))
         {
             return;

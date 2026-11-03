@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverLongshipYard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverLongshipYard
+  displayName: Longship Yard
+  description: A long timber hall and a dragon-prowed longship on its rollers. Trains
+    Longships; its ferry seats 6. Build it on the shore of open water. Its boats
+    patrol the water and shoot at raiders near the shore; send troops to land the
+    water cuts off and its ferry carries them across.
+  icon: {fileID: 21300000, guid: befb353f6830c8c46ab4d4e2988fab33, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: befb353f6830c8c46ab4d4e2988fab33, type: 3}
+    - {fileID: 21300000, guid: e648818613dcbde4d93e7098650fdc49, type: 3}
+    - {fileID: 21300000, guid: c33c579d5b856884887cb832c8a8a08e, type: 3}
+    - {fileID: 21300000, guid: 9b763145439df4b499363b94c61b2d8d, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 731e3552944dfa74ab5e834e80e1b394, type: 3}
+    - {fileID: 21300000, guid: 2488e780746adc440a858e2b6e9c160d, type: 3}
+    - {fileID: 21300000, guid: 6356724ead641f54faf918022addada4, type: 3}
+    - {fileID: 21300000, guid: 123a9b2d3be3f134d84d9d6849228233, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: c0e5ed2ba7be93a4db21d71b7600b4d7, type: 3}
+    - {fileID: 21300000, guid: ccf424bf48bb7c045bee586deaf484d8, type: 3}
+    - {fileID: 21300000, guid: 5e84e91cb4ca8a84f927264c72c72f66, type: 3}
+    - {fileID: 21300000, guid: 0322878326ce6da4793d4cfe5a8132d4, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 57cda522c21a1cd42954f72ea16f44f7, type: 3}
+    - {fileID: 21300000, guid: 131d0ef8beac71e4db5510f0e4cc3a51, type: 3}
+    - {fileID: 21300000, guid: 49c8d965be860c14696ab4db3c8710d3, type: 3}
+    - {fileID: 21300000, guid: 577e4d9b669954044bb20560e7cde1b0, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 954e63e9a20b04c4983ac5990f68c7f9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 100
+  upgrades:
+  - name: Extra Slip
+    description: +1 longship, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 350
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Shield Walls
+    description: Longships are 25% tougher, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Crews
+    description: Longships hit 20% harder, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 80
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 2eedaa577beb8ec4e870d0f064bf02e6, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 56df5ff2d925b7c41a63513050f30a28, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 90
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 36
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 120
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 4
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1000
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: ec6a7b0317c0c6548ad6b2ae5440bef4, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverFishingDock
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverFishingDock
+  displayName: Fishing Dock
+  description: 'A reed hut on stilts, nets drying on poles and a dugout pulled up
+    on the bank. Build it on the bank: the more water round it (shoals count double,
+    and open sea a little more), the bigger the catch.'
+  icon: {fileID: 21300000, guid: 4cca8abf70e6dc2468f769da37af7549, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 4cca8abf70e6dc2468f769da37af7549, type: 3}
+    - {fileID: 21300000, guid: fc642a0986ef5894fbcda9026022caf3, type: 3}
+    - {fileID: 21300000, guid: f8bbd060e2299044ab1e954e02c475bd, type: 3}
+    - {fileID: 21300000, guid: 2ff8666b48e39f0468d35a90ef85957b, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 331484a313c579b4bb796796016f343d, type: 3}
+    - {fileID: 21300000, guid: 9e18b8225394e4b40aff9277bea6e3a3, type: 3}
+    - {fileID: 21300000, guid: 49db99da8677584469913063e76e0cda, type: 3}
+    - {fileID: 21300000, guid: 1b3cc8a346f45b54793c47d1b3527198, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 258f91d4cad9b5d46a7363558bf5fec4, type: 3}
+    - {fileID: 21300000, guid: 76fc3fc0812b8664892605bb2ae6a59a, type: 3}
+    - {fileID: 21300000, guid: 6a939f48a888ac64998d7baf202eac5f, type: 3}
+    - {fileID: 21300000, guid: 542a0e8696a2a3c4e9282ff0bb9c6ad6, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4370a60ad0fd18544b6acf93a5337f71, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 50
+  upgrades:
+  - name: Bigger Nets
+    description: +25% catch.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 30
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Drying Racks
+    description: +20% catch, fishes 1 tile further out.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 30
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 1
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: d0db85c3995a73c47be5f189c7ad4474, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 954e63e9a20b04c4983ac5990f68c7f9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 96
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 48
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 12
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0.1
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 120
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.7
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

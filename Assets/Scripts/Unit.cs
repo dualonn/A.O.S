@@ -480,7 +480,7 @@ public abstract class Unit : MonoBehaviour
 
         bool inReach = distance <= (IsRanged ? attackRange * WeatherFx.RangedReach : attackRange);
         if (inReach) chaseCheckAt = 0f;
-        else if (Moves == Movement.Ground && nav != null && ChaseStuck(target, distance)) return;
+        else if ((Moves == Movement.Ground || Moves == Movement.Water) && nav != null && ChaseStuck(target, distance)) return;
         float speed = inReach ? moveSpeed * 0.4f : moveSpeed;
         if (Vector2.Distance(transform.position, spot) > 0.12f)
         {
@@ -677,6 +677,16 @@ public abstract class Unit : MonoBehaviour
     protected bool MoveTowards(Vector3 destination, float speed, bool faceMovement = true)
     {
         var nav = MapNavigator.Current;
+        if (Moves == Movement.Water)
+        {
+            // Boats (rivers and the sea): sail over open water only.
+            BlockingWall = null;
+            if (Settlement.Instance != null) speed *= Settlement.Instance.UnitSpeedFactor;
+            transform.position = RiverNav.Sail(this, destination, speed * Time.deltaTime, out Vector3 heading, out bool afloatThere);
+            SetMoving(!afloatThere);
+            if (!afloatThere && faceMovement) Face(heading);
+            return afloatThere;
+        }
         if (Moves != Movement.Ground)
         {
             // Flyers go straight over everything; tunnellers straight under it.

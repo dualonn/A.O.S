@@ -49,6 +49,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a6d0fcb2dca7f6940b514821c1e5484e, type: 2}
   - {fileID: 11400000, guid: d22f1eb1bcbec04419385768ecee267d, type: 2}
   - {fileID: 11400000, guid: 0be3b6044484df64a8890eb7c6ad828a, type: 2}
+  - {fileID: 11400000, guid: f5e8b93c7b1e40040b3dd33ffe90aecf, type: 2}
   enemyUnits:
   - {fileID: 11400000, guid: aa91b8ae7f470614684d1fd927493903, type: 2}
   - {fileID: 11400000, guid: aeb47d9bd7fb3d04f82e4479d46f93cd, type: 2}

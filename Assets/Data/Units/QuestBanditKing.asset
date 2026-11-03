@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: QuestBanditKing
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Outlaw King
+  icon: {fileID: 21300000, guid: 8f192fcd7cd5c4f43ab2989b6aa1957c, type: 3}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 352156388629528221, guid: df09fc5a010d93d4bab226e05f537c51, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 950
+  moveSpeed: 0.95
+  attackPower: 34
+  attackCooldown: 1
+  attackRange: 0.9
+  hitDelay: 0.3
+  detectionRange: 5
+  projectile: {fileID: 0}
+  projectileSpeed: 9
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.15
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 1
+  bossAbility: 2
+  abilityCooldown: 11
+  abilityRadius: 2.4
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 0

@@ -1,0 +1,200 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: WildXenoLab
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: WildXenoLab
+  displayName: Xenobiology Lab
+  description: Domes of glass where alien beasts are studied and bred. Much food
+    and coin from the herds within 24 tiles (a quarter more on other worlds); it
+    barely thins them.
+  icon: {fileID: 21300000, guid: fce1b74b8bb8f9b4792a14ffd7df69a7, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: fce1b74b8bb8f9b4792a14ffd7df69a7, type: 3}
+    - {fileID: 21300000, guid: 272bf1378bf3eb247a047b94285c5bfb, type: 3}
+    - {fileID: 21300000, guid: 81f67f346cee3d74b8f918e5db1c6c15, type: 3}
+    - {fileID: 21300000, guid: 0741912aaa7f9a140af4296395d899f4, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 04e0d26655160e84397a3f94c6741f69, type: 3}
+    - {fileID: 21300000, guid: 24dd67476339164459759134c09015e7, type: 3}
+    - {fileID: 21300000, guid: e180a82fbec5bd2469af2bd5d26429d8, type: 3}
+    - {fileID: 21300000, guid: 3c331e87fcde34b45a5dcfe888769b01, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 62a61ddaeaa330c40a8fbf3fde8235dc, type: 3}
+    - {fileID: 21300000, guid: b01e0618f98d6094299fbe181666051e, type: 3}
+    - {fileID: 21300000, guid: 9557b2ebd4c955e408fdc6120b978c56, type: 3}
+    - {fileID: 21300000, guid: 8e8fb387f3ad93a419c2cdadc66321a3, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 609442740c656ee4c98a5057763d191b, type: 3}
+    - {fileID: 21300000, guid: 95b1faf1d31ade147af48a9469f5d88e, type: 3}
+    - {fileID: 21300000, guid: a7eda40d4c07ccb4195b38318515b1e3, type: 3}
+    - {fileID: 21300000, guid: 31a7538288cef5b47b806c0fd103eee8, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 5}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 0936aff3dc5835e4eb6fd98f671e8d8a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 1500
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 800
+  upgrades:
+  - name: Gene Bank
+    description: +20% output.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 600
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Drone Herders
+    description: +10% output, and 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1.1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Cloning Vats
+    description: +25% output, and 2 tiles further again.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 1000
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 90
+  maxCount: 0
+  maxHealth: 4000
+  housing: 0
+  workers: 6
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

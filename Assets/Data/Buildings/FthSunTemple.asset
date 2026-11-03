@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FthSunTemple
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FthSunTemple
+  displayName: Sun Temple
+  description: A stepped temple under a captured spark of a star. Makes faith (and
+    a little culture), and comforts the town.
+  icon: {fileID: 21300000, guid: 3a8f6f137c222e040a0589bddb6665f5, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3a8f6f137c222e040a0589bddb6665f5, type: 3}
+    - {fileID: 21300000, guid: 733e0420396d941499f3f3511a213ca2, type: 3}
+    - {fileID: 21300000, guid: 7a35aa2d9ff1be14ebc37321797dc827, type: 3}
+    - {fileID: 21300000, guid: 1cbe671b599adf24f93a11d97234b244, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: e817b996caa84d544ae7feb289ab780b, type: 3}
+    - {fileID: 21300000, guid: c37f677cd2fcbeb49ae9447be6e87553, type: 3}
+    - {fileID: 21300000, guid: 39b6c6122815b424a9b2839ca4f6a374, type: 3}
+    - {fileID: 21300000, guid: 32bd2e68b01a0f540a3d73cfc49a473b, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 09082b09efb9a594e9f295d824a26cb7, type: 3}
+    - {fileID: 21300000, guid: 8044c8a4c4502c34fbd0ebb86eb41aa7, type: 3}
+    - {fileID: 21300000, guid: 355d98575ddaa1b40b3a2d6fa3f13733, type: 3}
+    - {fileID: 21300000, guid: 441e5827092735c4ea9837a0ccf28b44, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 1625
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 1625
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 2980
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 135
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 110
+  upgrades:
+  - name: Lay Brothers
+    description: 'More hands for the rites: +35% faith, +1 mood.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 650
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 650
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 1190
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 55
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 45
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Holy Relics
+    description: 'Pilgrims come to see the relics: +35% more faith, +1 mood.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 975
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 975
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 1785
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 65
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 27ab181006ac6e1488fb89c378bbe9e4, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 1150
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 1150
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 2110
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 75
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 60
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 160
+  maxCount: 0
+  maxHealth: 2900
+  housing: 0
+  workers: 6
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

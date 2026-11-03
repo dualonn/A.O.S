@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverSteamDockyard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverSteamDockyard
+  displayName: Steam Dockyard
+  description: An ironclad in a dry dock under an iron gantry, brick sheds and a
+    smoking chimney. Trains Ironclads; its ferry seats 10. Build it on the shore
+    of open water. Its boats patrol the water and shoot at raiders near the shore;
+    send troops to land the water cuts off and its ferry carries them across.
+  icon: {fileID: 21300000, guid: db3420395ad2549408f042d081f295c6, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: db3420395ad2549408f042d081f295c6, type: 3}
+    - {fileID: 21300000, guid: 6af1757306d3fae4fbf8e12fdb133f42, type: 3}
+    - {fileID: 21300000, guid: 427c4daf6ced1914a96309b7708eeca4, type: 3}
+    - {fileID: 21300000, guid: c5313996b8bbe104482975fdfa822aca, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 1e5574b92f49dee4f9faf5d8353885b5, type: 3}
+    - {fileID: 21300000, guid: 2b05e515b2af74543bad9bf687cea0af, type: 3}
+    - {fileID: 21300000, guid: f019cee7040753149add5710acaf21e6, type: 3}
+    - {fileID: 21300000, guid: e76a900847b9ec14bac825b641abd01c, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: a3da6f80639a40a46937fd8fd24622da, type: 3}
+    - {fileID: 21300000, guid: 93628c4f6ab7cb644be04bca5a4530a8, type: 3}
+    - {fileID: 21300000, guid: 567f0cb07442a794a8fd4fe33ed374e2, type: 3}
+    - {fileID: 21300000, guid: ba88f9823a57a2f42a3864917bd0656b, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 11c09b26457ffc546aba836641631931, type: 3}
+    - {fileID: 21300000, guid: 98740db022fc478419c960c56fa4ed90, type: 3}
+    - {fileID: 21300000, guid: c098b66837740564588d3dc39f8e5730, type: 3}
+    - {fileID: 21300000, guid: a9d78d2448af0504e9f19b4fed24779f, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c2837539961e4f747acfdf6e979ed82e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+  upgrades:
+  - name: Second Berth
+    description: +1 ironclad, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Armour Belt
+    description: Ironclads are 30% tougher, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 300
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.3
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Breech Loaders
+    description: Ironclads hit 25% harder, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 3b4209d278be10440b043c7aea4c0f99, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 375d95d662f236b43baf535d4e7d08c4, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 72
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 180
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 4
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2200
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: f5e8b93c7b1e40040b3dd33ffe90aecf, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

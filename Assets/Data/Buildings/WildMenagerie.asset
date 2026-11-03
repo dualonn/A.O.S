@@ -1,0 +1,205 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: WildMenagerie
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: WildMenagerie
+  displayName: Royal Menagerie
+  description: Gilded cages and an aerie. Tames every beast of the home world within
+    20 tiles, griffins, wyverns and crystal beasts too, and can tame a legendary
+    beast to be a hero's companion. Keeps 3 (+1 per upgrade).
+  icon: {fileID: 21300000, guid: 362ca93722982844fb1047970d8f32e7, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 362ca93722982844fb1047970d8f32e7, type: 3}
+    - {fileID: 21300000, guid: c4aadea2fb858454fb805c1cce3b5825, type: 3}
+    - {fileID: 21300000, guid: d9e6e96ffb9130b40bc11e03df338b9b, type: 3}
+    - {fileID: 21300000, guid: 1aa00bfe6b4578c4cac0c139755dbfd4, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 2afb1bfb03fd13b43b95e157c6cd0510, type: 3}
+    - {fileID: 21300000, guid: 39e1c7d45b800c14890cf745db85eba5, type: 3}
+    - {fileID: 21300000, guid: a0c9570d3d07cc14685d5658edb9754e, type: 3}
+    - {fileID: 21300000, guid: ab500118c69a27542815077ec0787696, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 2b4853105158ebb448b066e49e7509f6, type: 3}
+    - {fileID: 21300000, guid: aa5a9de0aefbca84d9a43bcbda19e570, type: 3}
+    - {fileID: 21300000, guid: d054481bfc4e1ea478d0674b9dd97402, type: 3}
+    - {fileID: 21300000, guid: e05f583b06ca1bd44ab1801894515fd5, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: ec86d12a3b1b9174383fc73d75dc4d58, type: 3}
+    - {fileID: 21300000, guid: 64ec27befcea37648b44c8afb3d8e8fb, type: 3}
+    - {fileID: 21300000, guid: 50fd77b00187e9644b3be5e59f2d1b0f, type: 3}
+    - {fileID: 21300000, guid: 73dda0da28830f348829522772d3ee73, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 5}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2ae619326ce3f514d9545b6f6609c440, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 300
+  upgrades:
+  - name: Aerie
+    description: Keeps 1 more beast; tames 25% faster.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 400
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 80
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Beast Armour
+    description: Keeps 1 more; its beasts are 25% tougher and hit 15% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 100
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1.15
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Tamers
+    description: Keeps 1 more; tames 25% faster again.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 800
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 8ee2ac99df9f698478173f46b1537beb, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 0936aff3dc5835e4eb6fd98f671e8d8a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 150
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 50
+  maxCount: 0
+  maxHealth: 1200
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

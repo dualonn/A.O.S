@@ -103,13 +103,16 @@ public partial class Settlement
     {
         get
         {
-            if (Time.frameCount == peaceFrame) return peaceCached;
+            // (cached per frame and per world: a background world asks too, with its own state swapped in)
+            if (Time.frameCount == peaceFrame && State != null && peaceWorld == State.currentWorld) return peaceCached;
             peaceFrame = Time.frameCount;
+            peaceWorld = State != null ? State.currentWorld : -1;
             peaceCached = State != null && NativesHere != null && Diplomacy.peace;
             return peaceCached;
         }
     }
     private int peaceFrame = -1;
+    private int peaceWorld = -1;
     private bool peaceCached;
 
     /// <summary>Tribute paid (or bandits bought off): no raids here for a while.</summary>

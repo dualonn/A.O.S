@@ -87,6 +87,7 @@ public partial class Settlement
         if (r == null) return 1f;
         float f = GenesisFactor * SeasonProductionFactor(r);
         f *= NaturalWonderFactor(r);
+        f *= CultureProductionFactor(r);   // mood, traditions, tenets, great people
         bool domes = Researched("Domes");
         if (HasTrait(ThinAir) && !domes) f *= 0.9f;
         string id = r.id;
@@ -117,6 +118,7 @@ public partial class Settlement
             if (AlienHere) f *= 1f + 0.06f * Levels("Terraforming");
             f *= EventGrowthFactor;   // random events (festivals, feasts...)
             f *= NaturalWonderGrowth;
+            f *= CultureGrowthFactor;
             return f;
         }
     }
@@ -128,7 +130,7 @@ public partial class Settlement
     public float WorldBuildingHealthFactor => HasTrait(HighGravity) ? 1.15f : 1f;
 
     /// <summary>Raids are fiercer where the wildlife joins in.</summary>
-    public float WorldThreatFactor => (HasTrait(HostileFauna) ? 1.2f : 1f) * EventThreatFactor;
+    public float WorldThreatFactor => (HasTrait(HostileFauna) ? 1.2f : 1f) * EventThreatFactor * CultureThreatFactor;
 
     /// <summary>Xenology: your troops hit the natives of other worlds harder.</summary>
     public float XenologyFactor => 1f + 0.08f * Levels("Xenology");

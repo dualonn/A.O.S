@@ -1,0 +1,508 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8a7fa28efbcf1243ad4a0d6090cfe6d, type: 3}
+  m_Name: WildlifeLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::WildlifeLibrary
+  entries:
+  - species: Deer
+    frames:
+    - {fileID: 21300000, guid: 6cf4dcaaf82cd6e4589387f83f256034, type: 3}
+    - {fileID: 21300000, guid: ca6de01459a540941ac171d9953a17f2, type: 3}
+    - {fileID: 21300000, guid: 7637b7368bffeb54bb9c65e623feecac, type: 3}
+    - {fileID: 21300000, guid: 7cad22bc81143bb43b62a558705bbc82, type: 3}
+    - {fileID: 21300000, guid: 1d3b10bdf0530914e806e89b11797de6, type: 3}
+    - {fileID: 21300000, guid: 34eb979f76b48b24783879dafaac4d26, type: 3}
+    - {fileID: 21300000, guid: d93a15e15f04026438b7a3c8275c3ee6, type: 3}
+    - {fileID: 21300000, guid: a06488f3e16d17b46947a68949ded705, type: 3}
+    - {fileID: 21300000, guid: 7af633c5af1820f4ca00d96cc0e2e71d, type: 3}
+    - {fileID: 21300000, guid: c254faa7f9c0a2a43b0255e9c5e5040e, type: 3}
+    - {fileID: 21300000, guid: 73a552b1d90db6247b920d63a557bed1, type: 3}
+    - {fileID: 21300000, guid: a85fb4962e69e3b4995f3b2fb8dac5b4, type: 3}
+    wild: {fileID: 11400000, guid: 8ed4ee38856c51c4f8079d2b230910da, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: Antelope
+    frames:
+    - {fileID: 21300000, guid: 5bf231dec2bd4e34e9cf33309af74434, type: 3}
+    - {fileID: 21300000, guid: 51f31f59c8a2e124ea197b0d4ba5d887, type: 3}
+    - {fileID: 21300000, guid: 0622dd3da758b9140844020d7bdcc51f, type: 3}
+    - {fileID: 21300000, guid: 6b433f11fd368df4b93088dcde01e791, type: 3}
+    - {fileID: 21300000, guid: 3bea5d2927759f44386a043bc3fd9776, type: 3}
+    - {fileID: 21300000, guid: 7ffc6d3702e1f4747bb34920e52b75bb, type: 3}
+    - {fileID: 21300000, guid: 7db4a59949e1b474ebc2a8b9f8d5bb87, type: 3}
+    - {fileID: 21300000, guid: 4096baccc1224fc4888e74cda6a6c84a, type: 3}
+    - {fileID: 21300000, guid: ba7209c095fca7742bbaac4244b74e73, type: 3}
+    - {fileID: 21300000, guid: 049d72eaec81021429d2194482d045ff, type: 3}
+    - {fileID: 21300000, guid: 74a8b41ef002e9f43a6067e7c562c9ef, type: 3}
+    - {fileID: 21300000, guid: 388951444d72452439cd301a2909e238, type: 3}
+    wild: {fileID: 11400000, guid: d335c2f271708df4fbe6b9b7788a79bf, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: Boar
+    frames:
+    - {fileID: 21300000, guid: 3b349474cd9a8624d99784f9c468dc2b, type: 3}
+    - {fileID: 21300000, guid: 223b04a394c84aa46aae166adc29a427, type: 3}
+    - {fileID: 21300000, guid: a55d527f8121a0547b61c5eedada0d39, type: 3}
+    - {fileID: 21300000, guid: fe7ec6463a34141479aea54d3014c736, type: 3}
+    - {fileID: 21300000, guid: e14125948c388104da7f3d487d8deda9, type: 3}
+    - {fileID: 21300000, guid: 3ba7a7205c13c5343b90fd01ee873dc5, type: 3}
+    - {fileID: 21300000, guid: 5f3ba3814d5b5e948a68d6760a2a8e7f, type: 3}
+    - {fileID: 21300000, guid: 3cf117ff5ee90214797f27b275820906, type: 3}
+    - {fileID: 21300000, guid: 8adfee1e8002e8d44833534b85c7e2ac, type: 3}
+    - {fileID: 21300000, guid: 525d8fbcb9b0601468649f98f72fddf5, type: 3}
+    - {fileID: 21300000, guid: ce26da33cf8790646a9ea05c2d5bde59, type: 3}
+    - {fileID: 21300000, guid: aafc43854a2af6747880e93f7dca76ed, type: 3}
+    wild: {fileID: 11400000, guid: 497aaab764aacbd4fb09f8987a1d018d, type: 2}
+    tame: {fileID: 11400000, guid: 041e7251622655a4ebce5cc455e24209, type: 2}
+    flyer: 0
+  - species: Wolf
+    frames:
+    - {fileID: 21300000, guid: de12ddd4e3e5792408331908f1ac08cd, type: 3}
+    - {fileID: 21300000, guid: a7adf130b0ff1a747b808c93f1ebfbc8, type: 3}
+    - {fileID: 21300000, guid: 8efd1fc112b1bdc499da5d3d10cf0221, type: 3}
+    - {fileID: 21300000, guid: 73936e84c91c93642ab99740cc998c37, type: 3}
+    - {fileID: 21300000, guid: c8f681a7615b56f438e8e296f62dc902, type: 3}
+    - {fileID: 21300000, guid: 359368edc13f2ae4abe540df768c7942, type: 3}
+    - {fileID: 21300000, guid: f643f4d2758131a47899833bffe30956, type: 3}
+    - {fileID: 21300000, guid: 8c724247c81901e439401886b2662da8, type: 3}
+    - {fileID: 21300000, guid: 695853301a9a8e441b500f16fd5d0d3f, type: 3}
+    - {fileID: 21300000, guid: 490c12f293664f748b5de403b934ee94, type: 3}
+    - {fileID: 21300000, guid: b66365618b692ae4e96b234012955259, type: 3}
+    - {fileID: 21300000, guid: 9d309f5859a5b704f9b49ab16f58b71a, type: 3}
+    wild: {fileID: 11400000, guid: 54ed8435cb8cea94fb956688974194f7, type: 2}
+    tame: {fileID: 11400000, guid: eafc02aa4151c06418d0e9aa59ad1cb4, type: 2}
+    flyer: 0
+  - species: Bear
+    frames:
+    - {fileID: 21300000, guid: cede4b36a4fadd64c8319a05d1b66846, type: 3}
+    - {fileID: 21300000, guid: 9e55183e0fa24974eb1e5c0bce64b4a4, type: 3}
+    - {fileID: 21300000, guid: 7a5c868c30b1f8248a9275372cc4d654, type: 3}
+    - {fileID: 21300000, guid: 040a07332230c4c428a8def3bf3ce587, type: 3}
+    - {fileID: 21300000, guid: 869f70b4840e66046b81fe2a28c7f641, type: 3}
+    - {fileID: 21300000, guid: 7a115ffe3a6eee24e88cc3d28e1cdd29, type: 3}
+    - {fileID: 21300000, guid: 58124f8c8c60f4246a66ff5e54450c67, type: 3}
+    - {fileID: 21300000, guid: 9447c7b6714b7434ba1e04bb806a824e, type: 3}
+    - {fileID: 21300000, guid: 381630344da1bc1419dea63cf0f46de8, type: 3}
+    - {fileID: 21300000, guid: 58db8a9c4b0a8f643989dba8b9cf68ae, type: 3}
+    - {fileID: 21300000, guid: d9f71c47b69aa794bbcf7aaaeae1d613, type: 3}
+    - {fileID: 21300000, guid: ab7cd6444ec154e4aaf9eb76232b0c38, type: 3}
+    wild: {fileID: 11400000, guid: 4ca4ba95e8da9e545b8e637a8470eafc, type: 2}
+    tame: {fileID: 11400000, guid: 7eb72cb1e5fbe1a48aafa4c5089bab35, type: 2}
+    flyer: 0
+  - species: Mammoth
+    frames:
+    - {fileID: 21300000, guid: 8ad8bf932bce40449bd7bb1a8d419c51, type: 3}
+    - {fileID: 21300000, guid: 9f310c3dc36e07f4d9eadc5a74f4e1c0, type: 3}
+    - {fileID: 21300000, guid: a7fa4f20e0f55954c9182ba98cdd0793, type: 3}
+    - {fileID: 21300000, guid: ccda2f25dd021244dab835f4dc756ff6, type: 3}
+    - {fileID: 21300000, guid: 6252d41b8cbbfeb498bc282799159d60, type: 3}
+    - {fileID: 21300000, guid: db07acbde8742d24690e54784366e30e, type: 3}
+    - {fileID: 21300000, guid: 2c9afa337b7e16747b3b5acb1a586f16, type: 3}
+    - {fileID: 21300000, guid: a27a6140689b1e740816b89da70e8e24, type: 3}
+    - {fileID: 21300000, guid: e48380e1ad09eb448b8a2056600a1be5, type: 3}
+    - {fileID: 21300000, guid: 6e07c1f30620e1740b892eae305cdff5, type: 3}
+    - {fileID: 21300000, guid: de74a42493f57c94dbe597bb99ea7222, type: 3}
+    - {fileID: 21300000, guid: 5cc06e5cb58b7794b81e151c05e05849, type: 3}
+    wild: {fileID: 11400000, guid: 98367a451873ee54f9c42ea8cf14dc65, type: 2}
+    tame: {fileID: 11400000, guid: 66c0d2e2ee1b13f478392d8e896659ad, type: 2}
+    flyer: 0
+  - species: Mossback
+    frames:
+    - {fileID: 21300000, guid: ad0e1536f9bfba842bb2f82fb54e51aa, type: 3}
+    - {fileID: 21300000, guid: 93c8a858c4f8e3645bdcbf778bd2a143, type: 3}
+    - {fileID: 21300000, guid: 2f455ab6d4f913e46a91560f1db30d20, type: 3}
+    - {fileID: 21300000, guid: b820b3a648381224f8a36921714a3a72, type: 3}
+    - {fileID: 21300000, guid: 44eeb8ca707db634ab649ec691a9fa6e, type: 3}
+    - {fileID: 21300000, guid: 33765e0cba0bfee409290779ab92e185, type: 3}
+    - {fileID: 21300000, guid: 014f3f9d5513a6a4888c74df43a0f5c3, type: 3}
+    - {fileID: 21300000, guid: 6ddfec096ece6a4408d1e5aad467d767, type: 3}
+    - {fileID: 21300000, guid: 8456ce372fdbe8044b21773b82dac5cc, type: 3}
+    - {fileID: 21300000, guid: e9f65ae1470e5884f89110c7472c7607, type: 3}
+    - {fileID: 21300000, guid: d3ecea68755ecc8438ef2c1ec3724971, type: 3}
+    - {fileID: 21300000, guid: 85b6456d4ba14124caac46fa985cee97, type: 3}
+    wild: {fileID: 11400000, guid: c4e4c1f35ad07fd4ea0bbaca627dfc4b, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: Griffin
+    frames:
+    - {fileID: 21300000, guid: 20083c3f6e78b6c4bbafa238877d6ad0, type: 3}
+    - {fileID: 21300000, guid: 0292d852b101a5c4ba6ba1ce5d4f0166, type: 3}
+    - {fileID: 21300000, guid: 3cd92b825f1108f4ab650aa644bc2977, type: 3}
+    - {fileID: 21300000, guid: 4205eea438538934ea957d49bacb497e, type: 3}
+    - {fileID: 21300000, guid: bb8cedf2e1aa0194fa7776c29183fc57, type: 3}
+    - {fileID: 21300000, guid: 0056e10321f3d264982e34ec85608056, type: 3}
+    - {fileID: 21300000, guid: 3aa776c6801cd5e4baf302617fa967e4, type: 3}
+    - {fileID: 21300000, guid: a0ed2eaf3254884448d2392893b53939, type: 3}
+    - {fileID: 21300000, guid: ff30703a581aaa148b7c5b5211c050cc, type: 3}
+    - {fileID: 21300000, guid: 9dc30c15bb510fe4cb156cd92352c159, type: 3}
+    - {fileID: 21300000, guid: 89ffadcf2a88ee847b49d7e514fb1dcd, type: 3}
+    - {fileID: 21300000, guid: 21e63b9e2195fa04d85ad8ebd736ce7d, type: 3}
+    wild: {fileID: 11400000, guid: 02e4a40ee5bba294e80416af4493b3f2, type: 2}
+    tame: {fileID: 11400000, guid: 26e1ef37ad15d2040a96cb42f9b97589, type: 2}
+    flyer: 1
+  - species: Wyvern
+    frames:
+    - {fileID: 21300000, guid: 04ba2705fda73b342a1b3639c2e4589a, type: 3}
+    - {fileID: 21300000, guid: bc61a4179b206a945ad1813db65b93c3, type: 3}
+    - {fileID: 21300000, guid: e0753b67206d69d4181ced43a1a788b6, type: 3}
+    - {fileID: 21300000, guid: 19b558e501899604bb559a0a89a63c20, type: 3}
+    - {fileID: 21300000, guid: 2c77c3b62aadac34cb3fc7803edecaba, type: 3}
+    - {fileID: 21300000, guid: 98ea248423a34884eaaeee3473e69c72, type: 3}
+    - {fileID: 21300000, guid: eb7f35d4e04153d4bb093cf5e8707a2e, type: 3}
+    - {fileID: 21300000, guid: f0efe2860c0489a4e99994adf064bf4e, type: 3}
+    - {fileID: 21300000, guid: f751a1b8b6464464c97dba34cb83a502, type: 3}
+    - {fileID: 21300000, guid: 3c7b26380496d2c40bcedfad424e6e45, type: 3}
+    - {fileID: 21300000, guid: de81d50e8164ca64e90c7937674e4030, type: 3}
+    - {fileID: 21300000, guid: b18093630b0895c41ac071e575cf3ff1, type: 3}
+    wild: {fileID: 11400000, guid: ad15f05217f192f469969c7a8cdc2d92, type: 2}
+    tame: {fileID: 11400000, guid: 61cef1773f1af1c48ae2a79bbffaa8d3, type: 2}
+    flyer: 1
+  - species: CrystalBeast
+    frames:
+    - {fileID: 21300000, guid: ac632a8b15c6c004794a4b5da9da2767, type: 3}
+    - {fileID: 21300000, guid: d2f17d06a37317145aff2c021c4a7291, type: 3}
+    - {fileID: 21300000, guid: 3dfb3e931f068d64aa4511e50e5baff7, type: 3}
+    - {fileID: 21300000, guid: b7fd8218ce4cf7d48829436ea8e455ed, type: 3}
+    - {fileID: 21300000, guid: ecdfcedd9529dd64d98cb2db83109f5e, type: 3}
+    - {fileID: 21300000, guid: 03fcfc37804577c41b31be060333834e, type: 3}
+    - {fileID: 21300000, guid: 557584e766460d543b04c6964dad54e9, type: 3}
+    - {fileID: 21300000, guid: 25271e13761668b409588dc9e68af994, type: 3}
+    - {fileID: 21300000, guid: 198b3c019a556044fa1954d8e77b320a, type: 3}
+    - {fileID: 21300000, guid: 5a1eb3e6821fd314689aa63429aa65e8, type: 3}
+    - {fileID: 21300000, guid: b4f3966480fe4d74293e2aabf1c07d0d, type: 3}
+    - {fileID: 21300000, guid: 9cca289841d80bb46a48e2934ce49bb8, type: 3}
+    wild: {fileID: 11400000, guid: f664d0f0d50bb194ea069b34d2c0b8ea, type: 2}
+    tame: {fileID: 11400000, guid: cb0d0bdc56f997f428fd8012d6f5596b, type: 2}
+    flyer: 0
+  - species: FrostStrider
+    frames:
+    - {fileID: 21300000, guid: a76c5791f832e24408f05578898bcccd, type: 3}
+    - {fileID: 21300000, guid: e79f9369e5af5a645b8ca0733a606e03, type: 3}
+    - {fileID: 21300000, guid: e26e8639f77ead34e9135db0f6430d89, type: 3}
+    - {fileID: 21300000, guid: 61b354999ffddec498ae2ee118265bf3, type: 3}
+    - {fileID: 21300000, guid: 2acacb41102061b41b837f5f318877b0, type: 3}
+    - {fileID: 21300000, guid: 3b22f70d2e4c0554e88a4c7ca7e21741, type: 3}
+    - {fileID: 21300000, guid: 0fb815e813462b549aa3176a16cc0298, type: 3}
+    - {fileID: 21300000, guid: e5bfdffbff1054b48aae539b2cf0760c, type: 3}
+    - {fileID: 21300000, guid: 9bf65be7bb496b742a0a9232621909dd, type: 3}
+    - {fileID: 21300000, guid: 902a5b7c3f47ef34c9ebae9796e85775, type: 3}
+    - {fileID: 21300000, guid: 2cdb2be65dd3fd044a8cdc618275879f, type: 3}
+    - {fileID: 21300000, guid: 2d68ab1779bb99742a9a37fd560bf5d0, type: 3}
+    wild: {fileID: 11400000, guid: 09027faf83d57624da97ce2d65500378, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: IceLurker
+    frames:
+    - {fileID: 21300000, guid: d69eab281a4d94f4ea1f43f59fe53c84, type: 3}
+    - {fileID: 21300000, guid: 8b4711813b8d5ba4c862cad280e6d84a, type: 3}
+    - {fileID: 21300000, guid: 5b23f433a7502b8449372c35eb5ce85a, type: 3}
+    - {fileID: 21300000, guid: 13c3f5e6564570b4d8898f87fb4645f1, type: 3}
+    - {fileID: 21300000, guid: 93a042021cb27bd4cbb2aeca0d1a1d33, type: 3}
+    - {fileID: 21300000, guid: 9dda7b57eaf833a40af3dbde0d4780f2, type: 3}
+    - {fileID: 21300000, guid: e7c3bc6e2a67ceb418b2c731e797b0ba, type: 3}
+    - {fileID: 21300000, guid: d25d39aa8a790c84f93b58bc6796cd7b, type: 3}
+    - {fileID: 21300000, guid: f064944c340e6b1409f7d07f80968dbf, type: 3}
+    - {fileID: 21300000, guid: f5fe8b6fe1f89cf499586833d73965af, type: 3}
+    - {fileID: 21300000, guid: 7d665e1e572d7164e84e39b995cc9c61, type: 3}
+    - {fileID: 21300000, guid: a83a4388e13c98748ba80dac25ae479d, type: 3}
+    wild: {fileID: 11400000, guid: 1e34c1af9cea2b74e893a363bad8684f, type: 2}
+    tame: {fileID: 11400000, guid: b2250e7fb5991db45a992fa4822da3dc, type: 2}
+    flyer: 0
+  - species: SandSkitter
+    frames:
+    - {fileID: 21300000, guid: b9a163a7689e92a4384b02c2ddd5141d, type: 3}
+    - {fileID: 21300000, guid: 38cb6b357cd7e2a428caac5c961d2adf, type: 3}
+    - {fileID: 21300000, guid: 6d77ad54573835944b806ed4350ec71f, type: 3}
+    - {fileID: 21300000, guid: 9695d24908f76f4449e8d40db683b984, type: 3}
+    - {fileID: 21300000, guid: a8f75e3b8398adb458d1ab13611fa4a6, type: 3}
+    - {fileID: 21300000, guid: cef992bf21103a74399a39b4b14443c6, type: 3}
+    - {fileID: 21300000, guid: 5366246a6a0ec0e4bb75734926405907, type: 3}
+    - {fileID: 21300000, guid: c7a44de3e65d4d4408044fac3cc33ac1, type: 3}
+    - {fileID: 21300000, guid: 9c21aa07aefe29e43bd1caf41a33bebb, type: 3}
+    - {fileID: 21300000, guid: a3c04e862c2382343a92f5d030d6f99c, type: 3}
+    - {fileID: 21300000, guid: c643fa4a45a7d8b419f2c6c08a4bf259, type: 3}
+    - {fileID: 21300000, guid: 52b8bdfc8503a1f4dab101d37acb97fe, type: 3}
+    wild: {fileID: 11400000, guid: 360ef75583099844aa73ee82f4220534, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: DuneWyrm
+    frames:
+    - {fileID: 21300000, guid: a5f69ae953f8cc64aba02be3ec0489ab, type: 3}
+    - {fileID: 21300000, guid: 6e40b5e515a52954f90449cffde12127, type: 3}
+    - {fileID: 21300000, guid: ae060fa4c547de94a9994e873c6f9840, type: 3}
+    - {fileID: 21300000, guid: 27c93ce701c699549896f4ce269cb25b, type: 3}
+    - {fileID: 21300000, guid: 0ba8fb17b2e27264aa771c547f82ad92, type: 3}
+    - {fileID: 21300000, guid: 1b29cabd07ac6324fb04b177f62c9b52, type: 3}
+    - {fileID: 21300000, guid: b05be3668a4a59d44b042ae99a8c9fec, type: 3}
+    - {fileID: 21300000, guid: 8cf0d2d45a344c14cb27202683c21ccf, type: 3}
+    - {fileID: 21300000, guid: 511ffbdf2dd852047b6998dc3b3726dd, type: 3}
+    - {fileID: 21300000, guid: 22ff4564dc2f3bf4db94e65989ce51f5, type: 3}
+    - {fileID: 21300000, guid: a28977873287fdd41a822b187f84de53, type: 3}
+    - {fileID: 21300000, guid: 28da1357eb1da084fb77f6c7e6e1f7db, type: 3}
+    wild: {fileID: 11400000, guid: c15b6476cc0eada458151d0ec3657eaf, type: 2}
+    tame: {fileID: 11400000, guid: 169fa65ecd8b96547b4c88eb0ec4dde0, type: 2}
+    flyer: 0
+  - species: EmberHound
+    frames:
+    - {fileID: 21300000, guid: 0f71692e4d05f9446bd06a2ea8052c81, type: 3}
+    - {fileID: 21300000, guid: 4604b46bf95259840b8a255c6bf9c131, type: 3}
+    - {fileID: 21300000, guid: 5fc4340d254dd4945b91842e62912591, type: 3}
+    - {fileID: 21300000, guid: d810b25d8f6f4d84591aec5eb9d84279, type: 3}
+    - {fileID: 21300000, guid: e95e81f9f621f2d4f875861343441810, type: 3}
+    - {fileID: 21300000, guid: 7f4f5dc1e6862a44eadbe0f850d5b387, type: 3}
+    - {fileID: 21300000, guid: 95898efc1ac008a4388cc2b433214f3a, type: 3}
+    - {fileID: 21300000, guid: 76276ce9832bd984dbe9bfb859ad458e, type: 3}
+    - {fileID: 21300000, guid: 2ea702aa47f07d243b4d9ed4f5b4729c, type: 3}
+    - {fileID: 21300000, guid: fbaadbc257ccbe04396cee986b2e7e87, type: 3}
+    - {fileID: 21300000, guid: 42102a17e6e074b4c89c75e869f849c9, type: 3}
+    - {fileID: 21300000, guid: b4e9ea32cb44dea4fbf063cd855e9bc6, type: 3}
+    wild: {fileID: 11400000, guid: 76f3cf20d70a1f74485112085dd6d953, type: 2}
+    tame: {fileID: 11400000, guid: b3a2f2f9c7b20994da769f7700410ec1, type: 2}
+    flyer: 0
+  - species: MagmaTortoise
+    frames:
+    - {fileID: 21300000, guid: a142c1705fb71e74a8ae00e474ee0d6a, type: 3}
+    - {fileID: 21300000, guid: 05ad003ad6675df4f860836f5a64758f, type: 3}
+    - {fileID: 21300000, guid: 757383641ffceae48a168ddaab9beb12, type: 3}
+    - {fileID: 21300000, guid: 06b60fa48c5bc4e4993148b48a793de6, type: 3}
+    - {fileID: 21300000, guid: 4e0a37090ac0a1045a624166b97714df, type: 3}
+    - {fileID: 21300000, guid: f704c2091cb29a543913f18f935b967f, type: 3}
+    - {fileID: 21300000, guid: 64947b7e86d2fb24084623db6c7e73e8, type: 3}
+    - {fileID: 21300000, guid: 78534fd80ea48d1469fd92ea65ee14d6, type: 3}
+    - {fileID: 21300000, guid: f14394381fda5e946b60a965ede78f34, type: 3}
+    - {fileID: 21300000, guid: 8539c208ce56f4d4ea95a975b28f75bf, type: 3}
+    - {fileID: 21300000, guid: be0a6e50e95144149b560de36901317c, type: 3}
+    - {fileID: 21300000, guid: 571f58be33f0efe4f8835544727c1f81, type: 3}
+    wild: {fileID: 11400000, guid: 20a46fbd1a3c58a4f8b8ec45219eab96, type: 2}
+    tame: {fileID: 11400000, guid: 107ec0f928ef6d644852d6bfb21e2eb5, type: 2}
+    flyer: 0
+  - species: RazorRaptor
+    frames:
+    - {fileID: 21300000, guid: 03aaa2210d221b8429711534b03481fd, type: 3}
+    - {fileID: 21300000, guid: 9a0e58c6e3c72f04cad7af4a0e1bcda6, type: 3}
+    - {fileID: 21300000, guid: 9e4b5720bb63a6f41bd1fb10d8202da7, type: 3}
+    - {fileID: 21300000, guid: ac8a7dc66bad8e24b853597507686199, type: 3}
+    - {fileID: 21300000, guid: 0699f061459058942b72e2b61dd22a08, type: 3}
+    - {fileID: 21300000, guid: d637c39fef0afac4393c73ed2df2af64, type: 3}
+    - {fileID: 21300000, guid: 9d088bf474841be48ad4a95b92f3f100, type: 3}
+    - {fileID: 21300000, guid: 34b012e9551d5a340a5286da5cbcb8d7, type: 3}
+    - {fileID: 21300000, guid: 000efc02f4e2f4340a7a156cece1104f, type: 3}
+    - {fileID: 21300000, guid: de67264f0d7ee9c44b00b64e85a11a99, type: 3}
+    - {fileID: 21300000, guid: 7a764269a6696f54ba5f50130e6dbb2b, type: 3}
+    - {fileID: 21300000, guid: 1933942dd39565542bd31f40e2a22884, type: 3}
+    wild: {fileID: 11400000, guid: 65e3c1138aa0ce04cbd8130b546820c4, type: 2}
+    tame: {fileID: 11400000, guid: 955f9e723bbd43b4c8aca1e2007439ea, type: 2}
+    flyer: 0
+  - species: CanopyStrider
+    frames:
+    - {fileID: 21300000, guid: 7abeac7a8fc2263479db3c25fd96f6d3, type: 3}
+    - {fileID: 21300000, guid: 0e4e2ddd0236c004694e53b9ff6c5ecc, type: 3}
+    - {fileID: 21300000, guid: 3b8bef61017a08b41873b21bbf39f031, type: 3}
+    - {fileID: 21300000, guid: 9de71ebeec464f74db4fd787128ac631, type: 3}
+    - {fileID: 21300000, guid: 3602a84b028761240bdb512496dca27d, type: 3}
+    - {fileID: 21300000, guid: faa3534678bb9284ea48ec2bf4f43b8d, type: 3}
+    - {fileID: 21300000, guid: 9e7bd8f7cf7c4d142bb18377496b6f1f, type: 3}
+    - {fileID: 21300000, guid: 60ada0c71072a8c41a17ccae7134cf6f, type: 3}
+    - {fileID: 21300000, guid: f47a4694b4b742f41b13b720243cc217, type: 3}
+    - {fileID: 21300000, guid: c6d83cf8d297ca74f9aa9fec9fc7c2f3, type: 3}
+    - {fileID: 21300000, guid: 7c9483bedeb49c640b3aae78008cf26a, type: 3}
+    - {fileID: 21300000, guid: 835eb3b95d5732a489bcd32eeb94eeae, type: 3}
+    wild: {fileID: 11400000, guid: d8ff3ff400cc95842bb37fc919770dd7, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: ShardStalker
+    frames:
+    - {fileID: 21300000, guid: 476c3e2038c34ed4b9cafca27f8ccad6, type: 3}
+    - {fileID: 21300000, guid: db1cb151c8df85c439eee5bda7596ff9, type: 3}
+    - {fileID: 21300000, guid: bf32fa83615fa894895b09b339ab5286, type: 3}
+    - {fileID: 21300000, guid: 034cf1f4e47f2d34fa069c9dcaf31399, type: 3}
+    - {fileID: 21300000, guid: b8e4dffeefd8d1243bae0b41ffd11d3e, type: 3}
+    - {fileID: 21300000, guid: 78a87b2f86d804b459a9fb82c3ec8823, type: 3}
+    - {fileID: 21300000, guid: 95d2143c2dd7616488dff82c28cf99f2, type: 3}
+    - {fileID: 21300000, guid: 90a474214c0868341b9b31c665255dd3, type: 3}
+    - {fileID: 21300000, guid: 2c4ce564633ed964995be635ce189280, type: 3}
+    - {fileID: 21300000, guid: fdc2e2878a9ce384ba41fc7c0e5bc29e, type: 3}
+    - {fileID: 21300000, guid: 82f77bf7ec18d4741bd278f09632de33, type: 3}
+    - {fileID: 21300000, guid: 24de2cde4f65a8c4eb86c81bd82443df, type: 3}
+    wild: {fileID: 11400000, guid: 874234360b5d17c479362980664c9b04, type: 2}
+    tame: {fileID: 11400000, guid: fc680a42ee3a6af49a9536378a60c9cf, type: 2}
+    flyer: 0
+  - species: PrismMoth
+    frames:
+    - {fileID: 21300000, guid: c15c883ff9f36ce4dbd181abc861743c, type: 3}
+    - {fileID: 21300000, guid: dde0f3caa6825ff4f946d693ba335004, type: 3}
+    - {fileID: 21300000, guid: 7b596bacb2094b24a948880c837d9e58, type: 3}
+    - {fileID: 21300000, guid: 124129c660d6c4c409e6abd67d3e3633, type: 3}
+    - {fileID: 21300000, guid: d3dd6ac0edc0de148af0f4b0aa1ca53c, type: 3}
+    - {fileID: 21300000, guid: c900631f203e6ae47aee258da9c78e85, type: 3}
+    - {fileID: 21300000, guid: 05f2c6a337216e947aad077e493f6298, type: 3}
+    - {fileID: 21300000, guid: f8b8fa77f6044234f8dc11d93a88534e, type: 3}
+    - {fileID: 21300000, guid: 1c2c4847e254fbe44a80fba4cbaf06e6, type: 3}
+    - {fileID: 21300000, guid: 3d182c226f912814ab5f172f660981f4, type: 3}
+    - {fileID: 21300000, guid: ebec3dd34b2620745ad1d2fa596ead0a, type: 3}
+    - {fileID: 21300000, guid: c30ffe4e56040454d9f2c42daca39a79, type: 3}
+    wild: {fileID: 11400000, guid: 736d88ce1bfdc1b438e2241488bdd659, type: 2}
+    tame: {fileID: 0}
+    flyer: 1
+  - species: MireLurker
+    frames:
+    - {fileID: 21300000, guid: 939da8c0ac0b3014d9343248c34b479e, type: 3}
+    - {fileID: 21300000, guid: 1c44e12a0a84ef94f8659b849318fc6a, type: 3}
+    - {fileID: 21300000, guid: 4543be63ea137394fa85d20cbb620c03, type: 3}
+    - {fileID: 21300000, guid: b09ff97797ed63c499297cb873f89c72, type: 3}
+    - {fileID: 21300000, guid: de9eb69182bce2340a2b2b93a8001aaa, type: 3}
+    - {fileID: 21300000, guid: 4c49c29c83f689c4da47a4b2d8866ec2, type: 3}
+    - {fileID: 21300000, guid: fd75fbeb878350140aaf15b045a4c72d, type: 3}
+    - {fileID: 21300000, guid: 0f7cdafb1488f6c4080f48aba64d21b2, type: 3}
+    - {fileID: 21300000, guid: 9d169a2526279344ba8f6d880dff20ae, type: 3}
+    - {fileID: 21300000, guid: 9f69ff3103ac2764d9f17a96d81f2291, type: 3}
+    - {fileID: 21300000, guid: c31c657c26e984d499257460c149a21f, type: 3}
+    - {fileID: 21300000, guid: 5205887d3341c85418ee57d56fad5a9c, type: 3}
+    wild: {fileID: 11400000, guid: 96f00b3ef3bb33648aeefb7657664046, type: 2}
+    tame: {fileID: 11400000, guid: 3401a650e9045ec4f8a37ef6b988c7b0, type: 2}
+    flyer: 0
+  - species: ShellCrawler
+    frames:
+    - {fileID: 21300000, guid: 548de1b93fe6f0e4ea8f7a935854163b, type: 3}
+    - {fileID: 21300000, guid: a7a6d7b73e050384b9408bf349077dfc, type: 3}
+    - {fileID: 21300000, guid: a3ee448c4e7806648ab22f78351fc40e, type: 3}
+    - {fileID: 21300000, guid: fa4a87630f59b754cbdfea1bb5c8c79d, type: 3}
+    - {fileID: 21300000, guid: 2e759e3e35cd747438857082ef1f5969, type: 3}
+    - {fileID: 21300000, guid: cd8021313eefe42499ff28b08ed47eb3, type: 3}
+    - {fileID: 21300000, guid: f32a6abe040c6dd418e3d11fb1efad02, type: 3}
+    - {fileID: 21300000, guid: f37e322e3970b1649884df704072b114, type: 3}
+    - {fileID: 21300000, guid: dda14878ff58aa941ae3c3f246fa0e4c, type: 3}
+    - {fileID: 21300000, guid: 646d54ca2e620544da2ebbbadaf86ae2, type: 3}
+    - {fileID: 21300000, guid: ac3d1747bd5fea94191807eb04854093, type: 3}
+    - {fileID: 21300000, guid: 35b9f50e31218e340b3a7d3e6acd6f22, type: 3}
+    wild: {fileID: 11400000, guid: d1829b600cec9d54fa3a8ff619ce33a8, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: CraterHulk
+    frames:
+    - {fileID: 21300000, guid: e38e55aa06fec134e9ab52946334901f, type: 3}
+    - {fileID: 21300000, guid: 090bd3f59947b354394ff230c9dba1d7, type: 3}
+    - {fileID: 21300000, guid: af0067d61adad42469c214bca9dcb199, type: 3}
+    - {fileID: 21300000, guid: 064a02322063cff4182093af3fed32b3, type: 3}
+    - {fileID: 21300000, guid: cf9ed32a6b42cf042bd34461bac0c8c4, type: 3}
+    - {fileID: 21300000, guid: e6a28e605e5028842be8ed45e230f8a4, type: 3}
+    - {fileID: 21300000, guid: 972241b9cd321af48b55103f689639a3, type: 3}
+    - {fileID: 21300000, guid: a8c67767341170846bbf437fc507b6a6, type: 3}
+    - {fileID: 21300000, guid: daf939327a9a3b0488a72a3b632e5705, type: 3}
+    - {fileID: 21300000, guid: 9c57187e52fa189418a27bab0f8dadb7, type: 3}
+    - {fileID: 21300000, guid: f4eec89cc89195a4b91756f8ea3bc531, type: 3}
+    - {fileID: 21300000, guid: 122a51b2194d8564abcab19a7e895756, type: 3}
+    wild: {fileID: 11400000, guid: fb5b2bc5c56dc574f8024eecfa2bac94, type: 2}
+    tame: {fileID: 11400000, guid: bf5fc09101d73f64599333d8e31b59d0, type: 2}
+    flyer: 0
+  - species: SporeGrazer
+    frames:
+    - {fileID: 21300000, guid: 852b89fa6c754e64b97cc5bd9ff323af, type: 3}
+    - {fileID: 21300000, guid: e327a2b5855bb0c40af8e727f8bfe7fd, type: 3}
+    - {fileID: 21300000, guid: d2135555f7162f844baf8f1d4c0a02c0, type: 3}
+    - {fileID: 21300000, guid: 484f9e42bde14c748b34026b45b4bc0a, type: 3}
+    - {fileID: 21300000, guid: 57c06fc38c643154ca30554fceb19416, type: 3}
+    - {fileID: 21300000, guid: dddd8a0a42103f7498bae0c67409280c, type: 3}
+    - {fileID: 21300000, guid: 9ba08e35496dd2d42a83cf24e1693181, type: 3}
+    - {fileID: 21300000, guid: 7d495d51372e30844879dfead54a3713, type: 3}
+    - {fileID: 21300000, guid: 53bed9d0ff431e04ab8d7625a2bef9cc, type: 3}
+    - {fileID: 21300000, guid: 4550030ff154d164192bfcf5143ae566, type: 3}
+    - {fileID: 21300000, guid: d786e38ec47a79842aef8925fda191a4, type: 3}
+    - {fileID: 21300000, guid: 5b915141f41bf9b4d99550bbe7120077, type: 3}
+    wild: {fileID: 11400000, guid: 54d093d38ced94e4aaa43b40d4634996, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: WhiteStag
+    frames:
+    - {fileID: 21300000, guid: dc2c74adc336b1b41be3bb2d47a485fc, type: 3}
+    - {fileID: 21300000, guid: 4794e531d02d43d419c41205c0383aca, type: 3}
+    - {fileID: 21300000, guid: c2e7ec7a8e3343d49b033def73866880, type: 3}
+    - {fileID: 21300000, guid: bd60f57b5d3bbe3448488eb25e1d2870, type: 3}
+    - {fileID: 21300000, guid: d1a0bb3a09652c8419fe04b59cf273fa, type: 3}
+    - {fileID: 21300000, guid: 32cbea99f6607fa4ba8c2458c942165d, type: 3}
+    - {fileID: 21300000, guid: 13a55663ae7b0304cade43fbf3d3cd6a, type: 3}
+    - {fileID: 21300000, guid: 1679d09af08a8e744b88b2fef8c60c56, type: 3}
+    - {fileID: 21300000, guid: f1df30ca7820c604c816b0a2b0dfb3d4, type: 3}
+    - {fileID: 21300000, guid: 9368548896ed30642847ab1bde12de30, type: 3}
+    - {fileID: 21300000, guid: f4773facdced6d14d98843e98bf2e5a6, type: 3}
+    - {fileID: 21300000, guid: e696410219ba2aa43bfd47f839cd8d31, type: 3}
+    wild: {fileID: 11400000, guid: 9ac06d1c20b289a4e9f4c91f9b2e66a5, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: AncientMammoth
+    frames:
+    - {fileID: 21300000, guid: a26339e055080a643a4c350eb2308d84, type: 3}
+    - {fileID: 21300000, guid: 7d7bb96458380d54d8f9c46c79ca6279, type: 3}
+    - {fileID: 21300000, guid: 1976bf3ad119a7f4496a36d33d0cae76, type: 3}
+    - {fileID: 21300000, guid: 615a0d57d7e0f6942940af6d95d96235, type: 3}
+    - {fileID: 21300000, guid: d1394c755fca64a41aba8b2395d10617, type: 3}
+    - {fileID: 21300000, guid: 4ccb17bac2faf4549b5c871d7cf0b2ef, type: 3}
+    - {fileID: 21300000, guid: 9ca5aec42b069624cbb6f914c20e09ac, type: 3}
+    - {fileID: 21300000, guid: c8c4504332f046149b73f475459f301f, type: 3}
+    - {fileID: 21300000, guid: 0ef65ee959af0644c89bbb8e2cb143dc, type: 3}
+    - {fileID: 21300000, guid: 983629f1214521745bbe95870a60e2e4, type: 3}
+    - {fileID: 21300000, guid: 1adf0a5b56171514f80b588a27a6dbbb, type: 3}
+    - {fileID: 21300000, guid: 6f77109fbe783f74291a98a00bbfc211, type: 3}
+    wild: {fileID: 11400000, guid: 7bec7534c585eac429336168be1d972c, type: 2}
+    tame: {fileID: 0}
+    flyer: 0
+  - species: StormGriffin
+    frames:
+    - {fileID: 21300000, guid: 96aa7d6229582e74495af930e753c1ec, type: 3}
+    - {fileID: 21300000, guid: ff7fd9dfa3c576e4bb98014c52b5cc20, type: 3}
+    - {fileID: 21300000, guid: 13b729dbde578794db99874979cf74e3, type: 3}
+    - {fileID: 21300000, guid: e203c21a853748a4d8eb028f37ae2462, type: 3}
+    - {fileID: 21300000, guid: d0d876de923bd2a4099809be09fd7c55, type: 3}
+    - {fileID: 21300000, guid: e44a19a630b62c24280fdbabc23c5ed6, type: 3}
+    - {fileID: 21300000, guid: bb4b2ed9ae5e00f44b864c56612f402c, type: 3}
+    - {fileID: 21300000, guid: 89c738aa024ac0c40bd9f96d61411c8a, type: 3}
+    - {fileID: 21300000, guid: a97b079106876c44480ae45ac2189bc7, type: 3}
+    - {fileID: 21300000, guid: 6288a6904e22ba84cb90a47126ac64e2, type: 3}
+    - {fileID: 21300000, guid: aea31e25f2d539d4fbd9901529ec3485, type: 3}
+    - {fileID: 21300000, guid: 275f7eb801468b94c81f907561a7360f, type: 3}
+    wild: {fileID: 11400000, guid: 80a56dc6247f6324dbdbc5413f65fc52, type: 2}
+    tame: {fileID: 0}
+    flyer: 1
+  - species: SkyWhale
+    frames:
+    - {fileID: 21300000, guid: 533c6c3834dcc0a46ba9d5a64b47943d, type: 3}
+    - {fileID: 21300000, guid: ee8f19dcac5c020469700ed7cee07923, type: 3}
+    - {fileID: 21300000, guid: 0eec054d2bfb52249846e2e002f1a465, type: 3}
+    - {fileID: 21300000, guid: b1bfd2e91c366974bb01508c4f32d3bc, type: 3}
+    - {fileID: 21300000, guid: c870739b12929324cbe856292dca6523, type: 3}
+    - {fileID: 21300000, guid: 4bc20463fda824643ab0ec5a4043a239, type: 3}
+    - {fileID: 21300000, guid: d7c6de6ce49dc8b4ea9234b2d9ffddcf, type: 3}
+    - {fileID: 21300000, guid: 2b2aec1049595fa4588b3c3ac0376fb8, type: 3}
+    - {fileID: 21300000, guid: 59673f5aedc65b341b9a3a65a90dfac8, type: 3}
+    - {fileID: 21300000, guid: bbeb281e78955274495fcd360efa69e9, type: 3}
+    - {fileID: 21300000, guid: a906cbabb073d1e49a78070c73b2ab59, type: 3}
+    - {fileID: 21300000, guid: a93f2b75639ebc241bce1ab5aee70f39, type: 3}
+    wild: {fileID: 11400000, guid: 9d0359780c04cc046adfc3a7e94780cc, type: 2}
+    tame: {fileID: 0}
+    flyer: 1
+  - species: Shardback
+    frames:
+    - {fileID: 21300000, guid: ee22fa92464256748b124d459125fb0a, type: 3}
+    - {fileID: 21300000, guid: 7f81bfb651e0a6541b231f4c69b8c3ac, type: 3}
+    - {fileID: 21300000, guid: 9345291b5f676cf459c3bf43825c25a7, type: 3}
+    - {fileID: 21300000, guid: 3e634804c5679f949a7c29ad688a1668, type: 3}
+    - {fileID: 21300000, guid: 091f67c834e7d03409691bdd6f9ad02d, type: 3}
+    - {fileID: 21300000, guid: 48d6127a4a05e1b4988afdf843c5273e, type: 3}
+    - {fileID: 21300000, guid: 5c36c3a6ed0e93541b455dd1987d6f06, type: 3}
+    - {fileID: 21300000, guid: ae7645f87ec834e42bb166f73d927ada, type: 3}
+    - {fileID: 21300000, guid: b5fbfc9eafc8719478d4782f5f07931e, type: 3}
+    - {fileID: 21300000, guid: 209684d67f3d8e8408281d84e6412e87, type: 3}
+    - {fileID: 21300000, guid: 0dd3419d0167a80499d951531a4edcf4, type: 3}
+    - {fileID: 21300000, guid: a141479d864c6124ba64f0e4d576f68b, type: 3}
+    wild: {fileID: 11400000, guid: b168982382d48164885b108e682a1ed8, type: 2}
+    tame: {fileID: 0}
+    flyer: 0

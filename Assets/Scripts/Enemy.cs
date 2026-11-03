@@ -279,5 +279,6 @@ public class Enemy : Unit
         base.Die();
         raid?.RaiderKilled(this);
         Settlement.Instance?.NativeKilled(this);   // their people remember
+        Settlement.Instance?.XRecordKill(this);
     }
 }

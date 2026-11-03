@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>How a unit gets about.</summary>
-public enum Movement { Ground, Air, Underground }
+public enum Movement { Ground, Air, Underground, Water }
 
 /// <summary>
 /// The base stats and identity of one unit type (e.g. Stone Age Clubman).

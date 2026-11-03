@@ -179,11 +179,13 @@ public class FreeModeHUD : MonoBehaviour
             new Vector2(-10, 0), new Vector2(130, 40));
         speedLabel.alignment = TextAlignmentOptions.Center;
         speedLabel.text = "Speed x1";
+        UIBuilder.OnHover(speed.gameObject, () => tooltipSource = XRecordsPanel.SpeedHelp, HideTooltip);
         GameAudio.AddSoundButton(bar, -610);
 
         canvasRect = (RectTransform)root;
         WorldSwitcher.Create(root, settlement);   // appears once you have more than one world
         EventPanel.Create(root, settlement);      // random events: a card with choices, and a badge
+        CulturePanel.Create(root, settlement);    // a mood badge (top centre) opening culture, faith and great people
         DiplomacyPanel.Create(root, settlement);  // a badge on worlds with natives; opens from it or a camp
         starMap = StarMapPanel.Create(root, settlement);
         StarMapPanel.Actions.Clear();   // (statics survive between plays: always point at this game)
@@ -270,6 +272,9 @@ public class FreeModeHUD : MonoBehaviour
         // The journal: lore from lore stones and blessings from shrines, folded away under research.
         journalSection = new CollapsibleSection("Journal", researchContent, "Journal", new Color(0.95f, 0.82f, 0.5f));
         journalSection.SetOpen(false);
+        QuestPanel.Create(root, settlement, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // hero quests: section, card, log
+        // The Chronicle: history, achievements, statistics, your worlds, the market, messages.
+        XRecordsPanel.Create(root, settlement, controller, this, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);
 
         // Dungeon progress (top centre, only while a party is underground)
         dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
@@ -797,7 +802,7 @@ public class FreeModeHUD : MonoBehaviour
 
     // ---------- Build menu grouping and search ----------
 
-    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls, Wonders }
+    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls, Culture, Wonders }
 
     private static string CategoryName(BuildCategory c) => c switch
     {
@@ -814,6 +819,7 @@ public class FreeModeHUD : MonoBehaviour
         BuildCategory.Industry => new Color(0.95f, 0.6f, 0.35f),
         BuildCategory.Military => new Color(0.95f, 0.45f, 0.4f),
         BuildCategory.Defence => new Color(0.6f, 0.75f, 0.95f),
+        BuildCategory.Culture => new Color(0.9f, 0.62f, 0.85f),
         BuildCategory.Wonders => new Color(1f, 0.84f, 0.42f),
         _ => new Color(0.75f, 0.75f, 0.78f),
     };
@@ -822,9 +828,11 @@ public class FreeModeHUD : MonoBehaviour
     private static BuildCategory CategoryOf(BuildingDefinition def)
     {
         if (def.wonder) return BuildCategory.Wonders;
-        if (def.IsWall) return BuildCategory.Walls;
+        if (Settlement.IsCultureBuilding(def.id)) return BuildCategory.Culture;
+        if (def.IsWall && def.wallKind != WallTile.Bridge) return BuildCategory.Walls;   // bridges sit with the settlement's works
         if (def.isTownCenter) return BuildCategory.Settlement;
-        if (def.trainsUnit != null) return BuildCategory.Military;
+        if (Settlement.TrainsTroops(def)) return BuildCategory.Military;
+        if (Settlement.IsHuntBuilding(def)) return BuildCategory.Food;
         if (def.towerRange > 0) return BuildCategory.Defence;
         if (def.production.Count == 0) return def.housing > 0 ? BuildCategory.Housing : BuildCategory.Settlement;
         foreach (var rate in def.production)
@@ -981,6 +989,7 @@ public class FreeModeHUD : MonoBehaviour
             sb.Append($"Health {Mathf.FloorToInt(state.health)}/{settlement.StatsOf(state).maxHealth}{ruined}\n");
         }
         sb.Append(StatsText(def, state.upgradeLevel));
+        sb.Append(settlement.CultureSelectionText(state, def));
         if (def.requiredDeposit != null || def.waterBonus > 0)
         {
             string color = state.siteQuality >= 0.99f ? "#8f8" : state.siteQuality >= 0.5f ? "#fe8" : "#fb7";
@@ -1006,9 +1015,10 @@ public class FreeModeHUD : MonoBehaviour
                 }
             }
         }
+        settlement.AppendWildlifeInfo(sb, state, def);
         selectionText.text = sb.ToString().TrimEnd();
 
-        bool trains = def.trainsUnit != null;
+        bool trains = Settlement.TrainsTroops(def);
         stanceButton.gameObject.SetActive(trains);
         if (trains)
         {
@@ -1343,7 +1353,7 @@ public class FreeModeHUD : MonoBehaviour
         TroopStance? first = null;
         foreach (var v in controller.Selection)
         {
-            if (v.Definition.trainsUnit != null) { first = v.State.stance; break; }
+            if (Settlement.TrainsTroops(v.Definition)) { first = v.State.stance; break; }
         }
         if (first == null)
         {
@@ -1352,7 +1362,7 @@ public class FreeModeHUD : MonoBehaviour
         var next = first == TroopStance.Defend ? TroopStance.Attack : TroopStance.Defend;
         foreach (var v in controller.Selection)
         {
-            if (v.Definition.trainsUnit != null) v.State.stance = next;
+            if (Settlement.TrainsTroops(v.Definition)) v.State.stance = next;
         }
         RefreshAll();
     }
@@ -1395,6 +1405,26 @@ public class FreeModeHUD : MonoBehaviour
             : common == TroopStance.Defend ? "All troops: <color=#8cf>Defend</color>"
             : common == TroopStance.Attack ? "All troops: <color=#f96>Attack</color>"
             : "All troops: Mixed";
+    }
+
+    /// <summary>One speed step faster or slower (the [ and ] keys).</summary>
+    public void XStepSpeed(int delta)
+    {
+        speedIndex = Mathf.Clamp((Time.timeScale <= 0f ? speedIndex : speedIndex + delta), 0, Speeds.Length - 1) - 1;
+        CycleSpeed();
+    }
+
+    /// <summary>Pause, or carry on at the speed you had (the P key).</summary>
+    public void XTogglePause()
+    {
+        if (Time.timeScale > 0f)
+        {
+            Time.timeScale = 0f;
+            speedLabel.text = "<color=#fd6>Paused</color>";
+            return;
+        }
+        speedIndex--;
+        CycleSpeed();
     }
 
     private void CycleSpeed()
@@ -1444,6 +1474,7 @@ public class FreeModeHUD : MonoBehaviour
         var sb = new StringBuilder("<b>People</b>\n");
         sb.Append($"{people} living here, room for {room}\n");
         sb.Append($"{working} working, {people - working} idle");
+        sb.Append(settlement.MoodTooltipLine());
         if (jobs > people)
         {
             sb.Append($"\n<color=#fc6>{jobs - people} jobs unfilled: buildings run at {settlement.WorkerEfficiency:P0}</color>");
@@ -1509,6 +1540,7 @@ public class FreeModeHUD : MonoBehaviour
         bool kit = def.launchesShips && settlement.HasStarportKit;
         sb.Append($"Cost: {(kit ? "<color=#8f8>Free: your colony ship brought a Starport kit</color>" : CostText(def.requirements.cost))}   Build time: {def.buildTime:0}s\n");
         sb.Append(StatsText(def, 0));
+        sb.Append(settlement.CultureBuildingText(def, 0));
         sb.Append(PlacementText(def));
         if (def.upgrades.Count > 0)
         {

@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverBridgeSteel
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverBridgeSteel
+  displayName: Steel Bridge
+  description: A road deck with crash rails and street lamps. Reaches 8 tiles out
+    from the bank. Drag out a straight line over the water; everyone can walk over
+    it, raiders too, and they wear it down as they cross. Boats can't pass it.
+  icon: {fileID: 21300000, guid: 1c586b2ddcd68644c8f002806b4f1955, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 20c6c052a92f8864a81cdd3b5a990a68, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 10
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 12
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 8a9e51595a2185c4baf4de38674da819, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: db208ca6a3cfa3d45b560e71c35bba38, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 5
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 2
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 3
+  pieces:
+  - {fileID: 21300000, guid: 4a9e0a290437ab144b522ce2768619c2, type: 3}
+  - {fileID: 21300000, guid: c14db88883693d54d9bd334de780eb61, type: 3}
+  - {fileID: 21300000, guid: 1c586b2ddcd68644c8f002806b4f1955, type: 3}
+  - {fileID: 21300000, guid: 2fecaaeb8e434d342b4371f329089680, type: 3}
+  - {fileID: 21300000, guid: 5e4424040d96ef642a38c51fdd79f718, type: 3}
+  - {fileID: 21300000, guid: ed662cb5062be704a93b75101b83436d, type: 3}
+  - {fileID: 21300000, guid: da72881b45c9729448dc4a2fe10922a4, type: 3}
+  - {fileID: 21300000, guid: 14c95088ff43b824ab35134f890893bf, type: 3}
+  - {fileID: 21300000, guid: d38b72b93c0e1d54aa4886f10b493584, type: 3}
+  sortLine: 0.97
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 6
+  maxCount: 0
+  maxHealth: 2300
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

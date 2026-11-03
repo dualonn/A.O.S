@@ -20,7 +20,9 @@ public class Boss : MonoBehaviour
     private bool fallen;
     private TextMeshPro nameTag;
 
-    public string Title => enemy.definition != null ? enemy.definition.displayName : "Raider chief";
+    [Tooltip("A name of its own (quest bosses); empty = its unit's name.")]
+    public string customTitle;
+    public string Title => !string.IsNullOrEmpty(customTitle) ? customTitle : enemy.definition != null ? enemy.definition.displayName : "Raider chief";
     public bool IsAlive => enemy != null && enemy.IsAlive;
     public Enemy Unit => enemy;
 

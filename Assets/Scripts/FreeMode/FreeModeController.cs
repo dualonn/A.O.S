@@ -94,6 +94,12 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         var life = new GameObject("AmbientLife").AddComponent<AmbientLife>();
         life.transform.SetParent(transform, false);
         life.Init(this);
+        gameObject.AddComponent<RiverWorks>().Init(this);   // bridges, ferries, warships, naval raids
+
+        var wildlife = new GameObject("Wildlife").AddComponent<WildlifeView>();
+        wildlife.transform.SetParent(transform, false);
+        wildlife.Init(this);
+        QuestMarkers.Create(this);   // quest banners, lairs and their named bosses
 
         Settlement.Changed += SyncViews;
         Settlement.Message += ShowMessage;
@@ -436,6 +442,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             foreach (var site in Settlement.State.sites)
             {
                 if (site.kind == SiteKind.Cache && site.done) continue;
+                if (site.kind == SiteKind.NaturalWonder) continue;   // drawn by XWonderMarkers (own icon, glow, hover)
                 if ((int)site.kind >= art.siteIcons.Count) continue;
                 var icon = art.siteIcons[(int)site.kind];
                 if (icon == null) continue;
@@ -1170,7 +1177,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             Vector3 spot = center + new Vector3(offset.x, offset.y, 0);
             spot.x = Mathf.Clamp(spot.x, map.xMin + 0.5f, map.xMax - 0.5f);
             spot.y = Mathf.Clamp(spot.y, map.yMin + 0.5f, map.yMax - 0.5f);
-            if (Settlement.Map.IsWalkable(spot))
+            if (Settlement != null && Settlement.Map != null && Settlement.Map.IsWalkable(spot))
             {
                 return spot;
             }
@@ -1284,6 +1291,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         // settlement's safe zone, on explored land.
         var camp = CampForRaid();
         raidOrigin = camp != null ? BesideCamp(camp) : RaidSpawnPoint();
+        raidOrigin = RiverWorks.ConsiderNavalRaid(camp == null, raidOrigin, wave.units.Count);   // some raids come by sea
         var aim = NearestTarget(raidOrigin);
         raidTargetPoint = aim != null ? ClosestPointOn(aim, raidOrigin) : TownCenterPosition;
 
@@ -1307,6 +1315,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
     private IEnumerator SpawnRoutine()
     {
+        while (RiverWorks.HoldingRaid) yield return null;   // a raid by sea comes ashore when its boats land
+        raidOrigin = RiverWorks.LandRaid(unspawned, raidOrigin);
         while (unspawned.Count > 0)
         {
             var unit = unspawned[0];
@@ -1349,6 +1359,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         {
             waveInProgress = false;
             Settlement.State.wavesSurvived++;
+            Settlement.XRecordRaid(stolenThisWave.Count > 0, 0f);
             string loss = Settlement.Describe(stolenThisWave);
             GameAudio.UI(loss.Length > 0 ? "notify" : "confirm");
             ShowMessage(loss.Length > 0 ? $"The raid is over. Raiders got away with {loss}." : "The raid is over. Nothing was lost!");
@@ -1444,6 +1455,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// </summary>
     public int WallMask(Vector2Int cell)
     {
+        if (RiverWorks.WallMaskFor(this, cell, out int riverMask)) return riverMask;   // bridges join bridges, walls join walls
         bool n = WallAt(cell + Vector2Int.up) != null, e = WallAt(cell + Vector2Int.right) != null;
         bool sth = WallAt(cell + Vector2Int.down) != null, w = WallAt(cell + Vector2Int.left) != null;
         int mask = (n ? 1 : 0) | (e ? 2 : 0) | (sth ? 4 : 0) | (w ? 8 : 0);

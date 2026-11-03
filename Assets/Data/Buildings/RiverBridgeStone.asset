@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverBridgeStone
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverBridgeStone
+  displayName: Stone Bridge
+  description: Cobbled arches between stout piers. Reaches 4 tiles out from the bank,
+    and stands up to a lot. Drag out a straight line over the water; everyone can
+    walk over it, raiders too, and they wear it down as they cross. Boats can't pass
+    it.
+  icon: {fileID: 21300000, guid: b1173f5cd4c87224687cd233a16b7e60, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 930d8e3794c166044aaf38d16d7ae322, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 18
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 4
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 861a20554bbebf64da3ce6ff2e2feea2, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: fccebb0d363763d48aae02f6c230ea83, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 5
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 8
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 3
+  pieces:
+  - {fileID: 21300000, guid: 4ed72825088c3d247864784e21b513e3, type: 3}
+  - {fileID: 21300000, guid: 366d769733914c145939930e87619fb8, type: 3}
+  - {fileID: 21300000, guid: b1173f5cd4c87224687cd233a16b7e60, type: 3}
+  - {fileID: 21300000, guid: 919f12160feb31e4db19992bb0f781a9, type: 3}
+  - {fileID: 21300000, guid: 830c1949eebc7ee4dadcd8ad305edb7a, type: 3}
+  - {fileID: 21300000, guid: 287239b87b6f0cb4f9c8cabe5d0f851a, type: 3}
+  - {fileID: 21300000, guid: ffd0b909982de094f99d69a0f146b1f9, type: 3}
+  - {fileID: 21300000, guid: f3a49b2a6952f374c82b32e7fa91129b, type: 3}
+  - {fileID: 21300000, guid: c2aa858fcade03a4bbd0a39b20899dbc, type: 3}
+  sortLine: 0.97
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 5
+  maxCount: 0
+  maxHealth: 750
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

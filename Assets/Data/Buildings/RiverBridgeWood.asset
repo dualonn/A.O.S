@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverBridgeWood
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverBridgeWood
+  displayName: Wooden Bridge
+  description: Planks on piles driven into the riverbed, with a rope rail. Reaches
+    3 tiles out from the bank. Drag out a straight line over the water; everyone
+    can walk over it, raiders too, and they wear it down as they cross. Boats can't
+    pass it.
+  icon: {fileID: 21300000, guid: b2237773f9496994c9a225342714a000, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 058ae4ffce81c2148982b3df3348dc8d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 14
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 1693a3a763f084a40b171ac842401b5a, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 930d8e3794c166044aaf38d16d7ae322, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 14
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 3
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 3
+  pieces:
+  - {fileID: 21300000, guid: 656abc192d9088c43be68f3c31dab58f, type: 3}
+  - {fileID: 21300000, guid: 476678b0125aed74bb319a38bef9ff28, type: 3}
+  - {fileID: 21300000, guid: b2237773f9496994c9a225342714a000, type: 3}
+  - {fileID: 21300000, guid: 243f1b427f5f3fe48ab14896d8febe2f, type: 3}
+  - {fileID: 21300000, guid: 5f09b20ecfe34ec41b29a6b2f1991444, type: 3}
+  - {fileID: 21300000, guid: 5a7f1f20b2f8cdc4484c1d00b5b2feb5, type: 3}
+  - {fileID: 21300000, guid: d2f63998352e76b40a4b906723438ae6, type: 3}
+  - {fileID: 21300000, guid: 646c4a24bf5c6224fb38b9e7c3dd0389, type: 3}
+  - {fileID: 21300000, guid: f28b9c76a2cd871419bfa6cb2d3df2da, type: 3}
+  sortLine: 0.97
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 4
+  maxCount: 0
+  maxHealth: 320
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

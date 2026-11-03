@@ -1,0 +1,199 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RiverHoverDock
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RiverHoverDock
+  displayName: Hover Dock
+  description: A landing pad of glowing rings and a dome hangar, a hover-barge humming
+    above the pad. Trains Hover-Barges; its ferry seats 12. Build it on the shore
+    of open water. Its boats patrol the water and shoot at raiders near the shore;
+    send troops to land the water cuts off and its ferry carries them across.
+  icon: {fileID: 21300000, guid: 117032408dd791f439c0ca3841975b80, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 117032408dd791f439c0ca3841975b80, type: 3}
+    - {fileID: 21300000, guid: 69a3b75f95bcda94890968b57b6057ae, type: 3}
+    - {fileID: 21300000, guid: c10c434ea453a684ea5d5f64471fa200, type: 3}
+    - {fileID: 21300000, guid: f21fa9a24f4cbd74db1d3553ec83e4d3, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a7713e42705050a4388ec7eaa21d7054, type: 3}
+    - {fileID: 21300000, guid: 44e5fa0ba81870f448b8ce8ff835c5cc, type: 3}
+    - {fileID: 21300000, guid: b652ffc9ae0eb1242a2f834ec4bc683f, type: 3}
+    - {fileID: 21300000, guid: 8e3834e4da1e4c343829d8410b226d9f, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a2dd2e9e5df0d63499d79ba6000fd501, type: 3}
+    - {fileID: 21300000, guid: 17ca93f2367d02d46a5617401addcf28, type: 3}
+    - {fileID: 21300000, guid: c319b1403f7f9bd4ca73b7df77184a8e, type: 3}
+    - {fileID: 21300000, guid: bd9a758f70bc7964c8a285e2e25f9df0, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 89c6450571ae87e468f4e8df5bbfd1d8, type: 3}
+    - {fileID: 21300000, guid: 24823b6c1aa3619449c7c9b2caf1e910, type: 3}
+    - {fileID: 21300000, guid: 380d78b66121a9949b47e088bd92ad59, type: 3}
+    - {fileID: 21300000, guid: fa0512474176bc045bff789e6f281bbb, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 375d95d662f236b43baf535d4e7d08c4, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+  upgrades:
+  - name: Extra Pad
+    description: +1 hover-barge, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 80
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Galvanic Guns
+    description: Hover-barges hit 25% harder, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Field Hulls
+    description: Hover-barges are 30% tougher, +1 ferry seat.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.3
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 4
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 3000
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 24b7f8d60e04f3d48a86c031e8f3f150, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

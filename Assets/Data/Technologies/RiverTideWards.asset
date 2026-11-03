@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: RiverTideWards
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: RiverTideWards
+  displayName: Tide Wards
+  description: Runes cut into every hull, so the sea itself turns blows aside. Boats
+    are 6% tougher and hit 5% harder.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: 375d95d662f236b43baf535d4e7d08c4, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+  researchTime: 190
+  unitModifiers:
+  - troopClass: {fileID: 11400000, guid: c779349b187dd2b459776ee474367287, type: 2}
+    healthMultiplier: 1.06
+    attackMultiplier: 1.05
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+    rangeMultiplier: 1
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

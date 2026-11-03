@@ -208,6 +208,7 @@ public partial class Settlement
             case HeroClass.Navigator: total.speed += 0.12f + 0.01f * hero.level; total.haste += 0.05f; break;
             case HeroClass.Xenologist: total.xenobane += 0.25f + 0.02f * hero.level; total.health += 0.05f; break;
         }
+        total.Add(CompanionStats(hero));   // a tamed companion (Wildlife.cs)
         return total;
     }
 

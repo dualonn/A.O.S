@@ -56,11 +56,23 @@ public partial class Settlement : MonoBehaviour
         if (world < 0 || world >= State.worlds.Count || world == State.currentWorld) return;
         State.explored = Map.RevealedZones();
         worldMaps[State.currentWorld] = Map;
+        int fromWorld = State.currentWorld;
         StashClocks(State.currentWorld);
         LoadClocks(world);
         State.currentWorld = world;
+        var fromMap = Map;
         Map = null;   // (so MapOf builds or fetches the new world's map, not this one)
-        Map = MapOf(world);
+        try { Map = MapOf(world); }
+        catch (Exception e)
+        {
+            // Its map won't build: stay where you were rather than end up on no map at all.
+            Debug.LogError($"Settlement: couldn't build the map of world {world}: {e}");
+            State.currentWorld = fromWorld;
+            LoadClocks(fromWorld);
+            Map = fromMap;
+            worldMaps.Remove(fromWorld);
+            return;
+        }
         worldMaps.Remove(world);
         State.explored = Map.RevealedZones();
         zonesCache = null;
@@ -575,11 +587,15 @@ public partial class Settlement : MonoBehaviour
         TickCamps(dt);
         TickSites(dt);
         TickWonders(dt);
+        TickWildlife(dt);
+        TickCulture(dt);
         TickHazards(dt);
         TickSeasons(dt);
         TickEvents(dt);
         TickGoals(dt);
+        TickQuests(dt);
         TickAges();
+        XTickRecords(dt);
     }
 
     // ---------- Building stats and upgrades ----------
@@ -883,6 +899,7 @@ public partial class Settlement : MonoBehaviour
             if (building.IsBuilt)
             {
                 building.buildProgress = 1f;
+                XRecordBuilt(def);
                 if (!offWorld) GameAudio.AtBuilding(def != null && def.IsWall ? "place" : "build_complete", building, def, def != null && def.IsWall ? 0.4f : 1f);
                 if (def == null || !def.IsWall)
                 {
@@ -941,6 +958,7 @@ public partial class Settlement : MonoBehaviour
                 {
                     float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource);
                     AddResource(rate.resource, rate.perSecond * dt * activity * run * multiplier);
+                    XRecordGathered(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                 }
             }
         }
@@ -970,7 +988,7 @@ public partial class Settlement : MonoBehaviour
                 var tech = Database.GetTechnology(id);
                 if (tech != null) tax += tech.coinPerPersonPerSecond;
             }
-            return tax;
+            return tax * CultureTaxFactor;
         }
     }
 
@@ -1523,7 +1541,7 @@ public partial class Settlement : MonoBehaviour
     {
         get
         {
-            float speed = 1f;
+            float speed = CultureResearchFactor;
             foreach (var id in State.researched)
             {
                 var tech = Database.GetTechnology(id);
@@ -1588,6 +1606,7 @@ public partial class Settlement : MonoBehaviour
     /// </summary>
     public bool CheckSite(BuildingDefinition def, Vector2Int cell, out float quality, out string reason)
     {
+        if (RiverCheckSite(def, cell, out quality, out reason) is bool riverSite) return riverSite;   // bridges, docks, harbours
         quality = 1f;
         var area = new RectInt(cell, def.size);
         if (!Map.CanBuildOn(area, def.canBuildOnHills, out reason))
@@ -1635,6 +1654,7 @@ public partial class Settlement : MonoBehaviour
     /// <summary>Output multiplier from deposit tiles within 'radius' plus any water bonus.</summary>
     public float SiteQuality(BuildingDefinition def, RectInt area, int radius)
     {
+        if (RiverSiteQuality(def, area, radius) is float riverQuality) return riverQuality;   // fishing docks
         float quality = 1f;
         if (VeinUnder(def, area) != null)
         {
@@ -1852,6 +1872,7 @@ public partial class Settlement : MonoBehaviour
     public UnitStatModifier GetUnitModifier(UnitDefinition unit)
     {
         var total = new UnitStatModifier();
+        CultureUnitModifier(total);
         foreach (var id in State.researched)
         {
             var tech = Database.GetTechnology(id);
@@ -1992,6 +2013,7 @@ public partial class Settlement : MonoBehaviour
         }
 
         Notify(report.ToString());
+        CultureRaidLost(severity);
         if (offWorld) GarrisonCasualties(severity);
         RaiseChanged();
     }

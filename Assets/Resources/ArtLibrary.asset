@@ -278,6 +278,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 1c645bf04fcbe684ab4bc4a0c5a99b5d, type: 3}
   - {fileID: 21300000, guid: 9327325a6a37c7340914eda140b15378, type: 3}
   - {fileID: 21300000, guid: a43cd28a2c9974046b982b966241565e, type: 3}
+  - {fileID: 21300000, guid: d7170327eded19540a708adbfa021b71, type: 3}
   naturalWonders:
   - {fileID: 21300000, guid: 527df2468d92ad24796b1bac6737229e, type: 3}
   - {fileID: 21300000, guid: 35886df5cc0a9df4f8ceac793be70306, type: 3}

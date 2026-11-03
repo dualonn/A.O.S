@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FthCosmicCathedral
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FthCosmicCathedral
+  displayName: Cosmic Cathedral
+  description: Spires of starmetal round a window onto the birth of stars. Makes
+    faith (and a little culture), and comforts the town.
+  icon: {fileID: 21300000, guid: e5e22823b225a0b488d761088ac7223e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: e5e22823b225a0b488d761088ac7223e, type: 3}
+    - {fileID: 21300000, guid: cc105fc271cdb6d49859cbe9ca892358, type: 3}
+    - {fileID: 21300000, guid: 145aa5a09968b47499549160e6359020, type: 3}
+    - {fileID: 21300000, guid: afbaea1edd478ee45ac5104c9e2dedc3, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 3b649f99ca1987147a50dad2dfa3fa8c, type: 3}
+    - {fileID: 21300000, guid: f07be34460dc4c248bf3201b9f777aa4, type: 3}
+    - {fileID: 21300000, guid: 46675137a6f52a74aa30f7433c20c6d7, type: 3}
+    - {fileID: 21300000, guid: 2ffb1a23a764b234aa15910a488e0c7a, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: c9bd78ba9fa4a6442926a1a9a778e617, type: 3}
+    - {fileID: 21300000, guid: 73350db77a54c2c46b4c5b2f939a7457, type: 3}
+    - {fileID: 21300000, guid: da7d74eedbea9014f86f65c833935202, type: 3}
+    - {fileID: 21300000, guid: c023ef9ce961c1c4e85fb3b2169d4c62, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 5}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 1920
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 1920
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 3520
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 130
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 95
+  upgrades:
+  - name: Lay Brothers
+    description: 'More hands for the rites: +35% faith, +1 mood.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 770
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 770
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 1410
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 50
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Holy Relics
+    description: 'Pilgrims come to see the relics: +35% more faith, +1 mood.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 1150
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 1150
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 2110
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 75
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 180
+  maxCount: 0
+  maxHealth: 3300
+  housing: 0
+  workers: 6
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

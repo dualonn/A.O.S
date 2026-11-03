@@ -18,7 +18,9 @@ public enum WallTile : byte
     /// <summary>Blocks everyone.</summary>
     Wall,
     /// <summary>Lets your units through; blocks raiders.</summary>
-    Gate
+    Gate,
+    /// <summary>A bridge or ford over water: everyone walks over it; boats can't pass under.</summary>
+    Bridge
 }
 
 /// <summary>
@@ -154,9 +156,9 @@ public class MapData
         var chunk = Find(x, y);
         if (chunk == null || !chunk.revealed) return false;
         int i = Local(x, y);
-        if (chunk.terrain[i] == TerrainType.Water) return false;
         var w = chunk.wall != null ? (WallTile)chunk.wall[i] : WallTile.None;
-        return w == WallTile.None || (w == WallTile.Gate && team == Team.Player);
+        if (chunk.terrain[i] == TerrainType.Water) return w == WallTile.Bridge;   // rivers: bridges and fords
+        return w == WallTile.None || w == WallTile.Bridge || (w == WallTile.Gate && team == Team.Player);
     }
 
     public bool Passable(Vector3 world, Team team) => Passable(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y), team);
@@ -282,7 +284,7 @@ public class MapData
         FindOrMake(FloorDiv(x, ChunkSize), FloorDiv(y, ChunkSize)).deposit[Local(x, y)] =
             (byte)(type == null ? 0 : Deposits.IndexOf(type) + 1);
 
-    public bool IsWalkable(int x, int y) => InBounds(x, y) && GetTerrain(x, y) != TerrainType.Water;
+    public bool IsWalkable(int x, int y) => InBounds(x, y) && (GetTerrain(x, y) != TerrainType.Water || WallAt(x, y) == WallTile.Bridge);
 
     public bool IsWalkable(Vector3 world) => IsWalkable(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y));
 

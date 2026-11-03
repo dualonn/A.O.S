@@ -62,6 +62,12 @@ public class WorldState
 
     [Tooltip("A colony's first Starport is free (the colony ship brings a kit); true once it has been built.")]
     public bool starportKitUsed;
+
+    [Tooltip("This world's herds, beast pens and wildlife timers (see Wildlife.cs).")]
+    public WildWorldState wildlife = new WildWorldState();
+
+    [Tooltip("This world's mood and war weariness (see Culture.cs).")]
+    public WorldCulture culture = new WorldCulture();
 }
 
 /// <summary>

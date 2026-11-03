@@ -277,6 +277,7 @@ public class Troop : Unit
         hasMoveOrder = true;
         HasOrder = true;
         TargetCamp = null;
+        RiverWorks.Ordered(this, destination);   // across the water: a ferry takes them
     }
 
     // ---------- Dungeons ----------
@@ -533,7 +534,7 @@ public class Troop : Unit
         }
         // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach): burn it
         // down and stick to it, unless home is being attacked or you've sent us elsewhere.
-        if (!IsHealer && !hasMoveOrder && !HomeUnderRaid())
+        if (!IsHealer && Moves != Movement.Water && !hasMoveOrder && !HomeUnderRaid())
         {
             float range = hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
             var camp = CampView.Nearest(transform.position, range);
@@ -598,7 +599,7 @@ public class Troop : Unit
         // to, or any within hunting range), whatever raiders are doing elsewhere.
         // A camp we took on ourselves waits while a raid heads for home (one you ordered stays).
         if (TargetCamp != null && !campOrder && HomeUnderRaid()) TargetCamp = null;
-        if (Stance == TroopStance.Attack && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && !HomeUnderRaid())
+        if (Stance == TroopStance.Attack && Moves != Movement.Water && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && !HomeUnderRaid())
         {
             var camp = CampView.Nearest(transform.position, hasDefendZone ? CampHuntRange : CampNearRange);
             if (camp != null) TargetCamp = camp;
@@ -661,6 +662,7 @@ public class Troop : Unit
             Settlement.Instance.GarrisonLost(GarrisonUnit);
             GarrisonUnit = null;
         }
+        Settlement.Instance?.XRecordTroopLost(Hero != null);
         base.Die();
     }
 

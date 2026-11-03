@@ -45,6 +45,7 @@ public partial class Settlement
     private void ScanBiomes()
     {
         if (Map == null) return;
+        XResetBiomeScan();   // (its place in the explored list belongs to one world)
         if (biomeScanned > State.explored.Count) biomeScanned = 0;
         for (; biomeScanned < State.explored.Count; biomeScanned++)
         {
@@ -81,13 +82,13 @@ public partial class Settlement
     /// <summary>The counter a goal kind is measured by.</summary>
     private int GoalCounter(GoalKind kind) => kind switch
     {
-        GoalKind.Explore => State.explored.Count,
+        GoalKind.Explore => XTotalExplored(),
         GoalKind.Camps => State.campsCleared,
         GoalKind.Sites => State.sitesDone,
         GoalKind.Chief => State.chiefsKilled,
-        GoalKind.Vein => VeinsWorked(),
-        GoalKind.Outpost => FurthestBuilding(),
-        GoalKind.Population => Mathf.FloorToInt(State.population),
+        GoalKind.Vein => XVeinsWorkedAll(),
+        GoalKind.Outpost => XFurthestAnyWorld(),
+        GoalKind.Population => XTotalPopulation(),
         GoalKind.Survey => State.scannedSystems.Count,
         GoalKind.Colony => FoundedWorlds(),
         GoalKind.Cargo => State.routes.Count,
@@ -224,10 +225,10 @@ public partial class Settlement
         Offer(GoalKind.Explore, 4 + step / 4, 1.5f);
         Offer(GoalKind.Sites, 2 + step / 8);
         Offer(GoalKind.Camps, 1 + step / 10);
-        Offer(GoalKind.Outpost, Mathf.Max(FurthestBuilding(), 12) + 10 + step / 2);
+        Offer(GoalKind.Outpost, Mathf.Max(XFurthestAnyWorld(), 12) + 10 + step / 2);
         if (State.ageIndex >= 1) Offer(GoalKind.Chief, 1 + step / 15, 0.5f);
         if (VeinDeposits().Count > 0) Offer(GoalKind.Vein, 1, 0.5f);
-        if (Housing > State.population + 5) Offer(GoalKind.Population, Mathf.CeilToInt((State.population + 10 + step) / 5f) * 5, 0.5f);
+        if (Housing > State.population + 5) Offer(GoalKind.Population, Mathf.CeilToInt((XTotalPopulation() + 10 + step) / 5f) * 5, 0.5f);
         if (SpaceOpen) OfferSpaceGoals(Offer, rng);
         // A land you haven't reached yet.
         var unseen = new List<Biome>();

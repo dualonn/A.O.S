@@ -199,6 +199,7 @@ public class WaveDirector : MonoBehaviour
         float severity = wave.strength <= defense ? 0 : (wave.strength - defense) / wave.strength;
 
         State.wavesSurvived++;
+        settlement.XRecordRaid(severity > 0, severity);
         if (severity > 0)
         {
             settlement.ApplyRaid(severity);

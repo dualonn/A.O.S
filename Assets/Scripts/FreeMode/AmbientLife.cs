@@ -21,7 +21,7 @@ public class AmbientLife : MonoBehaviour
     private float timer;
 
     public SettlementGrid Grid => controller.Grid;
-    public bool UnderAttack => controller.WaveInProgress;
+    public bool UnderAttack => controller.WaveInProgress || WildlifeView.BeastInTown;
 
     public void Init(FreeModeController owner)
     {

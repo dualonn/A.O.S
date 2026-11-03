@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df23679a970f5044091c1d33c068e08b, type: 3}
+  m_Name: QuestArt
+  m_EditorClassIdentifier: Assembly-CSharp::QuestArt
+  lairIds:
+  - spirit
+  - wyrm
+  - barrow
+  - beast
+  - expedition
+  - conspiracy
+  - machine
+  - rift
+  - derelict
+  - precursor
+  - bandit
+  lairs:
+  - {fileID: 21300000, guid: a9772f5019f46ba4c892064ed25546fe, type: 3}
+  - {fileID: 21300000, guid: ea88cb76c18f28b4e8bcd944f765cb3d, type: 3}
+  - {fileID: 21300000, guid: 369525f3ea2dacb42a0b14e8b283c28e, type: 3}
+  - {fileID: 21300000, guid: c523c5a0d98aa4b4f816a308975b9b6f, type: 3}
+  - {fileID: 21300000, guid: c6d611a449fc21e418bc57ba6e15b6fc, type: 3}
+  - {fileID: 21300000, guid: 20d9160ccda1c984c9be52425edb99a1, type: 3}
+  - {fileID: 21300000, guid: c088c7a4054ac3349bd1229a29b99274, type: 3}
+  - {fileID: 21300000, guid: fbdc85ca679e128489a43b6269c6b26d, type: 3}
+  - {fileID: 21300000, guid: cc75d910261622143a0e5f6e9d395179, type: 3}
+  - {fileID: 21300000, guid: 31d0e91ee620e5a4d96b465a43770b44, type: 3}
+  - {fileID: 21300000, guid: fe9736bd75d70d845abb5ce0ef779500, type: 3}
+  banner: {fileID: 21300000, guid: 6fe4923d977c354439088b3eb0569e07, type: 3}
+  pennant: {fileID: 21300000, guid: f0ee504a6a929134aa6faaaf624d0668, type: 3}
+  icon: {fileID: 21300000, guid: c1e3edd68c53fb74caed185c36164d35, type: 3}
+  taleIcon: {fileID: 21300000, guid: 08ad0f778824575418b627c2fe8f0818, type: 3}
+  bosses:
+  - {fileID: 11400000, guid: 587fd8fc2d8d7924dade5aeab6c459f4, type: 2}
+  - {fileID: 11400000, guid: 0562913d819f1e247b770a9e7d36452e, type: 2}
+  - {fileID: 11400000, guid: 1799cbfbeec24f04d86ae9cbef803240, type: 2}
+  - {fileID: 11400000, guid: 6afa4e9ce04325544a0763b532dab2d2, type: 2}
+  - {fileID: 11400000, guid: 2cf71324345b6ab4095bb8c2e2cfaaff, type: 2}
+  - {fileID: 11400000, guid: 87b380b728792f84a9e0ac79c96f24b1, type: 2}
+  - {fileID: 11400000, guid: 3b452bbe1227abc4a9ff93bf3987ba55, type: 2}
+  - {fileID: 11400000, guid: 053141df8a6feac4a9b66be6a7ddf671, type: 2}
+  - {fileID: 11400000, guid: 69442768ba1aed24f8ea81d253abf7c0, type: 2}
+  - {fileID: 11400000, guid: 8c4660489dd307246842e90081535b87, type: 2}
+  - {fileID: 11400000, guid: 2eca0d5a47ae2644ab821a54ebc078b0, type: 2}
+  boons:
+  - {fileID: 11400000, guid: b6bd869941e26994bb2523b455ed3adc, type: 2}
+  - {fileID: 11400000, guid: 7ebe46a70c2bad14a845068b45f84de0, type: 2}
+  - {fileID: 11400000, guid: c0fdac8dbeaca6342a67d9a16c6417a8, type: 2}
+  - {fileID: 11400000, guid: e9259e93f27f841409696f914b2b8496, type: 2}
+  - {fileID: 11400000, guid: 9be4684e7befeb34493498ee33adb413, type: 2}
+  - {fileID: 11400000, guid: ec5a4b4921ab5594d9258518fa450736, type: 2}
+  - {fileID: 11400000, guid: 6fe3b7e1a47bdb043b8377c788ea1e26, type: 2}
+  - {fileID: 11400000, guid: 4eb8e4ebddc00e642a9f7956ac46c674, type: 2}
+  - {fileID: 11400000, guid: 95147bd187da6144c961af55c924ef5e, type: 2}
+  - {fileID: 11400000, guid: 51276c95636f0814985459075550df77, type: 2}
+  - {fileID: 11400000, guid: 3f45b734f374ec2489804f4cb6e7f547, type: 2}
+  - {fileID: 11400000, guid: 8e3299a4f064afe4694d4667e4c20d8b, type: 2}
+  - {fileID: 11400000, guid: c765f901291344842aefb2f0339e8d09, type: 2}
+  - {fileID: 11400000, guid: 2099366eddfb0b54a81cb6f2ac037e34, type: 2}

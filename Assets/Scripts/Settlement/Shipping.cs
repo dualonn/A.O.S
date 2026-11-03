@@ -47,7 +47,7 @@ public partial class Settlement
 
     /// <summary>What placing this building costs here (the Starport kit makes a colony's first one free).</summary>
     public List<ResourceAmount> CostOf(BuildingDefinition def) =>
-        def.launchesShips && HasStarportKit ? NoCost : def.requirements.cost;
+        def.launchesShips && HasStarportKit ? NoCost : RiverCostOf(def);
 
     /// <summary>Once a colony's kit Starport is finished, the kit is spent.</summary>
     private void UseStarportKit()

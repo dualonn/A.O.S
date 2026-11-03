@@ -20,6 +20,10 @@ public class EventPanel : MonoBehaviour
     private RectTransform history;
     private TextMeshProUGUI historyText;
     private int shownId = -1, shownLog = -1;
+    // (the log is capped, so its length alone stops changing: the last line and the effects count too)
+    private string shownLast;
+    private int shownEffects = -1;
+    private readonly List<(Button button, EventChoice choice)> choiceButtons = new List<(Button, EventChoice)>();
     private bool cardOpen;
     private float refreshAt;
     private TextMeshProUGUI timerLabel;
@@ -91,7 +95,11 @@ public class EventPanel : MonoBehaviour
             float left = Mathf.Max(0, top.expiresAt - settlement.State.playTime);
             timerLabel.text = $"<size=80%><color=#aaa>Passes in {Mathf.FloorToInt(left / 60f)}:{Mathf.FloorToInt(left % 60f):00}</color></size>";
         }
-        if (history.gameObject.activeSelf && (settlement.EventHistory.Count != shownLog)) RefreshHistory();
+        if (cardOpen && top != null)
+            foreach (var (cb, cc) in choiceButtons) if (cb != null) cb.interactable = cc.why == null && settlement.CanAfford(cc.cost);
+        var log = settlement.EventHistory;
+        string last = log.Count > 0 ? log[log.Count - 1] : null;
+        if (history.gameObject.activeSelf && (log.Count != shownLog || !ReferenceEquals(last, shownLast) || effects.Count != shownEffects)) RefreshHistory();
     }
 
     private void BuildCard(PendingEvent e)
@@ -99,6 +107,7 @@ public class EventPanel : MonoBehaviour
         shownId = e.id;
         foreach (Transform child in cardBody) Destroy(child.gameObject);
         timerLabel = null;
+        choiceButtons.Clear();
         var view = settlement.Describe(e);
         if (view == null) { card.gameObject.SetActive(false); return; }
         var art = EventArt.Get();
@@ -118,6 +127,7 @@ public class EventPanel : MonoBehaviour
             var b = UIBuilder.Button("Choice" + i, cardBody, () => Choose(e.id, index), out var label, 30 + 18 * (sb.ToString().Split('\n').Length - 1), 16);
             label.text = sb.ToString();
             b.interactable = c.why == null && settlement.CanAfford(c.cost);
+            choiceButtons.Add((b, c));
         }
         var foot = UIBuilder.Row("Foot", cardBody, 8);
         timerLabel = UIBuilder.Text("Timer", foot, "", 15);
@@ -154,6 +164,8 @@ public class EventPanel : MonoBehaviour
     {
         var log = settlement.EventHistory;
         shownLog = log.Count;
+        shownLast = log.Count > 0 ? log[log.Count - 1] : null;
+        shownEffects = settlement.EffectsHere().Count;
         var sb = new StringBuilder();
         var effects = settlement.EffectsHere();
         if (effects.Count > 0)

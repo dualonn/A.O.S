@@ -79,6 +79,17 @@ public class SettlementState
     [Tooltip("Random events: cards waiting, effects in force, things to fetch, and what happened.")]
     public EventLog events = new EventLog();
 
+    [Tooltip("Heroes' tamed companions, and wildlife tallies (see Wildlife.cs).")]
+    public WildGlobalState wildGlobal = new WildGlobalState();
+    [Tooltip("Hero quests: offered, under way and finished (see Quests.cs).")]
+    public QuestLog quests = new QuestLog();
+
+    [Tooltip("Culture and faith: points, traditions, religion, great people (see Culture.cs).")]
+    public CultureState culture = new CultureState();
+
+    [Tooltip("Statistics, achievements, the Chronicle and the market (see XRecords).")]
+    public XRecords xrecords = new XRecords();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>

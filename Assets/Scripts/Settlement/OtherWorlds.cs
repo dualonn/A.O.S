@@ -58,17 +58,18 @@ public partial class Settlement
         StashClocks(home);
         LoadClocks(world);
         State.currentWorld = world;
-        Map = null;   // (so MapOf gives that world's map)
-        Map = MapOf(world);
         offWorld = true;
         zonesCache = null;
         try
         {
+            // (inside the try: if that world's map fails to build, the finally still puts you back home)
+            Map = null;   // (so MapOf gives that world's map)
+            Map = MapOf(world);
             action();
         }
         finally
         {
-            worldMaps[world] = Map;
+            if (Map != null) worldMaps[world] = Map;
             StashClocks(world);
             LoadClocks(home);
             State.currentWorld = home;
@@ -93,6 +94,8 @@ public partial class Settlement
         TickHazards(dt);
         TickSeasons(dt);
         TickBackgroundEvents(dt);
+        TickWildlife(dt);
+        TickCulture(dt);
         TickBackgroundRaids(dt);
     }
 
