@@ -170,6 +170,49 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cc93ad5c5f7fae14492b2003b8183103, type: 3}
   - {fileID: 21300000, guid: dc95bccb0bfba3840ba69a5315537a19, type: 3}
   - {fileID: 21300000, guid: 6602193cb31bd574580585cc3e31f90e, type: 3}
+  biomeGround:
+  - {fileID: 21300000, guid: 2f9c0fe61f88318439450c6c88d1446b, type: 3}
+  - {fileID: 21300000, guid: aeab1884e614dc744956f7829e35b682, type: 3}
+  - {fileID: 21300000, guid: c06a0c2517ffdf642a84d42f6aca2f27, type: 3}
+  - {fileID: 21300000, guid: 9ef4034d074a48e4f9511091b3cf6530, type: 3}
+  - {fileID: 21300000, guid: 37715e790ce4e6143b880c08c925807d, type: 3}
+  - {fileID: 21300000, guid: 0e28c8017ede13648a9b5e2647999fee, type: 3}
+  - {fileID: 21300000, guid: c4135fd7b87b64647bee9d2c8852a656, type: 3}
+  - {fileID: 21300000, guid: c0df2a9b997b9db43b76c2ce0f03c094, type: 3}
+  - {fileID: 21300000, guid: 4562eea0924f1374fbf27792af710d31, type: 3}
+  - {fileID: 21300000, guid: 6e92b8a520f08a84d8c92134a844eb58, type: 3}
+  - {fileID: 21300000, guid: eb31c5e71bc61fe48aa64ba0f3aebb7f, type: 3}
+  - {fileID: 21300000, guid: c9a891425fb862246b00d32eabd68598, type: 3}
+  - {fileID: 21300000, guid: 48e7f4ae07208fa489069548c67e5603, type: 3}
+  - {fileID: 21300000, guid: e56153cf7af0e1040ac9ff5045dcb46f, type: 3}
+  - {fileID: 21300000, guid: abf73338a8c97a14b90fec7218654736, type: 3}
+  - {fileID: 21300000, guid: 190e825a4f7d84f4684bdfa5fa1fee38, type: 3}
+  - {fileID: 21300000, guid: 06760bce879b3f940a91f3f131533835, type: 3}
+  - {fileID: 21300000, guid: c61b2a642acdf1a43b7933d36fd4f62f, type: 3}
+  - {fileID: 21300000, guid: 35a91f2f22e376c489bd76c41e78788e, type: 3}
+  - {fileID: 21300000, guid: 5f47c512b72d5be4ea537ac2cde3e50c, type: 3}
+  - {fileID: 21300000, guid: bd74e4883a000644b87fa289a9d7c95a, type: 3}
+  - {fileID: 21300000, guid: 9b2be381812b2a045a649b9cbc8c4bbd, type: 3}
+  - {fileID: 21300000, guid: 776f5b5e7ddb581478557dfaecc556c1, type: 3}
+  - {fileID: 21300000, guid: 257a2510bcba0d842b33cd840aaed145, type: 3}
+  - {fileID: 21300000, guid: b6431020d00d8124daf2225208ceeeb3, type: 3}
+  biomeTrees:
+  - {fileID: 21300000, guid: 7caf0f61f64782641a972ac508a00c9f, type: 3}
+  - {fileID: 21300000, guid: 2d3c2e0da7c7dd443846b1313654a2f2, type: 3}
+  - {fileID: 21300000, guid: 56314cefb42c7b64f9f57ac50c54637f, type: 3}
+  - {fileID: 21300000, guid: dc3a2df90c20e78449ebe4e34a739622, type: 3}
+  - {fileID: 21300000, guid: 06c2fda4e5c998446b325e510ec83955, type: 3}
+  - {fileID: 21300000, guid: 96a5d60aa9e3f5b48bcbb38e5221d130, type: 3}
+  - {fileID: 21300000, guid: 09b75739dd347824facb560ac7363611, type: 3}
+  - {fileID: 21300000, guid: eea534c5d581e7642aa4539348ce6682, type: 3}
+  - {fileID: 21300000, guid: d12c1782a44d0e342807cebf12d42ba7, type: 3}
+  - {fileID: 21300000, guid: eeb395c3ca5791548aa97c62437fc1d6, type: 3}
+  biomeBushes:
+  - {fileID: 21300000, guid: 8c46b6bcf4ef00b43b7784c75c78ada4, type: 3}
+  - {fileID: 21300000, guid: 4ee17ccfb29bc2747be5a54851198aec, type: 3}
+  - {fileID: 21300000, guid: 36bcca2cd36f4c844bb61e55d9a7bdc7, type: 3}
+  - {fileID: 21300000, guid: 78dbe5c72c58b0f41a497d9476ed9dae, type: 3}
+  - {fileID: 21300000, guid: d079cb86870f2b443b49bdc2dd07bd24, type: 3}
   siteVeins:
   - {fileID: 21300000, guid: 196fc3ab1255c8545983e31931789717, type: 3}
   - {fileID: 21300000, guid: 63a4b5f95afc73049951222d951bcaaf, type: 3}

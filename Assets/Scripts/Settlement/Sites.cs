@@ -61,6 +61,19 @@ public partial class Settlement
             var kind = k < 0.24f ? SiteKind.Cache : k < 0.44f ? SiteKind.LoreStone : k < 0.64f ? SiteKind.Ruins
                 : k < 0.80f ? SiteKind.Lair : k < 0.90f ? SiteKind.Shrine : SiteKind.Dungeon;
             var site = new SiteState { kind = kind, zoneXY = zone, variant = (int)(CampHash(zone, 303) * 1000) };
+            if (kind == SiteKind.Lair)
+            {
+                // Creatures that fit the land: wolves in the snow, spiders in swamps and crystal caves, trolls in deserts and ash.
+                var zoneCentre = Map.ZoneRect(zone.x, zone.y).center;
+                int fit = Map.BiomeAt((int)zoneCentre.x, (int)zoneCentre.y) switch
+                {
+                    Biome.Tundra => LairWolves,
+                    Biome.Swamp or Biome.Crystal => LairSpiders,
+                    Biome.Desert or Biome.Volcanic => LairTroll,
+                    _ => -1,
+                };
+                if (fit >= 0) site.variant = site.variant - site.variant % 3 + fit;
+            }
             // Some guarded sites are old mines on a rich seam of a rare resource you can already use.
             var veins = VeinDeposits();
             if (site.Guarded && kind != SiteKind.Dungeon && veins.Count > 0 && CampHash(zone, 304) < Database.veinChance)

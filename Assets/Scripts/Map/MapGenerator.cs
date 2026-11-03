@@ -18,6 +18,40 @@ public static class MapGenerator
         public float riverWidth;
         public float terrainScale;
         public float[] depositX, depositY;
+        // Biomes (drawn last from the seed so nothing above changes for old maps)
+        public float tx, ty, wx, wy, ex, ey;
+        public Vector2 home;
+    }
+
+    /// <summary>How wide a biome region is (lower = bigger regions).</summary>
+    private const float BiomeScale = 0.0032f;
+    /// <summary>Round the starting area the land stays temperate; biomes fade in beyond.</summary>
+    private const float HomeRadius = 110f, BiomeBlend = 70f;
+
+    /// <summary>
+    /// The biome at a tile: from large, slow noise for warmth, wetness and wildness (the strange
+    /// lands). Only changes the look and life of the land, never its terrain or deposits, and the
+    /// starting area is always temperate, so existing settlements are untouched.
+    /// </summary>
+    public static Biome BiomeAt(Settings s, int x, int y)
+    {
+        if (s == null) return Biome.Temperate;
+        float d = Vector2.Distance(new Vector2(x, y), s.home);
+        if (d < HomeRadius) return Biome.Temperate;
+        float k = Mathf.Clamp01((d - HomeRadius) / BiomeBlend);
+        float warm = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale + s.tx, y * BiomeScale + s.ty), k);
+        float wet = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale * 1.3f + s.wx, y * BiomeScale * 1.3f + s.wy), k);
+        float wild = Mathf.Lerp(0.5f, Mathf.PerlinNoise(x * BiomeScale * 1.8f + s.ex, y * BiomeScale * 1.8f + s.ey), k);
+        // Ragged borders: a little fine noise so lands blend into each other instead of meeting in a line.
+        float j = (Mathf.PerlinNoise(x * 0.09f + s.tx * 0.37f, y * 0.09f + s.ty * 0.37f) - 0.5f) * 0.05f
+                + (Mathf.PerlinNoise(x * 0.31f + s.wx * 0.21f, y * 0.31f + s.wy * 0.21f) - 0.5f) * 0.025f;
+        warm += j; wet -= j; wild += j;
+        if (wild > 0.74f) return Biome.Crystal;
+        if (wild < 0.26f) return Biome.Volcanic;
+        if (warm > 0.58f && wet < 0.56f) return Biome.Desert;
+        if (warm < 0.37f) return Biome.Tundra;
+        if (wet > 0.62f) return Biome.Swamp;
+        return Biome.Temperate;
     }
 
     private const float RiverScale = 0.011f;
@@ -132,6 +166,8 @@ public static class MapGenerator
         s.moistMax = moists[moists.Count - 1];
         s.waterLine = Normalize(heights[Index(heights.Count, db.waterShare)], s.heightMin, s.heightMax);
         s.hillLine = Normalize(heights[Index(heights.Count, 1f - db.hillShare)], s.heightMin, s.heightMax);
+        s.tx = Offset(rng); s.ty = Offset(rng); s.wx = Offset(rng); s.wy = Offset(rng); s.ex = Offset(rng); s.ey = Offset(rng);
+        s.home = sampleArea.center;
         return s;
     }
 

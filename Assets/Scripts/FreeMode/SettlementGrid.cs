@@ -50,6 +50,9 @@ public class SettlementGrid : MonoBehaviour
     // Smooth terrain: hills and water drawn on grids offset half a tile, one shape per corner pattern.
     private bool smoothTerrain;
     private Tile[] grassVariants;
+    private Tile[][] biomeGrass;                 // per biome (index = Biome), five variants each
+    private TileBase[][][] biomeHillTiers;       // per biome: hill tiers tinted for the land
+    private Sprite[] biomeTrees, biomeBushes;
     private Tilemap waterTilemap;
     private TilemapRenderer waterRenderer;
     private Tile[] hillFullVariants;
@@ -324,6 +327,14 @@ public class SettlementGrid : MonoBehaviour
     private TileChangeData DepositChange(int x, int y, DepositType type)
     {
         var sprite = type.sprites[(int)(Hash01(x, y, 1) * type.sprites.Count) % type.sprites.Count];
+        // Trees and berry bushes take the look of their biome (cacti, snowy pines, crystal spires...).
+        var biome = Map.BiomeAt(x, y);
+        if (biome != Biome.Temperate)
+        {
+            int b = (int)biome - 1;
+            if (type.id == "Forest" && biomeTrees != null && biomeTrees.Length >= (b + 1) * 2) sprite = biomeTrees[b * 2 + (Hash01(x, y, 1) < 0.5f ? 0 : 1)];
+            else if (type.id == "Berries" && biomeBushes != null && biomeBushes.Length > b) sprite = biomeBushes[b];
+        }
         if (!depositTileFor.TryGetValue(sprite, out var tile))
         {
             tile = ScriptableObject.CreateInstance<Tile>();
@@ -465,6 +476,7 @@ public class SettlementGrid : MonoBehaviour
             }
         }
         hillFullVariants = art.hillFullVariants.ConvertAll(sprite => MakeTile(sprite, Color.white)).ToArray();
+        BuildBiomeTiles(art);
         waterShapes = new TileBase[16];
         for (int mask = 1; mask < 16; mask++)
         {
@@ -499,13 +511,57 @@ public class SettlementGrid : MonoBehaviour
 
     private Tile GrassAt(int x, int y)
     {
+        var variants = grassVariants;
+        var biome = Map.BiomeAt(x, y);
+        if (biome != Biome.Temperate && biomeGrass != null && biomeGrass[(int)biome] != null) variants = biomeGrass[(int)biome];
         // Mostly the plain variant, with the detailed ones sprinkled in.
         float roll = Hash01(x, y, 7);
-        if (roll < 0.55f || grassVariants.Length == 1)
+        if (roll < 0.55f || variants.Length == 1)
         {
-            return grassVariants[0];
+            return variants[0];
         }
-        return grassVariants[1 + Mathf.Min(grassVariants.Length - 2, (int)((roll - 0.55f) / 0.45f * (grassVariants.Length - 1)))];
+        return variants[1 + Mathf.Min(variants.Length - 2, (int)((roll - 0.55f) / 0.45f * (variants.Length - 1)))];
+    }
+
+    /// <summary>How each biome tints the hills (rock and its grassy caps).</summary>
+    private static Color HillTint(Biome b) => b switch
+    {
+        Biome.Desert => new Color(1f, 0.86f, 0.62f),
+        Biome.Tundra => new Color(0.86f, 0.92f, 1f),
+        Biome.Swamp => new Color(0.72f, 0.8f, 0.62f),
+        Biome.Volcanic => new Color(0.55f, 0.45f, 0.45f),
+        Biome.Crystal => new Color(0.8f, 0.72f, 1f),
+        _ => Color.white,
+    };
+
+    private void BuildBiomeTiles(ArtLibrary art)
+    {
+        int count = System.Enum.GetValues(typeof(Biome)).Length;
+        biomeGrass = new Tile[count][];
+        biomeHillTiers = new TileBase[count][][];
+        for (int b = 1; b < count; b++)
+        {
+            int start = (b - 1) * 5;
+            if (art.biomeGround.Count >= start + 5)
+                biomeGrass[b] = art.biomeGround.GetRange(start, 5).ConvertAll(sprite => MakeTile(sprite, Color.white)).ToArray();
+            var tint = HillTint((Biome)b);
+            biomeHillTiers[b] = new TileBase[hillTiers.Count][];
+            for (int tier = 0; tier < hillTiers.Count; tier++)
+            {
+                biomeHillTiers[b][tier] = new TileBase[16];
+                for (int mask = 0; mask < 16; mask++)
+                {
+                    if (hillTiers[tier][mask] is Tile source && source != null)
+                    {
+                        var tile = MakeTile(source.sprite, Color.white);
+                        tile.color = tint;
+                        biomeHillTiers[b][tier][mask] = tile;
+                    }
+                }
+            }
+        }
+        biomeTrees = art.biomeTrees.ToArray();
+        biomeBushes = art.biomeBushes.ToArray();
     }
 
     /// <summary>
@@ -578,7 +634,9 @@ public class SettlementGrid : MonoBehaviour
                         int tx = x + (c & 1), ty = y + (c >> 1);
                         if (levels[(ty - grown.yMin) * grown.width + (tx - grown.xMin)] > tier) mask |= 1 << c;
                     }
-                    hills[tier][i] = tier == 0 && mask == 15 && hillFullVariants.Length > 0 && Hash01(x, y, 13) < 0.5f
+                    var biome = biomeHillTiers != null ? Map.BiomeAt(x, y) : Biome.Temperate;
+                    hills[tier][i] = biome != Biome.Temperate && biomeHillTiers[(int)biome] != null ? biomeHillTiers[(int)biome][tier][mask]
+                        : tier == 0 && mask == 15 && hillFullVariants.Length > 0 && Hash01(x, y, 13) < 0.5f
                         ? hillFullVariants[(int)(Hash01(x, y, 17) * hillFullVariants.Length) % hillFullVariants.Length]
                         : hillTiers[tier][mask];
                 }
@@ -633,6 +691,8 @@ public class SettlementGrid : MonoBehaviour
                 else if (depositW > 0.5f) color = OverviewColor(deposit);
                 else if (hillW > 0.5f) color = HillColor;
                 else color = GrassColor;
+                var land = Map.BiomeAt(ix, iy);
+                if (land != Biome.Temperate && waterW <= 0.5f) color = BiomeOverview(land, color, depositW > 0.5f);
                 block[sy * px + sx] = color;
             }
         }
@@ -640,6 +700,21 @@ public class SettlementGrid : MonoBehaviour
     }
 
     // ---------- Helpers ----------
+
+    /// <summary>The zoomed-out map's colour for land in a biome.</summary>
+    private static Color32 BiomeOverview(Biome b, Color32 normal, bool deposit)
+    {
+        Color32 ground = b switch
+        {
+            Biome.Desert => new Color32(218, 190, 128, 255),
+            Biome.Tundra => new Color32(222, 232, 240, 255),
+            Biome.Swamp => new Color32(86, 102, 64, 255),
+            Biome.Volcanic => new Color32(80, 66, 66, 255),
+            Biome.Crystal => new Color32(130, 116, 190, 255),
+            _ => normal,
+        };
+        return deposit ? Color32.Lerp(normal, ground, 0.35f) : Color32.Lerp(normal, ground, 0.85f);
+    }
 
     private static Color32 OverviewColor(DepositType deposit)
     {

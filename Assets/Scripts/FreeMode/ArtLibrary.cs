@@ -79,6 +79,13 @@ public class ArtLibrary : ScriptableObject
     public Sprite siteCache, siteCaravan, siteLoreStone, siteLoreStoneRead;
     [Tooltip("Wolf den, spider nest, troll cave.")]
     public List<Sprite> siteLairs = new List<Sprite>();
+    [Tooltip("Ground tiles for each biome after Temperate, five each in Biome order (Desert, Tundra, Swamp, Volcanic, Crystal).")]
+    public List<Sprite> biomeGround = new List<Sprite>();
+    [Tooltip("Trees for each biome after Temperate, two each in Biome order.")]
+    public List<Sprite> biomeTrees = new List<Sprite>();
+    [Tooltip("Berry bushes for each biome after Temperate, one each in Biome order.")]
+    public List<Sprite> biomeBushes = new List<Sprite>();
+
     [Tooltip("Rich vein sites, one per deposit id in siteVeinIds.")]
     public List<Sprite> siteVeins = new List<Sprite>();
     public List<string> siteVeinIds = new List<string>();

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>The look and life of a region: its ground, trees and creatures (terrain types are unchanged).</summary>
+public enum Biome : byte { Temperate, Desert, Tundra, Swamp, Volcanic, Crystal }
+
 public enum TerrainType : byte
 {
     Grass,
@@ -38,6 +41,11 @@ public class MapData
 
     /// <summary>Generation settings fixed when the map was created, reused for every new chunk.</summary>
     public MapGenerator.Settings Settings { get; set; }
+
+    /// <summary>The biome at a tile (temperate round the starting area).</summary>
+    public Biome BiomeAt(int x, int y) => MapGenerator.BiomeAt(Settings, x, y);
+
+    public Biome BiomeAt(Vector3 world) => BiomeAt(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y));
 
     /// <summary>Goes up whenever walls change, so units re-plan their routes.</summary>
     public int WallVersion { get; private set; }
