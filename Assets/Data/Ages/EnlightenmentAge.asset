@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acd208c111adf34ab7d09f363460b66, type: 3}
+  m_Name: EnlightenmentAge
+  m_EditorClassIdentifier: Assembly-CSharp::Age
+  displayName: Age of Enlightenment
+  order: 6
+  description: 'Reason and powder smoke: flintlocks and bayonets, star forts, encyclopaedias,
+    and philosophers coaxing lightning into jars.'
+  advanceRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 517f2d65615becb4092583e53db73842, type: 2}
+    buildings: []
+    population: 450
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 5200
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 4000
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 4000
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 1200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 700
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 750
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 200
+  playerUnits:
+  - {fileID: 11400000, guid: d5ef867052c5ebd4d9dcf9c679ddec64, type: 2}
+  - {fileID: 11400000, guid: d71a565bd4296b2469ac9ea3ee66c3de, type: 2}
+  - {fileID: 11400000, guid: 4ef601ee44214df429967b0726d8f3c0, type: 2}
+  - {fileID: 11400000, guid: fc3ef0366bec791499c84a3bf4ffdab2, type: 2}
+  - {fileID: 11400000, guid: 25e0a6cc1f55647459372b59742346b0, type: 2}
+  - {fileID: 11400000, guid: cf3a76b685bae4a44bdd340107141852, type: 2}
+  enemyUnits:
+  - {fileID: 11400000, guid: 8b1ffbcc81ab2094c8104ebdf9ef3437, type: 2}
+  - {fileID: 11400000, guid: 86cf6c1f2ce745a4fa673ac9eab7d30c, type: 2}
+  - {fileID: 11400000, guid: 70efc28cdf5d6d64e90c84ed5c6a962d, type: 2}
+  bosses:
+  - {fileID: 11400000, guid: 743b88cb8a04bca41aa874dfc17bc7c2, type: 2}
+  - {fileID: 11400000, guid: f11d21fc3d67e474fb1462e296d64139, type: 2}

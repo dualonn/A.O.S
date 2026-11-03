@@ -15,4 +15,4 @@ MonoBehaviour:
   id: Coal
   displayName: Coal
   icon: {fileID: 21300000, guid: 809b053d9c92f0f4994c0da313a792e2, type: 3}
-  unlockedIn: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  unlockedIn: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}

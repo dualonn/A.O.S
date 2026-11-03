@@ -14,14 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: BessemerProcess
   displayName: Bessemer Process
-  description: Air blown through molten iron makes steel by the ton. Steelworks rank
-    up into Bessemer Works; steel comes 10% faster.
+  description: Air blown through molten iron makes steel by the ton. Blast Furnaces
+    rank up into Bessemer Works; steel comes 10% faster.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:
     minimumAge: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
-    technologies:
-    - {fileID: 11400000, guid: bb79679fe86a4d94499c4dd40649d567, type: 2}
+    technologies: []
     buildings: []
     population: 0
     cost:

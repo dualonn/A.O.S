@@ -15,8 +15,8 @@ public static partial class PlaceholderArt
             { "Terrace", (PxTerrace, 4, 3f) }, { "Exchange", (PxExchange, 4, 3f) }, { "GrenadierDepot", (PxGrenadierDepot, 4, 4f) },
             { "RifleRange", (PxRifleRange, 4, 4f) }, { "DragoonStables", (PxDragoonStables, 4, 3f) }, { "Infirmary", (PxInfirmary, 4, 3f) },
             { "SteamGunTurret", (PxSteamGunTurret, 4, 5f) }, { "BessemerWorks", (PxBessemerWorks, 4, 6f) }, { "EngineWorks", (PxEngineWorks, 4, 6f) },
-            { "AetherLab", (PxAetherLab, 4, 6f) }, { "CoalMine", (PxCoalMine, 4, 5f) }, { "MachineWorks", (PxMachineWorks, 4, 6f) },
-            { "AetherMine", (PxAetherMine, 4, 6f) }, { "AutomatonFoundry", (PxAutomatonFoundry, 4, 6f) },
+            { "CoalMine", (PxCoalMine, 4, 5f) }, { "MachineWorks", (PxMachineWorks, 4, 6f) },
+            { "AetherMine", (PxAetherMine, 4, 6f) }, { "AutomatonWorkshop", (PxAutomatonWorkshop, 4, 6f) },
         };
 
     /// <summary>Soot-darkened factory brick.</summary>
@@ -361,62 +361,36 @@ public static partial class PlaceholderArt
         if (k.Frame % 2 == 1) { k.Px(80, 20, P.Glow[3]); k.Px(81, 21, P.White); }   // a welder's spark
     }
 
-    private static void PxAutomatonFoundry(K k)
+    private static void PxAutomatonWorkshop(K k)
     {
-        // A brass-domed foundry: an automaton stands in the open bay, aether coils crackling overhead.
-        k.Ground(2, 2, 94, 40, P.Dirt);
-        SootWall(k, 6, 8, 70, 34);
-        k.Rect(4, 34, 72, 37, P.Iron[2]);
-        for (int yy = 38; yy < 52; yy++)
-        {
-            int half = (int)(22 * Mathf.Sqrt(1f - (yy - 38) / 14f));
-            for (int x = 38 - half; x <= 38 + half; x++) k.Px(x, yy, x < 38 - half / 2 ? P.Brass[3] : P.Brass[2]);
-        }
-        k.Door(26, 9, 22, 22, open: true);
-        // the automaton in the bay
-        k.Rect(33, 10, 41, 24, P.Brass[2]); k.Rect(34, 24, 40, 30, P.Brass[3]);
-        k.HLine(35, 39, 27, P.Aether[3]);
-        k.VLine(31, 14, 22, P.Brass[1]); k.VLine(43, 14, 22, P.Brass[1]);
-        // aether coils on the roof
-        foreach (int x in new[] { 14, 62 })
-        {
-            k.VLine(x, 36, 50, P.Bronze[2]);
-            for (int y = 40; y < 50; y += 2) k.HLine(x - 1, x + 1, y, P.Bronze[3]);
-            k.Ellipse(x, 52, 2.5f, 2.5f, P.Aether);
-        }
-        if (k.Frame % 2 == 0) k.Line(16, 52, 60, 52, P.Aether[3]);
-        Cog(k, 82, 16, 7, k.Frame);
-        for (int i = 0; i < 1 + k.Level; i++) k.Crate(76 + (i % 2) * 9, 2 + (i / 2) * 6);
-        if (k.Level >= 2) k.Banner(92, 4, 22);
-        k.Finish();
-    }
-
-    private static void PxAetherLab(K k)
-    {
-        // A glass-and-iron laboratory tower crowned with a crackling aether coil.
+        // The galvanic tower grown into a workshop: a brass dome over an open bay where an automaton stands
+        // being wound, coils crackling on the roof, crates of gears at the door.
         k.Ground(4, 2, 60, 12, P.Dirt);
-        SootWall(k, 14, 2, 44, 34);
-        k.Door(25, 3, 8, 12, arched: true);
-        // the glass conservatory top
-        for (int y = 34; y < 50; y++)
-            for (int x = 16; x <= 42; x++)
-                k.Px(x, y, (x - 16) % 6 == 0 || y % 5 == 0 ? P.Iron[1] : (x < 28 ? P.Water[3] : P.Water[2]));
-        AetherGlow(k, 24, 38, 34, 46);
-        k.VLine(29, 50, 62, P.Bronze[2]);
-        for (int y = 52; y < 62; y += 2) k.HLine(27, 31, y, P.Bronze[3]);
-        k.Ellipse(29, 64, 3, 3, P.Aether);
-        if (k.Frame % 2 == 1)
+        SootWall(k, 8, 2, 56, 30);
+        k.Rect(6, 30, 58, 33, P.Iron[2]);
+        for (int yy = 34; yy < 46; yy++)
         {
-            k.Line(29, 64, 22, 70, P.Aether[3]); k.Line(22, 70, 18, 66, P.Aether[2]);
+            int half = (int)(20 * Mathf.Sqrt(1f - (yy - 34) / 12f));
+            for (int x = 32 - half; x <= 32 + half; x++) k.Px(x, yy, x < 32 - half / 2 ? P.Brass[3] : P.Brass[2]);
         }
-        else
+        k.Door(20, 3, 24, 22, open: true);
+        // the automaton in the bay, its key turning
+        k.Rect(28, 4, 36, 16, P.Brass[2]); k.Rect(29, 16, 35, 22, P.Brass[3]);
+        k.HLine(30, 34, 19, P.Aether[3]);
+        k.VLine(26, 8, 15, P.Brass[1]); k.VLine(38, 8, 15, P.Brass[1]);
+        bool turn = k.Frame % 2 == 0;
+        k.Line(36, 12, 40, 12, P.Iron[2]);
+        if (turn) k.VLine(40, 10, 14, P.Iron[3]); else k.HLine(39, 41, 12, P.Iron[3]);
+        // the coils, a spark leaping between them
+        foreach (int x in new[] { 12, 52 })
         {
-            k.Line(29, 64, 37, 69, P.Aether[3]); k.Line(37, 69, 41, 74, P.Aether[2]);
+            k.VLine(x, 34, 46, P.Bronze[2]);
+            for (int y = 36; y < 46; y += 2) k.HLine(x - 1, x + 1, y, P.Bronze[3]);
+            k.Ellipse(x, 48, 2.5f, 2.5f, P.Aether);
         }
-        Pipe(k, 44, 10, 54, 10);
-        k.Ellipse(55, 8, 4, 5, P.Brass);
-        for (int i = 0; i < 2 + k.Level; i++) k.Ellipse(6 + i * 4, 4, 1.4f, 2, new[] { P.Coal[2], P.Aether[2], P.White, P.White });
-        if (k.Level >= 1) k.Banner(2, 12, 20, P.Purple);
+        if (k.Frame % 2 == 1) k.Line(14, 48, 50, 48, P.Aether[3]);
+        for (int i = 0; i < 1 + k.Level; i++) { k.Crate(2 + i * 8, 2); k.Px(5 + i * 8, 5, P.Brass[2]); }
+        if (k.Level >= 2) k.Banner(58, 2, 20);
         k.Finish();
     }
 }

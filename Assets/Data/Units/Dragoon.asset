@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Dragoon
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Dragoon
-  icon: {fileID: 21300000, guid: 20361bb0b6ff49844817026b38a9ccdd, type: 3}
+  icon: {fileID: 21300000, guid: 11d38e186114eeb4b9f47e12018ee8f2, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: 814851b74cd773747a3525a935a40157, type: 2}
-  prefab: {fileID: 3424715233165976904, guid: dc10b929cc45a724fa91930e196c4428, type: 3}
+  prefab: {fileID: 3513379795174438442, guid: 636a683aea6247f4d81d50375f6a947f, type: 3}
   cost: 0
   populationCost: 1
   upkeep:
@@ -32,7 +32,7 @@ MonoBehaviour:
   hitDelay: 0.3
   detectionRange: 4
   projectile: {fileID: 21300000, guid: 62b9d0317cf91f14f900fb7501cbc382, type: 3}
-  projectileSpeed: 26
+  projectileSpeed: 22
   projectileArc: 0
   splashRadius: 0
   splashFire: 0

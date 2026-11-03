@@ -32,10 +32,14 @@ public static partial class PlaceholderArt
         3 => new PxWallStyle { ramp = P.Plaster, height = 32, kind = 3, crenels = true, towers = true },
         4 => new PxWallStyle { ramp = P.Stone, height = 36, kind = 4, crenels = true, towers = true },   // castle curtain wall
         5 => new PxWallStyle { ramp = BastionRamp, height = 26, kind = 1, crenels = false, towers = true }, // low, thick brick bastion wall
+        6 => new PxWallStyle { ramp = StarFortRamp, height = 24, kind = 3, crenels = false, towers = true }, // low dressed-stone star-fort rampart
         _ => new PxWallStyle { ramp = P.Iron, height = 30, kind = 5, crenels = false, towers = true },     // riveted iron-plated wall
     };
 
     /// <summary>Red brick for Renaissance bastion walls.</summary>
+    /// <summary>Warm limestone for Enlightenment star forts.</summary>
+    private static Color32[] StarFortRamp => new[] { P.Hex("5e5240"), P.Hex("8e7c60"), P.Hex("c2ad88"), P.Hex("e6d6b4") };
+
     private static Color32[] BastionRamp => new[] { P.Hex("4a1e18"), P.Hex("7a3424"), P.Hex("a8503a"), P.Hex("cf7556") };
 
     private static Color32 Edge(Color32[] r) => PixelCanvas.Mix(r[0], P.Ink, 0.5f);
@@ -314,7 +318,7 @@ public static partial class PlaceholderArt
     private static void GenerateWallArt(int onlyTier)
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("IroncladWall", "IroncladGate") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
             if (onlyTier >= 0 && age != onlyTier) continue;

@@ -22,7 +22,7 @@ MonoBehaviour:
     buildings:
     - building: {fileID: 11400000, guid: cc516d6c404cbd34792522dc3b973493, type: 2}
       count: 3
-    population: 0
+    population: 120
     cost:
     - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
       amount: 800

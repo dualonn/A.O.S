@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Grenadier
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Grenadier
-  icon: {fileID: 21300000, guid: 0b9caf239e692324db58e6e8c17cd93f, type: 3}
+  icon: {fileID: 21300000, guid: 33ee8cf3989a3d14a88b084fd5dcd4e8, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
-  prefab: {fileID: 4927026075373675654, guid: 89050d0005e1e9c47aae51881a9b9016, type: 3}
+  prefab: {fileID: 706429588019825770, guid: cfdfe02cad11dfa4bbbfe400df53c4cd, type: 3}
   cost: 0
   populationCost: 1
   upkeep:
@@ -31,11 +31,11 @@ MonoBehaviour:
   attackRange: 4.6
   hitDelay: 0.3
   detectionRange: 6.5
-  projectile: {fileID: 21300000, guid: 16d508d75851e0b41a05b004bc739252, type: 3}
+  projectile: {fileID: 21300000, guid: f0a9b16f7f0404b4a97eb5574ffde130, type: 3}
   projectileSpeed: 8
-  projectileArc: 0.4
-  splashRadius: 1.5
-  splashFire: 0
+  projectileArc: 0.35
+  splashRadius: 1.4
+  splashFire: 1
   muzzleSmoke: 0
   healer: 0
   healRange: 8

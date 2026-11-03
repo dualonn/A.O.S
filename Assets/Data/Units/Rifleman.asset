@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Rifleman
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Rifleman
-  icon: {fileID: 21300000, guid: dec75896549a8af498ace3f19e61e6ce, type: 3}
+  icon: {fileID: 21300000, guid: e97576859f131e24793133848087b7f8, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
-  prefab: {fileID: 8784054249408224612, guid: d446c7e6cc82f864391d8bfa102ac9e9, type: 3}
+  prefab: {fileID: 2964037371429380697, guid: 51c3fe5739b1ee14ba8cda4b34d67916, type: 3}
   cost: 0
   populationCost: 1
   upkeep:
@@ -32,7 +32,7 @@ MonoBehaviour:
   hitDelay: 0.3
   detectionRange: 6.5
   projectile: {fileID: 21300000, guid: 62b9d0317cf91f14f900fb7501cbc382, type: 3}
-  projectileSpeed: 26
+  projectileSpeed: 22
   projectileArc: 0
   splashRadius: 0
   splashFire: 0

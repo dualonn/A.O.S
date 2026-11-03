@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Antisepsis
   displayName: Antisepsis
-  description: Boiled linen and carbolic. Hospitals rank up into the Infirmary; all
-    troops have 4% more health.
+  description: Boiled linen and carbolic. Surgeons' Halls rank up into the Infirmary;
+    all troops have 4% more health.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:

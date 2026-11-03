@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GalvanicLab
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GalvanicLab
+  displayName: Galvanic Lab
+  description: A philosopher's tower with copper globes and banks of Leyden jars.
+    Trains Galvanists, who throw bolts of bottled lightning.
+  icon: {fileID: 21300000, guid: 3079cb972ed52aa4eb5db39f47f96567, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3079cb972ed52aa4eb5db39f47f96567, type: 3}
+    - {fileID: 21300000, guid: 039e79d38b3cde348ab2d169a822c255, type: 3}
+    - {fileID: 21300000, guid: dbbd5422d01b2bf46855f5f8c66befa1, type: 3}
+    - {fileID: 21300000, guid: 7a37093a5895fc04387fadf00baf4169, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: db062f9d58ef357498bc47114102e3b3, type: 3}
+    - {fileID: 21300000, guid: 0f50e73580ced144ea3fd58dc1fc0afe, type: 3}
+    - {fileID: 21300000, guid: 5709a5ef094f6154bbe2796d802f6318, type: 3}
+    - {fileID: 21300000, guid: d14aec41e3d34c04a9225c07470b7cb1, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 530fcb18ae85d2d4bad951feb439af57, type: 3}
+    - {fileID: 21300000, guid: ab2018312b2553e4282d57c7dc8ecc21, type: 3}
+    - {fileID: 21300000, guid: f513f6a2484fbdb408796c3f8f44486a, type: 3}
+    - {fileID: 21300000, guid: 347fd6641602c534b9dcad7ae1dd4218, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4ddb947b07cbc724abbc26e864045931, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+      amount: 90
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 90
+  upgrades:
+  - name: Bigger Battery
+    description: +1 galvanist.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Voltaic Pile
+    description: Galvanists hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
+        amount: 90
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 50
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: c1887b8a5c521674490508c97a4c7acc, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 425c9b960980d0142b5b41d18c554aba, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 20
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 540
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: 25e0a6cc1f55647459372b59742346b0, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

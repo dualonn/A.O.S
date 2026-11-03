@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: BanditRifleman
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Bandit Rifleman
-  icon: {fileID: 21300000, guid: 692ab9b5f42f2af49ac57af364d2dd55, type: 3}
+  icon: {fileID: 21300000, guid: a66918d4ce9a7a84e99aa2b1b6a3f1f3, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: e6a690d61ba737e44b3dbcb4f9af3f6e, type: 2}
-  prefab: {fileID: 880790867681655070, guid: f4d88da51eb548e42a29e3d04a604bf5, type: 3}
+  prefab: {fileID: 852192665743149350, guid: 3d3fd45d3a0576442910637f921ac7df, type: 3}
   cost: 0
   populationCost: 1
   upkeep: []
@@ -28,7 +28,7 @@ MonoBehaviour:
   hitDelay: 0.3
   detectionRange: 5.5
   projectile: {fileID: 21300000, guid: 62b9d0317cf91f14f900fb7501cbc382, type: 3}
-  projectileSpeed: 26
+  projectileSpeed: 22
   projectileArc: 0
   splashRadius: 0
   splashFire: 0

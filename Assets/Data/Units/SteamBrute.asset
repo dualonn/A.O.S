@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: SteamBrute
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Steam Brute
-  icon: {fileID: 21300000, guid: abe06a0270833ee4eb8912d614146f57, type: 3}
+  icon: {fileID: 21300000, guid: 7b96ab38e407eac49920b43e356833ee, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-  prefab: {fileID: 5248709768550954505, guid: 1986d25bff4b9984f9c24dcb45395065, type: 3}
+  prefab: {fileID: 1730478301899344148, guid: d8f7ed3df5571204794adf44fb497f2a, type: 3}
   cost: 0
   populationCost: 1
   upkeep: []

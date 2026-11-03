@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Rifling
   displayName: Rifling
-  description: Spiral grooves that make a ball fly true. Unlocks the Rifle Range;
-    all troops hit 4% harder.
+  description: "Spiral grooves that make a ball fly true. J\xE4ger Ranges rank up
+    into the Rifle Range; all troops hit 4% harder."
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:

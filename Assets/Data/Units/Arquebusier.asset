@@ -26,7 +26,7 @@ MonoBehaviour:
     perSecond: 0.05
   maxHealth: 260
   moveSpeed: 0.9
-  attackPower: 48
+  attackPower: 54
   attackCooldown: 2.6
   attackRange: 6
   hitDelay: 0.3

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: JointStock
   displayName: Joint-Stock Companies
-  description: Shares in every venture. Banks rank up into the Exchange; everyone
+  description: Shares in every venture. Royal Banks rank up into the Exchange; everyone
     pays a little more in taxes.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}

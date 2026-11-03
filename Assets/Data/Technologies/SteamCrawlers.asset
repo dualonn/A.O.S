@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: SteamCrawlers
   displayName: Steam Crawlers
-  description: An iron hull on endless treads with a gun in its nose. Cannon Foundries
+  description: An iron hull on endless treads with a gun in its nose. Artillery Parks
     rank up into the Engine Works.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: ClockworkAutomatons
   displayName: Clockwork Automatons
-  description: Brass men wound with springs and fired with aether. Unlocks the Automaton
-    Foundry.
+  description: Brass men wound with springs and woken by a galvanic jolt, aether
+    in their hearts. Galvanic Labs rank up into the Automaton Workshop.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:

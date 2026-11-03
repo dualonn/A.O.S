@@ -23,7 +23,7 @@ MonoBehaviour:
     buildings:
     - building: {fileID: 11400000, guid: 05b52b464aef59544a9e2194253128d9, type: 2}
       count: 3
-    population: 0
+    population: 40
     cost:
     - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
       amount: 400
@@ -37,6 +37,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 08f5b130efed1c945a363c13ff88ac41, type: 2}
   - {fileID: 11400000, guid: e8fb4e2e107726c478722734b6857046, type: 2}
   - {fileID: 11400000, guid: 650a29bfd14b1424489e9f61b0146530, type: 2}
+  - {fileID: 11400000, guid: dae313123460f4f4d9b368538fe1f5bf, type: 2}
   enemyUnits:
   - {fileID: 11400000, guid: 174f17cc2a1d4b74bb7fc83ae1f4ecba, type: 2}
   - {fileID: 11400000, guid: 3cf39a19832baff43a6d6774b5956f3d, type: 2}

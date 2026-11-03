@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GeorgianTownhouse
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GeorgianTownhouse
+  displayName: Georgian Townhouse
+  description: A tall, flat-fronted brick townhouse with white sash windows. Houses
+    62 people.
+  icon: {fileID: 21300000, guid: 00de6450d5480654b9189273242db8cb, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 00de6450d5480654b9189273242db8cb, type: 3}
+    - {fileID: 21300000, guid: 415f31c661eb6834a8a30cf19869c567, type: 3}
+    - {fileID: 21300000, guid: 25d1b30d0e641d44483099774a5abcf2, type: 3}
+    - {fileID: 21300000, guid: 371114ed6c9ca7d408a17f7c45f88308, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 95eeee8f3de2b8d4bb66118a6e76b1ec, type: 3}
+    - {fileID: 21300000, guid: 0250a12de4cb347479222ec733e316e0, type: 3}
+    - {fileID: 21300000, guid: ad738adfd406d0d428bb2c0fc3bc4d2b, type: 3}
+    - {fileID: 21300000, guid: c1ed0cc7cdbd19840bdc8d563dc4ed5f, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 54d413848a1c4454f92c253bc3d67f24, type: 3}
+    - {fileID: 21300000, guid: 363d6d30b37dedb4bab6ac07d3cdeb35, type: 3}
+    - {fileID: 21300000, guid: aa06289639f214343a10bd8635ad2f6d, type: 3}
+    - {fileID: 21300000, guid: 6b21b4d25c5b22a49871b5c5e03f33cd, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 083498c1143a53c4cbb073cefa45eeaf, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 190
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 30
+  upgrades:
+  - name: Garret
+    description: +10 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 110
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 10
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Mews Behind
+    description: +10 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 130
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 10
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 19f86cf96a39ec548b9473fb74e5d116, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: fcc5f7d34a02aa947b12e4f0c87ea637, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 30
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 820
+  housing: 62
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

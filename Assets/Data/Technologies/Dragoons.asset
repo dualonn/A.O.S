@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Dragoons
   displayName: Dragoons
   description: Mounted riflemen who ride to the fight and shoot from the saddle.
-    Unlocks the Dragoon Stables.
+    Hussar Stables rank up into Dragoon Stables.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:

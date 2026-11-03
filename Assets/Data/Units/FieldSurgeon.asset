@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: FieldSurgeon
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Field Surgeon
-  icon: {fileID: 21300000, guid: d6fd54bae4ddeb546952213c49b4ce2d, type: 3}
+  icon: {fileID: 21300000, guid: 12d0cd0a7052a784386ca54ea7d97678, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-  prefab: {fileID: 2139453554886331554, guid: bb528984e13fd884a9579e5fe375ec57, type: 3}
+  prefab: {fileID: 3149119863826840532, guid: 26041087125d0a94cb8ddbc1ca3931e5, type: 3}
   cost: 0
   populationCost: 1
   upkeep:

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Automaton
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   displayName: Clockwork Automaton
-  icon: {fileID: 21300000, guid: 972f502066d0563489f1be0a14c8a48d, type: 3}
+  icon: {fileID: 21300000, guid: a1e82133843ebbb478c8381f9227ed19, type: 3}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
-  prefab: {fileID: 300065141881190234, guid: d79393fa3dbab1c46aed3a2469dc3000, type: 3}
+  prefab: {fileID: 8721798802451224991, guid: 45546d8e27cbee04aa9c54277e498d47, type: 3}
   cost: 0
   populationCost: 2
   upkeep:

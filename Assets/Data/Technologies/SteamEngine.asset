@@ -17,23 +17,23 @@ MonoBehaviour:
   description: 'Fire, water and a piston: a machine that works without tiring. Opens
     the way to the Industrial Age.'
   icon: {fileID: 0}
-  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
   requirements:
-    minimumAge: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+    minimumAge: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
     technologies: []
     buildings: []
     population: 0
     cost:
     - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
-      amount: 1500
+      amount: 1700
     - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
-      amount: 400
+      amount: 450
     - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
-      amount: 500
-    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
-      amount: 100
-    - resource: {fileID: 11400000, guid: 9c307a498c9343640a4330c350e8d2c4, type: 2}
-      amount: 60
+      amount: 600
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 150
   researchTime: 120
   unitModifiers: []
   productionModifiers: []

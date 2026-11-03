@@ -24,7 +24,9 @@ public enum GearLook
     // Renaissance
     Morion, FeatheredCap, PlagueMask, Doublet, Cuirass, Arquebus, Pistol, Halberd, Zweihander, Flask, Cannon,
     // Industrial (steampunk)
-    Shako, Bearskin, TopHat, Goggles, BoilerHelm, Greatcoat, BrassPlate, Rifle, Grenade, AetherRod, Wrench, PistonHammer
+    Shako, Bearskin, TopHat, Goggles, BoilerHelm, Greatcoat, BrassPlate, Rifle, Grenade, AetherRod, Wrench, PistonHammer,
+    // Age of Enlightenment
+    Tricorne, Busby, Musket, Sabre, LeydenRod
 }
 
 /// <summary>

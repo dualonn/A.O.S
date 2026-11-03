@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: IndustrialAge
   m_EditorClassIdentifier: Assembly-CSharp::Age
   displayName: Industrial Age
-  order: 6
+  order: 7
   description: Coal smoke and iron rails, rifles and steam, clockwork men and the
     violet crackle of aether.
   advanceRequirements:
@@ -21,7 +21,7 @@ MonoBehaviour:
     technologies:
     - {fileID: 11400000, guid: dc1a63859dd737d4397db7b370c9f8e4, type: 2}
     buildings: []
-    population: 500
+    population: 550
     cost:
     - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
       amount: 6000
@@ -39,12 +39,13 @@ MonoBehaviour:
       amount: 500
     - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
       amount: 300
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 300
   playerUnits:
   - {fileID: 11400000, guid: 02c2beb14aea91d4eb01ed3a2b5ef58e, type: 2}
   - {fileID: 11400000, guid: c59175cedd57b37438dc655c3d3f1667, type: 2}
   - {fileID: 11400000, guid: 8ddcec01099ad6a4d8e907c49653f7b6, type: 2}
   - {fileID: 11400000, guid: bdf7731666e60c3448d3102fce492a55, type: 2}
-  - {fileID: 11400000, guid: 14d3cf7e680faf745bd0f1cbe59bd915, type: 2}
   - {fileID: 11400000, guid: a6d0fcb2dca7f6940b514821c1e5484e, type: 2}
   - {fileID: 11400000, guid: d22f1eb1bcbec04419385768ecee267d, type: 2}
   enemyUnits:

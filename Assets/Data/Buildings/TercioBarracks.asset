@@ -146,18 +146,18 @@ MonoBehaviour:
     extraTowerRange: 0
     extraTowerDamage: 0
     operatorLift: 0
-  rankUpTo: {fileID: 11400000, guid: eca5d270354da8245960dfcaa4e53966, type: 2}
+  rankUpTo: {fileID: 11400000, guid: 9882ed962847279429c849a275567578, type: 2}
   rankUpRequirements:
     minimumAge: {fileID: 0}
     technologies:
-    - {fileID: 11400000, guid: 239827b07e2fd7f4aa2f0d9d971b2138, type: 2}
+    - {fileID: 11400000, guid: 3d700650b601f084f9572b1197ebb078, type: 2}
     buildings: []
     population: 0
     cost:
     - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
-      amount: 200
+      amount: 180
     - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
-      amount: 60
+      amount: 55
   rankUpTime: 40
   isTownCenter: 0
   wallKind: 0
@@ -188,6 +188,7 @@ MonoBehaviour:
   towerProjectileSpeed: 11
   towerSplash: 0
   towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
   operatorIdle: {fileID: 0}
   operatorShoot: []
   operatorReleaseFrame: 2

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Grenades
   displayName: Grenades
   description: Iron shells packed with powder, thrown by the biggest men in the army.
-    Unlocks the Grenadier Depot.
+    Musketeer Barracks rank up into the Grenadier Depot.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
   requirements:

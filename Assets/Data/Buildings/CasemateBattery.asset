@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: CasemateBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: CasemateBattery
+  displayName: Casemate Battery
+  description: A low star-fort casemate of dressed stone. The gunners work under
+    its vault; the gun swings to meet the raiders and its shot bursts among them.
+  icon: {fileID: 21300000, guid: be16f6c6d8e457c4fbbf45f020ad2f47, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: be16f6c6d8e457c4fbbf45f020ad2f47, type: 3}
+    - {fileID: 21300000, guid: e06c566597ff9764a94c17cae54b3072, type: 3}
+    - {fileID: 21300000, guid: dbe866fb7fc9c594b88dfaa43384ca91, type: 3}
+    - {fileID: 21300000, guid: 726545b9cd3d2044b9ab78bb9f4e5fbc, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 07ea4c14a24d7ab44b936ae1a3329078, type: 3}
+    - {fileID: 21300000, guid: 49a60e1cfb4109a45b0926de82064a93, type: 3}
+    - {fileID: 21300000, guid: 20bbd964114b3d549a496ddc2e39043e, type: 3}
+    - {fileID: 21300000, guid: b61890183a372e843bec5b3636ddc99a, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 2dc336b8b61575845aaf00947830e8d5, type: 3}
+    - {fileID: 21300000, guid: 162f610c1ec269b46a770a0962fb2a8f, type: 3}
+    - {fileID: 21300000, guid: 6b755761631cdd24cb6b6adc2498be75, type: 3}
+    - {fileID: 21300000, guid: 57131458f20e2974193e79210de0d6e6, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 9e85adb43e3c1474e8fd83ff452173f7, type: 3}
+    - {fileID: 21300000, guid: 6bd3af3cc26527847b538da6b2dac0a4, type: 3}
+    - {fileID: 21300000, guid: e177dba5335c59446ac787b85c57cde4, type: 3}
+    - {fileID: 21300000, guid: f79bad8a5d195cd4c8993c700d3b57ae, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 994da998c3cab4e459e53d8519dfe93d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 420
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 70
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 60
+  upgrades:
+  - name: Ravelin
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Grapeshot
+    description: +40 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 50
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 40
+    operatorLift: 0
+  - name: Glacis
+    description: +600 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 300
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 600
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 84dfdadf735979b45ada7e17e7f83f53, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e811fe94e44a1904c8696f8cef4f45c9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 220
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 20
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1150
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 11.5
+  towerDamage: 130
+  towerCooldown: 3.2
+  towerProjectile: {fileID: 21300000, guid: 6d2b20e5091d5584a937364e11060c0c, type: 3}
+  towerProjectileArc: 0.05
+  towerProjectileSpeed: 17
+  towerSplash: 1.7
+  towerMuzzleSmoke: 1
+  towerMuzzle: {x: 1.9375, y: 0.609375}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}
