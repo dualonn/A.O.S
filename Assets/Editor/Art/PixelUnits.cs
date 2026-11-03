@@ -100,6 +100,14 @@ public static partial class PlaceholderArt
         ("SteamCrawler", Fig(B, GearLook.Goggles, GearLook.Cannon, body: GearLook.Greatcoat, mount: MountKind.Crawler, crest: "Gold"), false),
         ("Automaton", Skin(Fig(B, GearLook.BoilerHelm, GearLook.PistonHammer, body: GearLook.BrassPlate, scale: 1.3f), "Brass"), false),
         ("Saboteur", Fig(Rd, GearLook.Goggles, GearLook.Wrench, body: GearLook.Jerkin, raider: true), true),
+        // Flyers and tunnellers
+        ("Sapper", Fig(Rd, GearLook.KettleHat, GearLook.Pick, body: GearLook.Jerkin, raider: true), true),
+        ("SteamMole", Fig(Rd, GearLook.Goggles, GearLook.Wrench, body: GearLook.Jerkin, mount: MountKind.Drill, raider: true), true),
+        ("TunnelRat", Fig(Rd, GearLook.Cap, GearLook.Shovel, body: GearLook.Fatigues, raider: true), true),
+        ("Airship", Fig(B, GearLook.Goggles, GearLook.Grenade, body: GearLook.Greatcoat, mount: MountKind.Airship), false),
+        ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
+        ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
+        ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
         // Modern (dieselpunk)
         ("Infantryman", Fig(B, GearLook.SteelHelmet, GearLook.BoltRifle, body: GearLook.Fatigues), false),
         ("MachineGunner", Fig(B, GearLook.SteelHelmet, GearLook.MachineGun, body: GearLook.Fatigues), false),

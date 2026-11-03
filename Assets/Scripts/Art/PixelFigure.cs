@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -113,6 +113,9 @@ public static class PixelFigure
             case MountKind.Tank: w = 96; h = 54; cx = 32; gy = 4; break;     // in the turret hatch
             case MountKind.ArmouredCar: w = 80; h = 50; cx = 32; gy = 4; break;
             case MountKind.Walker: w = 64; h = 76; cx = 30; gy = 4; break;   // the pilot in a cockpit on two iron legs
+            case MountKind.Airship: w = 88; h = 112; cx = 40; gy = 4; break; // high in the air: gondola under a gasbag
+            case MountKind.Biplane: w = 80; h = 84; cx = 38; gy = 4; break;
+            case MountKind.Drill: w = 84; h = 50; cx = 30; gy = 4; break;    // a tunnelling machine, the driver in its hatch
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -171,7 +174,11 @@ public static class PixelFigure
         || s.weapon == GearLook.BoltRifle || s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun;
 
     /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
-    private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar;
+    private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
+        || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill;
+
+    /// <summary>How high a flying craft is drawn above its shadow (pixels, before scaling).</summary>
+    private static int Altitude(FigureStyle s) => s.mount == MountKind.Airship ? 50 : s.mount == MountKind.Biplane ? 40 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -276,7 +283,7 @@ public static class PixelFigure
             return c;
         }
         var pose = PoseFor(s, frame);
-        new Rig(c, s, pose, cx, gy).Draw();
+        new Rig(c, s, pose, cx, gy + Mathf.RoundToInt(Altitude(s) * s.scale), gy).Draw();
         return c;
     }
 
@@ -290,13 +297,13 @@ public static class PixelFigure
         private readonly Pose p;
         private readonly float S;
         private readonly int limb;
-        private readonly int cx, gy;
+        private readonly int cx, gy, groundY;
         private readonly Color32[] team, crest, shieldRamp, skinRamp;
         private Vector2 hip, sh, head, shNear, shFar, hNear, hFar, footNear, footFar;
         private float headR;
         private bool riding, thrown;
 
-        public Rig(PixelCanvas canvas, FigureStyle style, Pose pose, int cx, int gy)
+        public Rig(PixelCanvas canvas, FigureStyle style, Pose pose, int cx, int gy, int groundY)
         {
             c = canvas;
             s = style;
@@ -305,6 +312,7 @@ public static class PixelFigure
             limb = S < 1.4f ? 2 : 3;
             this.cx = cx;
             this.gy = gy;
+            this.groundY = groundY;
             team = P.Named(s.team);
             crest = string.IsNullOrEmpty(s.crest) ? team : P.Named(s.crest);
             shieldRamp = string.IsNullOrEmpty(s.shieldColor) ? team : P.Named(s.shieldColor);
@@ -359,6 +367,7 @@ public static class PixelFigure
             c.Angle = lean;
             c.Shift = inHatch ? V(0, -p.death * X(2.5f)) : p.death == 3 ? V(X(-4), X(2)) : Vector2.zero;
 
+            if (s.mount == MountKind.Airship && p.death < 3) AirshipBag();
             DrawCape();
             if (s.weapon == GearLook.Bow) Quiver();
             if (s.trinket == GearLook.Horn) Horn();
@@ -390,6 +399,9 @@ public static class PixelFigure
             if (s.mount == MountKind.Tank) TankHull();
             if (s.mount == MountKind.ArmouredCar) ArmouredCar();
             if (s.mount == MountKind.Walker && riding) WalkerCockpit();
+            if (s.mount == MountKind.Airship) AirshipGondola();
+            if (s.mount == MountKind.Biplane) Biplane();
+            if (s.mount == MountKind.Drill) DrillMachine();
             c.Outline(P.Ink, 0.6f);
             if (p.release && (s.Class == WeaponClass.Musket || s.Class == WeaponClass.Cannon)) MuzzleFlash();
             if (p.smear) Smear();
@@ -400,7 +412,8 @@ public static class PixelFigure
                 : s.mount == MountKind.Crawler || s.mount == MountKind.Tank ? X(20) : s.mount == MountKind.ArmouredCar ? X(16)
                 : s.mount == MountKind.Walker ? X(10) : X(s.mount == MountKind.Chariot ? 24 : 14);
             if (p.death == 3 && s.mount == MountKind.None) shadowX += X(8);
-            c.Shadow(shadowX, gy, shadowW, X(1.8f));
+            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : 13); }   // the craft's shadow on the ground
+            c.Shadow(shadowX, groundY, shadowW, X(1.8f));
         }
 
         // ---------- Body ----------
@@ -1153,6 +1166,7 @@ public static class PixelFigure
                     break;
                 }
                 case GearLook.Grenade:
+                    if (s.mount == MountKind.Airship) break;   // bombs drop from the gondola, not the hand
                     if (!p.loaded && p.attack) break;     // thrown
                     c.Ellipse(hand + V(0, X(-0.2f)), X(1.7f), X(1.7f), P.Iron);
                     c.Line(hand + V(X(0.6f), X(1.4f)), hand + V(X(1.4f), X(2.6f)), P.Linen[2]);          // fuse
@@ -1169,6 +1183,16 @@ public static class PixelFigure
                     if (p.loaded && p.attack)
                         foreach (var (t, side) in new[] { (3f, 2.2f), (2f, -2.6f), (4f, -0.6f) })
                             c.Put(c.T(at(len + X(t), X(side))), orb[3]);
+                    break;
+                }
+                case GearLook.Pick:
+                {
+                    // a miner's pick: a long haft and a curved iron head, one end pointed
+                    float len = X(9);
+                    c.Line(at(-2), at(len), P.Wood[2], ww);
+                    Vector2 h0 = at(len, -X(3)), h1 = at(len + X(1), X(3.4f));
+                    c.Line(h0, at(len + X(0.6f)), Trim(GearSlot.Weapon, P.Iron[2]), ww + 1);
+                    c.Line(at(len + X(0.6f)), h1, P.Iron[3], ww + 1);
                     break;
                 }
                 case GearLook.Shovel:
@@ -1544,6 +1568,83 @@ public static class PixelFigure
             c.Ellipse(seat + V(X(-5), X(3)), X(4), X(5), hull);
             c.Line(seat + V(X(-7), X(6)), seat + V(X(-7), X(11)), P.Iron[1], 2);
             if (drop == 0) c.Ellipse(seat + V(X(-7.5f) - Gait, X(13)), X(1.6f), X(1.2f), P.Stone, null, 0.4f);
+        }
+
+        /// <summary>The airship's gasbag, drawn behind its crew: a long ribbed envelope, fins at the tail.</summary>
+        private void AirshipBag()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            float sink = p.death == 2 ? X(-6) : p.death == 1 ? X(-2) : 0;
+            Vector2 bag = V(cx + X(2), gy + X(31) + sink + p.bob * 0.5f);
+            var cloth = s.raider ? P.Leather : P.Linen;
+            c.Ellipse(bag, X(26), X(10), cloth);
+            for (int i = -3; i <= 3; i++) c.Line(bag + V(i * X(6.5f), X(-9)), bag + V(i * X(6.5f), X(9)), cloth[1]);   // the ribs
+            c.Line(bag + V(X(-24), 0), bag + V(X(24), 0), team[2], 2);                                                   // a band in the team colour
+            c.Polygon(new[] { bag + V(X(-22), X(2)), bag + V(X(-32), X(9)), bag + V(X(-30), X(1)) }, _ => cloth[1]);   // tail fins
+            c.Polygon(new[] { bag + V(X(-22), X(-2)), bag + V(X(-32), X(-9)), bag + V(X(-30), X(-1)) }, _ => cloth[1]);
+            // rigging down to the gondola
+            c.Line(bag + V(X(-10), X(-9)), V(cx - X(9), gy + X(9)), P.Linen[1]);
+            c.Line(bag + V(X(12), X(-9)), V(cx + X(10), gy + X(9)), P.Linen[1]);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>The airship's wooden gondola round the crewman's waist, a propeller turning behind it.</summary>
+        private void AirshipGondola()
+        {
+            var box = new Rect(cx - X(10), gy + X(1), X(21), X(9));
+            c.FillLocal(box, l =>
+            {
+                if (l.y < box.yMin + X(2) && (l.x < box.xMin + X(2) || l.x > box.xMax - X(2))) return null;   // rounded hull
+                if (l.y > box.yMax - 1.2f) return Trim(GearSlot.Body, P.Brass[2]);
+                return ((int)l.x % 4 == 0) ? P.Wood[1] : P.Wood[2];
+            });
+            Vector2 prop = V(box.xMin - X(2), box.center.y);
+            bool spin = (p.fNear.x > 2 || p.fNear.x < -2 || p.bob > 0);
+            c.Line(prop + V(0, spin ? X(-4) : X(-1)), prop + V(0, spin ? X(4) : X(1)), P.Wood[3], 2);
+            c.Line(prop + V(X(1), 0), prop + V(X(3), 0), P.Iron[1], 2);
+            muzzle = V(box.center.x, box.yMin - X(1));   // bombs drop from the bottom
+        }
+
+        /// <summary>A biplane round its pilot: fuselage, two wings, a spinning propeller.</summary>
+        private void Biplane()
+        {
+            var body = s.raider ? P.Leather : team;
+            float y = gy + X(4);
+            // lower wing behind, fuselage, upper wing over the pilot's head
+            c.Line(V(cx - X(6), y - X(1)), V(cx + X(10), y - X(1)), P.Linen[1], S > 1.3f ? 4 : 3);
+            c.Capsule(V(cx - X(18), y + X(2)), V(cx + X(14), y + X(1)), X(3), body, 0.1f);
+            c.Polygon(new[] { V(cx - X(18), y + X(2)), V(cx - X(23), y + X(7)), V(cx - X(21), y + X(1)) }, _ => body[1]);   // tail fin
+            c.Line(V(cx - X(22), y + X(2)), V(cx - X(14), y + X(2)), body[1], 2);                                             // tailplane
+            c.Line(V(cx - X(4), y + X(14)), V(cx + X(12), y + X(14)), P.Linen[2], S > 1.3f ? 4 : 3);
+            c.Line(V(cx - X(2), y), V(cx - X(2), y + X(14)), P.Wood[1]); c.Line(V(cx + X(9), y), V(cx + X(9), y + X(14)), P.Wood[1]);   // struts
+            c.Put(c.T(V(cx + X(3), y + X(14))), team[2]);
+            // the engine cowling and propeller
+            c.Ellipse(V(cx + X(15), y + X(1)), X(2.5f), X(2.8f), P.Iron);
+            bool spin = !(p.death > 0);
+            c.Line(V(cx + X(18), y + (spin ? X(-5) : X(-2))), V(cx + X(18), y + (spin ? X(6) : X(2))), P.Wood[3], 2);
+            if (p.death >= 2) c.Ellipse(V(cx + X(14), y + X(5)), X(2.5f), X(2), P.Stone, null, 0.4f);   // trailing smoke as it goes down
+            muzzle = V(cx + X(17), y + X(4));
+        }
+
+        /// <summary>A tunnelling machine: an iron body on tracks with a great spiral drill for a nose.</summary>
+        private void DrillMachine()
+        {
+            float x0 = cx - X(12), x1 = cx + X(12), yb = gy + X(1), yt = gy + X(10);
+            int phase = p.fNear.x > 2 ? 1 : p.fNear.x < -2 ? 2 : p.bob > 0 ? 3 : (p.attack ? 1 : 0);
+            var hull = s.raider ? P.Rock : P.Iron;
+            c.FillLocal(new Rect(x0, yb + X(2), x1 - x0, yt - yb - X(2)), l =>
+                l.y > yt - 1.2f ? hull[3] : ((int)(l.x - x0) % 6 == 0 && (int)l.y % 3 == 0) ? P.Brass[2] : l.x < x0 + X(2) ? hull[3] : hull[2]);
+            c.Line(V(x0 + X(2), yb + X(6)), V(x1 - X(2), yb + X(6)), team[2]);
+            // the drill: a cone with a turning spiral
+            for (int i = 0; i <= 14; i++)
+            {
+                float t = i / 14f, r = X(5) * (1 - t);
+                float x = x1 + X(14) * t;
+                c.Line(V(x, yb + X(5) - r), V(x, yb + X(5) + r), (i + phase) % 3 == 0 ? P.Steel[3] : P.Steel[1]);
+            }
+            for (int i = 0; i < 4; i++) c.Ellipse(V(Mathf.Lerp(x0 + X(2), x1 - X(2), i / 3f), yb + X(1)), X(1.8f), X(1.8f), P.Coal);
+            c.Line(V(x0 + X(3), yt), V(x0 + X(3), yt + X(5)), P.Iron[1], 2);   // exhaust
         }
 
         /// <summary>A short iron gun on the bastion's parapet, in front of its gunner.</summary>

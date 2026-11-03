@@ -49,7 +49,7 @@ public static partial class PlaceholderArt
         if (!PixelBuildingArt.TryGetValue(def.id, out var art) && !MedievalBuildingArt.TryGetValue(def.id, out art)
             && !RenaissanceBuildingArt.TryGetValue(def.id, out art) && !IndustrialBuildingArt.TryGetValue(def.id, out art)
             && !EnlightenmentBuildingArt.TryGetValue(def.id, out art) && !AgeLinkBuildingArt.TryGetValue(def.id, out art)
-            && !ModernBuildingArt.TryGetValue(def.id, out art)) return;
+            && !ModernBuildingArt.TryGetValue(def.id, out art) && !TowerAndAirArt.TryGetValue(def.id, out art)) return;
         string dir = $"Buildings/{def.id}";
         ResetDir(dir);
         int artW = Mathf.RoundToInt(def.ArtSize.x * TilePx), artH = Mathf.RoundToInt(def.ArtSize.y * TilePx);

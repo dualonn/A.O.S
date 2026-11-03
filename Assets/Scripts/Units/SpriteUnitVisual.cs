@@ -13,6 +13,9 @@ public interface IUnitVisual
 
     /// <summary>0..1. The bar is hidden at full health.</summary>
     void SetHealth(float share);
+
+    /// <summary>Hide the unit entirely (a tunneller under the ground).</summary>
+    void SetHidden(bool hidden);
 }
 
 /// <summary>What kind of weapon a unit's animation is built around, so heroes only take gear that fits it.</summary>
@@ -104,9 +107,18 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
         barBack.enabled = barFill.enabled = false;
     }
 
+    private bool hiddenUnderground;
+
+    public void SetHidden(bool hidden)
+    {
+        hiddenUnderground = hidden;
+        if (body != null) body.enabled = !hidden;
+        if (hidden && barBack != null) barBack.enabled = barFill.enabled = false;
+    }
+
     public void SetHealth(float share)
     {
-        if (dead || barBack == null)
+        if (dead || barBack == null || hiddenUnderground)
         {
             return;
         }

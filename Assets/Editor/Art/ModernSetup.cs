@@ -172,7 +172,8 @@ public static partial class PlaceholderArt
                 trainedUnits = new UnitStatModifier { attackMultiplier = 1.3f, healthMultiplier = 1.2f } },
         };
 
-        var pillbox = RankUp(db, "SteamGunTurret", "Pillbox", "Pillbox", age, concrete,
+        // The pillbox carries on the rapid-fire line (Gatling Tower); the heavy line goes on to the Gun Emplacement.
+        var pillbox = RankUp(db, db.GetBuilding("GatlingTower") != null ? "GatlingTower" : "SteamGunTurret", "Pillbox", "Pillbox", age, concrete,
             "A squat concrete pillbox. Its machine gun swings to meet the raiders and sprays them with bullets.",
             Cost(stone, 500, steel, 140, gears, 30), Cost(stone, 250, steel, 70), 1600);
         pillbox.workers = 2;

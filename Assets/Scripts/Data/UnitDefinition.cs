@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>How a unit gets about.</summary>
+public enum Movement { Ground, Air, Underground }
+
 /// <summary>
 /// The base stats and identity of one unit type (e.g. Stone Age Clubman).
 /// Prefabs point at a definition; tech upgrades can later modify these values at runtime.
@@ -46,6 +49,13 @@ public class UnitDefinition : ScriptableObject
     public Sprite projectile;
 
     public float projectileSpeed = 9f;
+
+    [Tooltip("Ground walks round walls and water. Air flies straight over everything (only ranged attacks reach it). " +
+             "Underground tunnels under walls and rivers, hidden until it surfaces to attack.")]
+    public Movement movement;
+
+    [Tooltip("Air units: how high they fly (tiles), so shots aim at the craft and not its shadow.")]
+    public float flyHeight = 1.4f;
 
     [Tooltip("How high it's lobbed, as a share of the shot's length: 0 flies straight (bolts), 0.15 a bow's arc.")]
     public float projectileArc = 0.15f;

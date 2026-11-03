@@ -115,6 +115,43 @@ public abstract class Unit : MonoBehaviour
     public abstract Team Team { get; }
     public bool IsAlive => !isDead && health > 0;
 
+    // ---------- Air and underground ----------
+
+    /// <summary>How this unit gets about: walking, flying or tunnelling.</summary>
+    public Movement Moves => definition != null ? definition.movement : Movement.Ground;
+
+    /// <summary>A tunneller out of sight under the ground: nothing can target it.</summary>
+    public bool Burrowed { get; private set; }
+
+    /// <summary>Alive and somewhere it can be shot or struck.</summary>
+    public bool Targetable => IsAlive && !Burrowed;
+
+    /// <summary>Where shots should aim: the body, or the craft itself for flyers (not their shadow).</summary>
+    public Vector3 AimPoint => transform.position + Vector3.up * (Moves == Movement.Air && definition != null ? definition.flyHeight : 0.4f);
+
+    /// <summary>Can this unit attack that one? Melee can't reach flyers; nothing can reach a burrowed tunneller.</summary>
+    public bool CanHit(Unit other) => other != null && other.Targetable && (other.Moves != Movement.Air || IsRanged || Moves == Movement.Air);
+
+    private float lastMoveTime = -10f, surfacedUntil, nextDust;
+
+    /// <summary>Tunnellers stay under while travelling and come up to fight.</summary>
+    private void UpdateBurrow()
+    {
+        if (Moves != Movement.Underground) return;
+        bool under = Time.time - lastMoveTime < 0.3f && Time.time > surfacedUntil && !swingPending;
+        if (under != Burrowed)
+        {
+            Burrowed = under;
+            visual?.SetHidden(under);
+            Puff.Spawn(transform.position, 0.4f, new Color(0.55f, 0.42f, 0.3f, 0.9f), 5, 0.8f);   // earth thrown up
+        }
+        if (Burrowed && Time.time >= nextDust)
+        {
+            nextDust = Time.time + 0.22f;
+            Puff.Spawn(transform.position, 0.22f, new Color(0.5f, 0.38f, 0.26f, 0.8f), 2, 0.6f);    // the mound moving along
+        }
+    }
+
     protected virtual void Awake()
     {
         if (definition != null)
@@ -160,13 +197,14 @@ public abstract class Unit : MonoBehaviour
 
         ApplyNudges();
         Auras();
+        UpdateBurrow();
 
         if (Time.time >= nextScanTime)
         {
             nextScanTime = Time.time + ScanInterval;
             ScanForTargets();
         }
-        targetsInRange.RemoveAll(u => u == null || !u.IsAlive);
+        targetsInRange.RemoveAll(u => u == null || !CanHit(u));
         currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
 
         if (currentTarget != null && ShouldEngage())
@@ -207,7 +245,7 @@ public abstract class Unit : MonoBehaviour
         float bestDistance = range * range;
         foreach (var u in All)
         {
-            if (u == null || !u.IsAlive || u.Team == ofTeam)
+            if (u == null || !u.Targetable || u.Team == ofTeam)
             {
                 continue;
             }
@@ -406,9 +444,9 @@ public abstract class Unit : MonoBehaviour
         Vector2 push = Vector2.zero;
         foreach (var other in All)
         {
-            if (other == this || !other.IsAlive)
+            if (other == this || !other.IsAlive || (other.Moves == Movement.Air) != (Moves == Movement.Air) || other.Burrowed != Burrowed)
             {
-                continue;
+                continue;   // flyers and ground troops (and tunnellers below) pass over each other
             }
             Vector2 away = pos - other.transform.position;
             float d = away.magnitude;
@@ -424,7 +462,7 @@ public abstract class Unit : MonoBehaviour
         Vector2 step = push * SeparationStrength * Time.deltaTime + knockVelocity * Time.deltaTime;
         Vector3 nudged = pos + new Vector3(step.x, step.y, 0);
         var nav = MapNavigator.Current;
-        if (nav == null)
+        if (nav == null || Moves != Movement.Ground)
         {
             transform.position = nudged;
         }
@@ -465,6 +503,7 @@ public abstract class Unit : MonoBehaviour
         }
         swingTarget = target;
         swingPending = true;
+        surfacedUntil = Time.time + attackCooldown + 1.2f;   // a tunneller stays up while it fights
         swingHitTime = Time.time + hitDelay;
         // A little randomness so groups don't swing in lockstep.
         float cooldown = attackCooldown * Random.Range(0.85f, 1.15f);
@@ -535,6 +574,19 @@ public abstract class Unit : MonoBehaviour
     protected bool MoveTowards(Vector3 destination, float speed, bool faceMovement = true)
     {
         var nav = MapNavigator.Current;
+        if (Moves != Movement.Ground)
+        {
+            // Flyers go straight over everything; tunnellers straight under it.
+            destination.z = transform.position.z;
+            BlockingWall = null;
+            if (Time.time < rallyUntil) speed *= 1f + rallyBoost;
+            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+            bool there = Vector2.Distance(transform.position, destination) < 0.05f;
+            if (!there) lastMoveTime = Time.time;
+            SetMoving(!there);
+            if (!there && faceMovement) Face(destination);
+            return there;
+        }
         // Can't stand in water: aim for the nearest dry spot instead.
         if (nav != null && !nav.IsWalkable(destination, Team))
         {
@@ -695,7 +747,7 @@ public abstract class Unit : MonoBehaviour
         foreach (var col in overlapResults)
         {
             var unit = col.GetComponentInParent<Unit>();
-            if (unit != null && unit.Team != Team && unit.IsAlive && !targetsInRange.Contains(unit))
+            if (unit != null && unit.Team != Team && CanHit(unit) && !targetsInRange.Contains(unit))
             {
                 targetsInRange.Add(unit);
             }

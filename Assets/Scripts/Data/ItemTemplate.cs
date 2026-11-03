@@ -28,7 +28,9 @@ public enum GearLook
     // Age of Enlightenment
     Tricorne, Busby, Musket, Sabre, LeydenRod,
     // Modern (dieselpunk)
-    SteelHelmet, Fedora, Fatigues, TrenchCoat, BoltRifle, MachineGun, Tommygun, Shovel
+    SteelHelmet, Fedora, Fatigues, TrenchCoat, BoltRifle, MachineGun, Tommygun, Shovel,
+    // Tunnellers
+    Pick
 }
 
 /// <summary>

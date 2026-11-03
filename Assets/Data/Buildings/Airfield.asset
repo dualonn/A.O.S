@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Airfield
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Airfield
+  displayName: Airfield
+  description: 'A grass strip, a hangar and a windsock. Builds Biplanes: fast fighters
+    with a machine gun.'
+  icon: {fileID: 21300000, guid: 8f053c314867e0c4691ef2390b6bc723, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 8f053c314867e0c4691ef2390b6bc723, type: 3}
+    - {fileID: 21300000, guid: dbefe74d9b7f5f04f9de17dab67c05c5, type: 3}
+    - {fileID: 21300000, guid: 819608a5835270149b02d3ede0e8a51c, type: 3}
+    - {fileID: 21300000, guid: 328bdfd9b19c0ba4c99881d66fb0840b, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: fc128f6a6d8f86e4f9d60a1e93c54a7b, type: 3}
+    - {fileID: 21300000, guid: 3121e95310d92a643acf2033b936aa96, type: 3}
+    - {fileID: 21300000, guid: 66875feba0293ba44abd687c86bb5632, type: 3}
+    - {fileID: 21300000, guid: 1dbb942517cb46d468712e080760cb01, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: fa65ae39b1c41e74ab7de8914a9d1ad6, type: 3}
+    - {fileID: 21300000, guid: 2c3df52bf7ff05d4193fd2ce0bc1fde9, type: 3}
+    - {fileID: 21300000, guid: ce9cb70c268b3a64f99df9686f683bf5, type: 3}
+    - {fileID: 21300000, guid: c918978f43a89094ea3421da5c08b853, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b3c4ec0800ab8ec44a785dbfe4406187, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 80
+  upgrades:
+  - name: Second Hangar
+    description: +1 biplane.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+        amount: 60
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Synchronised Guns
+    description: Biplanes hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 80
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 900
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 59449a71f37e3224ca111f1de4cf8f58, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
     public static Projectile Fire(Sprite sprite, Vector3 from, Unit target, float speed, int damage, Unit source, float arc = BowArc,
         float splash = 0f, bool fire = false, Team team = Team.Player)
     {
-        var p = Create(sprite, from, target.transform.position + Vector3.up * 0.4f, speed, arc);
+        var p = Create(sprite, from, target.AimPoint, speed, arc);
         p.target = target;
         p.damage = damage;
         p.source = source;
@@ -70,7 +70,7 @@ public class Projectile : MonoBehaviour
     {
         if (target != null && target.IsAlive)
         {
-            end = target.transform.position + Vector3.up * 0.4f;
+            end = target.AimPoint;
         }
         elapsed += Time.deltaTime;
         float t = Mathf.Clamp01(elapsed / duration);

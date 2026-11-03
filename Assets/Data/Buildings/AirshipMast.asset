@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AirshipMast
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AirshipMast
+  displayName: Airship Mast
+  description: A lattice mooring mast and a hangar. Builds Airships, which float
+    over walls and drop bombs.
+  icon: {fileID: 21300000, guid: 3a9a1e00357a7ef4b9c3e0c4789849d7, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 3a9a1e00357a7ef4b9c3e0c4789849d7, type: 3}
+    - {fileID: 21300000, guid: d66cbd90526ada84d930b8080dec22ba, type: 3}
+    - {fileID: 21300000, guid: 5c21580370801d149bce178116041c99, type: 3}
+    - {fileID: 21300000, guid: 445ba0268dd659541aa83ef874fb0c0a, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 81f28ac7ad4c2194d9390ef5c30d0be9, type: 3}
+    - {fileID: 21300000, guid: ef8c880ef6ef644458ac357f1b1b835d, type: 3}
+    - {fileID: 21300000, guid: c92707367c6aa9f40ab1e944eed1291c, type: 3}
+    - {fileID: 21300000, guid: 796399493a737e444843d494e08b50fa, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: d8d0cabfa141386479c2c17a550cef33, type: 3}
+    - {fileID: 21300000, guid: 07c4db1849c0cb74fa578cff591c4e2f, type: 3}
+    - {fileID: 21300000, guid: e0bc8e508a8ecd64abade03f383f499c, type: 3}
+    - {fileID: 21300000, guid: 75e57b5dfdd6220488936c3a38551de1, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 491ee0e7354e63148bb0f03b6d05498d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 260
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 30
+  upgrades:
+  - name: Second Mooring
+    description: +1 airship.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 40
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Bigger Bombs
+    description: Airships hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 9b78402044ba5a4449f8a4199a871401, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b3c4ec0800ab8ec44a785dbfe4406187, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+      amount: 50
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 700
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 0be3b6044484df64a8890eb7c6ad828a, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

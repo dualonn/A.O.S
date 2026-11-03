@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RailgunTower
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RailgunTower
+  displayName: Railgun Tower
+  description: 'A brick base carrying a long aether railgun: it hurls a slug across
+    the map, through anything in its way.'
+  icon: {fileID: 21300000, guid: 55154e9d25a763e4e9d1bb1df3928910, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 55154e9d25a763e4e9d1bb1df3928910, type: 3}
+    - {fileID: 21300000, guid: c836f688c6f80e14f9b26aff9c17df55, type: 3}
+    - {fileID: 21300000, guid: c20b254dede7c514b923a5ea63427bb3, type: 3}
+    - {fileID: 21300000, guid: 18076d491713a5045b3c11684c89436d, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 1d705941c27aae9469ad2ac48068d52f, type: 3}
+    - {fileID: 21300000, guid: dd46e81f593080d4181fa5e17fd1b711, type: 3}
+    - {fileID: 21300000, guid: 7004a2cec81e6c349b60bc533bb39fb6, type: 3}
+    - {fileID: 21300000, guid: 1b47bdc732ea2b840a5d095e566af1c8, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 89fb3ad6628f83b42825832c85262647, type: 3}
+    - {fileID: 21300000, guid: b4197628c9c8ce643b6246aeb47ffe00, type: 3}
+    - {fileID: 21300000, guid: 96c62a06150ffa24c940b798c65fc452, type: 3}
+    - {fileID: 21300000, guid: 32a1988670289ab4aa22cdbd75d4c329, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2320d60080af74149b0b11e06d14cb6d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 350
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 160
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 40
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 40
+  upgrades:
+  - name: Longer Rails
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Aether Capacitors
+    description: +60 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 60
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 0fda1ad8e4f1a09408381cc1caa01459, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d45a7a5caf56e9c489660f520c6b1ed2, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 80
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1000
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 15
+  towerDamage: 190
+  towerCooldown: 3.6
+  towerProjectile: {fileID: 21300000, guid: 1a625433df2e06345a6d6fecf25893b4, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 40
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1.96875, y: 1.046875}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

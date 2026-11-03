@@ -48,10 +48,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bdf7731666e60c3448d3102fce492a55, type: 2}
   - {fileID: 11400000, guid: a6d0fcb2dca7f6940b514821c1e5484e, type: 2}
   - {fileID: 11400000, guid: d22f1eb1bcbec04419385768ecee267d, type: 2}
+  - {fileID: 11400000, guid: 0be3b6044484df64a8890eb7c6ad828a, type: 2}
   enemyUnits:
   - {fileID: 11400000, guid: aa91b8ae7f470614684d1fd927493903, type: 2}
   - {fileID: 11400000, guid: aeb47d9bd7fb3d04f82e4479d46f93cd, type: 2}
   - {fileID: 11400000, guid: cd6d4428f9be6f04c96afde86b0ef9f7, type: 2}
+  - {fileID: 11400000, guid: aea86a726e8d3ec43847f8ddbe1936ce, type: 2}
+  - {fileID: 11400000, guid: 97063fefe9bdb2c4aabd447cbce0f942, type: 2}
   bosses:
   - {fileID: 11400000, guid: 53eb266738f4a5642897d7669b14370e, type: 2}
   - {fileID: 11400000, guid: 3d543e77cd11d4b48b9f44918fee7465, type: 2}
