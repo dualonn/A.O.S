@@ -159,11 +159,35 @@ public class GameDatabase : ScriptableObject
 
     public Age GetAge(int index) => index >= 0 && index < ages.Count ? ages[index] : null;
 
-    public ResourceType GetResource(string id) => resources.Find(r => r != null && r.id == id);
+    public ResourceType GetResource(string id) => Lookup(resources, ref resourceIndex, ref resourceCount, id, r => r.id);
 
-    public BuildingDefinition GetBuilding(string id) => buildings.Find(b => b != null && b.id == id);
+    public BuildingDefinition GetBuilding(string id) => Lookup(buildings, ref buildingIndex, ref buildingCount, id, b => b.id);
 
-    public Technology GetTechnology(string id) => technologies.Find(t => t != null && t.id == id) ?? blessings.Find(t => t != null && t.id == id);
+    public Technology GetTechnology(string id) =>
+        Lookup(technologies, ref techIndex, ref techCount, id, t => t.id) ?? Lookup(blessings, ref blessingIndex, ref blessingCount, id, t => t.id);
+
+    // Lookups by id run thousands of times a frame, so they use dictionaries, rebuilt whenever a list changes size
+    // (setup tools add entries in the editor).
+    [System.NonSerialized] private Dictionary<string, ResourceType> resourceIndex;
+    [System.NonSerialized] private Dictionary<string, BuildingDefinition> buildingIndex;
+    [System.NonSerialized] private Dictionary<string, Technology> techIndex, blessingIndex;
+    [System.NonSerialized] private int resourceCount = -1, buildingCount = -1, techCount = -1, blessingCount = -1;
+
+    private static T Lookup<T>(List<T> list, ref Dictionary<string, T> index, ref int count, string id, System.Func<T, string> key) where T : Object
+    {
+        if (id == null) return null;
+        if (index == null || count != list.Count)
+        {
+            index = new Dictionary<string, T>();
+            foreach (var item in list)
+                if (item != null && key(item) != null) index.TryAdd(key(item), item);
+            count = list.Count;
+        }
+        if (index.TryGetValue(id, out var found) && found != null && key(found) == id) return found;
+        // Not found, or renamed by a setup tool: fall back to a plain search (rare).
+        foreach (var item in list) if (item != null && key(item) == id) return item;
+        return null;
+    }
 
     private static GameDatabase cached;
 

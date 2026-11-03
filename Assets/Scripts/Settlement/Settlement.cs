@@ -467,7 +467,7 @@ public partial class Settlement : MonoBehaviour
     {
         Tick(Time.deltaTime);
 
-        autosaveTimer += Time.deltaTime;
+        autosaveTimer += Time.unscaledDeltaTime;   // real time: a faster game shouldn't save more often
         if (autosaveTimer >= AutosaveInterval)
         {
             autosaveTimer = 0;
@@ -525,6 +525,8 @@ public partial class Settlement : MonoBehaviour
     {
         get
         {
+            // Asked several times per building per frame: worked out again only when research changes.
+            if (healthMultFor == State && healthMultCount == State.researched.Count) return healthMult;
             float m = 1f;
             foreach (var id in State.researched)
             {
@@ -534,9 +536,13 @@ public partial class Settlement : MonoBehaviour
                     m *= tech.buildingHealthMultiplier;
                 }
             }
+            healthMult = m; healthMultFor = State; healthMultCount = State.researched.Count;
             return m;
         }
     }
+    private float healthMult = 1f;
+    private SettlementState healthMultFor;
+    private int healthMultCount = -1;
 
     /// <summary>
     /// Older saves placed buildings with their base health, ignoring research bonuses, so they
@@ -1092,6 +1098,21 @@ public partial class Settlement : MonoBehaviour
     /// past its buildings, a little more as it grows. Any other group is an outpost.
     /// </summary>
     public List<SettlementZone> SettlementZones()
+    {
+        // Many systems ask every frame; while playing, work it out once per frame (and again if buildings come or go).
+        if (!Application.isPlaying) return ComputeSettlementZones();
+        if (zonesCache == null || zonesFrame != Time.frameCount || zonesBuildings != State.buildings.Count)
+        {
+            zonesCache = ComputeSettlementZones();
+            zonesFrame = Time.frameCount;
+            zonesBuildings = State.buildings.Count;
+        }
+        return zonesCache;
+    }
+    private List<SettlementZone> zonesCache;
+    private int zonesFrame = -1, zonesBuildings = -1;
+
+    private List<SettlementZone> ComputeSettlementZones()
     {
         var rects = new List<Rect>();
         var homes = new List<bool>();
@@ -1895,7 +1916,7 @@ public partial class Settlement : MonoBehaviour
         }
         try
         {
-            File.WriteAllText(loadedFrom ?? SavePath, JsonUtility.ToJson(State, true));
+            File.WriteAllText(loadedFrom ?? SavePath, JsonUtility.ToJson(State, false));
         }
         catch (Exception e)
         {

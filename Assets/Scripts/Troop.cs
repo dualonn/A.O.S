@@ -480,18 +480,22 @@ public class Troop : Unit
         if (TargetCamp != null && TargetCamp.IsStanding && !IsHealer)
         {
             // Raiders at home come first for a camp we took on ourselves (one you ordered stays).
-            if (!campOrder && HomeUnderRaid()) TargetCamp = null;
+            // (A camp we're already standing at gets burnt regardless.)
+            if (!campOrder && HomeUnderRaid() && !CampClose(TargetCamp)) TargetCamp = null;
             else
             {
                 AttackCamp(TargetCamp);
                 return;
             }
         }
-        // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach):
-        // burn it down and stick to it, unless home is being raided or you've sent us elsewhere.
-        if (!IsHealer && !hasMoveOrder && !HomeUnderRaid())
+        // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach): burn it
+        // down and stick to it, unless you've sent us elsewhere. While home is raided, Attack troops
+        // still burn a camp right beside them, but don't go hunting further afield.
+        if (!IsHealer && !hasMoveOrder)
         {
-            float range = hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
+            bool raided = HomeUnderRaid();
+            float range = !raided && hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
+            if (raided && Stance != TroopStance.Attack) range = 0f;
             var camp = CampView.Nearest(transform.position, range);
             if (camp != null)
             {
@@ -527,6 +531,9 @@ public class Troop : Unit
         }
     }
 
+    private bool CampClose(CampView camp) =>
+        camp != null && Vector2.Distance(transform.position, camp.ClosestPoint(transform.position)) <= CampNearRange;
+
     /// <summary>How close a raider must be before a troop set on a camp turns to fight it.</summary>
     private const float CampGuardReach = 1.3f;
 
@@ -539,6 +546,12 @@ public class Troop : Unit
             var me = transform.position;
             candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) < 9f && Mathf.Abs(u.transform.position.x - me.x) < 9f);
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
+        }
+        // On Attack, a camp we come close to gets burnt down, whatever raiders are doing elsewhere.
+        if (Stance == TroopStance.Attack && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding))
+        {
+            var near = CampView.Nearest(transform.position, CampNearRange);
+            if (near != null) TargetCamp = near;
         }
         // Set on a camp: only fight raiders right beside us, never chase.
         if (TargetCamp != null && TargetCamp.IsStanding)

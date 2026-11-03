@@ -318,14 +318,47 @@ public class FreeModeHUD : MonoBehaviour
     {
         TrackRates();
 
+        // The regular refresh is spread over a few frames, one part per frame, so it never causes a hitch.
         refreshTimer -= Time.unscaledDeltaTime;
-        if (refreshTimer <= 0)
+        if (refreshTimer <= 0 && refreshPart < 0)
         {
             refreshTimer = 0.25f;
-            RefreshAll();
+            refreshPart = 0;
+        }
+        if (refreshPart >= 0)
+        {
+            RefreshPart(refreshPart);
+            refreshPart = refreshPart + 1 < RefreshParts ? refreshPart + 1 : -1;
         }
         UpdateTooltip();
         FadeMessages();
+    }
+
+    private const int RefreshParts = 5;
+    private int refreshPart = -1;
+    private static readonly string[] RefreshPartNames = { "HUD.TopBar", "HUD.Build", "HUD.Research", "HUD.Selection", "HUD.Panels" };
+
+    private void RefreshPart(int part)
+    {
+        UnityEngine.Profiling.Profiler.BeginSample(RefreshPartNames[part]);
+        switch (part)
+        {
+            case 0:
+                RefreshTopBar();
+                foundingBanner.gameObject.SetActive(!settlement.IsFounded);
+                RefreshAllStanceButton();
+                break;
+            case 1: RefreshBuildButtons(); break;
+            case 2: RefreshResearchButtons(); break;
+            case 3: RefreshSelection(); unitPanel.Refresh(); break;
+            default:
+                RefreshAutoRepairNew();
+                RefreshJournal();
+                RefreshGoals();
+                RefreshDungeon();
+                break;
+        }
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     private void RefreshAll()
@@ -683,14 +716,16 @@ public class FreeModeHUD : MonoBehaviour
             {
                 hidden |= Outdated(def); // grouped by type, show only the newest version of each
             }
-            button.gameObject.SetActive(!hidden);
+            if (button.gameObject.activeSelf == hidden) button.gameObject.SetActive(!hidden);
             bool can = settlement.CanBuild(def, out string missing);
-            button.interactable = can;
+            button.interactable = can;   // (section headers count the ready ones, so this runs for all shown)
+            if (hidden || !button.gameObject.activeInHierarchy) continue;   // folded away: no text to redraw
             bool placingThis = controller.Placer.Current == def;
             string ageTag = groupByType && def.age != null
                 ? $"  <size=70%><color=#{ColorUtility.ToHtmlStringRGB(AgeAccents[Mathf.Clamp(ageOrder, 0, AgeAccents.Length - 1)])}>{def.age.displayName.Replace(" Age", "")}</color></size>" : "";
-            label.text = $"<b>{def.displayName}</b>{ageTag}{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
-                         $"<size=80%>{SubtitleFor(def.requirements.cost, can, missing)}</size>";
+            string text = $"<b>{def.displayName}</b>{ageTag}{(placingThis ? " <color=#8f8>(placing)</color>" : "")}\n" +
+                          $"<size=80%>{SubtitleFor(def.requirements.cost, can, missing)}</size>";
+            if (label.text != text) label.text = text;
         }
 
         // Section headers: only the current grouping's, hidden when empty, with how many can be built.
@@ -819,23 +854,27 @@ public class FreeModeHUD : MonoBehaviour
             bool match = researchFilter.Length == 0
                 || tech.displayName.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0
                 || (tech.description != null && tech.description.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0);
-            button.gameObject.SetActive(!done && !locked && match);
+            bool show = !done && !locked && match;
+            if (button.gameObject.activeSelf != show) button.gameObject.SetActive(show);
+            string level = "";
+            if (tech.IsLevelled)
+            {
+                int at = settlement.ResearchLevel(tech);
+                levels += at;
+                maxLevels += settlement.MaxLevel(tech);
+                if (show) masteryShown++;
+                level = $"  <size=80%><color=#9df>Lv {at}/{settlement.MaxLevel(tech)}</color></size>";
+            }
+            // Hidden, or in a folded section: nothing to redraw (it's refreshed again when shown).
+            if (!show || !button.gameObject.activeInHierarchy) continue;
             bool current = settlement.State.researchingId == tech.id;
             bool can = settlement.CanResearch(tech, out string missing);
             button.interactable = can;
             string sub = current
                 ? $"<color=#8cf>Researching {settlement.State.researchProgress:P0}</color>"
                 : SubtitleFor(settlement.ResearchCost(tech), can, missing) + $" <color=#aaa>({settlement.ResearchTime(tech):0}s)</color>";
-            string level = "";
-            if (tech.IsLevelled)
-            {
-                int at = settlement.ResearchLevel(tech);
-                level = $"  <size=80%><color=#9df>Lv {at}/{settlement.MaxLevel(tech)}</color></size>";
-                levels += at;
-                maxLevels += settlement.MaxLevel(tech);
-                if (button.gameObject.activeSelf) masteryShown++;
-            }
-            label.text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
+            string text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
+            if (label.text != text) label.text = text;   // re-laying out text is the costly part
         }
         masterySection.SetVisible(masteryShown > 0 || levels > 0);
         masterySection.SetNote(levels >= maxLevels ? "all done" : $"{levels}/{maxLevels} levels");

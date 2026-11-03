@@ -195,18 +195,24 @@ public abstract class Unit : MonoBehaviour
             LandHit();
         }
 
+        UnityEngine.Profiling.Profiler.BeginSample("Unit.Nudges");
         ApplyNudges();
+        UnityEngine.Profiling.Profiler.EndSample();
         Auras();
         UpdateBurrow();
 
         if (Time.time >= nextScanTime)
         {
-            nextScanTime = Time.time + ScanInterval;
+            // At high speed, scan every 0.05 real seconds at most rather than every frame.
+            nextScanTime = Time.time + ScanInterval * Mathf.Max(1f, Time.timeScale * 0.5f);
+            UnityEngine.Profiling.Profiler.BeginSample("Unit.Scan");
             ScanForTargets();
+            UnityEngine.Profiling.Profiler.EndSample();
         }
         targetsInRange.RemoveAll(u => u == null || !CanHit(u));
         currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
 
+        UnityEngine.Profiling.Profiler.BeginSample("Unit.Act");
         if (currentTarget != null && ShouldEngage())
         {
             Engage(currentTarget);
@@ -216,6 +222,7 @@ public abstract class Unit : MonoBehaviour
         {
             Idle();
         }
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     private IUnitVisual visual;
@@ -440,27 +447,65 @@ public abstract class Unit : MonoBehaviour
         }
     }
 
+    // Units bucketed by area once a frame, so pushing apart only looks at neighbours, not the whole army.
+    private const float NudgeCell = 4f;
+    private static readonly Dictionary<long, List<Unit>> nudgeGrid = new Dictionary<long, List<Unit>>();
+    private static readonly Stack<List<Unit>> nudgeLists = new Stack<List<Unit>>();
+    private static int nudgeFrame = -1;
+
+    private static long NudgeKey(int cx, int cy) => ((long)cx << 32) ^ (uint)cy;
+
+    private static void BuildNudgeGrid()
+    {
+        if (nudgeFrame == Time.frameCount) return;
+        nudgeFrame = Time.frameCount;
+        foreach (var list in nudgeGrid.Values) { list.Clear(); nudgeLists.Push(list); }
+        nudgeGrid.Clear();
+        foreach (var u in All)
+        {
+            if (u == null) continue;
+            Vector3 p = u.transform.position;
+            long key = NudgeKey(Mathf.FloorToInt(p.x / NudgeCell), Mathf.FloorToInt(p.y / NudgeCell));
+            if (!nudgeGrid.TryGetValue(key, out var list))
+            {
+                list = nudgeLists.Count > 0 ? nudgeLists.Pop() : new List<Unit>();
+                nudgeGrid[key] = list;
+            }
+            list.Add(u);
+        }
+    }
+
     /// <summary>Knockback from hits, and gently pushing apart from units that are too close.</summary>
     private void ApplyNudges()
     {
         Vector3 pos = transform.position;
         float space = PersonalSpace;
         Vector2 push = Vector2.zero;
-        foreach (var other in All)
+        BuildNudgeGrid();
+        int gx = Mathf.FloorToInt(pos.x / NudgeCell), gy = Mathf.FloorToInt(pos.y / NudgeCell);
+        int reach = Mathf.CeilToInt(space / NudgeCell);   // big units look further
+        for (int cy = gy - reach; cy <= gy + reach; cy++)
         {
-            if (other == this || !other.IsAlive || (other.Moves == Movement.Air) != (Moves == Movement.Air) || other.Burrowed != Burrowed)
+            for (int cx = gx - reach; cx <= gx + reach; cx++)
             {
-                continue;   // flyers and ground troops (and tunnellers below) pass over each other
-            }
-            Vector2 away = pos - other.transform.position;
-            float d = away.magnitude;
-            if (d < space && d > 0.0001f)
-            {
-                push += away / d * (space - d);
-            }
-            else if (d <= 0.0001f)
-            {
-                push += Random.insideUnitCircle * 0.1f;
+                if (!nudgeGrid.TryGetValue(NudgeKey(cx, cy), out var cell)) continue;
+                foreach (var other in cell)
+                {
+                    if (other == null || other == this || !other.IsAlive || (other.Moves == Movement.Air) != (Moves == Movement.Air) || other.Burrowed != Burrowed)
+                    {
+                        continue;   // flyers and ground troops (and tunnellers below) pass over each other
+                    }
+                    Vector2 away = pos - other.transform.position;
+                    float d = away.magnitude;
+                    if (d < space && d > 0.0001f)
+                    {
+                        push += away / d * (space - d);
+                    }
+                    else if (d <= 0.0001f)
+                    {
+                        push += Random.insideUnitCircle * 0.1f;
+                    }
+                }
             }
         }
         Vector2 step = push * SeparationStrength * Time.deltaTime + knockVelocity * Time.deltaTime;

@@ -119,6 +119,18 @@ public class MapData
     /// <summary>Replace every wall tile with these (standing walls and gates).</summary>
     public void SetWalls(IEnumerable<(Vector2Int cell, WallTile kind)> pieces)
     {
+        // Nothing changed (the usual case: Settlement.Changed fires for all sorts of things): keep the
+        // version, so units don't all re-plan their paths at once.
+        var incoming = new List<(Vector2Int cell, WallTile kind)>();
+        foreach (var p in pieces) if (p.kind != WallTile.None) incoming.Add(p);
+        if (incoming.Count == wallCells.Count)
+        {
+            bool same = true;
+            foreach (var (cell, kind) in incoming)
+                if (WallAt(cell.x, cell.y) != kind) { same = false; break; }
+            if (same) return;
+        }
+        pieces = incoming;
         foreach (var c in wallCells)
         {
             var chunk = Find(c.x, c.y);

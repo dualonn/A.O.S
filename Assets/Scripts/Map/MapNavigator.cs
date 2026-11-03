@@ -365,6 +365,28 @@ public class PathFollower
     private Vector3 plannedGoal;
     private float plannedAt = -99f;
     private int plannedWalls = -1;
+    private float retryAfter = -99f;   // after a search that couldn't reach the goal, wait before trying again
+
+    // The straight-line check is costly over long distances: reuse its answer for a moment.
+    private Vector3 lineFrom, lineGoal;
+    private bool lineClear;
+    private float lineAt = -99f;
+
+    // A* searches are the most expensive thing units do. Only a few run each frame; the rest keep
+    // their old plan (or head straight on) and try again next frame, so a crowd re-planning at
+    // once is spread out instead of freezing the game.
+    private const int SearchesPerFrame = 6;
+    private const double SearchMsPerFrame = 3.0;
+    private static int searchFrame = -1, searchesThisFrame;
+    private static readonly System.Diagnostics.Stopwatch searchClock = new System.Diagnostics.Stopwatch();
+
+    private static bool TakeSearch()
+    {
+        if (searchFrame != Time.frameCount) { searchFrame = Time.frameCount; searchesThisFrame = 0; searchClock.Reset(); }
+        if (searchesThisFrame >= SearchesPerFrame || searchClock.Elapsed.TotalMilliseconds >= SearchMsPerFrame) return false;
+        searchesThisFrame++;
+        return true;
+    }
 
     /// <summary>Where to head next. Without a navigator (levels), that's simply the goal.</summary>
     public Vector3 NextPoint(Vector3 position, Vector3 goal, Team team = Team.Player)
@@ -374,18 +396,33 @@ public class PathFollower
         {
             return goal;
         }
-        // Straight shot available: no need to plan.
-        if (nav.ClearLine(position, goal, team))
+        // Straight shot available: no need to plan. (Checked again every 0.15 real seconds, or when things move a lot.)
+        float now = Time.unscaledTime;
+        if (now - lineAt > 0.15f || (lineGoal - goal).sqrMagnitude > 0.25f || (lineFrom - position).sqrMagnitude > 1f)
+        {
+            lineClear = nav.ClearLine(position, goal, team);
+            lineAt = now; lineGoal = goal; lineFrom = position;
+        }
+        if (lineClear)
         {
             path.Clear();
             return goal;
         }
-        bool stale = Time.time - plannedAt > 2f || plannedWalls != nav.WallVersion;
-        if (path.Count == 0 || stale || Vector2.Distance(plannedGoal, goal) > 1.5f)
+        // Plans go stale on real time, so a faster game doesn't mean more searches per second.
+        bool stale = now - plannedAt > 2f || plannedWalls != nav.WallVersion;
+        bool wallsChanged = plannedWalls != nav.WallVersion;
+        if ((path.Count == 0 || stale || Vector2.Distance(plannedGoal, goal) > 1.5f) && (now >= retryAfter || wallsChanged) && TakeSearch())
         {
+            UnityEngine.Profiling.Profiler.BeginSample("PathFollower.FindPath");
+            searchClock.Start();
             path = nav.FindPath(position, goal, team);
+            searchClock.Stop();
+            UnityEngine.Profiling.Profiler.EndSample();
+            // No route all the way (water, or a long way round): failed searches are the costly ones, so back off.
+            bool reached = path.Count > 0 && Vector2.Distance(path[path.Count - 1], goal) < 2f;
+            retryAfter = reached ? -99f : now + 3f;
             plannedGoal = goal;
-            plannedAt = Time.time;
+            plannedAt = now;
             plannedWalls = nav.WallVersion;
         }
         while (path.Count > 1 && Vector2.Distance(position, path[0]) < 0.3f)

@@ -157,11 +157,15 @@ public class BuildingView : MonoBehaviour
     {
         hovered = !controller.Placer.IsPlacing && controller.Grid != null &&
                   Contains(controller.Grid.WorldToCell(SettlementGrid.MouseWorld()));
+        UnityEngine.Profiling.Profiler.BeginSample("BuildingView.Refresh");
         Refresh();
+        UnityEngine.Profiling.Profiler.EndSample();
         Animate();
         UpdateWallPiece();
         UpdateShake();
+        UnityEngine.Profiling.Profiler.BeginSample("BuildingView.TrainTroops");
         TrainTroops();
+        UnityEngine.Profiling.Profiler.EndSample();
         TowerAttack();
     }
 
@@ -187,7 +191,7 @@ public class BuildingView : MonoBehaviour
         if (Definition.wallKind == WallTile.Gate && Time.time >= nextGateCheck)
         {
             // Open for any of your units close by (and always shown open once ruined).
-            nextGateCheck = Time.time + 0.2f;
+            nextGateCheck = Time.time + 0.2f * Mathf.Max(1f, Time.timeScale * 0.5f);
             Vector3 centre = controller.Grid.AreaCenter(State.cell, Definition.size);
             bool open = State.health <= 0 || Unit.FindNearestEnemy(Team.Enemy, centre, 1.6f) != null;
             if (open != gateOpen)
