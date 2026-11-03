@@ -439,9 +439,13 @@ public class Troop : Unit
     private float raidCheckAt;
     private bool homeRaided;
 
+    /// <summary>How far past its buildings a raider counts as attacking the home settlement.</summary>
+    private const float HomeAttackReach = 10f;
+
     /// <summary>
-    /// Is a raid on its way to (or in) this troop's home settlement? Any raider within raiding
-    /// range of home counts, from the moment it sets out. (Checked once a second.)
+    /// Is this troop's home settlement being attacked: raiders at the town itself (within the
+    /// alert range of its buildings, plus a little)? Raiders that have only just set out from a
+    /// camp far away don't count. (Checked once a second.)
     /// </summary>
     private bool HomeUnderRaid()
     {
@@ -449,7 +453,7 @@ public class Troop : Unit
         raidCheckAt = Time.time + 1f;
         homeRaided = false;
         if (defendArea == null) return false;
-        float reach = Settlement.Instance != null ? Settlement.Instance.Database.campRaidRange : 110f;
+        float reach = alertRange + HomeAttackReach;
         foreach (var u in Living)
         {
             if (u is Enemy e && e.IsAlive && e.IsRaider && defendArea.DistanceTo(e.transform.position) <= reach)
@@ -480,8 +484,7 @@ public class Troop : Unit
         if (TargetCamp != null && TargetCamp.IsStanding && !IsHealer)
         {
             // Raiders at home come first for a camp we took on ourselves (one you ordered stays).
-            // (A camp we're already standing at gets burnt regardless.)
-            if (!campOrder && HomeUnderRaid() && !CampClose(TargetCamp)) TargetCamp = null;
+            if (!campOrder && HomeUnderRaid()) TargetCamp = null;
             else
             {
                 AttackCamp(TargetCamp);
@@ -489,13 +492,10 @@ public class Troop : Unit
             }
         }
         // With nobody left to fight and a camp right here (or, on Attack, anywhere in reach): burn it
-        // down and stick to it, unless you've sent us elsewhere. While home is raided, Attack troops
-        // still burn a camp right beside them, but don't go hunting further afield.
-        if (!IsHealer && !hasMoveOrder)
+        // down and stick to it, unless home is being attacked or you've sent us elsewhere.
+        if (!IsHealer && !hasMoveOrder && !HomeUnderRaid())
         {
-            bool raided = HomeUnderRaid();
-            float range = !raided && hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
-            if (raided && Stance != TroopStance.Attack) range = 0f;
+            float range = hasDefendZone && Stance == TroopStance.Attack ? CampHuntRange : CampNearRange;
             var camp = CampView.Nearest(transform.position, range);
             if (camp != null)
             {
@@ -547,16 +547,19 @@ public class Troop : Unit
             candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, me) < 9f && Mathf.Abs(u.transform.position.x - me.x) < 9f);
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
         }
-        // On Attack, a camp we come close to gets burnt down, whatever raiders are doing elsewhere.
-        if (Stance == TroopStance.Attack && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding))
+        // On Attack, camps come first: raiders keep setting out from them, so chasing each one never
+        // ends. Unless home is being attacked, head for the nearest camp in reach (one we come close
+        // to, or any within hunting range), whatever raiders are doing elsewhere.
+        if (Stance == TroopStance.Attack && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && !HomeUnderRaid())
         {
-            var near = CampView.Nearest(transform.position, CampNearRange);
-            if (near != null) TargetCamp = near;
+            var camp = CampView.Nearest(transform.position, hasDefendZone ? CampHuntRange : CampNearRange);
+            if (camp != null) TargetCamp = camp;
         }
-        // Set on a camp: only fight raiders right beside us, never chase.
+        // Set on a camp: on the way, fight raiders that come close but never chase; at the camp,
+        // only those right beside us.
         if (TargetCamp != null && TargetCamp.IsStanding)
         {
-            float reach = CampGuardReach + personalSpace;
+            float reach = CampClose(TargetCamp) ? CampGuardReach + personalSpace : OrderFightRange;
             candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, transform.position) <= reach);
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
         }
