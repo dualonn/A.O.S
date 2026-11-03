@@ -76,6 +76,7 @@ public class CulturePanel : MonoBehaviour
             int index = i;
             var b = UIBuilder.Button(TabNames[i], tabRow, () => { tab = index; picks.Clear(); note.text = ""; Rebuild(); }, out var label, 32, 15);
             b.GetComponent<LayoutElement>().flexibleWidth = 1;
+            label.text = TabNames[i];
             label.alignment = TextAlignmentOptions.Center;
             tabs.Add((b, label));
         }
