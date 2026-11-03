@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Age
   displayName: Arcane Age
   order: 11
-  description: 'Magic, rediscovered and engineered: runeblades and mana staffs, griffins
-    and skyships, golems of living stone.'
+  description: 'Magic, rediscovered and built into machines: rune-armoured spellblades,
+    mana rifles, griffins and mana-drive skyships, golems with crystal hearts.'
   advanceRequirements:
     minimumAge: {fileID: 0}
     technologies:

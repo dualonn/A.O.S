@@ -5,9 +5,6 @@ TextureImporter:
   - first:
       213: 418382090284860922
     second: ArcaneObelisk_L2_F2_0
-  - first:
-      213: -940886216487762730
-    second: ArcaneObelisk_L2_F2_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -109,7 +106,7 @@ TextureImporter:
         x: 19
         y: 3
         width: 50
-        height: 47
+        height: 57
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,28 +117,6 @@ TextureImporter:
       bones: []
       spriteID: af580df5b446ec500800000000000000
       internalID: 418382090284860922
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ArcaneObelisk_L2_F2_1
-      rect:
-        serializedVersion: 2
-        x: 38
-        y: 49
-        width: 13
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6d48f2c98fc41f2f0800000000000000
-      internalID: -940886216487762730
       vertices: []
       indices: 
       edges: []
@@ -161,7 +136,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       ArcaneObelisk_L2_F2_0: 418382090284860922
-      ArcaneObelisk_L2_F2_1: -940886216487762730
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

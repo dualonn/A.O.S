@@ -15,7 +15,7 @@ MonoBehaviour:
   id: GolemSanctum
   displayName: Golem Sanctum
   description: A ring of standing stones open to the sky, where golems are woken
-    with a rune and a name.
+    with a rune, an iron frame and a mana core.
   icon: {fileID: 21300000, guid: 21b2129eacb8ad143ac319d3d0d5e32a, type: 3}
   prefab: {fileID: 0}
   looks:

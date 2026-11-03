@@ -109,16 +109,16 @@ public static partial class PlaceholderArt
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
         // Arcane Age (fantasy)
-        ("Spellblade", Fig(B, GearLook.Cowl, GearLook.Runeblade, body: GearLook.Spellweave, crest: "Arcane"), false),
-        ("Arcanist", Fig(B, GearLook.WizardHat, GearLook.ManaStaff, body: GearLook.Spellweave, crest: "Arcane"), false),
-        ("GriffinRider", Fig(B, GearLook.PlumedHelm, GearLook.Javelin, body: GearLook.Plate, mount: MountKind.Griffin, coat: "Griffin"), false),
+        ("Spellblade", Fig(B, GearLook.RuneVisor, GearLook.Runeblade, body: GearLook.RunePlate, crest: "Arcane"), false),
+        ("Arcanist", Fig(B, GearLook.WizardHat, GearLook.ManaRifle, body: GearLook.Spellweave, crest: "Arcane"), false),
+        ("GriffinRider", Fig(B, GearLook.RuneVisor, GearLook.Javelin, body: GearLook.RunePlate, mount: MountKind.Griffin, coat: "Griffin"), false),
         ("Lightbringer", Medic(Fig(B, GearLook.WizardHat, GearLook.None, body: GearLook.Spellweave, crest: "Linen")), false),
-        ("Warwalker", Fig(B, GearLook.WizardHat, GearLook.Cannon, body: GearLook.Spellweave, mount: MountKind.Walker, crest: "Arcane"), false),
+        ("Warwalker", Fig(B, GearLook.RuneVisor, GearLook.Cannon, body: GearLook.RunePlate, mount: MountKind.Walker, crest: "Arcane"), false),
         ("RunicGolem", Skin(Fig(B, GearLook.GolemHead, GearLook.None, body: GearLook.GolemBody, scale: 1.5f), "Rock"), false),
-        ("Skyship", Fig(B, GearLook.WizardHat, GearLook.Grenade, body: GearLook.Spellweave, mount: MountKind.Airship, crest: "Arcane"), false),
-        ("Hexblade", Fig(Rd, GearLook.Hood, GearLook.Runeblade, body: GearLook.Jerkin, raider: true), true),
+        ("Skyship", Fig(B, GearLook.RuneVisor, GearLook.Grenade, body: GearLook.RunePlate, mount: MountKind.Airship, crest: "Arcane"), false),
+        ("Hexblade", Fig(Rd, GearLook.Goggles, GearLook.Runeblade, body: GearLook.TacVest, raider: true), true),
         ("Warlock", Fig(Rd, GearLook.Cowl, GearLook.ManaStaff, body: GearLook.Robe, crest: "Purple", raider: true), true),
-        ("WyvernRider", Fig(Rd, GearLook.Hood, GearLook.Javelin, body: GearLook.Jerkin, mount: MountKind.Griffin, coat: "Wyvern", raider: true), true),
+        ("WyvernRider", Fig(Rd, GearLook.Goggles, GearLook.Javelin, body: GearLook.Jerkin, mount: MountKind.Griffin, coat: "Wyvern", raider: true), true),
         // Information Age (cyber)
         ("Commando", Fig(B, GearLook.TacHelmet, GearLook.AssaultRifle, body: GearLook.TacVest), false),
         ("PlasmaGunner", Fig(B, GearLook.TacHelmet, GearLook.PlasmaRifle, body: GearLook.TacVest), false),
@@ -250,7 +250,7 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.BoltRifle ? ball : style.weapon == GearLook.MachineGun || style.weapon == GearLook.Tommygun ? bullet
                 : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
                 : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball
-                : style.weapon == GearLook.ManaStaff ? manaBolt : null;
+                : style.weapon == GearLook.ManaStaff || style.weapon == GearLook.ManaRifle ? manaBolt : null;
             SetFlight(def, style.weapon);
             EditorUtility.SetDirty(def);
         }
@@ -306,6 +306,7 @@ public static partial class PlaceholderArt
             case GearLook.Grenade: def.projectileArc = 0.4f; def.projectileSpeed = 8f; def.splashRadius = 1.5f; break;
             case GearLook.AetherRod: def.projectileArc = 0f; def.projectileSpeed = 18f; def.splashRadius = 0.8f; break;
             case GearLook.ManaStaff: def.projectileArc = 0f; def.projectileSpeed = 20f; def.splashRadius = 0.9f; break;
+            case GearLook.ManaRifle: def.projectileArc = 0f; def.projectileSpeed = 28f; def.splashRadius = 0.7f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
@@ -663,7 +664,7 @@ public static partial class PlaceholderArt
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
                 GearLook.RayGun or GearLook.RayRifle => "RayBolt", GearLook.PlasmaRifle => "PlasmaBolt", GearLook.AssaultRifle => "Bullet",
-                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff => "ManaBolt", _ => null,
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);

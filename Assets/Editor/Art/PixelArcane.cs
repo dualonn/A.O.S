@@ -5,7 +5,8 @@ using K = BuildingKit;
 
 /// <summary>
 /// Arcane Age buildings in pixel art: pale moonstone and gold, violet runes, blue mana crystals that
-/// float and pulse, spires, domes and standing stones. Magic, rediscovered and engineered.
+/// float and pulse, spires, domes and standing stones. Magic, rediscovered and engineered: steel bands,
+/// conduits that carry mana like power lines, and crystals held in metal emitters.
 /// </summary>
 public static partial class PlaceholderArt
 {
@@ -35,6 +36,19 @@ public static partial class PlaceholderArt
         k.HLine(x0, x1, y1, P.Gold[2]);
         k.HLine(x0, x1, y1 - 1, Moon[3]);
         for (int x = x0 + 6; x < x1 - 2; x += 13) k.Px(x, (y0 + y1) / 2, (x + k.Frame) % 2 == 0 ? P.Arcane[3] : P.Arcane[2]);
+        Conduit(k, x0, x1, y0 + 1);
+    }
+
+    /// <summary>A steel band with a mana conduit in it, a pulse of light running along.</summary>
+    private static void Conduit(K k, int x0, int x1, int y)
+    {
+        k.HLine(x0, x1, y, P.Steel[1]);
+        k.HLine(x0, x1, y + 1, P.Mana[1]);
+        k.HLine(x0, x1, y + 2, P.Steel[2]);
+        int span = Mathf.Max(1, x1 - x0);
+        int pulse = x0 + (k.Frame * span / 4 + span / 8) % span;
+        k.Px(pulse, y + 1, P.Mana[3]); k.Px(Mathf.Min(x1, pulse + 1), y + 1, P.Mana[2]);
+        for (int x = x0 + 3; x < x1; x += 8) k.Px(x, y + 2, P.Steel[3]);   // rivets
     }
 
     /// <summary>A pointed slate-violet roof.</summary>
@@ -55,6 +69,11 @@ public static partial class PlaceholderArt
     {
         ramp ??= P.Mana;
         int bob = k.Frame % 4 < 2 ? 0 : 1;
+        // a steel emitter cradle under it, a thin beam holding the crystal up
+        k.Line(x - size, y - size - 3, x - size / 2, y - size - 1, P.Steel[2]);
+        k.Line(x + size, y - size - 3, x + size / 2, y - size - 1, P.Steel[2]);
+        k.HLine(x - size, x + size, y - size - 3, P.Steel[1]);
+        if (k.Frame % 2 == 0) k.VLine(x, y - size - 2, y - size - 1, ramp[3]);
         y += bob;
         k.Polygon(new[] { new Vector2(x, y - size), new Vector2(x + size * 0.6f, y), new Vector2(x, y + size), new Vector2(x - size * 0.6f, y) },
             l => l.x < x ? ramp[3] : ramp[2]);
@@ -73,6 +92,8 @@ public static partial class PlaceholderArt
         for (int f = 1; f < floors; f++) for (int i = 0; i < 4; i++) if ((f + i * 3) % 5 != 0) k.Rect(16 + i * 9, 6 + f * 7, 19 + i * 9, 9 + f * 7, (f + i + k.Frame) % 7 == 0 ? P.Mana[3] : P.Glow[2]);
         k.Rect(8, top, 56, top + 2, P.Gold[1]);
         Cone(k, 14, 50, top + 3, 14);
+        k.VLine(46, top + 3, top + 22, P.Steel[2]); k.HLine(43, 49, top + 16, P.Steel[1]);
+        k.Px(46, top + 23, k.Frame % 2 == 0 ? P.Red[3] : P.Red[1]);
         FloatingCrystal(k, 32, top + 24, 4);
         k.Door(28, 4, 8, 9, arched: true);
         k.Finish();
@@ -123,8 +144,11 @@ public static partial class PlaceholderArt
         for (int i = 0; i < 3 + Mathf.Min(k.Level, 1); i++)
         {
             int x = 54 + (i % 2) * 18, y = 18 + (i / 2) * 24;
-            k.Ellipse(x, y, 5, 5, new[] { P.Red[1], P.White, P.Red[2], P.White });
-            k.VLine(x, y - 10, y - 5, P.Wood[1]);
+            int hover = (k.Frame + i) % 4 < 2 ? 0 : 1;
+            k.Ellipse(x, y + hover, 5, 4, P.Steel);
+            k.Ellipse(x + 1, y + hover, 2, 2, P.Mana);
+            k.HLine(x - 7, x - 4, y + 3 + hover, P.Steel[1]); k.HLine(x + 4, x + 7, y + 3 + hover, P.Steel[1]);
+            k.Px(x, y - 6 + hover, P.Mana[3]); k.Px(x, y - 8, P.Mana[1]);   // the lift glow under it
         }
         int f = k.Frame;
         k.Line(36 + f * 4, 46 - f * 6, 40 + f * 4, 44 - f * 6, P.Mana[3], 2);
@@ -179,6 +203,7 @@ public static partial class PlaceholderArt
             for (int x = 32 - half; x <= 32 + half; x++) k.Px(x, y, x < 32 - half + 2 ? Moon[3] : Moon[2]);
         }
         for (int y = 12; y < 40; y += 5) k.Px(32, y, (y / 5 + k.Frame) % 2 == 0 ? P.Arcane[3] : P.Arcane[1]);
+        foreach (int y in new[] { 16, 30 }) { int half = 10 - (y - 8) / 6; k.HLine(32 - half, 32 + half, y, P.Steel[2]); k.HLine(32 - half, 32 + half, y + 1, P.Steel[1]); }
         FloatingCrystal(k, 32, 50, 4);
         k.Finish();
     }
@@ -280,6 +305,9 @@ public static partial class PlaceholderArt
         k.Line(24, 64, 40, 58 + bob, P.Linen[1]);
         k.Ellipse(62, 54 + bob, 20, 6, P.Wood, l => l.y <= 54 + bob);
         k.HLine(42, 82, 54 + bob, P.Gold[2]);
+        k.HLine(46, 78, 51 + bob, P.Steel[2]);
+        k.Rect(80, 48 + bob, 85, 52 + bob, P.Steel[1]);
+        k.Rect(86, 49 + bob, 87 + (k.Frame % 2), 51 + bob, P.Mana[3]);
         k.Polygon(new[] { new Vector2(62, 56 + bob), new Vector2(62, 76 + bob), new Vector2(76, 58 + bob) }, _ => P.Mana[2]);
         k.VLine(62, 54 + bob, 78 + bob, P.Wood[1]);
         k.Finish();
@@ -304,6 +332,10 @@ public static partial class PlaceholderArt
             k.Rect(x - 2, y, x + 2, y + 12, Moon[2]); k.VLine(x - 2, y, y + 12, Moon[3]);
             k.Px(x, y + 8, P.Mana[(i + k.Frame) % 2 == 0 ? 3 : 2]);
         }
+        k.Rect(78, 22, 90, 32, P.Steel[1]); k.Rect(79, 23, 89, 31, P.Steel[2]);
+        for (int i = 0; i < 3; i++) k.HLine(81, 87, 25 + i * 2, P.Steel[1]);
+        k.Px(88, 30, k.Frame % 2 == 0 ? P.Mana[3] : P.Mana[1]);
+        k.Line(64, 18, 78, 26, P.Coal[1]);
         FloatingCrystal(k, 48, 30, 5);
         k.Finish();
     }
@@ -339,6 +371,8 @@ public static partial class PlaceholderArt
         k.Px(70 + bubble * 2, 15, P.White); k.Px(78 - bubble, 14, P.Mana[3]);
         k.VLine(62, 12, 34, P.Wood[1]); k.VLine(86, 12, 34, P.Wood[1]); k.HLine(60, 88, 34, P.Wood[2]);
         for (int i = 0; i < 3; i++) { int x = 56 + i * 6; k.Rect(x, 4, x + 3, 9, P.Mana[2]); k.HLine(x, x + 3, 10, P.Steel[2]); }
+        k.HLine(50, 62, 16, P.Steel[2]); k.HLine(50, 62, 17, P.Steel[1]);
+        k.Ellipse(56, 21, 2.5f, 2.5f, P.Steel); k.Px(56 + (k.Frame % 2), 22, P.Red[3]);
         k.Finish();
     }
 }

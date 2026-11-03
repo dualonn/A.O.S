@@ -19,7 +19,7 @@ public static partial class PlaceholderArt
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         Age information = db.ages.Find(a => a != null && a.name == "InformationAge");
         var age = AgeAsset(db, "ArcaneAge", "Arcane Age", 11,
-            "Magic, rediscovered and engineered: runeblades and mana staffs, griffins and skyships, golems of living stone.");
+            "Magic, rediscovered and built into machines: rune-armoured spellblades, mana rifles, griffins and mana-drive skyships, golems with crystal hearts.");
 
         // ---------- Resources and the map ----------
         ResourceType food = Res(db, "Food"), wood = Res(db, "Wood"), stone = Res(db, "Stone"), iron = Res(db, "Iron"),
@@ -55,10 +55,10 @@ public static partial class PlaceholderArt
         }
         var crystals = ATech("ManaCrystals", "Mana Crystals", "Stones that hold a spell the way a jar holds water. Unlocks the Manastone Mine and the Mana Well.",
             120f, Cost(steel, 400, chips, 150, runestone, 120), "Spellcode");
-        var runeblades = ATech("Runeblades", "Runeblades", "Swords that remember every cut. Spec-Ops Bases rank up into the Spellblade Hall; all troops hit 4% harder.",
+        var runeblades = ATech("Runeblades", "Runeblades", "Swords that remember every cut, worn with rune-plate power armour. Spec-Ops Bases rank up into the Spellblade Hall; all troops hit 4% harder.",
             120f, Cost(steel, 400, mana, 60), crystals.id, crystals);
         runeblades.unitModifiers = new List<UnitStatModifier> { new UnitStatModifier { attackMultiplier = 1.04f } };
-        var arcanism = ATech("Arcanism", "Arcanism", "Spells cast from a staff, as easily as firing a gun. Plasma Ranges rank up into the Arcane Academy.",
+        var arcanism = ATech("Arcanism", "Arcanism", "A staff made into a rifle, that fires spells like bullets. Plasma Ranges rank up into the Arcane Academy.",
             120f, Cost(gold, 400, mana, 80, chips, 60), runeblades.id, runeblades);
         var griffins = ATech("GriffinTaming", "Griffin Taming", "Proud beasts that let only the brave ride them. Drone Hangars rank up into the Griffin Roost; troops move 4% faster.",
             120f, Cost(food, 2000, gold, 300, mana, 60), arcanism.id, crystals);
@@ -81,9 +81,9 @@ public static partial class PlaceholderArt
         animation.productionModifiers = new List<ProductionModifier> { new ProductionModifier { resource = null, multiplier = 1.05f } };
         var walkers = ATech("Warwalkers", "Warwalkers", "A walking fortress with a mage at the helm. Plasma Tank Works rank up into the Colossus Works.",
             135f, Cost(steel, 700, mana, 160, cells, 120), animation.id, arcanism);
-        var golemancy = ATech("Golemancy", "Golemancy", "Stone, a rune and a name: a servant that never tires. Android Labs rank up into the Golem Sanctum.",
+        var golemancy = ATech("Golemancy", "Golemancy", "Stone, an iron frame and a mana core: a servant that never tires. Android Labs rank up into the Golem Sanctum.",
             140f, Cost(stone, 2400, mana, 200, runestone, 150, chips, 100), walkers.id, animation);
-        var skyships = ATech("Skyships", "Skyships", "A ship that sails the wind with a crystal for a sail. Jet Hangars rank up into the Skyship Dock.",
+        var skyships = ATech("Skyships", "Skyships", "A steel-hulled ship with a crystal for a sail and a mana engine at the stern. Jet Hangars rank up into the Skyship Dock.",
             130f, Cost(wood, 3000, mana, 150, steel, 300), golemancy.id, griffins);
         var spires = ATech("Spires", "Spires of Light", "Towers held up as much by magic as by stone. Smart Towers rank up into the Spire of Lights.",
             110f, Cost(stone, 2400, mana, 80), skyships.id);
@@ -93,7 +93,7 @@ public static partial class PlaceholderArt
         var scrying = ATech("Scrying", "Scrying", "Crystals that show what is far away, or not yet known. Research goes 5% faster.",
             120f, Cost(gold, 700, mana, 120, chips, 100), alchemy.id);
         scrying.researchSpeedMultiplier = 1.05f;
-        var leylines = ATech("Leylines", "Leylines", "The rivers of power under the land, tapped. Fusion Reactors rank up into the Leyline Nexus.",
+        var leylines = ATech("Leylines", "Leylines", "The rivers of power under the land, tapped and wired into the grid. Fusion Reactors rank up into the Leyline Nexus.",
             135f, Cost(stone, 2000, mana, 200, uranium, 80), scrying.id, crystals);
 
         age.advanceRequirements = new Requirements
@@ -158,11 +158,11 @@ public static partial class PlaceholderArt
             Upgrade("Self-Counting Coins", "+25% coin.", Cost(mana, 80, gold, 200), 1.25f),
         };
         var bladeHall = RankUp(db, "SpecOpsBase", "SpellbladeHall", "Spellblade Hall", age, runeblades,
-            "A long moonstone hall, a great runeblade standing before its door. Trains Spellblades.",
+            "A long moonstone hall, a great runeblade standing before its door. Trains Spellblades in rune-plate power armour.",
             Cost(stone, 600, steel, 200, mana, 40), Cost(stone, 300, steel, 100), 1500);
         Trains(bladeHall, spellblade, 4, steel, gold, food, coin);
         var academy = RankUp(db, "PlasmaRange", "ArcaneAcademy", "Arcane Academy", age, arcanism,
-            "A wizards' tower over a practice yard. Trains Arcanists.",
+            "A wizards' tower over a yard of hovering target drones. Trains Arcanists, who fire spells from mana rifles.",
             Cost(stone, 500, gold, 200, mana, 50), Cost(stone, 250, mana, 25), 1150);
         Trains(academy, arcanist, 4, steel, gold, food, coin);
         var roost = RankUp(db, "DroneHangar", "GriffinRoost", "Griffin Roost", age, griffins,
@@ -272,7 +272,7 @@ public static partial class PlaceholderArt
                 trainedUnits = new UnitStatModifier { healthMultiplier = 1.25f } },
         };
         var sanctum = RankUp(db, "AndroidLab", "GolemSanctum", "Golem Sanctum", age, golemancy,
-            "A ring of standing stones open to the sky, where golems are woken with a rune and a name.",
+            "A ring of standing stones open to the sky, where golems are woken with a rune, an iron frame and a mana core.",
             Cost(stone, 1200, mana, 200, runestone, 100), Cost(stone, 600, mana, 100), 1400);
         sanctum.trainsUnit = golem;
         sanctum.maxUnits = 4;
@@ -284,7 +284,7 @@ public static partial class PlaceholderArt
                 trainedUnits = new UnitStatModifier { attackMultiplier = 1.25f, healthMultiplier = 1.2f } },
         };
         var dock = RankUp(db, "JetHangar", "SkyshipDock", "Skyship Dock", age, skyships,
-            "A mooring tower on a paved apron. Builds Skyships: sailing ships of the air that bomb from on high.",
+            "A mooring tower on a paved apron. Builds Skyships: steel-hulled, mana-driven ships of the air that bomb from on high.",
             Cost(wood, 1200, steel, 300, mana, 100), Cost(wood, 600, mana, 50), 1300);
         dock.trainsUnit = skyship;
         dock.maxUnits = 2;
@@ -296,7 +296,7 @@ public static partial class PlaceholderArt
                 trainedUnits = new UnitStatModifier { healthMultiplier = 1.25f } },
         };
         var nexus = RankUp(db, "FusionReactor", "LeylineNexus", "Leyline Nexus", age, leylines,
-            "Standing stones where three leylines meet. Power cells by the thousand, from a trickle of mana.",
+            "Standing stones where three leylines meet, wired to a transformer. Power cells by the thousand, from a trickle of mana.",
             Cost(stone, 1200, mana, 150, steel, 300), Cost(stone, 600, mana, 80), 1600);
         nexus.workers = 5;
         nexus.production = new List<ResourceRate> { Rate(cells, 0.5f) };

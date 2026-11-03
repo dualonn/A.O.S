@@ -15,7 +15,7 @@ MonoBehaviour:
   id: SpellbladeHall
   displayName: Spellblade Hall
   description: A long moonstone hall, a great runeblade standing before its door.
-    Trains Spellblades.
+    Trains Spellblades in rune-plate power armour.
   icon: {fileID: 21300000, guid: 1112f51c363ae264cbc51ce132562399, type: 3}
   prefab: {fileID: 0}
   looks:

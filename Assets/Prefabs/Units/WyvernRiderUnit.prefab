@@ -125,12 +125,12 @@ MonoBehaviour:
   impactFrame: 2
   walkFps: 9
   deathFrameTime: 0.14
-  barHeight: 2.03125
+  barHeight: 2
   barWidth: 1
   alwaysShowBar: 0
   figure:
     team: Red
-    head: 2
+    head: 61
     body: 7
     weapon: 32
     shield: 0
@@ -185,8 +185,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.046875, y: 0.871875}
-  m_Radius: 0.62
+  m_Offset: {x: -0.046875, y: 0.85781246}
+  m_Radius: 0.61
 --- !u!114 &6232246214465403657
 MonoBehaviour:
   m_ObjectHideFlags: 0

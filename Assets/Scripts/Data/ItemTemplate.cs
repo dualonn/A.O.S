@@ -36,7 +36,9 @@ public enum GearLook
     // Information Age (cyber)
     TacHelmet, SynthHead, TacVest, SynthBody, AssaultRifle, PlasmaRifle, EnergyBlade,
     // Arcane Age (fantasy)
-    WizardHat, GolemHead, Spellweave, GolemBody, ManaStaff, Runeblade
+    WizardHat, GolemHead, Spellweave, GolemBody, ManaStaff, Runeblade,
+    // Arcane technomancy (magic built into machines)
+    RuneVisor, RunePlate, ManaRifle
 }
 
 /// <summary>

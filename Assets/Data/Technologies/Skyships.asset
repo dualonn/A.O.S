@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Skyships
   displayName: Skyships
-  description: A ship that sails the wind with a crystal for a sail. Jet Hangars
-    rank up into the Skyship Dock.
+  description: A steel-hulled ship with a crystal for a sail and a mana engine at
+    the stern. Jet Hangars rank up into the Skyship Dock.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
   requirements:

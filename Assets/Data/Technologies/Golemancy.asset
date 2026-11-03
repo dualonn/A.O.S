@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Golemancy
   displayName: Golemancy
-  description: 'Stone, a rune and a name: a servant that never tires. Android Labs
-    rank up into the Golem Sanctum.'
+  description: 'Stone, an iron frame and a mana core: a servant that never tires.
+    Android Labs rank up into the Golem Sanctum.'
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
   requirements:

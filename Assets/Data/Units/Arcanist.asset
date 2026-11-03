@@ -32,11 +32,11 @@ MonoBehaviour:
   hitDelay: 0.3
   detectionRange: 6.5
   projectile: {fileID: 21300000, guid: f68b50ac99fca9b4c9d19f835a2cd779, type: 3}
-  projectileSpeed: 20
+  projectileSpeed: 28
   movement: 0
   flyHeight: 1.4
   projectileArc: 0
-  splashRadius: 0.9
+  splashRadius: 0.7
   splashFire: 0
   muzzleSmoke: 0
   healer: 0

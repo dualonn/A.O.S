@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Runeblades
   displayName: Runeblades
-  description: Swords that remember every cut. Spec-Ops Bases rank up into the Spellblade
-    Hall; all troops hit 4% harder.
+  description: Swords that remember every cut, worn with rune-plate power armour.
+    Spec-Ops Bases rank up into the Spellblade Hall; all troops hit 4% harder.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
   requirements:

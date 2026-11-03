@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Leylines
   displayName: Leylines
-  description: The rivers of power under the land, tapped. Fusion Reactors rank up
-    into the Leyline Nexus.
+  description: The rivers of power under the land, tapped and wired into the grid.
+    Fusion Reactors rank up into the Leyline Nexus.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
   requirements:

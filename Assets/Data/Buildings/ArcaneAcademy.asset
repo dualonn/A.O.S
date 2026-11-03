@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: ArcaneAcademy
   displayName: Arcane Academy
-  description: A wizards' tower over a practice yard. Trains Arcanists.
+  description: A wizards' tower over a yard of hovering target drones. Trains Arcanists,
+    who fire spells from mana rifles.
   icon: {fileID: 21300000, guid: cd8f5408f7c60b84fa0811d4cb5d45b3, type: 3}
   prefab: {fileID: 0}
   looks:

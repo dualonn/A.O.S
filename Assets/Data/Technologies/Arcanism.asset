@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Technology
   id: Arcanism
   displayName: Arcanism
-  description: Spells cast from a staff, as easily as firing a gun. Plasma Ranges
-    rank up into the Arcane Academy.
+  description: A staff made into a rifle, that fires spells like bullets. Plasma
+    Ranges rank up into the Arcane Academy.
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
   requirements:

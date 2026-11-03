@@ -67,7 +67,7 @@ public class FigureStyle
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
         GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff => WeaponClass.Staff,
-        GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle => WeaponClass.Musket,
+        GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle or GearLook.ManaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
     };
@@ -179,7 +179,7 @@ public static class PixelFigure
     /// <summary>Two-handed shoulder guns (arquebus, rifle).</summary>
     private static bool LongGun(FigureStyle s) => s.weapon == GearLook.Arquebus || s.weapon == GearLook.Rifle || s.weapon == GearLook.Musket
         || s.weapon == GearLook.BoltRifle || s.weapon == GearLook.MachineGun || s.weapon == GearLook.Tommygun || s.weapon == GearLook.RayRifle
-        || s.weapon == GearLook.AssaultRifle || s.weapon == GearLook.PlasmaRifle;
+        || s.weapon == GearLook.AssaultRifle || s.weapon == GearLook.PlasmaRifle || s.weapon == GearLook.ManaRifle;
 
     /// <summary>Vehicles the figure stands in (a hatch or an open top) rather than rides.</summary>
     private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
@@ -442,8 +442,9 @@ public static class PixelFigure
         private void StandingLegs()
         {
             bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody
-                || s.body == GearLook.GolemBody;   // robots, automatons, androids, golems
-            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock : P.Brass)
+                || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate;   // robots, automatons, androids, golems, power armour
+            Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock
+                : s.body == GearLook.RunePlate ? P.Moonstone : P.Brass)
                 : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
             Color32[] boots = s.body == GearLook.GolemBody ? P.Rock : metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
@@ -476,6 +477,7 @@ public static class PixelFigure
                 GearLook.TrenchCoat => P.Khaki,
                 GearLook.Robe or GearLook.Spellweave => crest,
                 GearLook.GolemBody => P.Rock,
+                GearLook.RunePlate => P.Moonstone,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
@@ -604,6 +606,20 @@ public static class PixelFigure
                     c.Line(V(a.x - X(0.8f), a.y + X(1)), V(a.x + X(0.6f), b.y - X(2)), P.Arcane[2]);
                     c.Ellipse(shNear + V(0, 0.5f), X(2.2f), X(1.8f), P.Rock);   // a boulder shoulder
                     c.Put(c.T(Vector2.Lerp(a, b, 0.6f)), Trim(GearSlot.Body, P.Arcane[3]));
+                    // a riveted iron band round the waist and a mana core set into the chest: built, not just carved
+                    c.Line(V(a.x - r + 0.5f, a.y + X(1)), V(a.x + r - 0.5f, a.y + X(1)), P.Iron[2], S > 1.3f ? 2 : 1);
+                    c.Ellipse(Vector2.Lerp(a, b, 0.7f) + V(X(0.8f), 0), X(0.9f), X(0.9f), new[] { P.Mana[1], P.Mana[2], P.Mana[3], P.White });
+                    break;
+                }
+                case GearLook.RunePlate:
+                {
+                    // moonstone power armour: a mana conduit down the front, a glowing crystal core in the chest
+                    c.Line(V(a.x - r + 0.5f, a.y + X(1.5f)), V(a.x + r - 0.5f, a.y + X(1.5f)), P.Steel[1]);
+                    c.Line(V(a.x + X(0.6f), a.y + 1), V(b.x + X(0.6f), b.y - 1), P.Mana[2]);
+                    c.Ellipse(Vector2.Lerp(a, b, 0.62f) + V(X(0.6f), 0), X(1.1f), X(1.1f), new[] { P.Mana[1], P.Mana[2], P.Mana[3], P.Mana[3] });
+                    c.Put(c.T(Vector2.Lerp(a, b, 0.62f) + V(X(0.6f), 0)), Trim(GearSlot.Body, P.White));
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Moonstone);   // a pauldron
+                    c.Put(c.T(shNear + V(X(0.4f), X(0.6f))), P.Arcane[3]);
                     break;
                 }
                 case GearLook.SynthBody:
@@ -928,6 +944,17 @@ public static class PixelFigure
                     c.Put(c.T(hd + V(X(-r * 0.6f), X(2))), P.Red[3]);
                     break;
                 }
+                case GearLook.RuneVisor:
+                {
+                    Hair(false);
+                    // a closed moonstone helm, a glowing mana visor across the eyes and a gold rune on the brow
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Moonstone);
+                    c.Line(V(hd.x - X(0.3f), hd.y + X(0.6f)), V(hd.x + r + 0.5f, hd.y + X(0.6f)), Trim(GearSlot.Head, P.Mana[3]), S > 1.3f ? 2 : 1);
+                    c.Put(c.T(hd + V(X(0.4f), X(2.6f))), P.Gold[3]);
+                    c.Line(V(hd.x - X(0.6f), hd.y + X(3.6f)), V(hd.x - X(1.4f), hd.y + X(5.6f)), P.Steel[2]);   // an antenna
+                    c.Put(c.T(hd + V(-X(1.4f), X(5.8f))), P.Arcane[3]);
+                    break;
+                }
                 case GearLook.WizardHat:
                 {
                     Hair(false);
@@ -1174,11 +1201,11 @@ public static class PixelFigure
                     : s.body == GearLook.Jerkin ? P.Linen : s.body == GearLook.Doublet ? crest : s.body == GearLook.BrassPlate ? P.Brass
                     : s.body == GearLook.Fatigues ? P.Olive : s.body == GearLook.TrenchCoat ? P.Khaki : s.body == GearLook.ChromePlate ? P.Chrome
                     : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth
-                    : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : team;
+                    : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : s.body == GearLook.RunePlate ? P.Moonstone : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
                     || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody
-                    || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave;
+                    || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave || s.body == GearLook.RunePlate;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1552,6 +1579,20 @@ public static class PixelFigure
                 c.Put(c.T(rear + d * X(4) + V(0, X(1.2f))), Trim(GearSlot.Weapon, P.Tactical[3]));               // sight
                 if (plasma) for (int i = 0; i < 3; i++) c.Put(c.T(rear + d * X(6 + i * 2)), P.Neon[2]);
                 muzzle = front + d * X(1);
+                return;
+            }
+            if (s.weapon == GearLook.ManaRifle)
+            {
+                // a staff made into a rifle: a pale wooden stock, a moonstone barrel and a mana crystal for a chamber
+                Vector2 rear = butt + d * X(3), front = butt + d * X(14);
+                c.Line(butt, rear, P.Linen[1], limb + 1);
+                c.Line(rear, front, P.Moonstone[2], limb);
+                c.Line(rear + d * X(1) + V(0, X(1)), rear + d * X(4) + V(0, X(1)), P.Gold[2]);
+                bool lit = p.loaded || !p.attack;
+                c.Ellipse(rear + d * X(2.5f) + V(0, X(0.4f)), X(1.4f), X(1.2f), lit ? P.Mana : new[] { P.Coal[1], P.Mana[0], P.Mana[1], P.Mana[1] });
+                for (int i = 0; i < 3; i++) c.Put(c.T(rear + d * X(6 + i * 2)), P.Arcane[(i + (lit ? 1 : 0)) % 2 == 0 ? 3 : 2]);
+                c.Ellipse(front + d * X(0.6f), X(0.9f), X(0.9f), lit ? P.Mana : P.Moonstone);
+                muzzle = front + d * X(1.2f);
                 return;
             }
             if (s.weapon == GearLook.RayRifle)

@@ -68,7 +68,7 @@ public static class Lore
         new Entry("The Quiet Satellites",
             "Our machines in the sky found older machines already there: dark, patient, circling since before the first fire. They woke when we spoke to them, and turned, all at once, to face the seventh world.", Information, after: 18),
         new Entry("The Gate at the Edge of Night",
-            "The calculations are finished. The worlds are not far, only folded away, and the old shrines were never shrines at all, but doors with the keys taken out. Beyond science, the seers say, the old magic is waiting to be learnt again.", Information, after: 19),
+            "The calculations are finished. The worlds are not far, only folded away, and the old shrines were never shrines at all, but doors with the keys taken out. The old magic is not the opposite of science, the seers say: it is the part we had not measured yet.", Information, after: 19),
 
         // ----- The lands -----
         new Entry("The Glass Sea",

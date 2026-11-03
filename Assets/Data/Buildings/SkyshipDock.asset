@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: SkyshipDock
   displayName: Skyship Dock
-  description: 'A mooring tower on a paved apron. Builds Skyships: sailing ships
-    of the air that bomb from on high.'
+  description: 'A mooring tower on a paved apron. Builds Skyships: steel-hulled,
+    mana-driven ships of the air that bomb from on high.'
   icon: {fileID: 21300000, guid: eb35565d66188714fb89194d9ca9de2d, type: 3}
   prefab: {fileID: 0}
   looks:

@@ -130,8 +130,8 @@ MonoBehaviour:
   alwaysShowBar: 0
   figure:
     team: Blue
-    head: 98
-    body: 100
+    head: 104
+    body: 105
     weapon: 66
     shield: 0
     trinket: 0
