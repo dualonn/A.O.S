@@ -81,6 +81,7 @@ public class DiplomacyPanel : MonoBehaviour
     private void Show(bool open)
     {
         panel.gameObject.SetActive(open);
+        GameAudio.UI(open ? "book_open" : "book_close");
         if (open)
         {
             panel.SetAsLastSibling();
@@ -185,6 +186,7 @@ public class DiplomacyPanel : MonoBehaviour
             bool ok = act(out string why);
             Rebuild();
             note.text = ok ? "" : $"<color=#f99>{why}</color>";
+            if (!ok) GameAudio.UI("error");
         }, out var label, 34, 15);
         label.text = $"{text}\n<size=75%><color=#ccc>{hint}</color></size>";
         label.alignment = TextAlignmentOptions.Left;
@@ -208,6 +210,7 @@ public class DiplomacyPanel : MonoBehaviour
         var kinds = settlement.NativeUnits();
         if (controller == null || kinds.Count == 0) return;
         Vector3 home = controller.TownCenterPosition;
+        GameAudio.Play("war_declared", home, 0.6f);
         var map = settlement.Map;
         for (int i = 0; i < count; i++)
         {

@@ -164,6 +164,7 @@ public partial class Settlement
         {
             int to = WorldIndexOf(planet);
             if (to >= 0) Unload(ship, State.worlds[to]);
+            if (!offWorld && to == State.currentWorld) GameAudio.UI("cargo_drop");
             return;
         }
         if (ship.kind == Troopship && planet != null)
@@ -196,7 +197,7 @@ public partial class Settlement
                 else stock.amount += c.amount;
             }
             world.population += ship.settlers;
-            if (!offWorld) GameAudio.UI("notify");
+            if (!offWorld) GameAudio.UI("ship_landing");
             Notify($"The colony ship has landed on {planet.name}! Go there (star map or the world list) and choose where to build the colony. It brought a Starport kit: the colony's first Starport is free.");
         }
     }

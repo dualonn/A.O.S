@@ -107,6 +107,7 @@ public class Troop : Unit
                     if (u != null && u.Team != Team && CanHit(u) && Vector2.Distance(u.transform.position, transform.position) <= 1.9f)
                         u.TakeDamage(Mathf.RoundToInt(attackPower * 0.7f), this);
                 Puff.Spawn(transform.position + Vector3.up * 0.3f, 0.9f, new Color(1f, 1f, 1f, 0.7f), 7, 0.35f);
+                GameAudio.Play("axe_swing", transform.position); GameAudio.Play("shield_block", transform.position, 0.6f);
                 nextHeroAbility = Time.time + 8f;
                 break;
             }
@@ -123,6 +124,7 @@ public class Troop : Unit
                     shots++;
                 }
                 if (shots == 0) return;
+                GameAudio.Play("bow_shot", transform.position); GameAudio.Play("arrow_fly", transform.position, 0.7f);
                 nextHeroAbility = Time.time + 9f;
                 break;
             }
@@ -133,6 +135,7 @@ public class Troop : Unit
                 foreach (var u in Living)
                     if (u != null && u.Team != Team && u.Targetable && Vector2.Distance(u.transform.position, at) <= 1.7f)
                         u.TakeDamage(Mathf.RoundToInt(attackPower * 1.4f), this);
+                GameAudio.Play("staff_cast", transform.position);
                 Puff.Blast(at, 1.7f, true);
                 nextHeroAbility = Time.time + 7f;
                 break;
@@ -149,6 +152,7 @@ public class Troop : Unit
                 Puff.Spawn(transform.position + Vector3.up * 0.4f, 0.8f, new Color(0.5f, 0.9f, 1f, 0.8f), 6, 0.35f);
                 transform.position = spot;
                 Puff.Spawn(spot + Vector3.up * 0.4f, 0.8f, new Color(0.5f, 0.9f, 1f, 0.8f), 6, 0.35f);
+                GameAudio.Play("warp", spot);
                 target.TakeDamage(Mathf.RoundToInt(attackPower * 1.5f), this);
                 nextHeroAbility = Time.time + 9f;
                 break;
@@ -166,6 +170,7 @@ public class Troop : Unit
                 }
                 if (pick == null) return;
                 pick.Charm(12f + 0.5f * Hero.level);
+                GameAudio.Play("charm", pick.transform.position);
                 nextHeroAbility = Time.time + 16f;
                 break;
             }
@@ -181,6 +186,7 @@ public class Troop : Unit
                 }
                 if (!anyHurt) return;
                 Puff.Spawn(transform.position + Vector3.up * 0.4f, 1.2f, new Color(1f, 0.9f, 0.45f, 0.75f), 8, 0.6f);
+                GameAudio.Play("heal", transform.position);
                 nextHeroAbility = Time.time + 11f;
                 break;
             }

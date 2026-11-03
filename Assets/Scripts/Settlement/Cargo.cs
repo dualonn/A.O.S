@@ -106,6 +106,7 @@ public partial class Settlement
             };
             ship.cargo.Add(new ResourceStock { id = route.resourceId, amount = load });
             State.ships.Add(ship);
+            if (!offWorld && route.fromWorld == State.currentWorld) GameAudio.UI("probe_launch", 0.4f);
         }
     }
 

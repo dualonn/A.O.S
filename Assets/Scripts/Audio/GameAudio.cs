@@ -33,6 +33,7 @@ public static class GameAudio
         clips.Clear();
         lastStart.Clear();
         unitSounds.Clear();
+        towerSounds.Clear();
         weather = null;
         host = null;
     }
@@ -186,13 +187,24 @@ public static class GameAudio
         else if (id.Contains("Dagger") || id.Contains("Thug") || id.Contains("Saboteur") || id.Contains("TunnelRat") || id.Contains("Sapper")) s.swing = "dagger_swing";
         else s.swing = "sword_swing";
 
-        // ranged shot, and what its projectile sounds like landing
-        if (Has(id, Blasts) || weapon == WeaponClass.Cannon) { s.fire = "cannon_shot"; s.projectileHit = null; }   // splash plays the blast
-        else if (weapon == WeaponClass.Staff) { s.fire = "staff_cast"; s.projectileHit = "magic_hit"; }
+        // ranged shot, and what its projectile sounds like landing. Guns follow the unit's age:
+        // muskets up to the Enlightenment, rifles until the Arcane Age, energy weapons in space.
+        int age = def != null && def.age != null ? def.age.order : 0;
+        bool spaceAge = age >= 12;
+        bool oldGun = id.Contains("Musket") || id.Contains("Arquebus") || id.Contains("Fusilier");
+        if (weapon == WeaponClass.Staff) { s.fire = "staff_cast"; s.projectileHit = "magic_hit"; }
+        else if (id.Contains("Grenad")) { s.fire = "throw"; s.projectileHit = null; }                      // the grenade's blast plays on landing
+        else if (id.Contains("MachineGun") || id.Contains("Gatling")) { s.fire = "gatling"; s.projectileHit = "flesh_hit"; }
+        else if (id.Contains("Missile") || id.Contains("Rocket")) { s.fire = "missile"; s.projectileHit = null; }
+        else if (Has(id, Blasts) || weapon == WeaponClass.Cannon) { s.fire = spaceAge ? "beam" : "cannon_shot"; s.projectileHit = null; }   // splash plays the blast
         else if (Has(id, Lasers) && weapon != WeaponClass.Bow && weapon != WeaponClass.Thrown) { s.fire = "laser"; s.projectileHit = "flesh_hit"; }
-        else if (weapon == WeaponClass.Musket || Has(id, Rifles)) { s.fire = Has(id, Rifles) ? "rifle_shot" : "musket_shot"; s.projectileHit = "flesh_hit"; }
+        else if (weapon == WeaponClass.Musket || Has(id, Rifles))
+        {
+            s.fire = spaceAge && !oldGun ? "laser" : !oldGun && (age >= 7 || Has(id, Rifles)) ? "rifle_shot" : "musket_shot";
+            s.projectileHit = "flesh_hit";
+        }
         else if (weapon == WeaponClass.Crossbow) { s.fire = "crossbow_shot"; s.projectileHit = "arrow_hit"; }
-        else if (weapon == WeaponClass.Thrown) { s.fire = "throw"; s.projectileHit = "blunt_hit"; }
+        else if (weapon == WeaponClass.Thrown) { s.fire = spaceAge ? "laser" : "throw"; s.projectileHit = spaceAge ? "flesh_hit" : "blunt_hit"; }
         else { s.fire = "bow_shot"; s.projectileHit = "arrow_hit"; }
 
         // melee blow landing (armour is checked per hit)
@@ -229,7 +241,36 @@ public static class GameAudio
         if (u != null) Play(SoundsFor(u).fire, u.transform.position, 0.8f);
     }
 
-    /// <summary>A tower lets fly.</summary>
+    static readonly Dictionary<BuildingDefinition, string> towerSounds = new Dictionary<BuildingDefinition, string>();
+    static readonly string[] TowerBeams = { "Laser", "Lance", "Beam", "Ray", "Mirror", "Uplink", "Light", "Lens", "Nova", "Quasar",
+        "Singularity", "Paradox", "Rift", "Meteor", "Starfall", "Sun", "Phase", "Gravity", "Prism" };
+
+    /// <summary>A tower lets fly: the sound is picked once per kind of tower, from its name and age.</summary>
+    public static void TowerFire(BuildingDefinition def, Vector3 at)
+    {
+        if (def == null) return;
+        if (!towerSounds.TryGetValue(def, out var sound))
+        {
+            string id = def.name;
+            int age = def.age != null ? def.age.order : 0;
+            if (id.Contains("Tesla")) sound = "zap";
+            else if (id.Contains("Gatling")) sound = "gatling";
+            else if (id.Contains("Railgun")) sound = "railgun";
+            else if (id.Contains("Missile") || id.Contains("Rocket")) sound = "missile";
+            else if (id.Contains("Ballista")) sound = "crossbow_shot";
+            else if (id.Contains("Fireball")) sound = "fire_cast";
+            else if (id.Contains("Arcane") || id.Contains("Obelisk") || id.Contains("Rune")) sound = "staff_cast";
+            else if (Has(id, TowerBeams)) sound = def.towerSplash > 0f ? "beam" : "laser";
+            else if (def.towerSplash > 0f) sound = age >= 12 ? "beam" : "cannon_shot";
+            else if (def.towerMuzzleSmoke || id.Contains("Sniper") || id.Contains("Marksman") || id.Contains("Gun"))
+                sound = age >= 7 ? "rifle_shot" : "musket_shot";
+            else sound = age >= 12 ? "laser" : "bow_shot";
+            towerSounds[def] = sound;
+        }
+        Play(sound, at, sound == "cannon_shot" || sound == "railgun" ? 1f : 0.8f);
+    }
+
+    /// <summary>A tower lets fly (old form: weapon class only).</summary>
     public static void Fire(WeaponClass weapon, Vector3 at)
     {
         switch (weapon)
@@ -265,6 +306,57 @@ public static class GameAudio
         var at = u.transform.position;
         Play(s.death, at, s.death == "death" ? 0.6f : 0.8f);
         if (s.death != "cannon_impact" && s.death != "explosion") Play("body_fall", at, 0.5f);
+    }
+
+    // ------------------------------------------------------------------ seasons, weather, events
+
+    /// <summary>A new season begins.</summary>
+    public static void SeasonStarts(Season season)
+    {
+        switch (season)
+        {
+            case Season.Spring: case Season.WetSeason: case Season.Rains: UI("season_spring"); break;
+            case Season.Summer: UI("season_summer"); break;
+            case Season.Autumn: UI("season_autumn"); break;
+            case Season.Winter: UI("season_winter"); break;
+            case Season.DrySeason: UI("wind_gust"); break;
+        }
+    }
+
+    /// <summary>New weather rolls in (the weather loop itself comes from SetWeather).</summary>
+    public static void WeatherStarts(WeatherKind kind)
+    {
+        switch (kind)
+        {
+            case WeatherKind.Storm: Thunder(); break;
+            case WeatherKind.Sandstorm: case WeatherKind.AshFall: case WeatherKind.Snow: UI("wind_gust", 0.8f); break;
+            case WeatherKind.Aurora: UI("faith_blessing", 0.6f); break;
+        }
+    }
+
+    /// <summary>A random event's choice plays out: one sound per kind of event.</summary>
+    public static void EventResolved(string kind)
+    {
+        switch (kind)
+        {
+            case "Merchant": case "LostCaravan": UI("market_trade"); break;
+            case "Festival": UI("festival"); break;
+            case "Harvest": UI("season_autumn"); break;
+            case "Drought": UI("wind_gust"); break;
+            case "Plague": UI("plague_bell"); break;
+            case "Meteor": case "Comet": UI("meteor", 0.8f); break;
+            case "Refugees": UI("wagon"); break;
+            case "WanderingHero": UI("hero_recruit"); break;
+            case "Stranger": UI("great_person_used"); break;
+            case "GoldRush": UI("pick"); UI("coins"); break;
+            case "Wildfire": UI("fire_crackle"); break;
+            case "Eclipse": UI("lore_stone", 0.8f); break;
+            case "Rival": UI("sword_draw"); break;
+            case "Scholars": UI("page_flip"); break;
+            case "SolarFlare": UI("zap"); break;
+            case "Derelict": UI("scifi_door"); break;
+            default: UI("confirm"); break;
+        }
     }
 
     // ------------------------------------------------------------------ town

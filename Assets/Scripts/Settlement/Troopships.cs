@@ -100,6 +100,7 @@ public partial class Settlement
         State.ships.Add(ship);
         string who = hero != null && count > 0 ? $"{hero.name} and {count} troops" : hero != null ? hero.name : $"{count} troops";
         Notify($"A troopship carries {who} to {w.name}, arriving in {StarMapPanel.FormatTime(ship.arrives - State.playTime)}.");
+        if (!offWorld) GameAudio.UI("rocket_launch", 0.8f);
         RaiseChanged();
         return true;
     }
@@ -124,6 +125,7 @@ public partial class Settlement
         string who = hero != null && count > 0 ? $"{hero.name} and {count} troops" : hero != null ? hero.name : $"{count} troops";
         Notify($"The troopship has landed on {w.name}: {who} {(hero != null && count == 0 ? "is" : "are")} there now."
             + (hero != null ? " (Heroes live at a troop building there.)" : ""));
+            if (!offWorld && to == State.currentWorld) GameAudio.UI("ship_landing");
     }
 
     /// <summary>A stationed troop on the world you're on died.</summary>

@@ -416,6 +416,7 @@ public partial class Settlement
         var s = CurrentStep(q);
         if (s == null || s.kind != QuestStepKind.Travel || q.world != State.currentWorld) return;
         if (hero != null) Notify($"{hero.name} has reached {QuestSpotName(s)}.");
+        GameAudio.UI("discover");
         QuestAdvance(q, hero != null ? hero.id : 0);
     }
 
@@ -426,6 +427,7 @@ public partial class Settlement
         var s = CurrentStep(q);
         if (s == null || s.kind != QuestStepKind.Slay || q.world != State.currentWorld) return;
         Notify($"<color=#fd6>{s.name}</color> is slain!");
+        GameAudio.UI("goal_complete");
         QuestAdvance(q, hero != null ? hero.id : s.heroId);
     }
 

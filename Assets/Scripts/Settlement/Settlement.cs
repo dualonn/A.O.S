@@ -81,6 +81,7 @@ public partial class Settlement : MonoBehaviour
         RollCamps(Map.RevealedZones());
         RollSites(Map.RevealedZones());
         Save();
+        GameAudio.UI("warp");
         WorldSwitched?.Invoke();   // the scene rebuilds itself round the new map
     }
 
@@ -362,6 +363,7 @@ public partial class Settlement : MonoBehaviour
                 camp.bossDefeated = false;
                 camp.extraTier++;
                 Notify("Raiders have moved back into one of the camps you cleared, stronger than before.");
+                if (!offWorld) GameAudio.UI("river_raid_horn");
                 if (!offWorld) CampReoccupied?.Invoke(camp);
                 RaiseChanged();
             }
@@ -842,6 +844,7 @@ public partial class Settlement : MonoBehaviour
         building.health = Mathf.Max(1, Mathf.Round(healthShare * stats.maxHealth));
         building.siteQuality = SiteQuality(target, new RectInt(building.cell, target.size), stats.catchment);
         Notify($"{Name(def)} ranked up into a {Name(target)}!");
+        if (!offWorld) { GameAudio.AtBuilding("build_complete", building, target); GameAudio.UI("level_up", 0.6f); }
         RaiseChanged();
     }
 
@@ -880,6 +883,7 @@ public partial class Settlement : MonoBehaviour
                 building.siteQuality = SiteQuality(def, new RectInt(building.cell, def.size), StatsOf(building).catchment);
             }
             Notify($"{Name(def)} upgraded: {next.name}.");
+            if (!offWorld) GameAudio.AtBuilding("build_complete", building, def);
             RaiseChanged();
         }
     }
@@ -1756,6 +1760,7 @@ public partial class Settlement : MonoBehaviour
 
     public void Demolish(BuildingState building)
     {
+        if (!offWorld) GameAudio.AtBuilding("demolish", building, Database.GetBuilding(building.definitionId));
         if (State.buildings.Remove(building))
         {
             RaiseChanged();
@@ -1793,6 +1798,7 @@ public partial class Settlement : MonoBehaviour
         }
         Spend(cost);
         building.health = StatsOf(building).maxHealth;
+        if (!offWorld) GameAudio.AtBuilding("hammer", building, def, 0.7f);
         reason = null;
         RaiseChanged();
         return true;

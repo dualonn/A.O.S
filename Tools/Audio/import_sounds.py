@@ -22,9 +22,10 @@ FILTERS = [a for a in sys.argv[2:] if a != '--sfx']
 class S:
     """One recording (or one take of it), with optional tweaks."""
 
-    def __init__(self, pattern, take=None, start=0.0, dur=None, gain=1.0, lowpass=None, highpass=None, room=0.0, rate=1.0):
+    def __init__(self, pattern, take=None, start=0.0, dur=None, gain=1.0, lowpass=None, highpass=None, room=0.0, rate=1.0, at=0.0):
         self.pattern, self.take, self.start, self.dur = pattern, take, start, dur
         self.gain, self.lowpass, self.highpass, self.room, self.rate = gain, lowpass, highpass, room, rate
+        self.at = at   # when layered with L(...): start this many seconds in
 
 
 def V(pattern, count=99, **kw):
@@ -45,7 +46,9 @@ def L(*specs):
 def expand(items):
     out = []
     for it in items:
-        if isinstance(it, S):
+        if isinstance(it, list):          # e.g. [L(...), L(...)]: several layered variants
+            out += expand(it)
+        elif isinstance(it, S):
             out.append([it])
         elif it[0] == 'glob':
             _, pat, count, kw = it
@@ -126,14 +129,14 @@ def render_source(s):
 
 
 def render_variant(specs):
-    parts = [render_source(s) for s in specs]
-    L_ = max(len(p) for p in parts)
-    ch = max(p.shape[1] for p in parts)
+    parts = [(n(s.at) if s.at else 0, render_source(s)) for s in specs]
+    L_ = max(o + len(p) for o, p in parts)
+    ch = max(p.shape[1] for _, p in parts)
     out = np.zeros((L_, ch))
-    for p in parts:
+    for o, p in parts:
         if p.shape[1] < ch:
             p = np.repeat(p, ch, 1)
-        out[:len(p)] += p
+        out[o:o + len(p)] += p
     return out
 
 
@@ -304,10 +307,79 @@ SFX = {
         'scan_ping': V('computerNoise_00*.ogg', 2, dur=1.6),
         'anomaly': V('oga-80-CC0-creature-SFX_0/**/alien_0[1-3].ogg'),
         'orbital_mine': V('engineCircular_00[0-1].ogg', dur=2.5),
-        'laser': V('laserSmall_00[0-2].ogg') + V('laserLarge_00[0-1].ogg'),
-        'zap': V('digital-audio/**/zap[12].ogg'),
         'force_field': V('forceField_00[0-1].ogg'),
         'scifi_door': V('sci-fi-sounds/**/doorOpen_00[0-1].ogg'),
+        'laser': V('laserSmall_00[0-4].ogg') + V('laserRetro_00[0-2].ogg'),
+        'beam': V('laserLarge_00[0-4].ogg'),
+    },
+    # tower and late-age guns
+    'Weapons': {
+        'gatling': [L(*[S(f'SKS/U_{t}P.wav', dur=0.16, at=i * 0.075, gain=0.9 if i % 2 else 1.0) for i, t in enumerate((14, 19) * 4)]),
+                    L(*[S(f'PPSh/P_{t}P.wav', dur=0.14, at=i * 0.065) for i, t in enumerate((16, 18, 22, 30, 32, 34, 16, 18))])],
+        'railgun': [L(S('laserLarge_000.ogg'), S('92774/x/cannon_03.ogg', gain=0.6, lowpass=1500)),
+                    L(S('laserLarge_002.ogg'), S('92774/x/cannon_04.ogg', gain=0.6, lowpass=1500))],
+        'missile': [L(S('thrusterFire_000.ogg', dur=1.4), S('oga-rpg_sound_pack/**/swing.wav', gain=0.7)),
+                    L(S('thrusterFire_002.ogg', dur=1.4), S('92774/x/shot_01.ogg', gain=0.6))],
+        'fire_cast': V('oga-80-CC0-RPG-SFX_0/**/spell_fire_0[5-7].ogg'),
+        'zap': V('digital-audio/**/zap[12].ogg'),
+    },
+    # culture, quests, wildlife, rivers, market, records, seasons, events, ships (names used by the game code)
+    'Life': {
+        'deer_flee': L(*[S(f'footstep_grass_00{i % 5}.ogg', at=i * 0.085, gain=0.8) for i in range(7)], S('wood-twigs-break-01.wav', gain=0.5)),
+        'beast_snort': V('Beast or Animal/Voice [12].wav') + V('oga-80-CC0-creature-SFX_0/**/nose.ogg'),
+        'beast_roar': V('Beast or Animal/Growl [12].wav', dur=2.2) + V('Monsters or Beasts/Beast Growl [23].wav', dur=2.2),
+        'legend_roar': L(S('Monsters or Beasts/Demon Growl.wav', dur=3.5), S('oga-80-CC0-RPG-SFX_0/**/creature_roar_03.ogg', gain=0.7)),
+        'river_bridge_creak': V('rpg-audio/**/creak[12].ogg') + V('floor-creak-01.wav'),
+        'river_ferry_bell': L(S('pleasing-bell.wav'), S('oga-100-CC0-SFX_0/**/bell_01.ogg', at=0.35, gain=0.6)),
+        'river_splash': V('oga-100-CC0-SFX_0/**/splash_0*.ogg') + V('water-pour-01.wav', dur=1.2),
+        'river_raid_horn': [S('their-coming-generic-horn-sound/theircoming3.ogg', lowpass=1800, room=0.35)],
+        'river_boat_sink': L(S('rpg-audio/x/Audio/creak2.ogg'), S('oga-100-CC0-SFX_0/**/splash_01.ogg', at=0.35),
+                             S('oga-rpg_sound_pack/**/bubble2.wav', at=0.7), S('oga-rpg_sound_pack/**/bubble3.wav', at=1.0)),
+        'culture_tradition': L(S('oga-100-CC0-SFX_0/**/gong_02.ogg'), S('Well Done CCBY3.flac', at=0.4, gain=0.35)),
+        'faith_founded': L(S('Heavenly Loop.flac', dur=5.5), S('oga-100-CC0-SFX_0/**/bell_03.ogg', gain=0.8),
+                           S('oga-100-CC0-SFX_0/**/bell_03.ogg', at=1.2, gain=0.6)),
+        'faith_blessing': L(S('oga-100-CC0-SFX_0/**/bell_02.ogg'), S('Heavenly Loop.flac', start=2, dur=3, gain=0.5)),
+        'festival': L(S('Well Done CCBY3.flac'), S('oga-100-CC0-SFX_0/**/bell_01.ogg', gain=0.5),
+                      S('oga-100-CC0-SFX_0/**/bell_02.ogg', at=0.3, gain=0.4)),
+        'great_person': [S('136916/victory_0.wav', dur=6)],
+        'great_person_used': L(S('rpg-audio/x/Audio/bookFlip2.ogg'), S('oga-rpg_sound_pack/**/magic1.wav', at=0.2, gain=0.8)),
+        'quest_offer': L(S('rpg-audio/x/Audio/bookOpen.ogg'), S('pleasing-bell.wav', at=0.15, gain=0.7)),
+        'quest_accept': L(S('oga-rpg_sound_pack/**/sword-unsheathe.wav'), S('rpg-audio/x/Audio/bookClose.ogg', at=0.25, gain=0.6)),
+        'quest_step': L(S('rpg-audio/x/Audio/bookFlip3.ogg'), S('oga-80-CC0-RPG-SFX_0/**/item_gem_01.ogg', at=0.1, gain=0.7)),
+        'quest_complete': [S('Heavy_ConceptB.wav', dur=7)],
+        'tame_success': L(S('Beast or Animal/Voice 2.wav'), S('oga-80-CC0-RPG-SFX_0/**/item_gem_03.ogg', at=0.4, gain=0.7)),
+        'tame_legend': L(S('Monsters or Beasts/Demon Growl.wav', dur=2.0), S('136916/victory_0.wav', at=1.2, dur=4.5, gain=0.9)),
+        'market_trade': V('rpg-audio/**/handleCoins*.ogg') + V('oga-80-CC0-RPG-SFX_0/**/item_coins_0[34].ogg'),
+        'market_shock': L(S('oga-100-CC0-SFX_0/**/gong_01.ogg', lowpass=2500), S('coin-spin-fall-01.wav', at=0.3),
+                          S('coins-shake-01.wav', at=0.1, gain=0.6)),
+        'achievement': [S('71386/Victory.wav')],
+        # seasons and weather
+        'season_spring': L(S('Forest Birds/Forest Birds 1.wav', dur=3.5), S('pleasing-bell.wav', gain=0.6)),
+        'season_summer': L(S('Forest_Ambience.mp3', start=6, dur=3.5), S('oga-100-CC0-SFX_0/**/bell_01.ogg', gain=0.5)),
+        'season_autumn': L(S('Birds and Wind - Ambient_1.ogg', start=10, dur=3.5), S('wood-twigs-break-02.wav', at=0.5, gain=0.4),
+                           S('oga-100-CC0-SFX_0/**/bell_02.ogg', gain=0.45)),
+        'season_winter': L(S('sfx100v2_air_02.ogg', dur=3.5), S('oga-100-CC0-SFX_0/**/bell_03.ogg', gain=0.5)),
+        'wind_gust': V('sfx100v2_air_0*.ogg', dur=3.0),
+        'earthquake': L(S('lowFrequency_explosion_001.ogg', rate=0.55), S('oga-80-CC0-RPG-SFX_0/**/stones_01.ogg', at=0.3),
+                        S('oga-80-CC0-RPG-SFX_0/**/stones_02.ogg', at=0.9), S('impactWood_heavy_002.ogg', at=0.6, gain=0.7),
+                        S('oga-80-CC0-RPG-SFX_0/**/stones_04.ogg', at=1.5)),
+        'fire_crackle': [S('fireplace-sound-loop/fire.wav', start=3, dur=3.0), S('fireplace-sound-loop/fire.wav', start=12, dur=3.0),
+                         S('fire-crackling/fire-1.wav')],
+        'plague_bell': L(S('oga-100-CC0-SFX_0/**/bell_03.ogg', rate=0.6, room=0.3),
+                         S('oga-100-CC0-SFX_0/**/bell_03.ogg', rate=0.6, at=1.7, gain=0.8, room=0.3)),
+        'crowd_cheer': V('Well Done CCBY3.flac'),
+        'meteor': L(S('oga-rpg_sound_pack/**/swing.wav', rate=0.45, gain=0.9), S('lowFrequency_explosion_000.ogg', at=0.55)),
+        'wagon': L(S('rpg-audio/x/Audio/creak1.ogg'), S('rpg-audio/x/Audio/creak3.ogg', at=0.6), S('footstep_grass_001.ogg', at=0.2, gain=0.5),
+                   S('footstep_grass_003.ogg', at=0.55, gain=0.5), S('footstep_grass_000.ogg', at=0.9, gain=0.5)),
+        'ship_landing': L(S('thrusterFire_001.ogg', dur=1.8), S('impactSoft_heavy_001.ogg', at=1.5)),
+        'cargo_drop': L(S('impactWood_heavy_004.ogg'), S('rpg-audio/x/Audio/handleCoins.ogg', at=0.15, gain=0.7)),
+        'heal': L(S('bottle-glass-uncork-01.wav'), S('pleasing-bell.wav', at=0.2, gain=0.7)),
+        'charm': L(S('oga-rpg_sound_pack/**/magic1.wav'), S('oga-80-CC0-RPG-SFX_0/**/item_gem_02.ogg', at=0.15, gain=0.7)),
+        'wonder_start': L(S('oga-100-CC0-SFX_0/**/gong_02.ogg'), S('impactPlank_medium_000.ogg', at=0.3), S('impactPlank_medium_002.ogg', at=0.6)),
+        'collapse': L(S('oga-80-CC0-RPG-SFX_0/**/stones_01.ogg'), S('oga-80-CC0-RPG-SFX_0/**/stones_03.ogg', at=0.25),
+                      S('lowFrequency_explosion_001.ogg', at=0.1, gain=0.8), S('impactWood_heavy_001.ogg', at=0.5),
+                      S('oga-80-CC0-RPG-SFX_0/**/stones_02.ogg', at=0.8)),
+        'hero_fallen': L(S('impactSoft_heavy_000.ogg'), S('oga-100-CC0-SFX_0/**/gong_01.ogg', at=0.2, rate=0.8, lowpass=1200, gain=0.8)),
     },
     # seasons & weather, random events, diplomacy, wonders
     'World': {
@@ -323,11 +395,11 @@ SFX = {
 }
 
 # loudest-0.3s loudness target per group (dB)
-LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15}
+LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15, 'Weapons': -14, 'Life': -17}
 QUIET_UI = {'click': -24, 'hover': -27, 'tab': -24, 'panel_open': -22, 'panel_close': -22, 'page_flip': -22}
-LONG = {'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -22}
+LONG = {'great_person': -17, 'quest_complete': -17, 'achievement': -18, 'tame_legend': -16, 'faith_founded': -17, 'festival': -17, 'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -22}
 # per-sound loudness overrides (dB)
-TARGET = {'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22}
+TARGET = {'river_raid_horn': -22, 'legend_roar': -12, 'earthquake': -13, 'collapse': -13, 'meteor': -13, 'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22}
 
 # Music: era playlists (the game picks per age), played whole and cross-faded; stereo OGG.
 MUSIC = {

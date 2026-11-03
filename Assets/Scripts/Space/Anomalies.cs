@@ -160,6 +160,7 @@ public partial class Settlement
         if (far == null || far == s) return "It closed before it could be charted.";
         State.wormholes.Add(s.key); State.wormholes.Add(far.key);
         MarkScanned(far);
+        GameAudio.UI("warp");
         return $"It leads to {far.name}, {Galaxy.Distance(s, far):0} light-years away. Ships can pass through it.";
     }
 
@@ -172,6 +173,7 @@ public partial class Settlement
             for (int x = -1; x <= 1; x++)
                 foreach (var other in Galaxy.SystemsIn(sector + new Vector2Int(x, y)))
                     if (!IsScanned(other)) { MarkScanned(other); n++; }
+        GameAudio.UI("warp");
         return $"It lights up the stars around it: {n} systems charted.";
     }
 

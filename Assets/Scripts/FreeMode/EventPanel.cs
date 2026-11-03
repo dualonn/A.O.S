@@ -157,6 +157,7 @@ public class EventPanel : MonoBehaviour
             return;
         }
         history.gameObject.SetActive(!history.gameObject.activeSelf);
+        GameAudio.UI(history.gameObject.activeSelf ? "book_open" : "book_close");
         if (history.gameObject.activeSelf) RefreshHistory();
     }
 

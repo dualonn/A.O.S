@@ -138,6 +138,7 @@ public class BuildingPlacer : MonoBehaviour
             if (settlement.TryPlaceBuilding(Current, cell, out _, out string reason))
             {
                 GameAudio.Play("place", grid.AreaCenter(cell, Current.size));
+                if (Current.wonder) GameAudio.UI("wonder_start");
                 if (Current.isTownCenter)
                 {
                     controller.FocusOn(grid.AreaCenter(cell, Current.size));

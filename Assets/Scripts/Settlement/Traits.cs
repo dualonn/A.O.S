@@ -151,6 +151,7 @@ public partial class Settlement
         if (Researched("PlanetaryShields"))
         {
             Notify($"{what} broke against the planetary shields. Nothing was damaged.");
+            if (!offWorld) GameAudio.UI("force_field");
             return;
         }
         int hit = 0;
@@ -165,6 +166,7 @@ public partial class Settlement
         if (hit > 0)
         {
             Notify($"{what} damaged {hit} building{(hit == 1 ? "" : "s")}. (Planetary shields would stop this.)");
+            if (!offWorld) { if (what == "A quake") GameAudio.UI("earthquake"); else GameAudio.Thunder(); }
             RaiseChanged();
         }
     }

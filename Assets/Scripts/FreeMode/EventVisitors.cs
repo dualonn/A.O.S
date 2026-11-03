@@ -99,6 +99,7 @@ public class EventVisitors : MonoBehaviour
             caravanTo = controller.TownCenterPosition + new Vector3(3.5f, -2.5f, 0);
             caravanFrom = caravanTo + (ship ? new Vector3(0, 12f, 0) : new Vector3(12f, -3f, 0));
             caravanT = 0f;
+            GameAudio.Play(ship ? "ship_landing" : "wagon", caravanTo);
         }
         caravanT = Mathf.Min(1f, caravanT + Time.deltaTime / 8f);
         caravan.transform.position = Vector3.Lerp(caravanFrom, caravanTo, Mathf.SmoothStep(0, 1, caravanT));

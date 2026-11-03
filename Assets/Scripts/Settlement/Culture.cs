@@ -503,6 +503,7 @@ public partial class Settlement
         {
             wc.unrestWarned = true;
             Notify("<color=#f97>Unrest!</color> People are unhappy and working less. (See the Culture panel: festivals, culture, faith and food help.)");
+            if (!offWorld) GameAudio.UI("plague_bell", 0.7f);
         }
         else if (wc.mood > 32f) wc.unrestWarned = false;
 
@@ -595,6 +596,7 @@ public partial class Settlement
         c.tenets.Add(id);
         CultureDirty();
         Notify($"{c.religion} takes up a new tenet: {TenetById(id).name}.");
+        GameAudio.UI("faith_blessing");
         return true;
     }
 

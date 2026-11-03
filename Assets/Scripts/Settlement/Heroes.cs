@@ -134,6 +134,7 @@ public partial class Settlement
         if (hero == null) return;
         hero.downUntil = State.playTime + Database.heroRecoverySeconds;
         Notify($"{hero.name} has fallen, and will recover at home in {Database.heroRecoverySeconds:0}s.");
+        if (!offWorld) GameAudio.UI("hero_fallen");
         HeroChanged?.Invoke(hero);
     }
 
@@ -158,6 +159,7 @@ public partial class Settlement
         }
         while (hero.equipped.Count < 5) hero.equipped.Add(0);
         hero.equipped[(int)template.slot] = item.uid;
+        GameAudio.UI("equip");
         HeroChanged?.Invoke(hero);
     }
 
@@ -166,6 +168,7 @@ public partial class Settlement
         if (hero == null) return;
         while (hero.equipped.Count < 5) hero.equipped.Add(0);
         hero.equipped[(int)slot] = 0;
+        GameAudio.UI("equip", 0.6f);
         HeroChanged?.Invoke(hero);
     }
 
@@ -235,6 +238,7 @@ public partial class Settlement
         if (!CanChooseClass(hero, cls, out why)) return false;
         hero.heroClass = cls;
         Notify($"{hero.name} takes the path of the {cls}.");
+        GameAudio.UI("enchant");
         RaiseChanged();
         return true;
     }

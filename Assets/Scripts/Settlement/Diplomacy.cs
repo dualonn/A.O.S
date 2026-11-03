@@ -260,6 +260,7 @@ public partial class Settlement
         Notify(NativesHere != null
             ? $"Tribute paid: the {NativesHere.name} won't raid you for {TributeSeconds / 60f:0} minutes."
             : $"The bandits take your coin and stay away, for {TributeSeconds / 60f:0} minutes.");
+            GameAudio.UI("coins");
         return true;
     }
 
@@ -299,6 +300,7 @@ public partial class Settlement
         if (!PayNatives(new List<ResourceAmount> { give }, out why)) return false;
         AddResource(get.resource, get.amount);
         ChangeStanding(0.5f);
+        GameAudio.UI("market_trade");
         return true;
     }
 
@@ -320,6 +322,7 @@ public partial class Settlement
         State.inventory.Add(item);
         d.nextGoodsAt = State.playTime + GoodsCooldown;
         Notify($"Bought <color=#{Items.RarityHex(item.rarity)}>{item.name}</color> from the {f.name}.");
+        GameAudio.UI("market_trade"); GameAudio.UI("equip");
         return true;
     }
 
@@ -345,6 +348,7 @@ public partial class Settlement
         if (!PayNatives(WarPartyCost(), out why)) return false;
         d.nextWarPartyAt = State.playTime + WarPartyCooldown;
         Notify($"A {NativesHere.name} war party comes to stand with you.");
+        GameAudio.UI("hero_recruit");
         return true;
     }
 

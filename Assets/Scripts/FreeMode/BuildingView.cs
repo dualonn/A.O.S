@@ -395,7 +395,7 @@ public class BuildingView : MonoBehaviour
                     }
                     Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc,
                         Definition.towerSplash);
-                    GameAudio.Fire(Definition.towerSplash > 0f ? WeaponClass.Cannon : Definition.towerMuzzleSmoke ? WeaponClass.Musket : WeaponClass.Bow, launch);
+                    GameAudio.TowerFire(Definition, launch);
                     if (Definition.towerMuzzleSmoke)
                         Puff.Smoke(launch + (pendingTarget.transform.position - launch).normalized * 0.5f);
                 }

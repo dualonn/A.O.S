@@ -308,6 +308,7 @@ public partial class Settlement
             if (!offWorld)
             {
                 string news = SeasonNews(season);
+                GameAudio.SeasonStarts(season);
                 if (news != null) Notify(news);
             }
             w.weatherLeft = Mathf.Min(w.weatherLeft, Random.Range(5f, 25f));   // a new season soon brings its own weather
@@ -327,6 +328,7 @@ public partial class Settlement
                 if (!offWorld)
                 {
                     string news = WeatherNews(next);
+                    GameAudio.WeatherStarts(next);
                     if (news != null) Notify(news);
                 }
             }

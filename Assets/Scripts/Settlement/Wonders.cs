@@ -61,6 +61,7 @@ public partial class Settlement
             {
                 State.researched.Remove(id);
                 Notify($"<color=#f87>The {def.displayName} has fallen.</color> Its power fades until it is rebuilt.");
+                if (!offWorld) GameAudio.UI("collapse");
                 RaiseChanged();
                 return;
             }

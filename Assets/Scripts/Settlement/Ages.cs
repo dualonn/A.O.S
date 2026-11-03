@@ -145,6 +145,7 @@ public partial class Settlement
         {
             masteredNotified = State.ageIndex;
             Notify($"You have mastered the {CurrentAge.displayName}.");
+            if (!offWorld) GameAudio.UI("goal_complete");
         }
     }
 }

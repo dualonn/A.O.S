@@ -445,6 +445,7 @@ public partial class Settlement
             int n = UnityEngine.Random.Range(sp.herdMin, sp.herdMax + 1);
             var w = Wild;
             w.herds.Add(new WildHerd { id = w.nextId++, species = sp.id, pos = p, home = p, target = p, count = n, max = n, regrowIn = 90f });
+            if (legendary && !offWorld) GameAudio.UI("legend_roar", 0.6f);
             if (legendary)
                 Notify($"<color=#ffd56a><b>Hunters speak of {sp.name.Replace("The ", "the ")}</b></color>, seen far out in the wild. {sp.note}");
             return;
@@ -737,6 +738,7 @@ public partial class Settlement
                 pick.target = near.center;
                 var sp = WildSpeciesOf(pick.species);
                 Notify($"<color=#fb7>{(pick.count > 1 ? $"A pack of {sp.plural}" : $"A {Singular(sp)}")} is prowling towards your town!</color> Your troops will see {(pick.count > 1 ? "them" : "it")} off.");
+                if (!offWorld) GameAudio.Play("beast_roar", near.center);
             }
         }
 
@@ -802,6 +804,7 @@ public partial class Settlement
         if (sp.realm == 2) Give("Essence", 60 + 10 * State.ageIndex);
         var item = GainLoot(0.6f, 0.8f, $"on {sp.name.Replace("The ", "the ")}", Rarity.Rare, sp.realm == 2);
         Notify($"<color=#ffd56a><b>{sp.name} has fallen!</b></color> Your hunters bring home {Describe(loot)}{(item != null ? " and a trophy" : "")}.");
+        if (!offWorld) GameAudio.UI("quest_complete");
         RaiseChanged();
     }
 

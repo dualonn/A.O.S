@@ -157,6 +157,7 @@ public class XRecordsPanel : MonoBehaviour
     private void Show(bool open)
     {
         panel.gameObject.SetActive(open);
+        GameAudio.UI(open ? "book_open" : "book_close");
         if (!open) { hideTip?.Invoke(); return; }
         transform.SetAsLastSibling();
         var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;

@@ -202,6 +202,7 @@ public class QuestPanel : MonoBehaviour
     private void SetLog(bool open)
     {
         log.gameObject.SetActive(open);
+        GameAudio.UI(open ? "book_open" : "book_close");
         logKey = null;
         if (open) RefreshLog();
     }

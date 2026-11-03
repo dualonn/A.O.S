@@ -154,6 +154,7 @@ public class SiteView : MonoBehaviour
             SiteKind.Shrine => "shrine_bless",
             SiteKind.Vein => "pick",
             SiteKind.Lair => "monster_death",
+            SiteKind.NaturalWonder => "wonder_complete",
             _ => "discover",
         }, Centre);
         wasDone = State.done;

@@ -302,6 +302,7 @@ public partial class Settlement
         string outcome = choice.apply != null ? choice.apply() : "";
         LogEvent(CurrentWorld.name, $"{view.title}: {outcome}");
         Notify($"{view.title}: {outcome}");
+        if (!offWorld && view.source != null) GameAudio.EventResolved(view.source.kind);
         return outcome;
     }
 
@@ -386,6 +387,7 @@ public partial class Settlement
                 pickup.goods.Add(new ResourceStock { id = State.ageIndex >= 4 ? "Steel" : "Wood", amount = Mathf.Round(80 * age) });
             }
             Ev.pickups.Add(pickup);
+            if (!offWorld && pickup.world == State.currentWorld) GameAudio.Play(pickup.look == "meteor" ? "meteor" : "wagon", pickup.position);
             return;
         }
     }
@@ -411,6 +413,7 @@ public partial class Settlement
             if (item != null) found += $", and {item.name}";
         }
         string line = $"Your troops reached the {p.label}: {found}.";
+        if (!offWorld) GameAudio.Play("chest_open", p.position);
         LogEvent(CurrentWorld.name, line);
         Notify(line);
         RaiseChanged();

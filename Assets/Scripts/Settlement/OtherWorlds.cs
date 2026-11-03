@@ -108,6 +108,7 @@ public partial class Settlement
         var wave = Waves.Generate();
         if (wave.units.Count == 0) return;
         float severity = Waves.AutoResolve(wave);
+        GameAudio.UI("river_raid_horn", 0.5f);
         Notify(severity <= 0
             ? $"Raiders attacked and were driven off ({wave.units.Count} of them)."
             : severity < 0.5f

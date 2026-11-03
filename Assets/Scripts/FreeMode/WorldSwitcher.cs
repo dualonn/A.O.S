@@ -76,6 +76,7 @@ public class WorldSwitcher : MonoBehaviour
     {
         if (!list.gameObject.activeSelf) BuildRows();
         list.gameObject.SetActive(!list.gameObject.activeSelf);
+        GameAudio.UI(list.gameObject.activeSelf ? "panel_open" : "panel_close");
     }
 
     private void Pick(int world)

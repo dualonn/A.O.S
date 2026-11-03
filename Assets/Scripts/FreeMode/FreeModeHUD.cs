@@ -1081,7 +1081,9 @@ public class FreeModeHUD : MonoBehaviour
 
     private void TryResearch(Technology tech)
     {
-        if (!settlement.TryStartResearch(tech, out string reason))
+        bool researchStarted = settlement.TryStartResearch(tech, out string reason);
+        GameAudio.UI(researchStarted ? "page_flip" : "error");
+        if (!researchStarted)
         {
             AddMessage(reason.Split('\n')[0]);
         }
@@ -1779,6 +1781,7 @@ public class FreeModeHUD : MonoBehaviour
         bool rankUp = settlement.NextUpgrade(view.State) == null && settlement.RankUpTarget(view.State) != null;
         string reason;
         bool started = rankUp ? settlement.TryStartRankUp(view.State, out reason) : settlement.TryStartUpgrade(view.State, out reason);
+        GameAudio.UI(started ? "hammer" : "error");
         if (!started)
         {
             AddMessage(reason.Split('\n')[0]);

@@ -92,6 +92,7 @@ public class CulturePanel : MonoBehaviour
     private void Show(bool open)
     {
         panel.gameObject.SetActive(open);
+        GameAudio.UI(open ? "book_open" : "book_close");
         if (!open) return;
         panel.SetAsLastSibling();
         var tip = panel.parent.parent != null ? panel.parent.parent.Find("Tooltip") : null;
