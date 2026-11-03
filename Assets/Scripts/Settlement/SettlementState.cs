@@ -25,6 +25,10 @@ public class SettlementState
 
     public List<string> researched = new List<string>();
 
+    [Tooltip("Research under way, several at once (see Settlement.ResearchSlots).")]
+    public List<ResearchJob> researchJobs = new List<ResearchJob>();
+
+    // Older saves: the one research in progress (moved into researchJobs when loading).
     public string researchingId;
     public float researchProgress;
 
@@ -221,4 +225,12 @@ public class BuildingState
     public bool Paused => priority < 0;
 
     public bool IsBuilt => buildProgress >= 1f;
+}
+
+/// <summary>One research under way: which tech, and how far along (0..1).</summary>
+[Serializable]
+public class ResearchJob
+{
+    public string id;
+    public float progress;
 }

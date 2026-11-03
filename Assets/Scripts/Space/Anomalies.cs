@@ -134,9 +134,8 @@ public partial class Settlement
 
     private string Research(float share)
     {
-        if (string.IsNullOrEmpty(State.researchingId)) return Give("With nothing being researched, the data become trade goods", ("Coin", 800));
-        State.researchProgress = Mathf.Min(0.999f, State.researchProgress + share);
-        return $"Your current research jumps ahead ({share:P0}).";
+        if (!BoostResearch(share)) return Give("With nothing being researched, the data become trade goods", ("Coin", 800));
+        return $"Your research jumps ahead ({share:P0}).";
     }
 
     private string FreeLevel(string techId)

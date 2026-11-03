@@ -649,11 +649,16 @@ public class FreeModeHUD : MonoBehaviour
         peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{note}";
         waveText.text = $"<b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>";
 
-        var researching = settlement.Database.GetTechnology(settlement.State.researchingId ?? "");
+        // Research chip: the furthest-along project, and how many slots are in use.
+        var jobs = settlement.ResearchJobs;
+        ResearchJob lead = null;
+        foreach (var j in jobs) if (lead == null || j.progress > lead.progress) lead = j;
+        var researching = lead != null ? settlement.Database.GetTechnology(lead.id) : null;
         researchText.transform.parent.gameObject.SetActive(researching != null);
         if (researching != null)
         {
-            researchText.text = $"{researching.displayName} <b>{settlement.State.researchProgress:P0}</b>";
+            string more = jobs.Count > 1 ? $" <size=70%><color=#9cf>{jobs.Count}/{settlement.ResearchSlots}</color></size>" : "";
+            researchText.text = $"{researching.displayName} <b>{lead.progress:P0}</b>{more}";
         }
     }
 
@@ -902,11 +907,12 @@ public class FreeModeHUD : MonoBehaviour
             }
             // Hidden, or in a folded section: nothing to redraw (it's refreshed again when shown).
             if (!show || !button.gameObject.activeInHierarchy) continue;
-            bool current = settlement.State.researchingId == tech.id;
+            float doneShare = settlement.ResearchProgressOf(tech);
+            bool current = doneShare >= 0f;
             bool can = settlement.CanResearch(tech, out string missing);
             button.interactable = can;
             string sub = current
-                ? $"<color=#8cf>Researching {settlement.State.researchProgress:P0}</color>"
+                ? $"<color=#8cf>Researching {doneShare:P0}</color>"
                 : SubtitleFor(settlement.ResearchCost(tech), can, missing) + $" <color=#aaa>({settlement.ResearchTime(tech):0}s)</color>";
             string text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
             if (label.text != text) label.text = text;   // re-laying out text is the costly part

@@ -414,6 +414,7 @@ public partial class Settlement : MonoBehaviour
             State.mapSeed = NewSeed();
         }
         UpgradeOldSave();
+        MoveOldResearch();
         Map = MapGenerator.Create(CurrentWorld.seed, Database, State.explored, WorldProfile.Get(CurrentWorld.profile));
         State.explored = Map.RevealedZones();
         // Older saves could hold fractional building health; snap it to whole points.
@@ -1097,21 +1098,60 @@ public partial class Settlement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// How many things can be researched at once: two to begin with, one more every four ages
+    /// (six by the Universal Age). Each goes at full speed.
+    /// </summary>
+    public int ResearchSlots => 2 + Mathf.Max(0, State.ageIndex) / 4;
+
+    /// <summary>The research under way (several at once).</summary>
+    public List<ResearchJob> ResearchJobs => State.researchJobs;
+
+    /// <summary>How far along a tech's research is (0..1), or -1 if it isn't being researched.</summary>
+    public float ResearchProgressOf(Technology tech)
+    {
+        if (tech == null) return -1f;
+        foreach (var job in State.researchJobs) if (job.id == tech.id) return job.progress;
+        return -1f;
+    }
+
+    /// <summary>Push every research under way ahead by 'share' (events, anomalies). False if there's none.</summary>
+    public bool BoostResearch(float share)
+    {
+        if (State.researchJobs.Count == 0) return false;
+        foreach (var job in State.researchJobs) job.progress = Mathf.Min(0.999f, job.progress + share);
+        return true;
+    }
+
+    /// <summary>Older saves held one research in progress: it becomes the first of the jobs.</summary>
+    private void MoveOldResearch()
+    {
+        if (State.researchJobs == null) State.researchJobs = new List<ResearchJob>();
+        if (!string.IsNullOrEmpty(State.researchingId) && !State.researchJobs.Exists(j => j.id == State.researchingId))
+            State.researchJobs.Add(new ResearchJob { id = State.researchingId, progress = State.researchProgress });
+        State.researchingId = null;
+        State.researchProgress = 0f;
+    }
+
     private void TickResearch(float dt)
     {
-        if (string.IsNullOrEmpty(State.researchingId))
+        for (int i = State.researchJobs.Count - 1; i >= 0; i--)
         {
-            return;
+            var job = State.researchJobs[i];
+            var tech = Database.GetTechnology(job.id);
+            if (tech == null) { State.researchJobs.RemoveAt(i); continue; }
+            float time = ResearchTime(tech);
+            job.progress += time > 0 ? dt / time : 1f;
+            if (job.progress >= 1f)
+            {
+                State.researchJobs.RemoveAt(i);
+                CompleteResearch(tech);
+            }
         }
-        var tech = Database.GetTechnology(State.researchingId);
-        if (tech == null)
-        {
-            State.researchingId = null;
-            return;
-        }
-        float time = ResearchTime(tech);
-        State.researchProgress += time > 0 ? dt / time : 1f;
-        if (State.researchProgress >= 1f)
+    }
+
+    private void CompleteResearch(Technology tech)
+    {
         {
             // A levelled (Mastery) tech is listed once per level, so its effects stack.
             State.researched.Add(tech.id);
@@ -1126,8 +1166,6 @@ public partial class Settlement : MonoBehaviour
                     }
                 }
             }
-            State.researchingId = null;
-            State.researchProgress = 0;
             if (!offWorld) GameAudio.UI("research_complete");
             Notify(tech.IsLevelled
                 ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{MaxLevel(tech)})."
@@ -1746,9 +1784,14 @@ public partial class Settlement : MonoBehaviour
             missing = tech.IsLevelled ? "Every level researched" : "Already researched";
             return false;
         }
-        if (!string.IsNullOrEmpty(State.researchingId))
+        if (ResearchProgressOf(tech) >= 0f)
         {
-            missing = "Already researching something";
+            missing = "Being researched";
+            return false;
+        }
+        if (State.researchJobs.Count >= ResearchSlots)
+        {
+            missing = $"All {ResearchSlots} research slots busy";
             return false;
         }
         var req = tech.requirements;
@@ -1770,8 +1813,7 @@ public partial class Settlement : MonoBehaviour
             return false;
         }
         Spend(ResearchCost(tech));
-        State.researchingId = tech.id;
-        State.researchProgress = 0;
+        State.researchJobs.Add(new ResearchJob { id = tech.id, progress = 0f });
         RaiseChanged();
         return true;
     }

@@ -232,7 +232,7 @@ public partial class Settlement
             case "Eclipse": return State.ageIndex >= 1 ? 0.5f : 0f;
             case "Rival": return HeroHere() != null ? 0.6f : 0f;
             case "LostCaravan": return 0.6f;
-            case "Scholars": return State.ageIndex >= 1 && !string.IsNullOrEmpty(State.researchingId) ? 0.8f : 0f;
+            case "Scholars": return State.ageIndex >= 1 && State.researchJobs.Count > 0 ? 0.8f : 0f;
             case "SolarFlare": return SpaceAge ? 0.6f : 0f;
             case "Derelict": return HasStarport ? 0.6f : 0f;
             case "Comet": return SpaceAge ? 0.6f : 0f;
@@ -797,8 +797,7 @@ public partial class Settlement
 
     private string EventResearch(float share, string intro)
     {
-        if (string.IsNullOrEmpty(State.researchingId)) return intro + " With nothing being researched, it became trade instead: " + GiveEv(("Coin", 80 * AgeScale)) + ".";
-        State.researchProgress = Mathf.Min(0.999f, State.researchProgress + share);
+        if (!BoostResearch(share)) return intro + " With nothing being researched, it became trade instead: " + GiveEv(("Coin", 80 * AgeScale)) + ".";
         return $"{intro} Your research jumps ahead ({share:P0}).";
     }
 }
