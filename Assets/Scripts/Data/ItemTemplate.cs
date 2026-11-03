@@ -30,7 +30,9 @@ public enum GearLook
     // Modern (dieselpunk)
     SteelHelmet, Fedora, Fatigues, TrenchCoat, BoltRifle, MachineGun, Tommygun, Shovel,
     // Tunnellers
-    Pick
+    Pick,
+    // Electric Age (retro-futuristic)
+    BubbleHelmet, RobotHead, Jumpsuit, ChromePlate, RayGun, RayRifle, Claw
 }
 
 /// <summary>

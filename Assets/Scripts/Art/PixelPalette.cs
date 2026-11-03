@@ -64,6 +64,10 @@ public static class PixelPalette
     public static readonly Color32[] Olive = { H("2e331c"), H("4a5230"), H("6b7546"), H("95a066") };
     /// <summary>Khaki and trench-coat tan.</summary>
     public static readonly Color32[] Khaki = { H("5e5236"), H("8c7c52"), H("b8a674"), H("dccb98") };
+    /// <summary>Polished chrome for Electric Age robots and fins.</summary>
+    public static readonly Color32[] Chrome = { H("3a4656"), H("7a8ca0"), H("c2d2e0"), H("f2f8ff") };
+    /// <summary>Neon ray-gun green.</summary>
+    public static readonly Color32[] Ray = { H("0a5c2a"), H("22b04a"), H("7cff7c"), H("e0ffe0") };
     public static readonly Color32[] Flower = { H("d84a7a"), H("ffd84a"), H("f6f2ff"), H("8a6cff") };
 
     /// <summary>A rarity's trim colour on worn gear.</summary>
@@ -83,7 +87,7 @@ public static class PixelPalette
         "Blue" => Blue, "Red" => Red, "Purple" => Purple, "Green" => Green, "Gold" => Gold, "Bronze" => Bronze,
         "Steel" => Steel, "Leather" => Leather, "Cloth" => Cloth, "Fur" => Fur, "Linen" => Linen, "Straw" => Straw,
         "Wolf" => Wolf, "Wood" => Wood, "Iron" => Iron, "Bone" => Bone, "Troll" => Troll, "Skin" => Skin, "Coal" => Coal, "Rock" => Rock, "Rune" => Rune,
-        "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki,
+        "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray,
         _ => Blue,
     };
 }

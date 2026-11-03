@@ -108,6 +108,17 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Electric Age (retro-futuristic)
+        ("RayTrooper", Fig(B, GearLook.BubbleHelmet, GearLook.RayRifle, body: GearLook.Jumpsuit), false),
+        ("BlasterGunner", Fig(B, GearLook.BubbleHelmet, GearLook.RayRifle, body: GearLook.Jumpsuit, crest: "Red"), false),
+        ("HoverCar", Fig(B, GearLook.BubbleHelmet, GearLook.RayRifle, body: GearLook.Jumpsuit, mount: MountKind.HoverCar), false),
+        ("RayNurse", Medic(Fig(B, GearLook.BubbleHelmet, GearLook.None, body: GearLook.Jumpsuit)), false),
+        ("HoverTank", Fig(B, GearLook.BubbleHelmet, GearLook.Cannon, body: GearLook.Jumpsuit, mount: MountKind.HoverTank), false),
+        ("GiantRobot", Skin(Fig(B, GearLook.RobotHead, GearLook.Claw, body: GearLook.ChromePlate, scale: 1.5f), "Chrome"), false),
+        ("Rocketeer", Fig(B, GearLook.BubbleHelmet, GearLook.RayGun, body: GearLook.Jumpsuit, mount: MountKind.Jetpack), false),
+        ("RayBandit", Fig(Rd, GearLook.Goggles, GearLook.RayGun, body: GearLook.Jerkin, raider: true), true),
+        ("RoboRaider", Skin(Fig(Rd, GearLook.RobotHead, GearLook.Claw, body: GearLook.ChromePlate, scale: 1.2f, raider: true), "Chrome"), true),
+        ("JetRaider", Fig(Rd, GearLook.Goggles, GearLook.RayGun, body: GearLook.Jerkin, mount: MountKind.Jetpack, raider: true), true),
         // Modern (dieselpunk)
         ("Infantryman", Fig(B, GearLook.SteelHelmet, GearLook.BoltRifle, body: GearLook.Fatigues), false),
         ("MachineGunner", Fig(B, GearLook.SteelHelmet, GearLook.MachineGun, body: GearLook.Fatigues), false),
@@ -174,6 +185,11 @@ public static partial class PlaceholderArt
             c.LineRaw(new Vector2(5, 2), new Vector2(7, 4), w[4]);
             c.Ellipse(new Vector2(8, 3), 1.6f, 1.6f, new[] { w[2], w[3], w[4], PixelPalette.White });
         });
+        var rayBolt = PixelProjectile("RayBolt", 10, 4, c =>
+        {
+            var r = PixelPalette.Ray;
+            c.LineRaw(new Vector2(0, 1), new Vector2(5, 1), r[1]); c.LineRaw(new Vector2(3, 2), new Vector2(8, 2), r[2]); c.Put(9, 2, r[3]); c.Put(8, 1, r[3]);
+        });
         var bullet = PixelProjectile("Bullet", 5, 3, c => { c.LineRaw(new Vector2(0, 1), new Vector2(3, 1), PixelPalette.Brass[2]); c.Put(4, 1, PixelPalette.Glow[3]); });
         var aetherBolt = PixelProjectile("AetherBolt", 12, 7, c =>
         {
@@ -195,6 +211,7 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.RuneStaff ? runeBolt
                 : style.weapon == GearLook.Arquebus || style.weapon == GearLook.Pistol || style.weapon == GearLook.Rifle || style.weapon == GearLook.Musket ? ball
                 : style.weapon == GearLook.LeydenRod ? spark
+                : style.weapon == GearLook.RayGun || style.weapon == GearLook.RayRifle ? rayBolt
                 : style.weapon == GearLook.BoltRifle ? ball : style.weapon == GearLook.MachineGun || style.weapon == GearLook.Tommygun ? bullet
                 : style.weapon == GearLook.Grenade ? grenade : style.weapon == GearLook.AetherRod ? aetherBolt
                 : style.weapon == GearLook.Flask ? flask : style.weapon == GearLook.Cannon ? cannonball : null;
@@ -245,6 +262,7 @@ public static partial class PlaceholderArt
             case GearLook.Rifle: def.projectileArc = 0f; def.projectileSpeed = 26f; def.muzzleSmoke = true; break;
             case GearLook.Musket: def.projectileArc = 0f; def.projectileSpeed = 24f; def.muzzleSmoke = true; break;
             case GearLook.BoltRifle: def.projectileArc = 0f; def.projectileSpeed = 28f; def.muzzleSmoke = true; break;
+            case GearLook.RayGun: case GearLook.RayRifle: def.projectileArc = 0f; def.projectileSpeed = 30f; break;
             case GearLook.MachineGun: case GearLook.Tommygun: def.projectileArc = 0f; def.projectileSpeed = 30f; break;
             case GearLook.LeydenRod: def.projectileArc = 0f; def.projectileSpeed = 16f; def.splashRadius = 0.7f; break;
             case GearLook.Grenade: def.projectileArc = 0.4f; def.projectileSpeed = 8f; def.splashRadius = 1.5f; break;
@@ -507,6 +525,20 @@ public static partial class PlaceholderArt
         },
         new BossSpec
         {
+            id = "BossDoctorZed", name = "Doctor Zed and his Death Ray", age = "ElectricAge",
+            style = Fig(Rd, GearLook.BubbleHelmet, GearLook.RayRifle, body: GearLook.Jumpsuit, crest: "Purple", cape: "Purple", scale: 1.6f, raider: true),
+            health = 7400, attack = 110, speed = 0.9f, cooldown = 1.4f, range = 7f, detection = 7.5f,
+            ability = BossAbility.Summon, abilityCooldown = 13f, summons = "RoboRaider", summonCount = 2,
+        },
+        new BossSpec
+        {
+            id = "BossMegaRobot", name = "The Mega-Robot", age = "ElectricAge",
+            style = Skin(Fig(Rd, GearLook.RobotHead, GearLook.Claw, body: GearLook.ChromePlate, scale: 2.2f, raider: true), "Chrome"),
+            health = 9800, attack = 130, speed = 0.7f, cooldown = 1.3f, range = 1.1f, detection = 3.5f,
+            ability = BossAbility.Slam, abilityCooldown = 6f, abilityRadius = 2.8f, abilityPower = 1.4f,
+        },
+        new BossSpec
+        {
             id = "BossIronBaron", name = "Baron Ferrous in his Iron Suit", age = "IndustrialAge",
             style = Fig(Rd, GearLook.BoilerHelm, GearLook.PistonHammer, body: GearLook.BrassPlate, cape: "Coal", scale: 1.8f, raider: true),
             health = 6800, attack = 96, speed = 0.8f, cooldown = 1.3f, range = 0.95f, detection = 3.5f,
@@ -563,6 +595,7 @@ public static partial class PlaceholderArt
                 GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket => "MusketBall", GearLook.RuneStaff => "RuneBolt",
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
+                GearLook.RayGun or GearLook.RayRifle => "RayBolt",
                 GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;

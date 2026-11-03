@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RocketPad
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RocketPad
+  displayName: Rocket Pad
+  description: A launch pad and a gantry. Trains Rocketeers, who fly on rocket packs
+    and fire ray pistols.
+  icon: {fileID: 21300000, guid: d2052c131f893c2439458a4b78917af5, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d2052c131f893c2439458a4b78917af5, type: 3}
+    - {fileID: 21300000, guid: 7f4f1851b5b160b4abe7cceb59adcf1e, type: 3}
+    - {fileID: 21300000, guid: d3801909caf17a64d8abf2df3fbec4dd, type: 3}
+    - {fileID: 21300000, guid: da86bf105824c0840b47dba0b4d47610, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: e68d897fd1e18c249a77739f61945b84, type: 3}
+    - {fileID: 21300000, guid: e18c652d397548343b25c4156ee95e72, type: 3}
+    - {fileID: 21300000, guid: bc0ada2b29bd1a9449e857ae5d64f3f0, type: 3}
+    - {fileID: 21300000, guid: 8d329fb78b274d340b4786b992ba8f73, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 1278bcad296e97c43a2c32e6ff823293, type: 3}
+    - {fileID: 21300000, guid: 2e934f0008e89c1479b1553d49efc59f, type: 3}
+    - {fileID: 21300000, guid: ef23a6df4b5ed0e43a88ea137e76ef4a, type: 3}
+    - {fileID: 21300000, guid: a7045c78524b78048aa93976560e0b2f, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: ace098e808948a0489d57d65e4da0c8a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 360
+    - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 80
+  upgrades:
+  - name: Bigger Pad
+    description: +1 rocketeer.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+        amount: 80
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Atomic Packs
+    description: Rocketeers are 20% faster and hit 20% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 80
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1.2
+      speedMultiplier: 1.2
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1000
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 2d5764093dab6664db6a14f29e097de1, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

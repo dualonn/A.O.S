@@ -29,6 +29,8 @@ MonoBehaviour:
   detectionRange: 3.5
   projectile: {fileID: 0}
   projectileSpeed: 9
+  movement: 0
+  flyHeight: 1.4
   projectileArc: 0.15
   splashRadius: 0
   splashFire: 0

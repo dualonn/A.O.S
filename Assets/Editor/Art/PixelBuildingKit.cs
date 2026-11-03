@@ -60,6 +60,8 @@ public class BuildingKit
 
     public void Line(float x0, float y0, float x1, float y1, Color32 c, int w = 1) => C.Line(new Vector2(x0, y0), new Vector2(x1, y1), c, w);
 
+    public void Polygon(Vector2[] pts, Func<Vector2, Color32?> shader) => C.Polygon(pts, shader);
+
     public void Ellipse(float cx, float cy, float rx, float ry, Color32[] ramp, Func<Vector2, bool> only = null) => C.Ellipse(new Vector2(cx, cy), rx, ry, ramp, only);
 
     /// <summary>Darken a pixel already drawn (for shading the shadow side).</summary>

@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -149,6 +149,20 @@ public static partial class PlaceholderArt
         c.Rect(8, 12, 11, 17, P.Linen[3]);
         c.Rect(7, 17, 12, 18, P.Wood[2]);
         c.Put(7, 9, P.White);
+    }
+
+    private static void IcUranium(PixelCanvas c)
+    {
+        // a lump of ore glowing green
+        c.Ellipse(Iv(10, 8), 7, 6, P.Rock);
+        c.Put(8, 9, P.Ray[2]); c.Put(9, 10, P.Ray[3]); c.Put(12, 7, P.Ray[2]); c.Put(11, 6, P.Ray[1]); c.Put(6, 7, P.Ray[2]);
+    }
+
+    private static void IcPowerCells(PixelCanvas c)
+    {
+        // a glass cell with a glowing core and chrome caps
+        c.Rect(6, 4, 14, 15, P.Chrome[1]); c.Rect(7, 6, 13, 13, P.Ray[1]); c.Rect(9, 7, 11, 12, P.Ray[3]);
+        c.Rect(8, 16, 12, 17, P.Chrome[2]); c.Rect(8, 2, 12, 3, P.Chrome[2]);
     }
 
     private static void IcOil(PixelCanvas c)

@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: AtomicCannon
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: AtomicCannon
+  displayName: Atomic Cannon
+  description: A heavy chrome gun ringed with glowing coils. Its shells burst green
+    and wide.
+  icon: {fileID: 21300000, guid: a05912aca50747c4492dd98fd7941f76, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a05912aca50747c4492dd98fd7941f76, type: 3}
+    - {fileID: 21300000, guid: bd93600112431c041859f24e586b6466, type: 3}
+    - {fileID: 21300000, guid: 02af4866d4c761644a5ed5c423941a82, type: 3}
+    - {fileID: 21300000, guid: 6bc335e005276f34a9b72380ead53980, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 1c18068be168b584ba343e63b09d0938, type: 3}
+    - {fileID: 21300000, guid: 58edcfe57a54c9a4e8e478641bc08ba7, type: 3}
+    - {fileID: 21300000, guid: 2559012e25b54684d8dffc950abd8594, type: 3}
+    - {fileID: 21300000, guid: 0874901157c4d8f45bc741fbab129d5a, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 41ee4837bd4edee45942ac6ec94c4c92, type: 3}
+    - {fileID: 21300000, guid: bb2e612d81a60ba458223d12c317fdd7, type: 3}
+    - {fileID: 21300000, guid: 1919b58ea26d70f4eaa3727807d6186d, type: 3}
+    - {fileID: 21300000, guid: 719c222e3d13d59498394cd9ccebe51d, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 6beebcaed7da0c64a827f9e84f046584, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 80
+  upgrades:
+  - name: Longer Barrel
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Enriched Shells
+    description: +90 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 3ec72b2f51556934187e13555a78e284, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 90
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2100
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 13.5
+  towerDamage: 270
+  towerCooldown: 3.6
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.05
+  towerProjectileSpeed: 22
+  towerSplash: 2.2
+  towerMuzzleSmoke: 1
+  towerMuzzle: {x: 2.03125, y: 0.625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

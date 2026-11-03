@@ -475,6 +475,7 @@ public static partial class PlaceholderArt
             Ore.Quicksilver => new[] { P.Red[1], P.Red[2], P.Steel[3] },   // red cinnabar, silver beads
             Ore.Coal => new[] { P.Coal[0], P.Coal[1], P.Iron[3] },          // black seams with an oily sheen
             Ore.Aether => new[] { P.Aether[1], P.Aether[2], P.Aether[3] },
+            Ore.Uranium => new[] { P.Ray[1], P.Ray[2], P.Ray[3] },          // ore that glows green
             _ => null,
         };
         if (ore == Ore.Rune)

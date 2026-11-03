@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: LaserTower
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: LaserTower
+  displayName: Laser Tower
+  description: A slim white tower with a red-lensed emitter. Its beam crosses half
+    the map in a blink.
+  icon: {fileID: 21300000, guid: a9d53bc3a6428d840825e93466d98b9b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a9d53bc3a6428d840825e93466d98b9b, type: 3}
+    - {fileID: 21300000, guid: 34a686eec906b3b438a164d8ec3e3c8b, type: 3}
+    - {fileID: 21300000, guid: c861bb6176ddb0d449cb2b1b588dbc2e, type: 3}
+    - {fileID: 21300000, guid: 404ee8f6841e1de4b96f757104de4aa3, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 9401c214b2ddd1e41a6a6dc43c19ced0, type: 3}
+    - {fileID: 21300000, guid: 0a085591445566b479d65fd8e4e69f83, type: 3}
+    - {fileID: 21300000, guid: 4b929d8f9def423479b746fc2b13de78, type: 3}
+    - {fileID: 21300000, guid: ffebcffef553651409bfbcc73743771d, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 3e9c89ea8f383554e873f583fed2ffd3, type: 3}
+    - {fileID: 21300000, guid: b5d33b269d83609489df7c81c1fdf92d, type: 3}
+    - {fileID: 21300000, guid: 45b390608d292004ea188734a5baa2f7, type: 3}
+    - {fileID: 21300000, guid: 88018817a7e219342991e9d6d7385bff, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: b7887e1e05034b34c81490e963ac5e85, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 320
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 80
+  upgrades:
+  - name: Focusing Lens
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Ruby Rod
+    description: +80 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 80
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 1200
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 17.5
+  towerDamage: 270
+  towerCooldown: 3
+  towerProjectile: {fileID: 21300000, guid: 2f7d78cd0eed98f4b8b0fb19a497d26b, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 60
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1.84375, y: 1.40625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}
