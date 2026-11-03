@@ -378,6 +378,13 @@ public class BuildingView : MonoBehaviour
             {
                 if (Definition.towerProjectile != null)
                 {
+                    if (op == null && Definition.towerMuzzle != Vector2.zero)
+                    {
+                        // Out of the gun's barrel (or, for a target behind it, from the turret's middle).
+                        Vector3 corner = controller.Grid.CellToWorld(State.cell);
+                        bool behind = pendingTarget.transform.position.x < corner.x + Definition.size.x * 0.5f;
+                        launch = corner + new Vector3(behind ? Definition.size.x * 0.5f : Definition.towerMuzzle.x, Definition.towerMuzzle.y, 0);
+                    }
                     Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc,
                         Definition.towerSplash);
                     if (Definition.towerMuzzleSmoke)

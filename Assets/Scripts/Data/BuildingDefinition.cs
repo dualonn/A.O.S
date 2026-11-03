@@ -176,6 +176,9 @@ public class BuildingDefinition : GameData
     public float towerSplash;
     [Tooltip("A puff of smoke from the tower with every shot (cannons).")]
     public bool towerMuzzleSmoke;
+    [Tooltip("Crewless towers: where shots leave the gun, in tiles from the footprint's bottom-left (0,0 = from the roof). " +
+             "The gun faces right; shots at targets to the left leave from the middle of the building at the same height.")]
+    public Vector2 towerMuzzle;
 
     [Tooltip("The unit seen operating the tower (until the Renaissance, ranged buildings are crewed).")]
     public Sprite operatorIdle;

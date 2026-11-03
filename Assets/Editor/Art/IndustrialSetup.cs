@@ -192,6 +192,7 @@ public static partial class PlaceholderArt
         turret.towerProjectileSpeed = 18f;
         turret.towerSplash = 1.8f;
         turret.towerMuzzleSmoke = true;
+        turret.towerMuzzle = new Vector2(62f / TilePx, 35.5f / TilePx);   // the barrel's mouth in the turret art
         turret.upgrades = new List<BuildingUpgrade>
         {
             new BuildingUpgrade { name = "Rifled Barrel", description = "+2 range.", requirements = new Requirements { cost = Cost(steel, 60, gears, 20) }, upgradeTime = 25f, extraTowerRange = 2f },

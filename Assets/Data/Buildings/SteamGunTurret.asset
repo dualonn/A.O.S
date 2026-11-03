@@ -184,6 +184,7 @@ MonoBehaviour:
   towerProjectileSpeed: 18
   towerSplash: 1.8
   towerMuzzleSmoke: 1
+  towerMuzzle: {x: 1.9375, y: 1.109375}
   operatorIdle: {fileID: 0}
   operatorShoot: []
   operatorReleaseFrame: 2
