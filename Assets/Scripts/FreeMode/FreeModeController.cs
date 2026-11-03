@@ -66,6 +66,10 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     public bool RaidTargets(Settlement.SettlementZone zone) =>
         waveInProgress && zone != null && zone.DistanceTo(raidTargetPoint) <= 1f;
 
+    /// <summary>Is this raider one of the raid in progress, and is that raid heading for this settlement?</summary>
+    public bool InRaidOn(Settlement.SettlementZone zone, Unit unit) =>
+        unit is Enemy e && RaidTargets(zone) && liveEnemies.Contains(e);
+
     private void Awake()
     {
         Instance = this;

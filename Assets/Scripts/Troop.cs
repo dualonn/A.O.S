@@ -555,6 +555,8 @@ public class Troop : Unit
         // On Attack, camps come first: raiders keep setting out from them, so chasing each one never
         // ends. Unless home is being attacked, head for the nearest camp in reach (one we come close
         // to, or any within hunting range), whatever raiders are doing elsewhere.
+        // A camp we took on ourselves waits while a raid heads for home (one you ordered stays).
+        if (TargetCamp != null && !campOrder && HomeUnderRaid()) TargetCamp = null;
         if (Stance == TroopStance.Attack && !hasMoveOrder && (TargetCamp == null || !TargetCamp.IsStanding) && !HomeUnderRaid())
         {
             var camp = CampView.Nearest(transform.position, hasDefendZone ? CampHuntRange : CampNearRange);
@@ -577,12 +579,15 @@ public class Troop : Unit
             if (candidates.Count == 0) return null;
         }
 
-        // On Attack with a raid heading home: go back. Fight raiders at home, or ones that come
-        // close on the way, but don't chase anything out in the field.
+        // On Attack with a raid heading home: go out and meet it. From the moment it sets out, go
+        // after that raid's raiders wherever they are (and fight anything at home or close by),
+        // but don't chase other raiders out in the field.
         if (hasDefendZone && Stance == TroopStance.Attack && !HasOrder && HomeUnderRaid())
         {
             var me = transform.position;
-            candidates = candidates.FindAll(u => InDefendArea(u.transform.position) || Vector2.Distance(u.transform.position, me) <= OrderFightRange);
+            var controller = FreeModeController.Instance;
+            candidates = candidates.FindAll(u => InDefendArea(u.transform.position) || Vector2.Distance(u.transform.position, me) <= OrderFightRange
+                || (controller != null && controller.InRaidOn(defendArea, u)));
             if (candidates.Count == 0)
             {
                 return null;

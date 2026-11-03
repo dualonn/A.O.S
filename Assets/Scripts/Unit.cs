@@ -93,6 +93,14 @@ public abstract class Unit : MonoBehaviour
     private Unit engagedWith;
     private float engageAngle;
     private float wobbleSeed;
+
+    // A target we couldn't get any closer to (across water, out of reach): left alone for a while.
+    private Unit unreachableTarget;
+    private float unreachableUntil;
+    private Vector3 chaseCheckPos;
+    private float chaseCheckAt, chaseCheckGap;
+    private const float ChaseCheckSeconds = 2.5f;
+    private const float UnreachableSeconds = 8f;
     private Vector2 knockVelocity;
     private readonly PathFollower pathFollower = new PathFollower();
     private const float SeparationStrength = 4f;
@@ -210,6 +218,11 @@ public abstract class Unit : MonoBehaviour
             UnityEngine.Profiling.Profiler.EndSample();
         }
         targetsInRange.RemoveAll(u => u == null || !CanHit(u));
+        if (unreachableTarget != null)
+        {
+            if (Time.time >= unreachableUntil) unreachableTarget = null;
+            else targetsInRange.Remove(unreachableTarget);
+        }
         currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
 
         UnityEngine.Profiling.Profiler.BeginSample("Unit.Act");
@@ -420,6 +433,7 @@ public abstract class Unit : MonoBehaviour
         {
             // Approach from roughly the side we're already on, spread out a bit.
             engagedWith = target;
+            chaseCheckAt = 0f;
             float current = Mathf.Atan2(fromTarget.y, fromTarget.x) * Mathf.Rad2Deg;
             engageAngle = current + Random.Range(-55f, 55f);
             wobbleSeed = Random.Range(0f, 100f);
@@ -428,8 +442,14 @@ public abstract class Unit : MonoBehaviour
         // Drift around the chosen side so fights don't look frozen.
         float angle = (engageAngle + Mathf.Sin(Time.time * 0.9f + wobbleSeed) * 30f) * Mathf.Deg2Rad;
         Vector3 spot = targetPos + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * attackRange * 0.7f;
+        // A spot in the water (the target is on the far bank) would send us to the nearest dry
+        // tile, often on our own bank, to stand there for ever: head for the target itself instead.
+        var nav = MapNavigator.Current;
+        if (nav != null && Moves == Movement.Ground && !nav.IsWalkable(spot, Team)) spot = targetPos;
 
         bool inReach = distance <= attackRange;
+        if (inReach) chaseCheckAt = 0f;
+        else if (Moves == Movement.Ground && nav != null && ChaseStuck(target, distance)) return;
         float speed = inReach ? moveSpeed * 0.4f : moveSpeed;
         if (Vector2.Distance(transform.position, spot) > 0.12f)
         {
@@ -782,6 +802,33 @@ public abstract class Unit : MonoBehaviour
             yield return null;
         }
         Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Out of reach of the target and neither moving nor getting closer for a few seconds (stuck
+    /// on a riverbank, or it's somewhere we can't get to)? Then leave it for a while and pick another.
+    /// </summary>
+    private bool ChaseStuck(Unit target, float distance)
+    {
+        if (chaseCheckAt <= 0f)
+        {
+            chaseCheckAt = Time.time + ChaseCheckSeconds;
+            chaseCheckPos = transform.position;
+            chaseCheckGap = distance;
+            return false;
+        }
+        if (Time.time < chaseCheckAt) return false;
+        bool stuck = Vector2.Distance(transform.position, chaseCheckPos) < 0.6f && distance > chaseCheckGap - 0.4f;
+        chaseCheckAt = Time.time + ChaseCheckSeconds;
+        chaseCheckPos = transform.position;
+        chaseCheckGap = distance;
+        if (!stuck) return false;
+        unreachableTarget = target;
+        unreachableUntil = Time.time + UnreachableSeconds;
+        engagedWith = null;
+        chaseCheckAt = 0f;
+        currentTarget = null;
+        return true;
     }
 
     /// <summary>Called by MouseTouching on the unit's hover hitbox.</summary>
