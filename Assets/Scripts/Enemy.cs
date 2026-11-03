@@ -44,7 +44,19 @@ public class Enemy : Unit
     [Tooltip("Once carrying this much, the raider runs off with it.")]
     public int lootCapacity = 20;
 
-    public override Team Team => Team.Enemy;
+    public override Team Team => Time.time < charmedUntil ? Team.Player : Team.Enemy;
+
+    private float charmedUntil;
+
+    /// <summary>Beguiled (a Xenologist's doing): fights for you until it wears off.</summary>
+    public bool Charmed => Time.time < charmedUntil;
+
+    public void Charm(float seconds)
+    {
+        charmedUntil = Time.time + seconds;
+        currentTarget = null;
+        Puff.Spawn(transform.position + Vector3.up * 0.5f, 0.8f, new Color(0.6f, 1f, 0.7f, 0.8f), 6, 0.5f);
+    }
 
     public bool IsRaider => raid != null;
     public List<ResourceAmount> Loot { get; } = new List<ResourceAmount>();
@@ -129,6 +141,7 @@ public class Enemy : Unit
 
     protected override Unit SelectTarget(List<Unit> candidates)
     {
+        if (Charmed) return base.SelectTarget(candidates);   // anyone of its own kind nearby
         if (guarding)
         {
             // Only see off intruders near the camp; don't chase them across the map.
@@ -140,7 +153,11 @@ public class Enemy : Unit
 
     protected override void Idle()
     {
-        if (guarding)
+        if (Charmed)
+        {
+            SetMoving(false);   // beguiled: waits for a fight, raids nothing
+        }
+        else if (guarding)
         {
             Guard();
         }

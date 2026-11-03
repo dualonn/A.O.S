@@ -24,3 +24,7 @@ MonoBehaviour:
   haste: 0
   range: 0
   armour: 10
+  xeno: 0
+  dodge: 0
+  regen: 0
+  xenobane: 0

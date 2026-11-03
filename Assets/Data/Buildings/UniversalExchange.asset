@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UniversalExchange
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UniversalExchange
+  displayName: Universal Exchange
+  description: A hall where every coin that ever was is good, the ceiling a window
+    onto a thousand galaxies.
+  icon: {fileID: 21300000, guid: 438a743db9861ed4d8df3ed520932cfc, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 438a743db9861ed4d8df3ed520932cfc, type: 3}
+    - {fileID: 21300000, guid: 60b1f2afa68a33a42b2d4ec9e5ac9f13, type: 3}
+    - {fileID: 21300000, guid: c62d5830024b26240b87de42f4a75b44, type: 3}
+    - {fileID: 21300000, guid: 533de032ef593be468a33880ca405943, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 6f163cd9717d6f34385af804bf0af05b, type: 3}
+    - {fileID: 21300000, guid: 5c45b19d92f23c645bb942be8c0eb482, type: 3}
+    - {fileID: 21300000, guid: fb31bbc9aacd0b947965a1c18b6d47f9, type: 3}
+    - {fileID: 21300000, guid: 35fbc08bb04542f4da2bc27c6bb1a79b, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 0b432b7f7a7959b4682c7ea26705d060, type: 3}
+    - {fileID: 21300000, guid: a780c040dd892be4299d8afeb6bac2b1, type: 3}
+    - {fileID: 21300000, guid: 870ee98b37bd62341b0802899d8b0050, type: 3}
+    - {fileID: 21300000, guid: 7f7aaefad5996c043aa067a9dadd0502, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2f2bf3a7c49a2e2459e61c335207b6d2, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 650
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 58
+  upgrades:
+  - name: Every Coin That Was
+    description: +25% coin.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 72
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 1020
+    upgradeTime: 20
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: The Last Ledger
+    description: +25% coin.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 116
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 510
+    upgradeTime: 20
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2392
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+    perSecond: 9.3
+  inputs:
+  - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+    perSecond: 0.1
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

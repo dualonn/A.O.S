@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GenesisHall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GenesisHall
+  displayName: Genesis Hall
+  description: A pearl-white hall with a worldblade set over its door, a little new
+    world turning on its point. Trains Genesis Knights.
+  icon: {fileID: 21300000, guid: 89fa3db384ebe04498a5ed25b0b73c46, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 89fa3db384ebe04498a5ed25b0b73c46, type: 3}
+    - {fileID: 21300000, guid: ef77a5ed7f91b7c48af81d5aead080f9, type: 3}
+    - {fileID: 21300000, guid: 16583f0fb3092844b9fbb153bde48ffb, type: 3}
+    - {fileID: 21300000, guid: 814ebfe276cd50d47974a26e3e648641, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 7324f452a470068429f9fa3d33c332fc, type: 3}
+    - {fileID: 21300000, guid: 1e55c7ef545806741ac949b462700e9f, type: 3}
+    - {fileID: 21300000, guid: 17cd36d57c140b040be3eab738d16a49, type: 3}
+    - {fileID: 21300000, guid: 1e2b2eab7b6bdb1499867dd5184c7f5a, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: a6281bd2f9d429f41a214dc117433d6c, type: 3}
+    - {fileID: 21300000, guid: ed6a852bade95934580d81d005293fc9, type: 3}
+    - {fileID: 21300000, guid: 3ceb8763586faae4e9a9b96eb8610585, type: 3}
+    - {fileID: 21300000, guid: e05ddb9f1eb46e944846179f2600f6c3, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 58112fd64deceb3479e37f509c9ae74d, type: 3}
+    - {fileID: 21300000, guid: c557e6e66db67ea4d99a71b619208047, type: 3}
+    - {fileID: 21300000, guid: 7801ee4469828fb4c90dbc8fe9dde121, type: 3}
+    - {fileID: 21300000, guid: 38c509b58cbe8204aa2b1b1d49a0f38d, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 8b3ff1d49a9dec0418b4074f9c71c6ae, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 480
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 72
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2900
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 4
+  trainsUnit: {fileID: 11400000, guid: bef18556002877c47a4d030824fc76e6, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

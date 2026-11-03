@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeraphSpire
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeraphSpire
+  displayName: Seraph Spire
+  description: 'A white spire ringed with halos, where Seraphs fold their six wings
+    to land. Trains Seraphs: flyers that strike from the sky.'
+  icon: {fileID: 21300000, guid: f5603128e6cca764cae469bde2cfef5a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f5603128e6cca764cae469bde2cfef5a, type: 3}
+    - {fileID: 21300000, guid: 2067201e55e650a42a4854712e921297, type: 3}
+    - {fileID: 21300000, guid: 571de8c390349334580a9a541ec89979, type: 3}
+    - {fileID: 21300000, guid: 023883966c40f5942b2d0349118d4fde, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: b3f149f59fb18b14e807d934103f5741, type: 3}
+    - {fileID: 21300000, guid: 19b718eba951bce4abad341d80f21180, type: 3}
+    - {fileID: 21300000, guid: d8b63ac8dcc42e748a7b7d3d0a3a9239, type: 3}
+    - {fileID: 21300000, guid: 8be65f0a665cb9940a2266c256b695f9, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: dc3871c373c03a642be6931df8586478, type: 3}
+    - {fileID: 21300000, guid: 49810f41c31d61547af1fd05efeb10a1, type: 3}
+    - {fileID: 21300000, guid: 11b15afbb28e43045837db0ae5c1762a, type: 3}
+    - {fileID: 21300000, guid: 7a020b849af7060428632575b48b6664, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 8a051fa62e33c6d4090ac18825f9fe9d, type: 3}
+    - {fileID: 21300000, guid: c6147609c90a5d442baa8dd9e785d7cf, type: 3}
+    - {fileID: 21300000, guid: 83ce50b26f6945844bffce858fc3e38a, type: 3}
+    - {fileID: 21300000, guid: efa689086633bbc478184361daa2ece0, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bb5f58d4e5cb9fe46a2a2da68ee9bddd, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 480
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 72
+  upgrades:
+  - name: Drill Yard
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Steel Harness
+    description: Troops trained here are 20% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Veteran Captains
+    description: +1 troop, +200 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2247
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 5128715ca409b954ba4c5d131900116a, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

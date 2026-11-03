@@ -169,6 +169,7 @@ public class DungeonRun : MonoBehaviour
                 {
                     started = true;
                     controller.ShowMessage($"Your troops descend into {Title}.");
+                    GameAudio.UI("dungeon_enter");
                     controller.FocusDungeon(this);
                 }
                 RallyParty();
@@ -295,6 +296,7 @@ public class DungeonRun : MonoBehaviour
     {
         looted = true;
         chest.sprite = ChestSprite(open: true);
+        GameAudio.UI("chest_open");
         Settlement.ClearDungeon(Site);
         leaveAt = Time.time + 3f;
     }

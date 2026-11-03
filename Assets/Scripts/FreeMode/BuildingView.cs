@@ -198,6 +198,7 @@ public class BuildingView : MonoBehaviour
             {
                 gateOpen = open;
                 force = true;
+                if (State.health > 0) GameAudio.Play(open ? "gate_open" : "gate_close", centre, 0.6f);
             }
         }
         foreach (var run in backRuns)
@@ -391,6 +392,7 @@ public class BuildingView : MonoBehaviour
                     }
                     Projectile.Fire(Definition.towerProjectile, launch, pendingTarget, Definition.towerProjectileSpeed, stats.towerDamage, null, Definition.towerProjectileArc,
                         Definition.towerSplash);
+                    GameAudio.Fire(Definition.towerSplash > 0f ? WeaponClass.Cannon : Definition.towerMuzzleSmoke ? WeaponClass.Musket : WeaponClass.Bow, launch);
                     if (Definition.towerMuzzleSmoke)
                         Puff.Smoke(launch + (pendingTarget.transform.position - launch).normalized * 0.5f);
                 }
@@ -556,6 +558,15 @@ public class BuildingView : MonoBehaviour
         }
         foreach (var hero in settlement.State.heroes)
         {
+            if (!settlement.HeroHere(hero))
+            {
+                if (heroes.TryGetValue(hero.id, out var away))
+                {
+                    if (away != null) Destroy(away.gameObject);
+                    heroes.Remove(hero.id);
+                }
+                continue;
+            }
             // Heroes whose home is gone move in with the first troop building that notices.
             if (hero.homeBuilding != State.instanceId && !settlement.State.buildings.Exists(b => b.instanceId == hero.homeBuilding))
             {

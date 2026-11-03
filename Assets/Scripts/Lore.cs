@@ -19,7 +19,7 @@ public static class Lore
 
     // Age indexes, for readability below.
     private const int Stone = 0, Bronze = 1, Iron = 2, Classical = 3, Medieval = 4, Renaissance = 5,
-        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10, Arcane = 11, Astral = 12, Stellar = 13, Interstellar = 14, Galactic = 15;
+        Enlightenment = 6, Industrial = 7, Modern = 8, Electric = 9, Information = 10, Arcane = 11, Astral = 12, Stellar = 13, Interstellar = 14, Galactic = 15, Universal = 16;
     private const int Desert = (int)Biome.Desert, Tundra = (int)Biome.Tundra, Swamp = (int)Biome.Swamp,
         Volcanic = (int)Biome.Volcanic, Crystal = (int)Biome.Crystal;
 
@@ -143,6 +143,12 @@ public static class Lore
             "The precursors did not build ships. They built gates, from star to star, and walked. Every ancient gate you wake is a door they left open behind them, as if they meant to come back, or meant for someone to follow.", Galactic, after: 20),
         new Entry("The Ark",
             "A ship the size of a city, built to carry a people from a dying world. It never needed to. Now it carries armies, and on its bridge, carved where every captain can see it, are the words: In case we were wrong.", Galactic),
+        new Entry("The Unmade",
+            "At the end of everything, when the last star has gone out, there is nothing left but the Unmade. They have come back from there to here, to make it happen sooner. They do not hate you. They are only tidying up.", Universal),
+        new Entry("The First Moment",
+            "Primordium is stone from the first moment of everything, still warm. Hold a piece to your ear and you can hear it: not a bang, the old books were wrong, but a kind of laugh.", Universal),
+        new Entry("Borrowed Hours",
+            "A Chronomancer does not heal a wound. She finds the moment before it, and borrows that moment back. Every hour borrowed must be paid back one day, they say; nobody knows by whom.", Universal, after: 20),
     };
 
     /// <summary>The entry a lore stone shows: unread ones that fit your age and the stone's land first, story arcs in order.</summary>

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: CosmicHarmony
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: CosmicHarmony
+  displayName: Cosmic Harmony
+  description: 'Living in tune with everything that is. Each level: troops hit 1%
+    harder and are 1% tougher, and everything you produce comes in 1% faster. Up
+    to 25 levels.'
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: 4a01b6ad46583bf4798e618d75c7c6f3, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+      amount: 200
+  researchTime: 200
+  unitModifiers:
+  - troopClass: {fileID: 0}
+    healthMultiplier: 1.01
+    attackMultiplier: 1.01
+    speedMultiplier: 1
+    cooldownMultiplier: 1
+    rangeMultiplier: 1
+  productionModifiers:
+  - resource: {fileID: 0}
+    multiplier: 1.01
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 25
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.15
+  levelTimeGrowth: 1.08

@@ -41,6 +41,9 @@ public class WorldState
     [Tooltip("Seconds until the next storm or quake (on worlds that have them).")]
     public float hazardIn = 200f;
 
+    [Tooltip("Troops stationed here from other worlds (brought by troopship).")]
+    public List<GarrisonStock> garrison = new List<GarrisonStock>();
+
     [Tooltip("Biomes your explorers have reached on this world (as Biome values).")]
     public List<int> biomesVisited = new List<int>();
 }

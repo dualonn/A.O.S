@@ -398,6 +398,17 @@ public static partial class PlaceholderArt
 
     // ---------- Blessings ----------
 
+    /// <summary>Make or update the shrine blessings only (no art). (Tools > Age of Stickman > Setup Blessings.)</summary>
+    [MenuItem("Tools/Age of Stickman/Setup Blessings")]
+    public static void SetupBlessingsOnly()
+    {
+        var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
+        SetupBlessings(db);
+        EditorUtility.SetDirty(db);
+        AssetDatabase.SaveAssets();
+        Debug.Log($"Blessings set up: {db.blessings.Count}.");
+    }
+
     private static void SetupBlessings(GameDatabase db)
     {
         Directory.CreateDirectory("Assets/Data/Blessings");
@@ -430,7 +441,24 @@ public static partial class PlaceholderArt
         swift.unitModifiers.Add(new UnitStatModifier { speedMultiplier = 1.08f });
         var stone = Blessing("BlessingStone", "Blessing of Stone", "All buildings +8% health.");
         stone.buildingHealthMultiplier = 1.08f;
-        db.blessings = new List<Technology> { oak, harvest, ironSkin, hunt, swift, stone };
+        var quarry = Blessing("BlessingQuarry", "Blessing of the Mountain", "+10% stone from every quarry.");
+        quarry.productionModifiers.Add(new ProductionModifier { resource = db.GetResource("Stone"), multiplier = 1.1f });
+        var gold = Blessing("BlessingGold", "Blessing of the Hoard", "+10% gold from every mine.");
+        gold.productionModifiers.Add(new ProductionModifier { resource = db.GetResource("Gold"), multiplier = 1.1f });
+        var forge = Blessing("BlessingForge", "Blessing of the Forge", "+8% iron and steel.");
+        forge.productionModifiers.Add(new ProductionModifier { resource = db.GetResource("Iron"), multiplier = 1.08f });
+        forge.productionModifiers.Add(new ProductionModifier { resource = db.GetResource("Steel"), multiplier = 1.08f });
+        var wisdom = Blessing("BlessingWisdom", "Blessing of the Owl", "Research goes 5% faster.");
+        wisdom.researchSpeedMultiplier = 1.05f;
+        var plenty = Blessing("BlessingPlenty", "Blessing of Plenty", "Everyone pays a little more in taxes.");
+        plenty.coinPerPersonPerSecond = 0.0015f;
+        var keen = Blessing("BlessingKeenEye", "Blessing of the Hawk", "All troops reach 6% further.");
+        keen.unitModifiers.Add(new UnitStatModifier { rangeMultiplier = 1.06f });
+        var fury = Blessing("BlessingFury", "Blessing of Fury", "All troops strike 6% more often.");
+        fury.unitModifiers.Add(new UnitStatModifier { cooldownMultiplier = 0.94f });
+        var mana = Blessing("BlessingMana", "Blessing of the Wellspring", "+10% mana.");
+        mana.productionModifiers.Add(new ProductionModifier { resource = db.GetResource("Mana"), multiplier = 1.1f });
+        db.blessings = new List<Technology> { oak, harvest, ironSkin, hunt, swift, stone, quarry, gold, forge, wisdom, plenty, keen, fury, mana };
         foreach (var b in db.blessings) EditorUtility.SetDirty(b);
     }
 }

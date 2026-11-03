@@ -27,6 +27,8 @@ public class Villager : MonoBehaviour
     private Vector3 target;
     private Action onArrive;
     private bool goingHome;
+    private string workSound;      // the tool sound at the current job (chop, pick, hoe...)
+    private int lastWorkBeat;
 
     public void Init(AmbientLife owner, BuildingView home, ArtLibrary library)
     {
@@ -123,6 +125,12 @@ public class Villager : MonoBehaviour
 
             case Mode.Working:
                 SetFrame(art.villagerWork, WorkFps);
+                int beat = (int)(animTime * WorkFps * 0.5f);   // a tool stroke every other frame
+                if (beat != lastWorkBeat)
+                {
+                    lastWorkBeat = beat;
+                    if (workSound != null) GameAudio.Play(workSound, transform.position, 0.3f);
+                }
                 timer -= dt;
                 if (timer <= 0)
                 {
@@ -169,6 +177,7 @@ public class Villager : MonoBehaviour
             {
                 mode = Mode.Working;
                 timer = UnityEngine.Random.Range(3f, 7f);
+                workSound = GameAudio.WorkSound(work.Definition);
                 Face(life.Grid.AreaCenter(work.State.cell, work.Definition.size).x - transform.position.x);
                 pendingCarry = product;
             });

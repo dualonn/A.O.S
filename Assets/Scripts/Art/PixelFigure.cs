@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using P = PixelPalette;
 
-public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin, Skybike, Starship, HoverThrone, Drake, SolarWings, SunOrb, SolarBarque, StarWhale, GravityPyramid, FoldCruiser, Comet, GateRing, Ark }
+public enum MountKind { None, Horse, Chariot, Elephant, Cannon, Crawler, Tank, ArmouredCar, Walker, Airship, Biplane, Drill, HoverTank, HoverCar, Jetpack, Drone, Jet, Griffin, Skybike, Starship, HoverThrone, Drake, SolarWings, SunOrb, SolarBarque, StarWhale, GravityPyramid, FoldCruiser, Comet, GateRing, Ark, HaloWings, Planetoid, SeedShip }
 
 /// <summary>Creatures that aren't built like people.</summary>
 public enum Beast { None, Wolf, Spider }
@@ -66,7 +66,7 @@ public class FigureStyle
         GearLook.Arquebus or GearLook.Pistol or GearLook.Rifle or GearLook.Musket
             or GearLook.BoltRifle or GearLook.MachineGun or GearLook.Tommygun => WeaponClass.Musket,
         GearLook.Flask or GearLook.Grenade => WeaponClass.Thrown,
-        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff or GearLook.BeamStaff or GearLook.SunStaff or GearLook.GravityStaff or GearLook.CosmicStaff => WeaponClass.Staff,
+        GearLook.AetherRod or GearLook.LeydenRod or GearLook.ManaStaff or GearLook.BeamStaff or GearLook.SunStaff or GearLook.GravityStaff or GearLook.CosmicStaff or GearLook.LoomStaff => WeaponClass.Staff,
         GearLook.RayGun or GearLook.RayRifle or GearLook.AssaultRifle or GearLook.PlasmaRifle or GearLook.ManaRifle => WeaponClass.Musket,
         GearLook.Cannon => WeaponClass.Cannon,
         _ => WeaponClass.Melee,
@@ -136,6 +136,9 @@ public static class PixelFigure
             case MountKind.Comet: w = 88; h = 88; cx = 44; gy = 4; break;         // riding a burning comet through the sky
             case MountKind.GateRing: w = 96; h = 100; cx = 44; gy = 4; break;     // a pilot standing in a hovering gate ring
             case MountKind.Ark: w = 128; h = 116; cx = 60; gy = 4; break;         // a city-sized ark, the captain on its bridge
+            case MountKind.HaloWings: w = 80; h = 92; cx = 38; gy = 4; break;     // flying on six wings of light, a halo behind
+            case MountKind.Planetoid: w = 100; h = 120; cx = 48; gy = 4; break;   // a pilot standing on a little ringed planet
+            case MountKind.SeedShip: w = 124; h = 110; cx = 58; gy = 4; break;    // a living seed-shaped ship, the captain at its crown
             case MountKind.Elephant: w = 96; h = 80; cx = 44; gy = 4; break;
             default: w = 48; h = 44; cx = 23; gy = 4; break;
         }
@@ -163,7 +166,7 @@ public static class PixelFigure
         p.hNear = shield ? V(4, -4) : V(-1, -6);
         if (s.weapon == GearLook.Spear || s.weapon == GearLook.Javelin || s.weapon == GearLook.Pike || s.weapon == GearLook.RuneStaff
             || s.weapon == GearLook.AetherRod || s.weapon == GearLook.LeydenRod || s.weapon == GearLook.ManaStaff || s.weapon == GearLook.BeamStaff
-            || s.weapon == GearLook.SunStaff || s.weapon == GearLook.GravityStaff || s.weapon == GearLook.CosmicStaff) p.wa = 84;
+            || s.weapon == GearLook.SunStaff || s.weapon == GearLook.GravityStaff || s.weapon == GearLook.CosmicStaff || s.weapon == GearLook.LoomStaff) p.wa = 84;
         if (s.weapon == GearLook.Lance) p.wa = 62;
         if (cls == WeaponClass.Crossbow || LongGun(s)) { p.hNear = V(5, -4); p.hFar = V(2, -5); }
         if (s.weapon == GearLook.Pistol || s.weapon == GearLook.RayGun) p.wa = -60;
@@ -199,7 +202,7 @@ public static class PixelFigure
     private static bool Hatch(MountKind m) => m == MountKind.Crawler || m == MountKind.Tank || m == MountKind.ArmouredCar
         || m == MountKind.Airship || m == MountKind.Biplane || m == MountKind.Drill || m == MountKind.HoverTank || m == MountKind.HoverCar
         || m == MountKind.Skybike || m == MountKind.Starship || m == MountKind.HoverThrone || m == MountKind.SunOrb || m == MountKind.SolarBarque
-        || m == MountKind.GravityPyramid || m == MountKind.FoldCruiser || m == MountKind.GateRing || m == MountKind.Ark;
+        || m == MountKind.GravityPyramid || m == MountKind.FoldCruiser || m == MountKind.GateRing || m == MountKind.Ark || m == MountKind.SeedShip;
 
     /// <summary>Machines with nobody visible aboard: only the machine is drawn.</summary>
     private static bool Pilotless(MountKind m) => m == MountKind.Drone || m == MountKind.Jet;
@@ -211,7 +214,8 @@ public static class PixelFigure
         : s.mount == MountKind.Skybike ? 26 : s.mount == MountKind.Starship ? 44 : s.mount == MountKind.HoverThrone ? 8
         : s.mount == MountKind.SolarWings ? 28 : s.mount == MountKind.SunOrb ? 10 : s.mount == MountKind.SolarBarque ? 46
         : s.mount == MountKind.StarWhale ? 34 : s.mount == MountKind.GravityPyramid ? 10 : s.mount == MountKind.FoldCruiser ? 44
-        : s.mount == MountKind.Comet ? 30 : s.mount == MountKind.GateRing ? 14 : s.mount == MountKind.Ark ? 50 : 0;
+        : s.mount == MountKind.Comet ? 30 : s.mount == MountKind.GateRing ? 14 : s.mount == MountKind.Ark ? 50
+        : s.mount == MountKind.HaloWings ? 30 : s.mount == MountKind.Planetoid ? 24 : s.mount == MountKind.SeedShip ? 48 : 0;
 
     private static void Swing(ref Pose p, bool shield, int dir)
     {
@@ -368,7 +372,7 @@ public static class PixelFigure
         public void Draw()
         {
             bool mounted = s.mount != MountKind.None && s.mount != MountKind.Cannon && s.mount != MountKind.Jetpack && s.mount != MountKind.SolarWings
-                && s.mount != MountKind.Comet && !Hatch(s.mount);
+                && s.mount != MountKind.Comet && s.mount != MountKind.HaloWings && s.mount != MountKind.Planetoid && !Hatch(s.mount);
             riding = mounted && p.death < 2;
             thrown = mounted && p.death >= 2;
             float lean = p.death == 1 ? -15f : p.death == 2 ? -55f : p.death == 3 ? -88f : 0f;
@@ -410,6 +414,8 @@ public static class PixelFigure
             if (s.mount == MountKind.Jetpack) Jetpack();
             if (s.mount == MountKind.SolarWings) LightWings();
             if (s.mount == MountKind.Comet) CometUnder();
+            if (s.mount == MountKind.HaloWings) HaloWingsBack();
+            if (s.mount == MountKind.Planetoid && p.death < 3) PlanetUnder();
             if (s.mount == MountKind.GateRing && p.death < 3) RingBack();
             if (s.mount == MountKind.SunOrb && p.death < 3) OrbBack();
             DrawCape();
@@ -457,6 +463,8 @@ public static class PixelFigure
             if (s.mount == MountKind.FoldCruiser) Cruiser();
             if (s.mount == MountKind.GateRing) RingFront();
             if (s.mount == MountKind.Ark) ArkHull();
+            if (s.mount == MountKind.Planetoid && p.death < 3) PlanetFront();
+            if (s.mount == MountKind.SeedShip) SeedHull();
             c.Outline(P.Ink, 0.6f);
             if (p.release && (s.Class == WeaponClass.Musket || s.Class == WeaponClass.Cannon)) MuzzleFlash();
             if (p.smear) Smear();
@@ -467,7 +475,7 @@ public static class PixelFigure
                 : s.mount == MountKind.Crawler || s.mount == MountKind.Tank ? X(20) : s.mount == MountKind.ArmouredCar ? X(16)
                 : s.mount == MountKind.Walker ? X(10) : X(s.mount == MountKind.Chariot ? 24 : 14);
             if (p.death == 3 && s.mount == MountKind.None) shadowX += X(8);
-            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Starship || s.mount == MountKind.SolarBarque || s.mount == MountKind.FoldCruiser || s.mount == MountKind.StarWhale || s.mount == MountKind.Ark ? 18 : s.mount == MountKind.Jetpack || s.mount == MountKind.SolarWings ? 7 : 13); }   // the craft's shadow on the ground
+            if (Altitude(s) > 0) { shadowX = cx + X(2); shadowW = X(s.mount == MountKind.Airship ? 16 : s.mount == MountKind.Starship || s.mount == MountKind.SolarBarque || s.mount == MountKind.FoldCruiser || s.mount == MountKind.StarWhale || s.mount == MountKind.Ark || s.mount == MountKind.SeedShip ? 18 : s.mount == MountKind.Jetpack || s.mount == MountKind.SolarWings || s.mount == MountKind.HaloWings ? 7 : 13); }   // the craft's shadow on the ground
             c.Shadow(shadowX, groundY, shadowW, X(1.8f));
         }
 
@@ -478,11 +486,13 @@ public static class PixelFigure
             bool metal = s.body == GearLook.ChromePlate || s.body == GearLook.BrassPlate && s.head == GearLook.BoilerHelm || s.body == GearLook.SynthBody
                 || s.body == GearLook.GolemBody || s.body == GearLook.RunePlate || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate
                 || s.body == GearLook.SolarPlate || s.body == GearLook.PhasePlate || s.body == GearLook.PrismBody
-                || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace;   // robots, automatons, androids, golems, power armour, chitin
+                || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace
+                || s.body == GearLook.GenesisPlate || s.body == GearLook.ChronoPlate || s.body == GearLook.UnmadeBody;   // robots, automatons, androids, golems, power armour, chitin
             Color32[] pants = metal ? (s.body == GearLook.ChromePlate ? P.Chrome : s.body == GearLook.SynthBody ? P.Synth : s.body == GearLook.GolemBody ? P.Rock
                 : s.body == GearLook.RunePlate ? P.Moonstone : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void
                 : s.body == GearLook.SolarPlate ? P.Synth : s.body == GearLook.PhasePlate ? P.Phase : s.body == GearLook.PrismBody ? P.Riftstone
-                : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive : P.Brass)
+                : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive
+                : s.body == GearLook.GenesisPlate ? P.Pearl : s.body == GearLook.ChronoPlate ? P.Chrono : s.body == GearLook.UnmadeBody ? P.Entropy : P.Brass)
                 : s.body == GearLook.TacVest ? P.Tactical : s.raider ? P.Leather : P.Cloth;
             Color32[] boots = s.body == GearLook.GolemBody ? P.Rock : metal ? P.Iron : P.Leather;
             Leg(footFar, pants[1], boots[1], -1);
@@ -523,6 +533,9 @@ public static class PixelFigure
                 GearLook.PrismBody => P.Riftstone,
                 GearLook.CelestialPlate => P.Cosmic,
                 GearLook.HiveCarapace => P.Hive,
+                GearLook.GenesisPlate => P.Pearl,
+                GearLook.ChronoPlate => P.Chrono,
+                GearLook.UnmadeBody => P.Entropy,
                 GearLook.Bare => skinRamp,
                 _ => team,
             };
@@ -709,6 +722,37 @@ public static class PixelFigure
                     c.Put(c.T(Vector2.Lerp(a, b, 0.4f) + V(X(1), 0)), P.Hive[3]);
                     c.Put(c.T(Vector2.Lerp(a, b, 0.75f) + V(X(1), 0)), P.Hive[3]);
                     c.Line(shNear, shNear + V(X(1.2f), X(2.6f)), P.Hive[1], 2);   // a spine
+                    break;
+                }
+                case GearLook.GenesisPlate:
+                {
+                    // pearl armour of creation: gold trim, a rainbow seam down the middle and a gem at the heart
+                    c.Line(V(b.x - r + 0.5f, b.y - 1), V(b.x + r - 0.5f, b.y - 1), Trim(GearSlot.Body, P.Gold[3]));
+                    var mid = Vector2.Lerp(a, b, 0.5f) + V(X(0.5f), 0);
+                    for (int i = 0; i < 4; i++) c.Put(c.T(Vector2.Lerp(a, b, 0.2f + i * 0.18f) + V(X(0.5f), 0)), P.Prism[i]);
+                    c.Ellipse(mid + V(X(0.4f), X(0.6f)), X(0.9f), X(0.9f), new[] { P.Prism[3], P.Prism[2], P.White, P.White });
+                    c.Ellipse(shNear + V(0, 0.5f), X(1.9f), X(1.5f), P.Pearl);
+                    c.Put(c.T(shNear + V(0, X(1.2f))), P.Gold[3]);
+                    break;
+                }
+                case GearLook.ChronoPlate:
+                {
+                    // bronze plates with a gear turning on the chest and teal time-light in the joints
+                    for (float y = a.y + X(1.5f); y < b.y - 1; y += X(2.4f)) c.Line(V(a.x - r + 0.5f, y), V(a.x + r - 0.5f, y), P.Chrono[0]);
+                    var gear = Vector2.Lerp(a, b, 0.62f) + V(X(0.8f), 0);
+                    c.Ellipse(gear, X(1.4f), X(1.4f), new[] { P.Chrono[1], P.Chrono[2], P.Chrono[2], P.Chrono[3] });
+                    for (int i = 0; i < 6; i++) c.Put(c.T(gear + V(Mathf.Cos(i * 1.047f + p.bob) * X(1.9f), Mathf.Sin(i * 1.047f + p.bob) * X(1.9f))), P.Chrono[1]);
+                    c.Ellipse(shNear + V(0, 0.5f), X(2), X(1.6f), P.Chrono);
+                    c.Put(c.T(shNear + V(X(1.2f), 0)), P.Chrono[3]);
+                    break;
+                }
+                case GearLook.UnmadeBody:
+                {
+                    // a husk being unmade: grey, cracked with red, bits of it simply missing
+                    c.FillLocal(new Rect(a.x - r, a.y, r * 2, b.y - a.y), l =>
+                        Inside(l, a, b, r) && (((int)l.x * 5 + (int)l.y * 11) % 13 == 0) ? (Color32?)new Color32(0, 0, 0, 0) : null);
+                    c.Line(Vector2.Lerp(a, b, 0.2f) + V(X(-0.6f), 0), Vector2.Lerp(a, b, 0.6f) + V(X(1), 0), P.Entropy[3]);
+                    c.Line(Vector2.Lerp(a, b, 0.6f) + V(X(1), 0), Vector2.Lerp(a, b, 0.85f) + V(X(-0.4f), 0), P.Entropy[3]);
                     break;
                 }
                 case GearLook.PhasePlate:
@@ -1095,6 +1139,36 @@ public static class PixelFigure
                     for (int i = 0; i < 5; i++) c.Put(c.T(hd + V(X(-2.4f + i * 1.2f), X(5 + (i % 2)))), Trim(GearSlot.Head, P.White));
                     break;
                 }
+                case GearLook.GenesisHelm:
+                {
+                    Hair(false);
+                    // a pearl helm with a gold crest and a visor slit of rainbow light
+                    c.Ellipse(hd + V(0, X(0.5f)), r + 0.6f, X(3.7f) + 0.3f, P.Pearl);
+                    for (int i = 0; i < 4; i++) c.Put(c.T(hd + V(X(0.4f + i * 0.7f), X(0.6f))), P.Prism[i]);
+                    c.Line(V(hd.x - r * 0.9f, hd.y + X(3.6f)), V(hd.x + r * 0.4f, hd.y + X(5)), Trim(GearSlot.Head, P.Gold[3]), S > 1.3f ? 2 : 1);
+                    break;
+                }
+                case GearLook.ChronoHelm:
+                {
+                    Hair(false);
+                    // a bronze helm with a clock face for a visor, its hands turning
+                    c.Ellipse(hd + V(0, X(0.4f)), r + 0.6f, X(3.6f) + 0.3f, P.Chrono);
+                    var face = hd + V(X(1.4f), X(0.6f));
+                    c.Ellipse(face, X(1.5f), X(1.5f), new[] { P.Pearl[1], P.Pearl[2], P.Pearl[3], P.White });
+                    float hand = p.bob * 0.8f + (p.attack ? 1.5f : 0f);
+                    c.Line(face, face + V(Mathf.Cos(hand) * X(1.2f), Mathf.Sin(hand) * X(1.2f)), P.Chrono[0]);
+                    c.Line(face, face + V(0, X(1)), P.Chrono[0]);
+                    c.Put(c.T(hd + V(-X(1.5f), X(3))), P.Chrono[3]);
+                    break;
+                }
+                case GearLook.UnmadeHead:
+                {
+                    // no face at all: a smooth grey head, a red crack where the face was, static flickering off it
+                    c.Ellipse(hd + V(0, 0.3f), r + 0.5f, X(3.5f), P.Entropy);
+                    c.Line(hd + V(X(0.4f), X(-1.2f)), hd + V(X(1.8f), X(1.6f)), P.Entropy[3]);
+                    for (int i = 0; i < 3; i++) c.Put(c.T(hd + V(X(-2.5f + ((i * 5 + (int)(p.bob * 3)) % 6)), X(3.5f + i % 2))), P.Entropy[2]);
+                    break;
+                }
                 case GearLook.PhaseHelm:
                 {
                     Hair(false);
@@ -1376,7 +1450,7 @@ public static class PixelFigure
             }
             if (s.weapon == GearLook.Cannon && s.mount != MountKind.Cannon && s.mount != MountKind.Starship && s.mount != MountKind.HoverThrone
                 && s.mount != MountKind.SunOrb && s.mount != MountKind.SolarBarque && s.mount != MountKind.GravityPyramid && s.mount != MountKind.FoldCruiser
-                && s.mount != MountKind.GateRing && s.mount != MountKind.Ark) BastionGun();
+                && s.mount != MountKind.GateRing && s.mount != MountKind.Ark && s.mount != MountKind.Planetoid && s.mount != MountKind.SeedShip) BastionGun();
             if (s.Class == WeaponClass.Bow)
             {
                 Arm(shNear, hNear, false);
@@ -1423,13 +1497,15 @@ public static class PixelFigure
                     : s.body == GearLook.TacVest ? P.Tactical : s.body == GearLook.SynthBody ? P.Synth
                     : s.body == GearLook.GolemBody ? P.Rock : s.body == GearLook.Spellweave ? crest : s.body == GearLook.RunePlate ? P.Moonstone
                     : s.body == GearLook.StarPlate ? P.Astral : s.body == GearLook.VoidPlate ? P.Void : s.body == GearLook.SolarPlate ? P.Synth : s.body == GearLook.PhasePlate ? P.Phase : s.body == GearLook.PrismBody ? P.Riftstone
-                    : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive : team;
+                    : s.body == GearLook.CelestialPlate ? P.Cosmic : s.body == GearLook.HiveCarapace ? P.Hive
+                    : s.body == GearLook.GenesisPlate ? P.Pearl : s.body == GearLook.ChronoPlate ? P.Chrono : s.body == GearLook.UnmadeBody ? P.Entropy : team;
                 // coat sleeves reach the wrist, with a cuff in the collar colour; fatigues get a team armband
                 bool longSleeve = s.body == GearLook.Greatcoat || s.body == GearLook.TrenchCoat || s.body == GearLook.Fatigues
                     || s.body == GearLook.Jumpsuit || s.body == GearLook.ChromePlate || s.body == GearLook.TacVest || s.body == GearLook.SynthBody
                     || s.body == GearLook.GolemBody || s.body == GearLook.Spellweave || s.body == GearLook.RunePlate
                     || s.body == GearLook.StarPlate || s.body == GearLook.VoidPlate || s.body == GearLook.SolarPlate || s.body == GearLook.PhasePlate || s.body == GearLook.PrismBody
-                    || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace;
+                    || s.body == GearLook.CelestialPlate || s.body == GearLook.HiveCarapace
+                    || s.body == GearLook.GenesisPlate || s.body == GearLook.ChronoPlate || s.body == GearLook.UnmadeBody;
                 c.Line(from, Vector2.Lerp(from, hand, longSleeve ? 0.85f : 0.4f), far ? sl[1] : sl[2], limb);
                 if (s.body == GearLook.Greatcoat) c.Put(c.T(Vector2.Lerp(from, hand, 0.82f)), crest[2]);
                 if (s.body == GearLook.Fatigues && !far) c.Put(c.T(Vector2.Lerp(from, hand, 0.3f)), team[2]);
@@ -1626,6 +1702,46 @@ public static class PixelFigure
                     c.Ellipse(g, X(2.4f), X(1.2f), lit ? new[] { glow[1], glow[2], glow[3], P.White } : new[] { glow[0], glow[1], glow[1], glow[2] });
                     c.Put(c.T(g), P.White);
                     c.Put(c.T(g + V(X(2.8f), X(0.6f))), glow[3]); c.Put(c.T(g - V(X(2.8f), X(0.6f))), glow[3]);
+                    break;
+                }
+                case GearLook.Worldblade:
+                {
+                    // a pearl blade with a rainbow edge and a little new world turning at its point
+                    float len = X(11.5f);
+                    c.Line(at(-2), at(0), P.Gold[2], ww);
+                    c.Line(at(1, -X(1.8f)), at(1, X(1.8f)), Trim(GearSlot.Weapon, P.Gold[3]), ww);
+                    c.Line(at(2), at(len), P.Pearl[2], ww + 1);
+                    for (int i = 0; i < 4; i++) c.Line(at(2 + (len - 2) * i / 4f, -0.8f), at(2 + (len - 2) * (i + 1) / 4f, -0.8f), P.Prism[i]);
+                    c.Ellipse(at(len + X(1.2f)), X(1.1f), X(1.1f), new[] { P.Prism[3], P.Prism[2], P.Prism[2], P.White });
+                    break;
+                }
+                case GearLook.LoomStaff:
+                {
+                    // a white staff with a spindle of rainbow threads at its head (the Unmade's is grey, its threads red)
+                    float len = X(13);
+                    c.Line(at(-X(5)), at(len), s.raider ? P.Entropy[2] : P.Pearl[3], ww);
+                    Vector2 g = at(len + X(2));
+                    bool lit = p.loaded || !p.attack;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        float ang = i * 0.785f + p.bob;
+                        var col = s.raider ? P.Entropy[i % 2 == 0 ? 3 : 2] : P.Prism[i];
+                        c.Line(g - V(Mathf.Cos(ang) * X(2.2f), Mathf.Sin(ang) * X(2.2f)), g + V(Mathf.Cos(ang) * X(2.2f), Mathf.Sin(ang) * X(2.2f)), lit ? col : P.Pearl[1]);
+                    }
+                    c.Put(c.T(g), P.White);
+                    break;
+                }
+                case GearLook.ClockHammer:
+                {
+                    // a great bronze hammer with a clock face on its head
+                    float len = X(12);
+                    c.Line(at(-X(2)), at(len), P.Chrono[1], ww);
+                    Vector2 head = at(len + X(1.5f));
+                    c.Ellipse(head, X(3), X(2.4f), P.Chrono);
+                    c.Ellipse(head, X(1.5f), X(1.5f), new[] { P.Pearl[1], P.Pearl[2], P.Pearl[3], P.White });
+                    c.Put(c.T(head + V(0, X(1))), P.Chrono[0]);
+                    c.Put(c.T(head + V(X(2.6f), 0)), P.Chrono[3]);
+                    if (p.smear) c.Put(c.T(at(len + X(4.5f))), new Color32(112, 240, 224, 200));
                     break;
                 }
                 case GearLook.PhaseBlade:
@@ -1834,7 +1950,7 @@ public static class PixelFigure
                     break;
                 case GearLook.Cannon when s.mount == MountKind.Crawler || s.mount == MountKind.Tank || s.mount == MountKind.Starship || s.mount == MountKind.HoverThrone
                     || s.mount == MountKind.SunOrb || s.mount == MountKind.SolarBarque || s.mount == MountKind.GravityPyramid || s.mount == MountKind.FoldCruiser
-                    || s.mount == MountKind.GateRing || s.mount == MountKind.Ark:
+                    || s.mount == MountKind.GateRing || s.mount == MountKind.Ark || s.mount == MountKind.Planetoid || s.mount == MountKind.SeedShip:
                     break;   // the commander works the gun from inside
                 case GearLook.Cannon:
                 {
@@ -2365,6 +2481,116 @@ public static class PixelFigure
                 c.Polygon(new[] { o + V(0, X(2)), o + V(X(1.2f), 0), o + V(0, -X(2)), o + V(-X(1.2f), 0) }, _ => glow[2]);
                 c.Put(c.T(o + V(0, X(0.6f))), glow[3]);
             }
+        }
+
+        /// <summary>Six wings of light behind a Seraph, beating, and a halo behind its head (the Unmade's are grey tatters).</summary>
+        private void HaloWingsBack()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            float beat = p.death >= 2 ? -0.6f : p.fNear.x > 2 ? 1f : p.fNear.x < -2 ? 0.2f : 0.6f;
+            for (int pair = 0; pair < 3; pair++)
+                for (int side = 0; side < 2; side++)
+                {
+                    Vector2 root = sh + V(X(-1.5f - side * 1.2f), X(1.5f - pair * 2.2f));
+                    float spread = (pair - 1) * 5f;
+                    Vector2 tip = root + V(X(-12 + side * 2 + Mathf.Abs(pair - 1) * 2), X(spread + 7 * beat * (pair == 1 ? 1 : 0.6f) + 2));
+                    Vector2 low = root + V(X(-8 + side * 2), X(spread * 0.5f - 3));
+                    Color32 col = s.raider ? P.Entropy[side == 0 ? 1 : 2] : P.Prism[(pair + side) % 4];
+                    c.Polygon(new[] { root, tip, low }, _ => side == 0 ? (Color32?)col : P.Pearl[3]);
+                    c.Put(c.T(tip), s.raider ? P.Entropy[3] : P.White);
+                }
+            if (p.death < 2)
+            {
+                Vector2 halo = sh + V(X(-0.5f), X(5.5f));
+                for (int i = 0; i < 24; i++)
+                {
+                    float t = i / 24f * Mathf.PI * 2f;
+                    c.Put(c.T(halo + V(Mathf.Cos(t) * X(3.2f), Mathf.Sin(t) * X(3.2f))), s.raider ? P.Entropy[3] : (i % 6 == 0 ? P.White : P.Gold[3]));
+                }
+            }
+            (c.Angle, c.Shift) = save;
+        }
+
+        private Vector2 PlanetCentre => V(cx + 0.5f, gy - X(9));
+        private float PlanetRadius => X(9);
+
+        /// <summary>The little planet under a World Engine's pilot, and the far side of its rings (the Heat Death's is a dead, cracked one).</summary>
+        private void PlanetUnder()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            Vector2 o = PlanetCentre;
+            float r = PlanetRadius;
+            var ring = s.raider ? P.Entropy : P.Pearl;
+            for (int i = 0; i < 80; i++)
+            {
+                float t = i / 80f * Mathf.PI * 2f;
+                if (Mathf.Sin(t) < 0) continue;   // the near half goes in front
+                c.Put(c.T(o + V(Mathf.Cos(t) * r * 1.8f, Mathf.Sin(t) * r * 0.45f)), ring[2]);
+            }
+            if (s.raider)
+                c.Ellipse(o, r, r, new[] { P.Entropy[0], P.Entropy[1], P.Entropy[1], P.Entropy[2] });
+            else
+            {
+                c.Ellipse(o, r, r, new[] { P.Water[0], P.Water[1], P.Water[2], P.Water[3] });
+                var land = P.Seed;
+                foreach (var (dx, dy, rx) in new[] { (-3f, 2f, 3.5f), (3f, -2f, 3f), (1f, 5f, 2f), (-4f, -4f, 2f) })
+                    c.Ellipse(o + V(X(dx), X(dy)), X(rx), X(rx * 0.7f), new[] { land[1], land[2], land[2], land[3] });
+                c.Ellipse(o + V(X(4), X(4)), X(2), X(1.2f), new[] { P.White, P.White, P.White, P.White });   // a cloud
+            }
+            if (s.raider)
+                for (int i = 0; i < 4; i++) c.Line(o + V(X(-6 + i * 4), X(-3 + (i % 2) * 5)), o + V(X(-3 + i * 4), X(1 + (i % 2) * 2)), P.Entropy[3]);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>The near side of the planet's rings, and the little sun that orbits it and fires.</summary>
+        private void PlanetFront()
+        {
+            var save = (c.Angle, c.Shift);
+            c.Angle = 0; c.Shift = Vector2.zero;
+            Vector2 o = PlanetCentre;
+            float r = PlanetRadius;
+            var ring = s.raider ? P.Entropy : P.Pearl;
+            for (int i = 0; i < 80; i++)
+            {
+                float t = i / 80f * Mathf.PI * 2f;
+                if (Mathf.Sin(t) >= 0) continue;
+                var at2 = o + V(Mathf.Cos(t) * r * 1.8f, Mathf.Sin(t) * r * 0.45f);
+                c.Put(c.T(at2), ring[3]);
+                c.Put(c.T(at2 + V(0, -1)), ring[1]);
+            }
+            bool flick = p.fNear.x > 2 || p.bob > 0 || p.attack;
+            Vector2 sun = o + V(r * 1.3f, r * 0.9f);
+            var glow = s.raider ? new[] { P.Entropy[1], P.Entropy[3], P.Entropy[3], P.White } : new[] { P.Gold[2], P.Gold[3], P.White, P.White };
+            c.Ellipse(sun, X(flick ? 2.4f : 2f), X(flick ? 2.4f : 2f), glow);
+            muzzle = sun + V(X(2.5f), 0);
+            (c.Angle, c.Shift) = save;
+        }
+
+        /// <summary>A Genesis Ship: a living seed-shaped hull, glowing veins, leaf fins and a bloom at its prow that fires.</summary>
+        private void SeedHull()
+        {
+            var hull = s.raider ? P.Entropy : P.Seed;
+            float yc = gy + X(2);
+            float x0 = cx - X(30), x1 = cx + X(28);
+            c.Ellipse(V((x0 + x1) / 2, yc), (x1 - x0) / 2, X(7), new[] { hull[0], hull[1], hull[2], hull[2] });
+            for (int i = 0; i < 3; i++)   // glowing veins
+            {
+                float vy = yc + X(-3 + i * 3);
+                c.Line(V(x0 + X(8), vy), V(x1 - X(10), vy + X(i - 1)), (i + (int)(p.bob * 2)) % 2 == 0 ? hull[3] : P.Gold[3]);
+            }
+            foreach (float fx in new[] { x0 + X(10), x0 + X(22) })   // leaf fins
+            {
+                c.Polygon(new[] { V(fx, yc + X(5)), V(fx + X(8), yc + X(6)), V(fx - X(4), yc + X(13)) }, _ => hull[2]);
+                c.Polygon(new[] { V(fx, yc - X(5)), V(fx + X(8), yc - X(6)), V(fx - X(4), yc - X(12)) }, _ => hull[1]);
+            }
+            bool flick = p.fNear.x > 2 || p.bob > 0;
+            c.Ellipse(V(x0 - X(1), yc), X(flick ? 3 : 2.2f), X(2), new[] { hull[1], hull[2], hull[3], P.White });   // the drive
+            Vector2 bloom = V(x1 + X(1), yc);
+            var petals = s.raider ? new[] { P.Entropy[2], P.Entropy[3], P.Entropy[3], P.White } : new[] { P.Prism[0], P.Prism[1], P.Gold[3], P.White };
+            c.Ellipse(bloom, X(2.6f), X(2.6f), petals);
+            muzzle = bloom + V(X(3), 0);
         }
 
         /// <summary>A comet under the rider's feet: a head of blue-white ice and a long burning tail behind.</summary>

@@ -32,7 +32,7 @@ public static partial class PlaceholderArt
             { "Food", IcFood }, { "Wood", IcWood }, { "Stone", IcStone }, { "Bronze", c => IcIngot(c, P.Bronze) },
             { "Iron", c => IcIngot(c, P.Iron) }, { "Gold", IcGold }, { "Charcoal", IcCharcoal }, { "Tools", IcTools }, { "Coin", IcCoin },
             { "Steel", c => IcIngot(c, P.Steel) }, { "Runestone", IcRunestone },
-            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana }, { "Starmetal", IcStarmetal }, { "AstralCores", IcAstralCores }, { "Heliolite", IcHeliolite }, { "Sunfire", IcSunfire }, { "Riftstone", IcRiftstone }, { "WarpCells", IcWarpCells }, { "Stardust", IcStardust }, { "Quintessence", IcQuintessence },
+            { "Saltpetre", IcSaltpetre }, { "Gunpowder", IcGunpowder }, { "Quicksilver", IcQuicksilver }, { "Coal", IcCoal }, { "Gears", IcGears }, { "Aether", IcAether }, { "Oil", IcOil }, { "Fuel", IcFuel }, { "Uranium", IcUranium }, { "PowerCells", IcPowerCells }, { "Silicon", IcSilicon }, { "Microchips", IcMicrochips }, { "Essence", IcEssence }, { "Manastone", IcManastone }, { "Mana", IcMana }, { "Starmetal", IcStarmetal }, { "AstralCores", IcAstralCores }, { "Heliolite", IcHeliolite }, { "Sunfire", IcSunfire }, { "Riftstone", IcRiftstone }, { "WarpCells", IcWarpCells }, { "Stardust", IcStardust }, { "Quintessence", IcQuintessence }, { "Primordium", IcPrimordium }, { "GenesisMatter", IcGenesisMatter },
         };
         foreach (var res in db.resources)
             if (res != null && drawers.TryGetValue(res.id, out var draw))
@@ -46,6 +46,13 @@ public static partial class PlaceholderArt
         foreach (var t in db.itemTemplates)
         {
             if (t == null) continue;
+            if (t.xeno)
+            {
+                // Alien gear has its own icons (the folder was just cleared, so draw them again).
+                var drawXeno = XenoIconFor(t.id);
+                if (drawXeno != null) { t.icon = IconPixel($"Icons/Gear/{t.id}.png", drawXeno); EditorUtility.SetDirty(t); }
+                continue;
+            }
             var look = t.look;
             float power = t.minPower;
             t.icon = IconPixel($"Icons/Gear/{t.id}.png", c => IcGear(c, look, power));
@@ -236,6 +243,22 @@ public static partial class PlaceholderArt
         c.Rect(5, 15, 14, 16, P.Steel[2]);
     }
 
+    private static void IcPrimordium(PixelCanvas c)
+    {
+        // a lump of dark teal stone, cracks of first light in it
+        c.Ellipse(new Vector2(10, 8), 7, 5.5f, P.Primordium);
+        c.Line(new Vector2(6, 9), new Vector2(10, 7), P.Primordium[3]); c.Line(new Vector2(10, 7), new Vector2(14, 10), P.Primordium[3]);
+        c.Put(10, 12, P.White);
+    }
+
+    private static void IcGenesisMatter(PixelCanvas c)
+    {
+        // a pearl orb with a rainbow turning inside it
+        c.Ellipse(new Vector2(10, 9), 6, 6, P.Pearl);
+        for (int i = 0; i < 4; i++) c.Put(7 + i * 2, 9 + (i % 2), P.Prism[i]);
+        c.Put(8, 12, P.White);
+    }
+
     private static void IcStardust(PixelCanvas c)
     {
         // a heap of glittering grey dust with stars in it
@@ -352,10 +375,128 @@ public static partial class PlaceholderArt
 
     private static Color32[] GearMetalRamp(float power) => power < 1 ? P.Stone : power < 2 ? P.Bronze : P.Steel;
 
+    /// <summary>The colours a later age's gear is drawn in, by its look.</summary>
+    private static Color32[] LookRamp(GearLook look) => look switch
+    {
+        GearLook.GreatHelm or GearLook.KettleHat or GearLook.Morion or GearLook.Cuirass or GearLook.Zweihander or GearLook.Halberd or GearLook.Mace or GearLook.Sabre or GearLook.SteelHelmet or GearLook.Shovel => P.Steel,
+        GearLook.Surcoat => P.Blue,
+        GearLook.Tricorne => P.Coal,
+        GearLook.Greatcoat or GearLook.TrenchCoat => P.Wolf,
+        GearLook.Goggles or GearLook.BrassPlate or GearLook.PistonHammer or GearLook.Wrench => P.Brass,
+        GearLook.BubbleHelmet or GearLook.ChromePlate or GearLook.Claw => P.Chrome,
+        GearLook.TacHelmet or GearLook.TacVest or GearLook.EnergyBlade => P.Tactical,
+        GearLook.RuneVisor or GearLook.RunePlate or GearLook.Runeblade or GearLook.WizardHat => P.Aether,
+        GearLook.StarHelm or GearLook.StarPlate or GearLook.StarBlade => P.Starmetal,
+        GearLook.SunHelm or GearLook.SolarPlate or GearLook.SunBlade => P.Solar,
+        GearLook.PhaseHelm or GearLook.PhasePlate or GearLook.PhaseBlade => P.Phase,
+        GearLook.GalaxyHelm or GearLook.CelestialPlate or GearLook.SingularityBlade or GearLook.StarCrown => P.Cosmic,
+        GearLook.GenesisHelm or GearLook.GenesisPlate or GearLook.Worldblade => P.Pearl,
+        GearLook.ChronoHelm or GearLook.ChronoPlate or GearLook.ClockHammer => P.Chrono,
+        _ => P.Steel,
+    };
+
+    /// <summary>
+    /// Icons for the later ages' gear: a shape for each kind (helm, hat, goggles, armour, coat,
+    /// blade, hammer, polearm...), in that age's colours, with a glint of its own light.
+    /// </summary>
+    private static void IcGearLater(PixelCanvas c, GearLook look)
+    {
+        var r = LookRamp(look);
+        Vector2 h = Iv(10, 8);
+        Color32 glow = look switch
+        {
+            GearLook.Runeblade or GearLook.RuneVisor or GearLook.RunePlate or GearLook.WizardHat => P.Aether[3],
+            GearLook.SunHelm or GearLook.SolarPlate or GearLook.SunBlade => P.White,
+            GearLook.PhaseHelm or GearLook.PhasePlate or GearLook.PhaseBlade => P.Phase[3],
+            GearLook.GalaxyHelm or GearLook.CelestialPlate or GearLook.SingularityBlade or GearLook.StarCrown => P.Cosmic[3],
+            GearLook.GenesisHelm or GearLook.GenesisPlate or GearLook.Worldblade => P.Prism[3],
+            GearLook.ChronoHelm or GearLook.ChronoPlate or GearLook.ClockHammer => P.Chrono[3],
+            GearLook.EnergyBlade or GearLook.TacHelmet or GearLook.TacVest => P.Neon[2],
+            _ => r[3],
+        };
+        switch (look)
+        {
+            case GearLook.Tricorne:
+                c.Polygon(new[] { Iv(2, 7), Iv(18, 7), Iv(10, 15) }, _ => r[1]); c.Line(Iv(2, 7), Iv(18, 7), P.Gold[3]); break;
+            case GearLook.WizardHat:
+                c.Polygon(new[] { Iv(3, 5), Iv(17, 5), Iv(12, 18) }, _ => r[1]); c.Line(Iv(2, 5), Iv(18, 5), r[2], 2); c.Put(9, 11, glow); break;
+            case GearLook.Goggles:
+                c.Line(Iv(2, 9), Iv(18, 9), P.Leather[1], 2);
+                c.Ellipse(Iv(6, 9), 3.2f, 3.2f, r); c.Ellipse(Iv(14, 9), 3.2f, 3.2f, r);
+                c.Ellipse(Iv(6, 9), 1.8f, 1.8f, P.Water); c.Ellipse(Iv(14, 9), 1.8f, 1.8f, P.Water); break;
+            case GearLook.BubbleHelmet:
+                c.Ellipse(h + Iv(0, 1), 7, 7, new[] { P.Water[2], P.Water[3], P.Water[4], P.White }); c.Line(Iv(3, 3), Iv(17, 3), r[1], 2); break;
+            case GearLook.StarCrown:
+                c.Line(Iv(3, 6), Iv(17, 6), r[2], 2);
+                for (int i = 0; i < 5; i++) { c.Line(Iv(4 + i * 3, 6), Iv(4 + i * 3, 11 + (i % 2) * 3), r[2]); c.Put(4 + i * 3, 12 + (i % 2) * 3, P.White); }
+                break;
+            case GearLook.GreatHelm: case GearLook.KettleHat: case GearLook.Morion: case GearLook.SteelHelmet: case GearLook.TacHelmet:
+            case GearLook.RuneVisor: case GearLook.StarHelm: case GearLook.SunHelm: case GearLook.PhaseHelm: case GearLook.GalaxyHelm:
+            case GearLook.GenesisHelm: case GearLook.ChronoHelm:
+            {
+                bool brim = look == GearLook.KettleHat || look == GearLook.Morion || look == GearLook.SteelHelmet;
+                c.Ellipse(h + Iv(0, look == GearLook.GreatHelm ? 0 : 1), 6.5f, look == GearLook.GreatHelm ? 8 : 6.5f, r, look == GearLook.GreatHelm ? null : (System.Func<Vector2, bool>)(l => l.y >= h.y - 1));
+                if (brim) c.Line(Iv(1, 7), Iv(19, 7), r[1], 2);
+                if (look == GearLook.GreatHelm) c.Line(Iv(5, 10), Iv(15, 10), P.Coal[0], 2);
+                else c.Line(Iv(6, 9), Iv(14, 9), glow);
+                if (look == GearLook.Morion) c.Line(Iv(10, 15), Iv(10, 18), r[2], 2);
+                if (look == GearLook.ChronoHelm) { c.Ellipse(Iv(12, 10), 2.5f, 2.5f, P.Pearl); c.Put(12, 10, P.Chrono[0]); }
+                break;
+            }
+            case GearLook.Surcoat: case GearLook.Cuirass: case GearLook.Greatcoat: case GearLook.TrenchCoat: case GearLook.BrassPlate:
+            case GearLook.ChromePlate: case GearLook.TacVest: case GearLook.RunePlate: case GearLook.StarPlate: case GearLook.SolarPlate:
+            case GearLook.PhasePlate: case GearLook.CelestialPlate: case GearLook.GenesisPlate: case GearLook.ChronoPlate:
+            {
+                bool coat = look == GearLook.Greatcoat || look == GearLook.TrenchCoat || look == GearLook.Surcoat;
+                c.Polygon(new[] { Iv(3, coat ? 1 : 4), Iv(17, coat ? 1 : 4), Iv(17, 14), Iv(13, 17), Iv(10, 15), Iv(7, 17), Iv(3, 14) }, l => l.x < 7 ? (Color32?)r[2] : r[1]);
+                if (coat) c.Line(Iv(10, 2), Iv(10, 15), r[0]);
+                else for (int y = 6; y < 14; y += 3) c.Line(Iv(4, y), Iv(16, y), r[0]);
+                if (look == GearLook.Surcoat) c.Line(Iv(10, 5), Iv(10, 13), P.Gold[3]);
+                c.Ellipse(Iv(10, 10), 1.4f, 1.4f, new[] { glow, glow, P.White, P.White });
+                break;
+            }
+            case GearLook.Mace: case GearLook.PistonHammer: case GearLook.Wrench: case GearLook.ClockHammer:
+                c.Line(Iv(4, 2), Iv(12, 13), P.Wood[2], 2);
+                if (look == GearLook.Wrench) { c.Ellipse(Iv(14, 15), 3.5f, 3.5f, r); c.Ellipse(Iv(15, 16), 1.5f, 1.5f, new[] { P.Coal[0], P.Coal[0], P.Coal[0], P.Coal[0] }); }
+                else c.Ellipse(Iv(13, 14), 4, 3.5f, r);
+                if (look == GearLook.ClockHammer) { c.Ellipse(Iv(13, 14), 2, 2, P.Pearl); c.Put(13, 14, P.Chrono[0]); }
+                if (look == GearLook.Mace) for (int i = 0; i < 4; i++) c.Put(Iv(13 + (i % 2 == 0 ? 4 : -4) * (i < 2 ? 1 : 0), 14 + (i % 2 == 0 ? 0 : 4) * (i < 2 ? 0 : 1)), r[3]);
+                break;
+            case GearLook.Halberd:
+                c.Line(Iv(3, 1), Iv(15, 17), P.Wood[2], 2);
+                c.Polygon(new[] { Iv(12, 12), Iv(18, 14), Iv(15, 18) }, _ => r[2]); c.Put(17, 18, r[3]); break;
+            case GearLook.Shovel:
+                c.Line(Iv(4, 2), Iv(12, 12), P.Wood[2], 2);
+                c.Polygon(new[] { Iv(11, 11), Iv(17, 13), Iv(16, 18), Iv(12, 17) }, _ => r[1]); break;
+            case GearLook.Claw:
+                c.Ellipse(Iv(8, 8), 4, 4, r);
+                for (int i = 0; i < 3; i++) c.Line(Iv(10 + i, 10 - i), Iv(16 + i, 15 + i * 0), r[3]);
+                break;
+            case GearLook.KiteShield:
+                c.Polygon(new[] { Iv(4, 15), Iv(16, 15), Iv(16, 9), Iv(10, 1), Iv(4, 9) }, l => l.x < 10 ? (Color32?)P.Blue[2] : P.Blue[1]);
+                c.Line(Iv(10, 3), Iv(10, 14), P.Gold[3]); c.Line(Iv(5, 10), Iv(15, 10), P.Gold[3]); break;
+            default:   // blades of every kind
+            {
+                c.Line(Iv(4, 3), Iv(7, 6), P.Wood[1], 2);
+                c.Line(Iv(4, 8), Iv(9, 3), r[1], 2);   // guard
+                c.Line(Iv(7, 6), Iv(17, 16), r[2], look == GearLook.Zweihander ? 3 : 2);
+                c.Line(Iv(8, 6), Iv(17, 15), glow);
+                c.Put(Iv(18, 17), P.White);
+                break;
+            }
+        }
+    }
+
     private static void IcGear(PixelCanvas c, GearLook look, float power)
     {
         var metal = GearMetalRamp(power);
         Vector2 h = Iv(10, 8);
+        if (power >= 4 && look != GearLook.Bow && look != GearLook.Ring && look != GearLook.Amulet && look != GearLook.Charm
+            && look != GearLook.Horn && look != GearLook.TowerShield && look != GearLook.Wreath)
+        {
+            IcGearLater(c, look);
+            return;
+        }
         switch (look)
         {
             case GearLook.Cap:

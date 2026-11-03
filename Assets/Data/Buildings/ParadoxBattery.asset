@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: ParadoxBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: ParadoxBattery
+  displayName: Paradox Battery
+  description: A tower with a clock for a face that fires before it aims. Each shot
+    bursts wide.
+  icon: {fileID: 21300000, guid: 1776391bfb37d7d428f9229f1fb1cd61, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1776391bfb37d7d428f9229f1fb1cd61, type: 3}
+    - {fileID: 21300000, guid: f39e4aa04a4877644843d04ad5bf05d6, type: 3}
+    - {fileID: 21300000, guid: bbc9cc36bc6f4844b8dcc04e37dca8fc, type: 3}
+    - {fileID: 21300000, guid: c04dd8ac853ed9d40af8b6e567a30ad1, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: f397a5b7fb91a74439eefedc0af61c91, type: 3}
+    - {fileID: 21300000, guid: 5f376011571fa0a4980a600398bde4b8, type: 3}
+    - {fileID: 21300000, guid: 79d90c1133714f641a84fa42e5d065e7, type: 3}
+    - {fileID: 21300000, guid: f08bee7c6046b534d8e76032f872f785, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 40e2fbf4c5945784886a842310d7e1a1, type: 3}
+    - {fileID: 21300000, guid: 68b4b67ce5ff2754cb8fbfc978810279, type: 3}
+    - {fileID: 21300000, guid: ed7cd5986885bf74aaf8d7a789f5ff1b, type: 3}
+    - {fileID: 21300000, guid: 069ccef06aece9b46a1ca654220ee0ae, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: c5ba0a596e5e92241aded381289bcc84, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1230
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 230
+  upgrades:
+  - name: Longer Throw
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 190
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Wider Bursts
+    description: +160 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 87
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 160
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 4640
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 17
+  towerDamage: 725
+  towerCooldown: 3.1
+  towerProjectile: {fileID: 21300000, guid: 87a67c9e355f0e74a9dc22488a0ce25c, type: 3}
+  towerProjectileArc: 0.2
+  towerProjectileSpeed: 16
+  towerSplash: 3.1
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.3125}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

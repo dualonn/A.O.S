@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PrimordiumRift
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PrimordiumRift
+  displayName: Primordium Rift
+  description: A crack in the world where stone from the first moment of everything
+    wells up, still glowing. Must be built on or next to Primordium, or right on
+    a rich primordium vein.
+  icon: {fileID: 21300000, guid: f5a00ab115659404f90181224ea92d3a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f5a00ab115659404f90181224ea92d3a, type: 3}
+    - {fileID: 21300000, guid: 3274e6a8490bb0d4799f0ce024da9c63, type: 3}
+    - {fileID: 21300000, guid: 133b8c1057437c1488e806a4fdb568db, type: 3}
+    - {fileID: 21300000, guid: ba2923ee8aa1381418d7bf78fa07bb81, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 5c4568fe526a6784583fdee5655d5936, type: 3}
+    - {fileID: 21300000, guid: fc2c0776bb74f5848bd905c55259d1fd, type: 3}
+    - {fileID: 21300000, guid: b6b419d243d28f347aebc73ecceab219, type: 3}
+    - {fileID: 21300000, guid: 0c5f87daf3428444b90a75060e5e478b, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 89235bb712ea14c4d9effcacb2290b7d, type: 3}
+    - {fileID: 21300000, guid: 8c3a95aab706883489d738430f8efc7b, type: 3}
+    - {fileID: 21300000, guid: fbb91c18e796b8a48b8822df1d01ba04, type: 3}
+    - {fileID: 21300000, guid: 10e8cc54a533ba34d8568a39c826a329, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2c1584392d025d84e9d03ee29072df90, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 580
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 102
+  upgrades:
+  - name: Deeper Crack
+    description: +30% primordium.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 480
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 102
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: First Seams
+    description: +30% primordium.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 160
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 320
+    upgradeTime: 20
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 11400000, guid: 358178e6da258e74087f2a3de4cdd3ba, type: 2}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 8
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1450
+  housing: 0
+  workers: 5
+  production:
+  - resource: {fileID: 11400000, guid: 53f165e5bfd1cf240bf60c62fb71cba6, type: 2}
+    perSecond: 0.13
+  inputs: []
+  runsWithoutInputs: 0.5
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

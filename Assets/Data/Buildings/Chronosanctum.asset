@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Chronosanctum
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Chronosanctum
+  displayName: Chronosanctum
+  description: A temple round a great hourglass where the sand runs up as often as
+    down. Trains Chronomancers.
+  icon: {fileID: 21300000, guid: 9a16acbc7522fa64f84d5e9ad91b5bf9, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 9a16acbc7522fa64f84d5e9ad91b5bf9, type: 3}
+    - {fileID: 21300000, guid: bc00ca25f2dd73844a43417b255c05c1, type: 3}
+    - {fileID: 21300000, guid: 0c8fb6f5bf9a7eb4f8960360ec3e1a5e, type: 3}
+    - {fileID: 21300000, guid: 6b16a079c26858f4db3ba50620134bbb, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 85983a4b49ede5d46bfa64071f41121b, type: 3}
+    - {fileID: 21300000, guid: d5ac8ce8f70213e44aba0ffaabca38e0, type: 3}
+    - {fileID: 21300000, guid: dfbd83aa949d32442b1d1d07d4ffc873, type: 3}
+    - {fileID: 21300000, guid: 06cf6c292aff62c4c8989bb5ba9f0e78, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: d2cea4dfe4d88ec418130c0121788cdb, type: 3}
+    - {fileID: 21300000, guid: 6bac16cbd9bd42643a837d490331b1ee, type: 3}
+    - {fileID: 21300000, guid: 2a4f560a2469c2f40ae3a0ace005ef14, type: 3}
+    - {fileID: 21300000, guid: 94c1a5bfc92e3d04184db249ab5cd08d, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4289fc93a5c32854d85b0960905a2ee2, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 410
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 58
+  upgrades:
+  - name: Second Hourglass
+    description: +1 chronomancer.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 58
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 230
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Borrowed Hours
+    description: Chronomancers heal 30% more and are 20% tougher.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 116
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 320
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.3
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2247
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 11400000, guid: a72f87bd62c68614a937494e68e06061, type: 2}
+  maxUnits: 3
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

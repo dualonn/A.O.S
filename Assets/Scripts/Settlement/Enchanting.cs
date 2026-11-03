@@ -28,7 +28,7 @@ public partial class Settlement
 
     /// <summary>The rare material an enchantment is bound with: the rarest one around the item's age.</summary>
     public string EnchantMaterial(ItemInstance item) =>
-        item.power < 5 ? "Runestone" : item.power < 6.5f ? "Quicksilver" : item.power < 8.5f ? "Aether" : item.power < 10 ? "Uranium" : item.power < 11 ? "Silicon" : item.power < 12 ? "Manastone" : item.power < 13 ? "Starmetal" : item.power < 14 ? "Heliolite" : item.power < 15 ? "Riftstone" : "Stardust";
+        item.power < 5 ? "Runestone" : item.power < 6.5f ? "Quicksilver" : item.power < 8.5f ? "Aether" : item.power < 10 ? "Uranium" : item.power < 11 ? "Silicon" : item.power < 12 ? "Manastone" : item.power < 13 ? "Starmetal" : item.power < 14 ? "Heliolite" : item.power < 15 ? "Riftstone" : item.power < 16 ? "Stardust" : "Primordium";
 
     public List<ResourceAmount> EnchantCost(ItemInstance item) => Costs(
         ("Essence", Mathf.RoundToInt(40 * PowerCost(item))),
@@ -76,6 +76,7 @@ public partial class Settlement
         if (item.enhance >= MaxEnhance) { why = $"Already +{MaxEnhance}, as far as it goes"; return false; }
         if (!Pay(EnhanceCost(item), out why)) return false;
         item.enhance++;
+        GameAudio.UI("forge");
         Notify($"{Items.DisplayName(item)} is stronger.");
         RaiseChanged();
         return true;
@@ -89,6 +90,7 @@ public partial class Settlement
         var rng = new System.Random(State.mapSeed ^ item.uid * 7919 ^ (int)(State.playTime * 10));
         item.enchant = Items.RollEnchantment(item, rng);
         item.enchanted = true;
+        GameAudio.UI("enchant");
         Notify($"{Items.DisplayName(item)} glows: {Items.EnchantmentName(item.enchant.trait)}.");
         RaiseChanged();
         return true;
@@ -103,6 +105,7 @@ public partial class Settlement
         if (!Pay(RerollCost(item), out why)) return false;
         var rng = new System.Random(State.mapSeed ^ item.uid * 104729 ^ (int)(State.playTime * 10));
         Items.RerollTraits(item, template, rng);
+        GameAudio.UI("enchant");
         Notify($"New traits: {Items.DisplayName(item)}.");
         RaiseChanged();
         return true;
@@ -137,6 +140,7 @@ public partial class Settlement
         if (total > 0)
         {
             AddResource(essence, total);
+            GameAudio.UI("coins");
             Notify($"Salvaged {items.Count} item{(items.Count == 1 ? "" : "s")} into {total} Essence.");
             RaiseChanged();
         }

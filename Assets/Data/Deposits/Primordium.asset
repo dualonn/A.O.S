@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90dcc1aff82e4ea4caf035c765b340a8, type: 3}
+  m_Name: Primordium
+  m_EditorClassIdentifier: Assembly-CSharp::DepositType
+  id: Primordium
+  displayName: Primordium
+  resource: {fileID: 11400000, guid: 53f165e5bfd1cf240bf60c62fb71cba6, type: 2}
+  sprites:
+  - {fileID: 21300000, guid: 6d38d9f50ef74224b88acb4f4e46f270, type: 3}
+  - {fileID: 21300000, guid: 1e14050f8b65acb49977dd6ba39acec5, type: 3}
+  - {fileID: 21300000, guid: c54f9034300ccd746a7ba6916526de7a, type: 3}
+  richVeins: 1
+  onHills: 1
+  patchScale: 0.22
+  rarity: 0.72
+  minMoisture: 0
+  maxMoisture: 1

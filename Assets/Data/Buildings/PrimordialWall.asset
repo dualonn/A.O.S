@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PrimordialWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PrimordialWall
+  displayName: Primordial Wall
+  description: A wall of pearl-white stone from the first moment, rainbow light running
+    in its seams.
+  icon: {fileID: 21300000, guid: 76be857b994838b428e7e47a5e066d8f, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: eb5a4b715d1f5ed4d9f4f31b0a0993aa, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 18
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 2
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: d41482da9730c014a87f24369cd76b2d, type: 3}
+  - {fileID: 21300000, guid: 07ebf92f1110a504f9157e91aa2fe44e, type: 3}
+  - {fileID: 21300000, guid: f4ab7085724f8c543980784405b1baf8, type: 3}
+  - {fileID: 21300000, guid: 76be857b994838b428e7e47a5e066d8f, type: 3}
+  - {fileID: 21300000, guid: b8bda7bd0268c424d85a73f0033f728a, type: 3}
+  - {fileID: 21300000, guid: f3d6272fe10defd4192ba439bf241229, type: 3}
+  - {fileID: 21300000, guid: dec3203de489d6f4fae1b9f38a30c850, type: 3}
+  - {fileID: 21300000, guid: 77b5b67b70b8b4a4daaa567f2026b5e0, type: 3}
+  - {fileID: 21300000, guid: a1ec8533f46a28b429a2503a3e748217, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 7
+  maxCount: 0
+  maxHealth: 9860
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.15
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

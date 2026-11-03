@@ -39,6 +39,9 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// <summary>Selected troops (buildings and troops are never selected together).</summary>
     public IReadOnlyList<Troop> SelectedUnits => unitSelection;
 
+    /// <summary>Troops stationed on this world from elsewhere, and boarding troopships.</summary>
+    public Garrison Garrison { get; } = new Garrison();
+
     /// <summary>Raised when the selected troops change.</summary>
     public event Action UnitSelectionChanged;
 
@@ -290,6 +293,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     {
         Settlement.ClearCamp(view.State);
         view.BurnDown(instant: false);   // it burns, then stays as a ruin until raiders return
+        GameAudio.Play("camp_destroyed", view.transform.position);
     }
 
     /// <summary>The nearest live camp within raiding range of 'from', if any.</summary>
@@ -609,6 +613,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
         TrackLiveWave();
         OrbitalStrikes();
+        Garrison.Keep(this);
         ExploreAroundUnitsAndBuildings();
         UpdateMarkers();
     }
@@ -1282,6 +1287,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 
         unspawned.AddRange(wave.units);
         waveInProgress = true;
+        GameAudio.UI("raid_warning");
         string from = CompassName(raidOrigin - TownCenterPosition);
         string where = camp != null ? $"the camp to the {from}" : $"the {from}";
         if (wave.boss != null)
@@ -1341,6 +1347,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
             waveInProgress = false;
             Settlement.State.wavesSurvived++;
             string loss = Settlement.Describe(stolenThisWave);
+            GameAudio.UI(loss.Length > 0 ? "notify" : "confirm");
             ShowMessage(loss.Length > 0 ? $"The raid is over. Raiders got away with {loss}." : "The raid is over. Nothing was lost!");
             stolenThisWave.Clear();
         }
@@ -1413,6 +1420,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     {
         Settlement.DamageBuilding(building.State, raider.attackPower);
         building.Shake();
+        GameAudio.Play(UnityEngine.Random.value < 0.2f ? "creak" : "blunt_hit", raider.transform.position, 0.55f);
         if (building.Definition.IsWall)
         {
             return; // nothing to loot in a wall

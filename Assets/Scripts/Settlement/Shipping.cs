@@ -16,6 +16,9 @@ public class ShipState
     public float departed, arrives;
     public List<ResourceStock> cargo = new List<ResourceStock>();
     public float settlers;
+    [Tooltip("Troopships: the troops aboard, by kind, and the hero aboard (0 = none).")]
+    public List<GarrisonStock> troops = new List<GarrisonStock>();
+    public int heroId;
 }
 
 /// <summary>
@@ -109,6 +112,7 @@ public partial class Settlement
             State.population -= ColonySettlers;
         }
         State.ships.Add(ship);
+        if (!offWorld) GameAudio.UI(kind == Probe ? "probe_launch" : "rocket_launch");
         Notify($"{(kind == Probe ? "A probe" : "A colony ship")} sets out for {(IsScanned(target.system) ? target.name : target.system.name)}, arriving in {StarMapPanel.FormatTime(ship.arrives - State.playTime)}.");
         return true;
     }
@@ -133,6 +137,7 @@ public partial class Settlement
         {
             MarkScanned(system);
             int lands = system.bodies.FindAll(b => b.CanLand).Count;
+            if (!offWorld) GameAudio.UI("scan_ping");
             Notify($"The probe reached {system.name}: {system.bodies.Count} bodies, {lands} worlds you could land on. (See the star map.)");
             return;
         }
@@ -140,6 +145,11 @@ public partial class Settlement
         {
             int to = WorldIndexOf(planet);
             if (to >= 0) Unload(ship, State.worlds[to]);
+            return;
+        }
+        if (ship.kind == Troopship && planet != null)
+        {
+            ArriveTroops(ship, planet);
             return;
         }
         if (ship.kind == ColonyShip && planet != null)
@@ -167,6 +177,7 @@ public partial class Settlement
                 else stock.amount += c.amount;
             }
             world.population += ship.settlers;
+            if (!offWorld) GameAudio.UI("notify");
             Notify($"The colony ship has landed on {planet.name}! Go there (star map or the world list) and choose where to build the colony.");
         }
     }

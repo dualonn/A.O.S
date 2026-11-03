@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>What an expansion goal asks for.</summary>
-public enum GoalKind { Explore, Biome, Camps, Sites, Outpost, Vein, Chief, Population }
+public enum GoalKind
+{
+    Explore, Biome, Camps, Sites, Outpost, Vein, Chief, Population,
+    // Out among the stars (once you have Starships)
+    Survey, Colony, ColonyOn, Cargo, Anomalies, StarGates, ReachAge, OrbitalMine
+}
 
 /// <summary>One of the three goals shown at a time. Progress is measured from saved counters, so it survives a reload.</summary>
 [Serializable]
@@ -16,6 +21,8 @@ public class GoalState
     public int baseline;
     [Tooltip("Biome goals: which land to reach.")]
     public Biome biome;
+    [Tooltip("Colony goals: which kind of world to settle (a WorldProfile id).")]
+    public string profile;
 }
 
 /// <summary>
@@ -81,8 +88,24 @@ public partial class Settlement
         GoalKind.Vein => VeinsWorked(),
         GoalKind.Outpost => FurthestBuilding(),
         GoalKind.Population => Mathf.FloorToInt(State.population),
+        GoalKind.Survey => State.scannedSystems.Count,
+        GoalKind.Colony => FoundedWorlds(),
+        GoalKind.Cargo => State.routes.Count,
+        GoalKind.Anomalies => State.anomaliesDone.Count,
+        GoalKind.StarGates => State.worlds.FindAll(w => HasStarGateOn(w)).Count,
+        GoalKind.OrbitalMine => State.orbitalMines.Count,
         _ => 0,
     };
+
+    private int FoundedWorlds() => State.worlds.FindAll(w => IsWorldFounded(w)).Count;
+
+    /// <summary>Starships researched (or a Starport up): goals start pointing out to the stars.</summary>
+    private bool SpaceOpen => State.researched.Contains("Starships") || State.worlds.Exists(w => HasStarportOn(w));
+
+    private static readonly string[] ColonyKinds = { "Ice", "Desert", "Ocean", "Volcanic", "Jungle", "Crystal", "Swamp", "Barren", "Fungal", "Temperate" };
+
+    /// <summary>The space ages a goal can point you to (whichever exist in this game).</summary>
+    private static readonly string[] SpaceAges = { "StellarAge", "InterstellarAge", "GalacticAge", "UniversalAge" };
 
     /// <summary>(done so far, needed).</summary>
     public (int have, int need) GoalProgress(GoalState g)
@@ -90,8 +113,14 @@ public partial class Settlement
         switch (g.kind)
         {
             case GoalKind.Biome: return (State.biomesVisited.Contains((int)g.biome) ? 1 : 0, 1);
+            case GoalKind.ColonyOn: return (State.worlds.Exists(w => w.profile == g.profile && IsWorldFounded(w)) ? 1 : 0, 1);
+            case GoalKind.ReachAge: return (State.ageIndex >= g.target ? 1 : 0, 1);
             case GoalKind.Outpost:
-            case GoalKind.Population: return (Mathf.Min(GoalCounter(g.kind), g.target), g.target);
+            case GoalKind.Population:
+            case GoalKind.Colony:
+            case GoalKind.Cargo:
+            case GoalKind.StarGates:
+            case GoalKind.OrbitalMine: return (Mathf.Min(GoalCounter(g.kind), g.target), g.target);
             default: return (Mathf.Clamp(GoalCounter(g.kind) - g.baseline, 0, g.target), g.target);
         }
     }
@@ -106,8 +135,18 @@ public partial class Settlement
         GoalKind.Vein => "Work a rich vein",
         GoalKind.Chief => g.target == 1 ? "Kill a raider chief" : $"Kill {g.target} raider chiefs",
         GoalKind.Population => $"Grow to {g.target} people",
+        GoalKind.Survey => $"Survey {g.target} star systems",
+        GoalKind.Colony => g.target <= 2 ? "Found a colony on another world" : $"Have {g.target} settled worlds",
+        GoalKind.ColonyOn => $"Found a colony on {Article(WorldProfile.Get(g.profile).displayName)}",
+        GoalKind.Cargo => g.target == 1 ? "Set up a cargo route" : $"Run {g.target} cargo routes",
+        GoalKind.Anomalies => $"Deal with {g.target} anomalies",
+        GoalKind.StarGates => "Link two worlds with Star Gates",
+        GoalKind.ReachAge => $"Reach the {Database.GetAge(g.target)?.displayName ?? "next age"}",
+        GoalKind.OrbitalMine => g.target == 1 ? "Build an orbital mine" : $"Run {g.target} orbital mines",
         _ => g.kind.ToString(),
     };
+
+    private static string Article(string name) => ("AEIOU".IndexOf(char.ToUpper(name[0])) >= 0 ? "an " : "a ") + name.ToLower();
 
     public string GoalHint(GoalState g) => g.kind switch
     {
@@ -119,6 +158,14 @@ public partial class Settlement
         GoalKind.Vein => "Clear an old mine's guards, then build the matching mine on its seam.",
         GoalKind.Chief => "Chiefs guard the tougher camps, and lead some raids.",
         GoalKind.Population => "Build housing and keep everyone fed.",
+        GoalKind.Survey => "Send probes from a Starport (open the star map). Ancient gates and wormholes chart systems too.",
+        GoalKind.Colony => "Send a colony ship to a world you've scanned, then build its Colony Hub.",
+        GoalKind.ColonyOn => "Scan systems until you find one, then send a colony ship.",
+        GoalKind.Cargo => "Open a colony on the star map and add a route; both worlds need a Starport.",
+        GoalKind.Anomalies => "Probes find anomalies; pick a choice on the star map.",
+        GoalKind.StarGates => "Build a Star Gate (Galactic Age) on two of your worlds.",
+        GoalKind.ReachAge => "Research your way into the next age.",
+        GoalKind.OrbitalMine => "From a Starport world, mine an asteroid belt or gas giant in its system (Astro-mining).",
         _ => "",
     };
 
@@ -143,8 +190,10 @@ public partial class Settlement
         int a = State.ageIndex + 1;
         float k = 1f + 0.05f * Mathf.Min(State.goalsDone, 40);
         int R(float v) => Mathf.RoundToInt(v * k / 10f) * 10;
+        bool space = g.kind >= GoalKind.Survey;
         return Costs(("Food", R(150 * a)), ("Wood", R(120 * a)), ("Stone", R(90 * a)), ("Gold", R(30 * a)),
-            ("Essence", CanEnchant ? R(30 + 10 * a) : 0));
+            ("Essence", CanEnchant ? R(30 + 10 * a) : 0),
+            ("Steel", space ? R(25 * a) : 0), ("PowerCells", space ? R(6 * a) : 0), ("Starmetal", space ? R(2 * a) : 0));
     }
 
     private void CompleteGoal(GoalState g)
@@ -153,15 +202,19 @@ public partial class Settlement
         foreach (var r in reward) AddResource(r.resource, r.amount);
         State.goalsDone++;
         Notify($"Goal done: {GoalTitle(g)}! You get {Describe(reward)}.");
+        if (!offWorld) GameAudio.UI("goal_complete");
         GainLoot(0.3f, 0.4f, "as a reward", Rarity.Rare);
     }
 
     // ---------- Choosing goals ----------
 
+    private readonly List<GoalState> pendingOffers = new List<GoalState>();
+
     private GoalState NewGoal(System.Random rng)
     {
         int step = Mathf.Min(State.goalsDone, 60);   // targets grow slowly, then level off
-        var options = new List<GoalState>();
+        var options = pendingOffers;
+        options.Clear();
         void Offer(GoalKind kind, int target, float weight = 1f)
         {
             if (State.goals.Exists(x => x.kind == kind)) return;
@@ -175,6 +228,7 @@ public partial class Settlement
         if (State.ageIndex >= 1) Offer(GoalKind.Chief, 1 + step / 15, 0.5f);
         if (VeinDeposits().Count > 0) Offer(GoalKind.Vein, 1, 0.5f);
         if (Housing > State.population + 5) Offer(GoalKind.Population, Mathf.CeilToInt((State.population + 10 + step) / 5f) * 5, 0.5f);
+        if (SpaceOpen) OfferSpaceGoals(Offer, rng);
         // A land you haven't reached yet.
         var unseen = new List<Biome>();
         foreach (Biome b in Enum.GetValues(typeof(Biome)))
@@ -185,6 +239,39 @@ public partial class Settlement
             foreach (var g in options) if (g.kind == GoalKind.Biome) g.biome = unseen[rng.Next(unseen.Count)];
         }
         return options.Count > 0 ? options[rng.Next(options.Count)] : null;
+    }
+
+    /// <summary>Goals out among the stars: survey, settle, trade, explore anomalies, link worlds, reach the space ages.</summary>
+    private void OfferSpaceGoals(System.Action<GoalKind, int, float> offer, System.Random rng)
+    {
+        int step = Mathf.Min(State.goalsDone, 60);
+        offer(GoalKind.Survey, 3 + step / 10, 1f);
+        int worlds = FoundedWorlds();
+        offer(GoalKind.Colony, worlds + 1, worlds <= 1 ? 1.5f : 0.5f);
+        var kinds = new List<string>();
+        foreach (var k in ColonyKinds) if (!State.worlds.Exists(w => w.profile == k && IsWorldFounded(w))) kinds.Add(k);
+        if (kinds.Count > 0 && !State.goals.Exists(x => x.kind == GoalKind.ColonyOn))
+        {
+            string pick = kinds[rng.Next(kinds.Count)];
+            offer(GoalKind.ColonyOn, 1, 0.75f);
+            foreach (var g in pendingOffers) if (g.kind == GoalKind.ColonyOn) g.profile = pick;
+        }
+        if (worlds >= 2) offer(GoalKind.Cargo, State.routes.Count + 1, 0.75f);
+        offer(GoalKind.Anomalies, 2 + step / 20, 0.75f);
+        if (Database.GetBuilding("StarGate") != null && State.ageIndex >= Database.ages.FindIndex(a => a != null && a.name == "GalacticAge") && worlds >= 2
+            && State.worlds.FindAll(w => HasStarGateOn(w)).Count < 2)
+            offer(GoalKind.StarGates, 2, 0.75f);
+        if (State.researched.Contains("AstroMining")) offer(GoalKind.OrbitalMine, State.orbitalMines.Count + 1, 0.5f);
+        // The next space age you haven't reached.
+        foreach (var name in SpaceAges)
+        {
+            int i = Database.ages.FindIndex(a => a != null && a.name == name);
+            if (i > State.ageIndex)
+            {
+                offer(GoalKind.ReachAge, i, i == State.ageIndex + 1 ? 1f : 0.4f);
+                break;
+            }
+        }
     }
 
     private void TickGoals(float dt)

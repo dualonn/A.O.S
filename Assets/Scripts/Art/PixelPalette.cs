@@ -102,6 +102,13 @@ public static class PixelPalette
     public static readonly Color32[] Hive = { H("1a1a0a"), H("3a3a14"), H("6a6a20"), H("ffc040") };
     public static readonly Color32[] Stardust = { H("2a2a40"), H("5a5a8a"), H("a0a0e0"), H("fff8e0") };
     public static readonly Color32[] Comet = { H("1a2a4a"), H("4a7aba"), H("a0d0ff"), H("ffffff") };
+    /// <summary>Universal Age: pearl and gold of creation, a rainbow (not a ramp: four hues), primordial stone, the grey of the Unmade, chrono-bronze and a living seed-ship's green.</summary>
+    public static readonly Color32[] Pearl = { H("4a4030"), H("9a8a68"), H("ece2c8"), H("fffbf0") };
+    public static readonly Color32[] Prism = { H("ff6a8a"), H("ffd060"), H("70e0a0"), H("70a8ff") };
+    public static readonly Color32[] Primordium = { H("101a22"), H("1e4a5a"), H("40a8b8"), H("e0fff8") };
+    public static readonly Color32[] Entropy = { H("0c0c0e"), H("2a2a30"), H("5a5a66"), H("ff3a48") };
+    public static readonly Color32[] Chrono = { H("3a2410"), H("8a5a28"), H("d4a656"), H("70f0e0") };
+    public static readonly Color32[] Seed = { H("1a2a10"), H("3a6a20"), H("8ac040"), H("f0ffa0") };
     /// <summary>Skins of the peoples native to other worlds.</summary>
     public static readonly Color32[] Sandskin = { H("6e4a22"), H("a8783c"), H("d6a860"), H("f2d49a") };
     public static readonly Color32[] Frostskin = { H("3a5470"), H("6a8cb0"), H("a8c8e4"), H("e6f2ff") };
@@ -136,6 +143,7 @@ public static class PixelPalette
         "Solar" => Solar, "Eclipse" => Eclipse, "Heliolite" => Heliolite,
         "Phase" => Phase, "Rift" => Rift, "Riftstone" => Riftstone, "Whale" => Whale,
         "Cosmic" => Cosmic, "Hive" => Hive, "Stardust" => Stardust, "Comet" => Comet,
+        "Pearl" => Pearl, "Prism" => Prism, "Primordium" => Primordium, "Entropy" => Entropy, "Chrono" => Chrono, "Seed" => Seed,
         "Sandskin" => Sandskin, "Frostskin" => Frostskin, "Bogskin" => Bogskin, "Ashskin" => Ashskin,
         "Shardskin" => Shardskin, "Reefskin" => Reefskin, "Barkskin" => Barkskin,
         "Brass" => Brass, "Aether" => Aether, "Olive" => Olive, "Khaki" => Khaki, "Chrome" => Chrome, "Ray" => Ray, "Neon" => Neon, "Synth" => Synth, "Tactical" => Tactical,

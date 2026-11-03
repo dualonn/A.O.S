@@ -121,10 +121,13 @@ public class HeroState
 
     [Tooltip("The path it chose at level 2: a passive bonus and an ability it uses in a fight.")]
     public HeroClass heroClass;
+
+    [Tooltip("Which of your worlds it's on (index into worlds); -1 while aboard a troopship.")]
+    public int world;
 }
 
 /// <summary>A hero's path, chosen once at level 2.</summary>
-public enum HeroClass { None, Warrior, Ranger, Mage, Priest }
+public enum HeroClass { None, Warrior, Ranger, Mage, Priest, Navigator, Xenologist }
 
 /// <summary>A raider camp out on the map: where raids come from, and somewhere to send your army.</summary>
 [Serializable]

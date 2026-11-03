@@ -28,3 +28,10 @@ MonoBehaviour:
   productionModifiers: []
   buildingHealthMultiplier: 1.08
   coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

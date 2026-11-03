@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: FirstLightArray
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: FirstLightArray
+  displayName: First Light Array
+  description: A prism the size of a house, splitting the light of the first moment
+    into a beam. It burns raiders from very far away.
+  icon: {fileID: 21300000, guid: 890038090a9f6aa468b46b8e8954320d, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 890038090a9f6aa468b46b8e8954320d, type: 3}
+    - {fileID: 21300000, guid: 91df4ee8444bff4479f40caf892dd55a, type: 3}
+    - {fileID: 21300000, guid: 6aeb88575c2789e4a8e2359f97b2677f, type: 3}
+    - {fileID: 21300000, guid: 0ac94b540fddead41887d91173efb90e, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 3687a69b0264a494b81e57bb39aa6db7, type: 3}
+    - {fileID: 21300000, guid: ddb5fdbe107e0e0409ae4e8781e8df82, type: 3}
+    - {fileID: 21300000, guid: cb58dd1bc127ab74c87d339db9456fd7, type: 3}
+    - {fileID: 21300000, guid: 6107852e30cc56d489b8a462932db039, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: eab0249b2d9b39747888f7b6f003bf23, type: 3}
+    - {fileID: 21300000, guid: af6fd39a6dde36a458ad30f18c539c2a, type: 3}
+    - {fileID: 21300000, guid: 62317ceae4ee04a439be7021e392b712, type: 3}
+    - {fileID: 21300000, guid: b4d8b9a358ca0ac4fb1c974b3a5876cc, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 6d4f6dcf25ec54448b27a0bb5c9dc477, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1090
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 170
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 320
+  upgrades:
+  - name: Further Still
+    description: +2 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 140
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 230
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 2
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Heavier Blows
+    description: +160 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 87
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 160
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 2827
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 26
+  towerDamage: 754
+  towerCooldown: 2.8
+  towerProjectile: {fileID: 21300000, guid: ea1b946872ffb554d80faf927ff3454f, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 68
+  towerSplash: 1.5
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.625}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

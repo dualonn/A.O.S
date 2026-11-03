@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeedYard
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeedYard
+  displayName: Seed Yard
+  description: A garden of gantries where living ships grow like seeds. Builds Genesis
+    Ships, and launches ships to other worlds (open the star map).
+  icon: {fileID: 21300000, guid: 10bfb354f577dda449c485d0ea1784f5, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 10bfb354f577dda449c485d0ea1784f5, type: 3}
+    - {fileID: 21300000, guid: 881c43b9029539242b9cec1db40bdb21, type: 3}
+    - {fileID: 21300000, guid: 76c60362862ad6241a29776c84b0947e, type: 3}
+    - {fileID: 21300000, guid: ea65c22258c5dc84982d67e980634993, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 93c2d045a7335444ea6d5e6aa9a4b34a, type: 3}
+    - {fileID: 21300000, guid: fdbbd31701fd3c440b9ff2692f90022f, type: 3}
+    - {fileID: 21300000, guid: cc537a6a39b535c4e983cd0c24823bc5, type: 3}
+    - {fileID: 21300000, guid: 3f2ebe58fe1e83e47b201a804ef78528, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 1db9842c48522c047916079be86fd444, type: 3}
+    - {fileID: 21300000, guid: ee376ac559890b24e977c7775915118e, type: 3}
+    - {fileID: 21300000, guid: 1ec7f0065e78bba449c65222dd71c398, type: 3}
+    - {fileID: 21300000, guid: e08b759264b70fc4e8e171a0a81d7920, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a52bd9e81c90f7a4898722c8be9bc399, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1300
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 940
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 160
+  upgrades:
+  - name: Second Seed
+    description: +1 genesis ship.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 800
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 130
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Living Hulls
+    description: Genesis Ships are 25% tougher.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 190
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 190
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.25
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 1
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 3480
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: 1c2d1a088d5308f45b12a2b386eda146, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

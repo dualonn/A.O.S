@@ -202,8 +202,9 @@ public partial class Settlement
         {
             var res = Database.resources.Find(r => r != null && r.id == id);
             if (res == null || amount <= 0) continue;
-            loot.Add(new ResourceAmount { resource = res, amount = amount });
-            AddResource(res, amount);
+            int got = OnAlienWorld ? Mathf.RoundToInt(amount * XenoRewardFactor) : amount;
+            loot.Add(new ResourceAmount { resource = res, amount = got });
+            AddResource(res, got);
         }
         return loot;
     }
@@ -228,6 +229,7 @@ public partial class Settlement
         Notify($"You opened the chest in the ruins: {Describe(loot)}.");
         GainLoot(0.2f + 0.1f * t - 0.1f * State.ageIndex, 0.25f, "in the ruins");
         PrecursorFind(0.25f);
+        XenoFind(0.35f, "in the alien ruins");
         Finish(site, 0f);
     }
 
@@ -241,6 +243,7 @@ public partial class Settlement
         GainLoot(0.5f, 0.6f, "in the dungeon's hoard", Rarity.Rare);
         GainLoot(0.3f, 0.4f, "in the dungeon's hoard");
         PrecursorFind(0.6f);
+        XenoFind(1f, "in the precursor vault", Rarity.Rare);
         Finish(site, Database.dungeonResetSeconds);
     }
 
@@ -263,6 +266,7 @@ public partial class Settlement
         Notify($"The lair is cleared: {Describe(loot)}.");
         var rng = SiteRng(site);
         if (rng.NextDouble() < 0.4 + 0.08 * t) GainLoot(0.15f * t, 0.2f, "in the lair");
+        XenoFind(0.25f, "in the alien lair");
         Finish(site, Database.lairResetSeconds);
     }
 

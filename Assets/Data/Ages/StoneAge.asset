@@ -23,7 +23,12 @@ MonoBehaviour:
     cost: []
   playerUnits:
   - {fileID: 11400000, guid: a0aef520dc1fb324ab64c1aada202de8, type: 2}
+  - {fileID: 11400000, guid: 43fa61f4a5857624d9ad3b372cf96e58, type: 2}
+  - {fileID: 11400000, guid: 65b930befb75de343a4c82f7e78d4638, type: 2}
   enemyUnits:
   - {fileID: 11400000, guid: b603c6fe562ddf243ad55cf285319863, type: 2}
+  - {fileID: 11400000, guid: 83bfd0ea0bfe71647a434ad2700abe55, type: 2}
+  - {fileID: 11400000, guid: 851e227b0886f8447928d47b141ee0f1, type: 2}
   bosses:
   - {fileID: 11400000, guid: 4c3da57c00118674d9af4196760ba9b4, type: 2}
+  - {fileID: 11400000, guid: 404c9ffe4f9895949965098b795b3b2f, type: 2}

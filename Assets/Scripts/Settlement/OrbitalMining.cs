@@ -47,6 +47,7 @@ public partial class Settlement
         if (!CanMine(p, out string why)) { Notify(why); return; }
         Spend(OrbitalMineCost());
         State.orbitalMines.Add(new OrbitalMineState { system = p.system.key, body = p.index, world = State.currentWorld });
+        GameAudio.UI("orbital_mine");
         Notify($"An orbital mine opens over {p.name}. Its haul comes down to {CurrentWorld.name}.");
     }
 

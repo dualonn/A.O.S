@@ -60,11 +60,32 @@ public partial class Settlement
     /// <summary>The world you're on is an alien one (not the home world).</summary>
     private bool AlienHere => CurrentWorld.profile != WorldProfile.HomeId;
 
+    private float genesisAt = -99f, genesisFactor = 1f;
+
+    /// <summary>
+    /// Each standing Genesis Engine, on any of your worlds, makes every world produce 5% more
+    /// (up to 5 engines). Counted again once a second.
+    /// </summary>
+    public float GenesisFactor
+    {
+        get
+        {
+            if (Mathf.Abs(State.playTime - genesisAt) < 1f) return genesisFactor;
+            genesisAt = State.playTime;
+            int n = 0;
+            foreach (var w in State.worlds)
+                foreach (var b in w.buildings)
+                    if (b.IsBuilt && b.health > 0 && Database.GetBuilding(b.definitionId)?.genesisEngine == true) n++;
+            genesisFactor = 1f + 0.05f * Mathf.Min(5, n);
+            return genesisFactor;
+        }
+    }
+
     /// <summary>This world's effect on a resource's production (traits, terraforming).</summary>
     public float WorldProductionFactor(ResourceType r)
     {
         if (r == null) return 1f;
-        float f = 1f;
+        float f = GenesisFactor;
         bool domes = Researched("Domes");
         if (HasTrait(ThinAir) && !domes) f *= 0.9f;
         string id = r.id;

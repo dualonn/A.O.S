@@ -136,6 +136,7 @@ public partial class Settlement
         if (CanAdvanceAge(out _))
         {
             State.ageIndex++;
+            if (!offWorld) GameAudio.UI("age_up");
             Notify($"Your civilisation has entered the <color=#fd6>{CurrentAge.displayName}</color>! New research and buildings are open to you.");
             RaiseChanged();
             return;

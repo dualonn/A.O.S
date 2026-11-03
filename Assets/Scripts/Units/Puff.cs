@@ -44,6 +44,7 @@ public class Puff : MonoBehaviour
     /// <summary>A burst where a cannonball or flask lands: a hot flash inside a cloud of smoke.</summary>
     public static void Blast(Vector3 at, float radius, bool fire)
     {
+        GameAudio.Play(radius >= 1.2f ? "explosion" : "cannon_impact", at);
         Spawn(at, radius * 0.9f, new Color(0.45f, 0.42f, 0.4f, 0.8f), 6, 0.8f);
         Spawn(at, radius * 0.6f, fire ? new Color(1f, 0.55f, 0.15f, 0.95f) : new Color(1f, 0.85f, 0.45f, 0.9f), 4, 0.35f);
     }

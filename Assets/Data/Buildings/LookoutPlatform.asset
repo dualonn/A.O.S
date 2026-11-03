@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: LookoutPlatform
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: LookoutPlatform
+  displayName: Lookout Platform
+  description: A platform of lashed poles with a spear-thrower on watch. Shoots raiders
+    that come near.
+  icon: {fileID: 21300000, guid: 0c5848e8f8b792d40be9214f8a2402d9, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 0c5848e8f8b792d40be9214f8a2402d9, type: 3}
+    - {fileID: 21300000, guid: a8863bd1bcedafc4c9a11b6afff00652, type: 3}
+    - {fileID: 21300000, guid: 647dab879c3d8fb44975d400d50140f5, type: 3}
+    - {fileID: 21300000, guid: 4476c3590fe88694daee8a29060d41ad, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 3222aff4e4c07e24698314f2b7235b90, type: 3}
+    - {fileID: 21300000, guid: fc22b39e123bf8a4d8fb390cca256f76, type: 3}
+    - {fileID: 21300000, guid: 726193762bbdc8541b38147181ea8727, type: 3}
+    - {fileID: 21300000, guid: 709e8d36ca7afa24e822dd6e8c364986, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 51368c3465d680b43be0d96c45b057d3, type: 3}
+    - {fileID: 21300000, guid: f3cc10f82b38b5c489d30e59a127214f, type: 3}
+    - {fileID: 21300000, guid: 44df60422caee514489fd7f384887289, type: 3}
+    - {fileID: 21300000, guid: 6ac28adaf72ea5d4c848b08e1b444152, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 8b9db72814fdbe3489953677f66ddf91, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 110
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 20
+  upgrades:
+  - name: Hardened Points
+    description: +4 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 20
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 4
+    operatorLift: 0
+  - name: Taller Poles
+    description: +1 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 90
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 40
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 242a84b775cd6784d8e8209474f4f171, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: d06ef3123d0e31345b51f9af5f2ffd0c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 260
+  housing: 0
+  workers: 1
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 5
+  towerDamage: 9
+  towerCooldown: 1.7
+  towerProjectile: {fileID: 21300000, guid: 15a329f5384798748932b1b779a7b5b4, type: 3}
+  towerProjectileArc: 0.22
+  towerProjectileSpeed: 10
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 21300000, guid: 985f51701151832469d539ac58bba960, type: 3}
+  operatorShoot:
+  - {fileID: 21300000, guid: 281b4e7fac3e3fd4297a85c3431305d8, type: 3}
+  - {fileID: 21300000, guid: 45a5bbb4ebdf3934eb47a35b6f267fb2, type: 3}
+  - {fileID: 21300000, guid: 6e9cce766f285d446b9ab89a501b5f51, type: 3}
+  - {fileID: 21300000, guid: 94bd2f5cbff585a4b84f7559e8863668, type: 3}
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.45}

@@ -78,6 +78,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     {
         bool open = !panel.gameObject.activeSelf;
         panel.gameObject.SetActive(open);
+        GameAudio.UI(open ? "panel_open" : "panel_close");
         if (open)
         {
             // Over the side panels, but under the tooltip.
@@ -261,7 +262,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         {
             var go = UIBuilder.Button("Visit", info, () => { Toggle(); settlement.SwitchWorld(world); }, out var l, 40, 18);
             l.text = "Go to this world"; l.alignment = TextAlignmentOptions.Center;
-            if (settlement.IsWorldFounded(settlement.State.worlds[world])) CargoRoutes(world);
+            if (settlement.IsWorldFounded(settlement.State.worlds[world])) { CargoRoutes(world); TroopRow(world); }
         }
         foreach (var (label, shown, act) in Actions)
         {
@@ -269,6 +270,36 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
             var a = act;
             var b = UIBuilder.Button(label, info, () => { a(p); Redraw(); }, out var l2, 40, 18);
             l2.text = label; l2.alignment = TextAlignmentOptions.Center;
+        }
+    }
+
+    /// <summary>Send troops (10, 25, all, or the selected ones) or a hero from the world you're on to this one, by troopship.</summary>
+    private void TroopRow(int to)
+    {
+        var c = FreeModeController.Instance;
+        if (c == null || !settlement.HasStarport) return;
+        var w = settlement.State.worlds[to];
+        var header = UIBuilder.Text("Troops", info, $"<b>Send troops to {w.name}</b>  <size=80%><color=#aaa>({settlement.GarrisonSize(w)}/{Settlement.GarrisonCap} stationed there; each troopship costs 200 Steel, 50 Power Cells and {Settlement.TroopFare} Food a troop)</color></size>", 15);
+        header.textWrappingMode = TextWrappingModes.Normal;
+        header.gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
+        var row = UIBuilder.Row("Send", info, 4);
+        row.gameObject.AddComponent<LayoutElement>().preferredHeight = 32;
+        void Btn(string text, UnityEngine.Events.UnityAction act)
+        {
+            var b = UIBuilder.Button(text, row, () => { act(); Redraw(); }, out var lb, 30, 15);
+            b.GetComponent<LayoutElement>().flexibleWidth = 1;
+            lb.text = text; lb.alignment = TextAlignmentOptions.Center;
+        }
+        int selected = Garrison.Boardable(c.SelectedUnits).Count;
+        if (selected > 0) Btn($"Selected ({selected})", () => c.Garrison.SendTroops(c, to, selected, c.SelectedUnits));
+        Btn("10", () => c.Garrison.SendTroops(c, to, 10));
+        Btn("25", () => c.Garrison.SendTroops(c, to, 25));
+        Btn("All", () => c.Garrison.SendTroops(c, to, int.MaxValue));
+        var hero = Garrison.HeroToSend(c);
+        if (hero != null)
+        {
+            string first = hero.name.Split(' ')[0];
+            Btn($"Hero: {first}", () => c.Garrison.SendHero(c, to, hero));
         }
     }
 

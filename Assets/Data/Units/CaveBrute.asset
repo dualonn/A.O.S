@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: CaveBrute
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Cave Brute
+  icon: {fileID: 21300000, guid: fabb32eeadb26354b97b88ba185e2bf7, type: 3}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 7329279683944381912, guid: 4d9e7eadaa3967d46ae19a2bfe651fb8, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 190
+  moveSpeed: 0.65
+  attackPower: 16
+  attackCooldown: 1.4
+  attackRange: 0.6
+  hitDelay: 0.3
+  detectionRange: 2.5
+  projectile: {fileID: 0}
+  projectileSpeed: 10
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.15
+  splashRadius: 0
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: HuntingLodge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: HuntingLodge
+  displayName: Hunting Lodge
+  description: 'A hide-roofed lodge hung with antlers and drying meat. Trains Hunters:
+    quick on their feet, with a fire-hardened spear.'
+  icon: {fileID: 21300000, guid: 65cda7acb4955a243b5e7d808912eee8, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 65cda7acb4955a243b5e7d808912eee8, type: 3}
+    - {fileID: 21300000, guid: 6b16257f41289e44b8cd65c023d8c6b9, type: 3}
+    - {fileID: 21300000, guid: 33bb9f285add5cd419047869dfe8aacc, type: 3}
+    - {fileID: 21300000, guid: bc84bb09b594fe24682db27448e77a98, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 1096bba40428e524a9ccf96526229e1f, type: 3}
+    - {fileID: 21300000, guid: 3a84593d1ac1b9a44a9689b56012264d, type: 3}
+    - {fileID: 21300000, guid: 8438f5cdf9087804ebd5adbd91295838, type: 3}
+    - {fileID: 21300000, guid: 545bd82b82b4da349b9557f416166e22, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: b5b96324f9ee74b4288778d9ed8d4a2d, type: 3}
+    - {fileID: 21300000, guid: 6343997e4cfb6c9409c98de777def192, type: 3}
+    - {fileID: 21300000, guid: 8aedbe01a97aa794db60755aadeada4d, type: 3}
+    - {fileID: 21300000, guid: 578b020cbbca12148a7cdddec3b75c13, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 1962ec6b32d0b3246947d97f4ede33e2, type: 3}
+    - {fileID: 21300000, guid: dd378b1011ab3e345b31d9847df367c3, type: 3}
+    - {fileID: 21300000, guid: b8c07298c5fc2894994da839f215f3ec, type: 3}
+    - {fileID: 21300000, guid: bb3cf64baa7a52a4d862b6aeed38b4ac, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e20d43b4c946a3846a8f84ecc18ec620, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 90
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 40
+  upgrades:
+  - name: Bigger Camp
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 40
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Better Weapons
+    description: Troops trained here are 15% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 20
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.15
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Seasoned Leaders
+    description: +1 troop, +25 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 15
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 25
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 3ee6a3e929f19444bb8c8e033f8732cc, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 20
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 220
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 2
+  trainsUnit: {fileID: 11400000, guid: 43fa61f4a5857624d9ad3b372cf96e58, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

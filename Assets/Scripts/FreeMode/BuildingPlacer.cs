@@ -137,6 +137,7 @@ public class BuildingPlacer : MonoBehaviour
         {
             if (settlement.TryPlaceBuilding(Current, cell, out _, out string reason))
             {
+                GameAudio.Play("place", grid.AreaCenter(cell, Current.size));
                 if (Current.isTownCenter)
                 {
                     controller.FocusOn(grid.AreaCenter(cell, Current.size));
@@ -149,6 +150,7 @@ public class BuildingPlacer : MonoBehaviour
             }
             else
             {
+                GameAudio.UI("error");
                 controller.ShowMessage(reason.Split('\n')[0]);
             }
         }
@@ -261,6 +263,7 @@ public class BuildingPlacer : MonoBehaviour
         }
         if (placed > 0)
         {
+            GameAudio.UI("place");
             controller.ShowMessage(problem == null ? $"Building {placed} {Current.displayName} pieces."
                 : $"Building {placed} {Current.displayName} pieces. {FirstLine(problem)}");
         }

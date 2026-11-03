@@ -872,9 +872,12 @@ public partial class Settlement : MonoBehaviour
             }
             var def = Database.GetBuilding(building.definitionId);
             building.buildProgress += def != null && def.buildTime > 0 ? dt / def.buildTime : 1f;
+            if (!offWorld && !building.IsBuilt && UnityEngine.Random.value < dt * 0.7f)
+                GameAudio.AtBuilding(def != null && def.IsWall ? "wall_place" : UnityEngine.Random.value < 0.25f ? "saw_wood" : "hammer", building, def, 0.35f);
             if (building.IsBuilt)
             {
                 building.buildProgress = 1f;
+                if (!offWorld) GameAudio.AtBuilding(def != null && def.IsWall ? "place" : "build_complete", building, def, def != null && def.IsWall ? 0.4f : 1f);
                 if (def == null || !def.IsWall)
                 {
                     Notify($"{Name(def)} finished building."); // walls go up in dozens: no message each
@@ -1122,6 +1125,7 @@ public partial class Settlement : MonoBehaviour
             }
             State.researchingId = null;
             State.researchProgress = 0;
+            if (!offWorld) GameAudio.UI("research_complete");
             Notify(tech.IsLevelled
                 ? $"Research complete: {tech.displayName} (level {ResearchLevel(tech)}/{MaxLevel(tech)})."
                 : $"Research complete: {tech.displayName}.");
@@ -1854,6 +1858,7 @@ public partial class Settlement : MonoBehaviour
                     total += stats.maxUnits * UnitPower(def.trainsUnit, mod);
                 }
             }
+            total += GarrisonPower();   // troops stationed here from other worlds
             return total * (1f + 0.15f * OrbitalLevel);   // orbital defence platforms over Starport worlds
         }
     }
@@ -1914,6 +1919,7 @@ public partial class Settlement : MonoBehaviour
         }
 
         Notify(report.ToString());
+        if (offWorld) GarrisonCasualties(severity);
         RaiseChanged();
     }
 
@@ -1929,6 +1935,7 @@ public partial class Settlement : MonoBehaviour
         {
             var def = Database.GetBuilding(building.definitionId);
             Notify($"Raiders ruined a {Name(def)}! Repair it to use it again.");
+            if (!offWorld) GameAudio.AtBuilding("demolish", building, def);
             RaiseChanged();
         }
     }

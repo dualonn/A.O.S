@@ -63,7 +63,7 @@ public class GearPanel
         // At level 2 a hero can choose its path (once).
         classRow = UIBuilder.Row("Path", heroBlock, 4);
         classRow.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
-        foreach (var cls in new[] { HeroClass.Warrior, HeroClass.Ranger, HeroClass.Mage, HeroClass.Priest })
+        foreach (var cls in new[] { HeroClass.Warrior, HeroClass.Ranger, HeroClass.Mage, HeroClass.Priest, HeroClass.Navigator, HeroClass.Xenologist })
         {
             var c = cls;
             var b = UIBuilder.Button(cls.ToString(), classRow, () => ChooseClass(c), out var label, 34, 13);
@@ -142,7 +142,11 @@ public class GearPanel
                         $"<size=85%>{Items.Describe(stats).Replace("\n", "  ·  ")}</size>";
 
         classRow.gameObject.SetActive(hero.heroClass == HeroClass.None && hero.level >= Settlement.ClassLevel);
-        foreach (var (cls, button) in classButtons) button.interactable = Settlement.CanChooseClass(hero, cls, out _);
+        foreach (var (cls, button) in classButtons)
+        {
+            button.gameObject.SetActive(Settlement.ClassUnlocked(cls));   // the star paths show once researched
+            button.interactable = Settlement.CanChooseClass(hero, cls, out _);
+        }
         while (hero.equipped.Count < 5) hero.equipped.Add(0);
         foreach (var (slot, button, label) in slotButtons)
         {

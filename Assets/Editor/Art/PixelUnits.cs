@@ -108,6 +108,30 @@ public static partial class PlaceholderArt
         ("SkyPirate", Fig(Rd, GearLook.Goggles, GearLook.Grenade, body: GearLook.Jerkin, mount: MountKind.Airship, raider: true), true),
         ("Biplane", Fig(B, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Fatigues, mount: MountKind.Biplane), false),
         ("RaiderBiplane", Fig(Rd, GearLook.Goggles, GearLook.MachineGun, body: GearLook.Jerkin, mount: MountKind.Biplane, raider: true), true),
+        // Early ages, filled out (Setup Early Age Depth)
+        ("Hunter", Fig(B, GearLook.Headband, GearLook.Spear, body: GearLook.HideVest), false),
+        ("SpearThrower", Fig(B, GearLook.Feather, GearLook.Javelin, body: GearLook.HideVest), false),
+        ("StoneHurler", Fig(Rd, GearLook.Feather, GearLook.Sling, raider: true, warpaint: true), true),
+        ("CaveBrute", Fig(Rd, GearLook.BearPelt, GearLook.Club, body: GearLook.Bare, scale: 1.3f, raider: true, necklace: true, warpaint: true), true),
+        ("BronzeArcher", Fig(B, GearLook.DomeHelm, GearLook.Bow, body: GearLook.HideVest), false),
+        ("Shaman", Medic(Fig(B, GearLook.Feather, GearLook.None, body: GearLook.HideVest, necklace: true, crest: "Leather")), false),
+        ("ChariotRaider", Fig(Rd, GearLook.DomeHelm, GearLook.Spear, mount: MountKind.Chariot, raider: true, coat: "DarkHorse"), true),
+        ("BronzeBowman", Fig(Rd, GearLook.DomeHelm, GearLook.Bow, body: GearLook.HideVest, raider: true, crest: "Leather"), true),
+        ("SpearGuard", Fig(B, GearLook.ConeHelm, GearLook.Spear, GearLook.RoundShield, GearLook.Scale), false),
+        ("RaiderAxeman", Fig(Rd, GearLook.None, GearLook.Axe, body: GearLook.Bare, raider: true, necklace: true, warpaint: true), true),
+        ("MercenaryHoplite", Fig(Rd, GearLook.CrestedHelm, GearLook.Spear, GearLook.RoundShield, GearLook.Plate, raider: true, crest: "Coal", shieldColor: "Coal"), true),
+        ("WarbandSlinger", Fig(Rd, GearLook.Headband, GearLook.Sling, body: GearLook.Jerkin, raider: true), true),
+        // Universal Age (creation and time)
+        ("GenesisKnight", Fig(B, GearLook.GenesisHelm, GearLook.Worldblade, GearLook.TowerShield, body: GearLook.GenesisPlate, shieldColor: "Pearl", cape: "Pearl"), false),
+        ("RealityWeaver", Fig(B, GearLook.Cowl, GearLook.LoomStaff, body: GearLook.Spellweave, crest: "Pearl"), false),
+        ("Seraph", Fig(B, GearLook.GenesisHelm, GearLook.Javelin, body: GearLook.GenesisPlate, mount: MountKind.HaloWings), false),
+        ("Chronomancer", Medic(Fig(B, GearLook.ChronoHelm, GearLook.None, body: GearLook.Spellweave, crest: "Chrono")), false),
+        ("WorldEngine", Fig(B, GearLook.GenesisHelm, GearLook.Cannon, body: GearLook.GenesisPlate, mount: MountKind.Planetoid, scale: 1.2f), false),
+        ("ChronoTitan", Fig(B, GearLook.ChronoHelm, GearLook.ClockHammer, body: GearLook.ChronoPlate, scale: 1.65f), false),
+        ("GenesisShip", Fig(B, GearLook.GenesisHelm, GearLook.Cannon, body: GearLook.GenesisPlate, mount: MountKind.SeedShip), false),
+        ("UnmadeHusk", Skin(Fig(Rd, GearLook.UnmadeHead, GearLook.Claw, body: GearLook.UnmadeBody, scale: 1.1f, raider: true), "Entropy"), true),
+        ("UnmadeHerald", Skin(Fig(Rd, GearLook.UnmadeHead, GearLook.LoomStaff, body: GearLook.UnmadeBody, raider: true), "Entropy"), true),
+        ("UnmadeWraith", Skin(Fig(Rd, GearLook.UnmadeHead, GearLook.Javelin, body: GearLook.UnmadeBody, mount: MountKind.HaloWings, raider: true), "Entropy"), true),
         // Galactic Age (cosmic magic and megastructures)
         ("AegisKnight", Fig(B, GearLook.GalaxyHelm, GearLook.SingularityBlade, GearLook.TowerShield, body: GearLook.CelestialPlate, shieldColor: "Cosmic", cape: "Cosmic"), false),
         ("Starweaver", Fig(B, GearLook.Cowl, GearLook.CosmicStaff, body: GearLook.Spellweave, crest: "Cosmic"), false),
@@ -221,6 +245,7 @@ public static partial class PlaceholderArt
     /// <summary>Tower crews (drawn from the waist up; they stand behind a parapet).</summary>
     private static (string building, string name, FigureStyle style)[] PixelCrews => new[]
     {
+        ("LookoutPlatform", "TowerSpearThrower", Fig(B, GearLook.Headband, GearLook.Javelin)),
         ("Watchtower", "TowerArcher", Fig(B, GearLook.Cap, GearLook.Bow)),
         ("StoneTower", "TowerArcherIron", Fig(B, GearLook.ConeHelm, GearLook.Bow)),
         ("BallistaTower", "BallistaCrew", Fig(B, GearLook.CrestedHelm, GearLook.Ballista, crest: "Blue")),
@@ -320,7 +345,8 @@ public static partial class PlaceholderArt
                 : style.weapon == GearLook.BeamStaff ? starBolt
                 : style.weapon == GearLook.SunStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/SunBolt.png")
                 : style.weapon == GearLook.GravityStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/PhaseBolt.png")
-                : style.weapon == GearLook.CosmicStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/CosmicBolt.png") : null;
+                : style.weapon == GearLook.CosmicStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/CosmicBolt.png")
+                : style.weapon == GearLook.LoomStaff ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/GenesisBolt.png") : null;
             SetFlight(def, style.weapon);
             if (style.mount == MountKind.Starship) StarshipGun(def, starBolt);
             if (style.mount == MountKind.HoverThrone) NovaGun(def);
@@ -331,6 +357,8 @@ public static partial class PlaceholderArt
             if (style.mount == MountKind.FoldCruiser) ShotOf(def, "PhaseBolt", 0f, 32f, 1.4f);
             if (style.mount == MountKind.GateRing) ShotOf(def, "QuasarBurst", 0.12f, 18f, 2.8f);
             if (style.mount == MountKind.Ark) ShotOf(def, "CosmicBolt", 0f, 34f, 1.6f);
+            if (style.mount == MountKind.Planetoid) ShotOf(def, "ParadoxBurst", 0.12f, 18f, 3f);
+            if (style.mount == MountKind.SeedShip) ShotOf(def, "GenesisBolt", 0f, 34f, 1.7f);
             EditorUtility.SetDirty(def);
         }
         if (database == null) return;
@@ -352,9 +380,10 @@ public static partial class PlaceholderArt
             tower.operatorShoot = new List<Sprite> { Frame("Shoot0", 5), Frame("Shoot1", 6), Frame("Shoot2", 7), Frame("Shoot3", 8) };
             bool bolts = style.weapon == GearLook.Ballista || style.weapon == GearLook.Crossbow;
             bool gun = style.weapon == GearLook.Cannon;
-            tower.towerProjectile = gun ? cannonball : bolts ? bolt : arrow;
-            tower.towerProjectileArc = gun ? 0.06f : bolts ? 0f : Projectile.BowArc;   // bolts fly straight, arrows are lobbed
-            tower.towerProjectileSpeed = gun ? 16f : bolts ? 15f : 11f;
+            bool thrown = style.weapon == GearLook.Javelin || style.weapon == GearLook.Sling;
+            tower.towerProjectile = gun ? cannonball : bolts ? bolt : style.weapon == GearLook.Javelin ? javelin : style.weapon == GearLook.Sling ? stone : arrow;
+            tower.towerProjectileArc = gun ? 0.06f : bolts ? 0f : thrown ? 0.22f : Projectile.BowArc;   // bolts fly straight, arrows are lobbed, spears higher
+            tower.towerProjectileSpeed = gun ? 16f : bolts ? 15f : thrown ? 10f : 11f;
             tower.towerSplash = gun ? 1.6f : 0f;
             tower.towerMuzzleSmoke = gun;
             tower.operatorReleaseFrame = 2;
@@ -390,6 +419,7 @@ public static partial class PlaceholderArt
             case GearLook.SunStaff: def.projectileArc = 0f; def.projectileSpeed = 28f; def.splashRadius = 0.9f; break;
             case GearLook.GravityStaff: def.projectileArc = 0f; def.projectileSpeed = 26f; def.splashRadius = 1.1f; break;
             case GearLook.CosmicStaff: def.projectileArc = 0f; def.projectileSpeed = 30f; def.splashRadius = 1.1f; break;
+            case GearLook.LoomStaff: def.projectileArc = 0f; def.projectileSpeed = 32f; def.splashRadius = 1.2f; break;
             case GearLook.Flask: def.projectileArc = 0.35f; def.projectileSpeed = 8f; def.splashRadius = 1.4f; def.splashFire = true; break;
             case GearLook.Cannon: def.projectileArc = 0.06f; def.projectileSpeed = 16f; def.splashRadius = 1.8f; def.muzzleSmoke = true; break;
             case GearLook.Sling: def.projectileArc = 0.08f; break;
@@ -636,6 +666,48 @@ public static partial class PlaceholderArt
             health = 28000, attack = 340, speed = 0.6f, cooldown = 3.0f, range = 11f, detection = 11.5f,
             ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 3.4f, abilityPower = 1.55f,
         },
+        new BossSpec
+        {
+            id = "BossBoneSpeaker", name = "Grak the Bone-Speaker", age = "StoneAge",
+            style = Fig(Rd, GearLook.Feather, GearLook.Spear, body: GearLook.HideVest, cape: "Leather", scale: 1.6f, raider: true, necklace: true, warpaint: true),
+            health = 800, attack = 20, speed = 0.8f, cooldown = 1.2f, range = 0.75f, detection = 3.5f,
+            ability = BossAbility.Summon, abilityCooldown = 14f, summons = "EnemyClubman", summonCount = 2,
+        },
+        new BossSpec
+        {
+            id = "BossBronzeGiant", name = "Hattu the Bronze Giant", age = "BronzeAge",
+            style = Fig(Rd, GearLook.DomeHelm, GearLook.Axe, GearLook.HideShield, GearLook.Scale, crest: "Red", scale: 1.9f, raider: true, necklace: true),
+            health = 1600, attack = 34, speed = 0.7f, cooldown = 1.4f, range = 0.85f, detection = 3.5f,
+            ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 2.1f, abilityPower = 1.25f,
+        },
+        new BossSpec
+        {
+            id = "BossWarQueen", name = "Morrigan the War Queen", age = "IronAge",
+            style = Fig(Rd, GearLook.Crown, GearLook.Spear, mount: MountKind.Chariot, cape: "Green", scale: 1.35f, raider: true, coat: "DarkHorse", warpaint: true),
+            health = 2200, attack = 42, speed = 1.3f, cooldown = 1.1f, range = 0.95f, detection = 4.5f,
+            ability = BossAbility.WarCry, abilityCooldown = 12f, abilityPower = 1.35f,
+        },
+        new BossSpec
+        {
+            id = "BossElephantLord", name = "Vorax the Elephant Lord", age = "ClassicalAge",
+            style = Fig(Rd, GearLook.CrestedHelm, GearLook.Spear, mount: MountKind.Elephant, crest: "Gold", cape: "Purple", scale: 1.2f, raider: true, coat: "Elephant"),
+            health = 3200, attack = 58, speed = 0.8f, cooldown = 1.5f, range = 1.1f, detection = 4f,
+            ability = BossAbility.Slam, abilityCooldown = 8f, abilityRadius = 2.6f, abilityPower = 1.35f,
+        },
+        new BossSpec
+        {
+            id = "BossUnweaver", name = "The Unweaver", age = "UniversalAge",
+            style = Skin(Fig(Rd, GearLook.UnmadeHead, GearLook.LoomStaff, body: GearLook.UnmadeBody, scale: 2.2f, raider: true), "Entropy"),
+            health = 30000, attack = 280, speed = 0.6f, cooldown = 1.8f, range = 8f, detection = 9f,
+            ability = BossAbility.Summon, abilityCooldown = 10f, summons = "UnmadeHusk", summonCount = 4,
+        },
+        new BossSpec
+        {
+            id = "BossHeatDeath", name = "The Heat Death", age = "UniversalAge",
+            style = Skin(Fig(Rd, GearLook.UnmadeHead, GearLook.Cannon, body: GearLook.UnmadeBody, mount: MountKind.Planetoid, scale: 1.5f, raider: true), "Entropy"),
+            health = 32000, attack = 380, speed = 0.55f, cooldown = 3.0f, range = 11f, detection = 11.5f,
+            ability = BossAbility.Slam, abilityCooldown = 7f, abilityRadius = 3.6f, abilityPower = 1.6f,
+        },
         // Chiefs of the native peoples of other worlds (they lead their camps and raids there, never at home).
         new BossSpec
         {
@@ -846,14 +918,15 @@ public static partial class PlaceholderArt
     [MenuItem("Tools/Age of Stickman/Setup Bosses")]
     public static void SetupBosses() => SetupBosses(null);
 
-    /// <summary>Set up raider chiefs; 'onlyAge' limits it to that age's chiefs.</summary>
-    private static void SetupBosses(string onlyAge)
+    /// <summary>Set up raider chiefs; 'onlyAge' limits it to that age's chiefs, 'onlyIds' to just those chiefs.</summary>
+    private static void SetupBosses(string onlyAge, ICollection<string> onlyIds = null)
     {
         var natives = onlyAge == "Natives";
         var nativeDb = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         foreach (var spec in BossSpecs)
         {
             if (natives ? !spec.native : onlyAge != null && (spec.age != onlyAge || spec.native)) continue;
+            if (onlyIds != null && !onlyIds.Contains(spec.id)) continue;
             string path = $"Assets/Data/Units/{spec.id}.asset";
             var def = AssetDatabase.LoadAssetAtPath<UnitDefinition>(path);
             if (def == null)
@@ -889,7 +962,7 @@ public static partial class PlaceholderArt
                 GearLook.LeydenRod => "GalvanicSpark", GearLook.BoltRifle => "MusketBall",
                 GearLook.MachineGun or GearLook.Tommygun => "Bullet", GearLook.Cannon => "Cannonball",
                 GearLook.RayGun or GearLook.RayRifle => "RayBolt", GearLook.PlasmaRifle => "PlasmaBolt", GearLook.AssaultRifle => "Bullet",
-                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", GearLook.BeamStaff => "StarBolt", GearLook.SunStaff => "SunBolt", GearLook.GravityStaff => "PhaseBolt", GearLook.CosmicStaff => "CosmicBolt", _ => null,
+                GearLook.Grenade => "Grenade", GearLook.AetherRod => "AetherBolt", GearLook.ManaStaff or GearLook.ManaRifle => "ManaBolt", GearLook.BeamStaff => "StarBolt", GearLook.SunStaff => "SunBolt", GearLook.GravityStaff => "PhaseBolt", GearLook.CosmicStaff => "CosmicBolt", GearLook.LoomStaff => "GenesisBolt", _ => null,
             };
             def.projectile = shot != null ? AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/Projectiles/{shot}.png") : null;
             SetFlight(def, spec.style.weapon);
@@ -897,6 +970,7 @@ public static partial class PlaceholderArt
             if (spec.style.mount == MountKind.SunOrb) ShotOf(def, "Flare", 0.15f, 15f, 2.4f);
             if (spec.style.mount == MountKind.GravityPyramid) ShotOf(def, "GravityWell", 0.12f, 16f, 2.6f);
             if (spec.style.mount == MountKind.GateRing) ShotOf(def, "QuasarBurst", 0.12f, 18f, 2.8f);
+            if (spec.style.mount == MountKind.Planetoid) ShotOf(def, "ParadoxBurst", 0.12f, 18f, 3.2f);
             def.prefab = BuildPixelUnit(spec.id, spec.style, true, def, boss: true);
             def.icon = AssetDatabase.LoadAssetAtPath<Sprite>($"{Root}/Units/{spec.id}/{spec.id}_Idle.png");
             EditorUtility.SetDirty(def);

@@ -112,6 +112,7 @@ public class Boss : MonoBehaviour
         }
         foreach (var u in hit) u.TakeDamage(damage, enemy);
         RingPulse.Spawn(transform.position, def.abilityRadius, new Color(0.65f, 0.5f, 0.3f, 0.8f));
+        GameAudio.Play("boss_slam", transform.position);
     }
 
     /// <summary>A roar that drives nearby raiders on: harder hits and faster feet for a while.</summary>
@@ -125,6 +126,7 @@ public class Boss : MonoBehaviour
             }
         }
         RingPulse.Spawn(transform.position, 7f, new Color(0.95f, 0.25f, 0.2f, 0.7f));
+        GameAudio.Play("boss_warcry", transform.position);
     }
 
     /// <summary>Call more raiders to the fight.</summary>
@@ -145,6 +147,7 @@ public class Boss : MonoBehaviour
             if (e != null) e.JoinSameJob(enemy);
         }
         RingPulse.Spawn(transform.position, 2f, new Color(0.25f, 0.2f, 0.2f, 0.8f));
+        GameAudio.Play("boss_summon", transform.position);
     }
 
     private void Fallen()
@@ -158,6 +161,8 @@ public class Boss : MonoBehaviour
         settlement.CountChiefKill();
         // Always something good, a bit above your level.
         settlement.GainLoot(0.4f, 0.6f, $"on {Title}", Rarity.Rare);
+        // Native chiefs of other worlds carry alien things.
+        if (enemy.definition.isNative) settlement.GainLoot(0.3f, 0.5f, $"on {Title}", Rarity.Uncommon, true);
     }
 }
 

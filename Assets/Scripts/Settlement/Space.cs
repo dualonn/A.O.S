@@ -84,7 +84,7 @@ public partial class Settlement
                 var t = Database.GetTechnology(id);
                 if (t != null) reach += t.navigationRange;
             }
-            return reach;
+            return reach > 0 ? reach + NavigatorReach : 0f;
         }
     }
 
@@ -99,7 +99,7 @@ public partial class Settlement
                 var t = Database.GetTechnology(id);
                 if (t != null) speed += t.driveSpeed;
             }
-            return speed;
+            return speed * NavigatorSpeed;
         }
     }
 

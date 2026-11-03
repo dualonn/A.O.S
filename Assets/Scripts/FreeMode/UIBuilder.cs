@@ -120,6 +120,7 @@ public static class UIBuilder
         colors.disabledColor = new Color(0.65f, 0.65f, 0.65f);
         button.colors = colors;
         button.onClick.AddListener(onClick);
+        button.onClick.AddListener(() => GameAudio.UI("click"));
 
         var element = image.gameObject.AddComponent<LayoutElement>();
         element.preferredHeight = height;

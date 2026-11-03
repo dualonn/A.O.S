@@ -1,0 +1,239 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1683026126089731851
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4370318591722471476}
+  - component: {fileID: 7173103083397889954}
+  - component: {fileID: 7563026414187270073}
+  - component: {fileID: 4641242081271376661}
+  - component: {fileID: 6976750794740466886}
+  - component: {fileID: 3352869068243243169}
+  m_Layer: 0
+  m_Name: WorldEngineUnit
+  m_TagString: troop
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4370318591722471476
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &7173103083397889954
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: cd3f5ee4e0681f54ab1e3482a50f443e, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 3.78125, y: 4.5}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!114 &7563026414187270073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92be6c2d40fa0f7419b68d1e956de26e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteUnitVisual
+  idle: {fileID: 21300000, guid: cd3f5ee4e0681f54ab1e3482a50f443e, type: 3}
+  walk:
+  - {fileID: 21300000, guid: 1853d9ebe866da84ebdc025afcfa6c02, type: 3}
+  - {fileID: 21300000, guid: 4bc5a4315021bb44b9fe5af2ab6377c2, type: 3}
+  - {fileID: 21300000, guid: cf10ce00431891348ac28df27aea9b46, type: 3}
+  - {fileID: 21300000, guid: 67521c30cf1b7374d9840c1e2b2f84d9, type: 3}
+  attack:
+  - {fileID: 21300000, guid: c22e243b93c8b8b4a88623d2cd654789, type: 3}
+  - {fileID: 21300000, guid: 1b0f64a3f6615fa4f8c544c36a10e2e0, type: 3}
+  - {fileID: 21300000, guid: 7d9567f21f707be4eb6a94b86ee51702, type: 3}
+  - {fileID: 21300000, guid: c63258b393ac0e94a896f9643e3882c8, type: 3}
+  death:
+  - {fileID: 21300000, guid: fcda6829802c02a46a8e0ba2c42013bc, type: 3}
+  - {fileID: 21300000, guid: ebdb205e323c1ba4fa52530985a3c025, type: 3}
+  - {fileID: 21300000, guid: 0018ee6b298107f479c489e844edb864, type: 3}
+  impactFrame: 2
+  walkFps: 9
+  deathFrameTime: 0.14
+  barHeight: 1.90625
+  barWidth: 1
+  alwaysShowBar: 0
+  figure:
+    team: Blue
+    head: 133
+    body: 134
+    weapon: 57
+    shield: 0
+    trinket: 0
+    crest: 
+    shieldColor: 
+    cape: 
+    mount: 32
+    scale: 1.2
+    raider: 0
+    necklace: 0
+    warpaint: 0
+    coat: Horse
+    skin: 
+    undead: 0
+    beast: 0
+    medic: 0
+    barding: 0
+  pixelsPerUnit: 32
+  weaponClass: 7
+--- !u!58 &4641242081271376661
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.015625, y: 0.81562495}
+  m_Radius: 0.58
+--- !u!114 &6976750794740466886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb76403575563f4996d18c1409814be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseTouching
+--- !u!114 &3352869068243243169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1683026126089731851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a698d5558c195ae459744ba38c2ab1c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Troop
+  definition: {fileID: 11400000, guid: eeeed44924353da41b99a8c6b92cce86, type: 2}
+  maxHealth: 100
+  health: 100
+  moveSpeed: 1
+  attackPower: 10
+  attackCooldown: 1
+  attackRange: 2
+  hitDelay: 0.58
+  detectionRange: 2.5
+  knockback: 2.5
+  armour: 0
+  lifeSteal: 0
+  cleave: 0
+  thorns: 0
+  mending: 0
+  rallying: 0
+  dodge: 0
+  regen: 0
+  xenobane: 0
+  corpseTime: 2
+  fadeTime: 0.8
+  anim: {fileID: 0}
+  healthSlider: {fileID: 0}
+  personalSpace: 0.72
+  currentTarget: {fileID: 0}
+  moveOrderSpeedMultiplier: 1.5

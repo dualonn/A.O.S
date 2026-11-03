@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: Writing
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: Writing
+  displayName: Writing
+  description: Marks pressed into clay that say what was traded and what was owed.
+    Research goes 3% faster.
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: 0124b9a1759dfaa4792ef5e30b1f5eef, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 160
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 80
+  researchTime: 55
+  unitModifiers: []
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1.03
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

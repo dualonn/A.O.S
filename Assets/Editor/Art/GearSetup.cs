@@ -53,6 +53,85 @@ public static partial class PlaceholderArt
         new GearSpec { id = "AmberAmulet", name = "Amber Amulet", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 1, health = 0.05f, attack = 0.03f },
         new GearSpec { id = "SilverRing", name = "Silver Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 2, attack = 0.05f, haste = 0.03f },
         new GearSpec { id = "LaurelWreath", name = "Laurel Wreath", slot = GearSlot.Trinket, look = GearLook.Wreath, minPower = 3, health = 0.05f, attack = 0.04f, speed = 0.03f },
+        // ----- Gear for every later age, in that age's own look (the same looks its troops wear) -----
+        // Medieval
+        new GearSpec { id = "GreatHelm", name = "Great Helm", slot = GearSlot.Head, look = GearLook.GreatHelm, minPower = 4, health = 0.08f, armour = 12f },
+        new GearSpec { id = "KettleHat", name = "Kettle Hat", slot = GearSlot.Head, look = GearLook.KettleHat, minPower = 4, health = 0.06f, armour = 9f, speed = 0.02f },
+        new GearSpec { id = "KnightsSurcoat", name = "Knight's Surcoat", slot = GearSlot.Body, look = GearLook.Surcoat, minPower = 4, health = 0.15f, armour = 15f, speed = -0.02f },
+        new GearSpec { id = "FlangedMace", name = "Flanged Mace", slot = GearSlot.Weapon, look = GearLook.Mace, minPower = 4, attack = 0.17f },
+        new GearSpec { id = "Longbow", name = "Longbow", slot = GearSlot.Weapon, look = GearLook.Bow, minPower = 4, attack = 0.11f, range = 0.17f },
+        new GearSpec { id = "KiteShield", name = "Kite Shield", slot = GearSlot.Shield, look = GearLook.KiteShield, minPower = 4, armour = 16f, health = 0.05f },
+        new GearSpec { id = "SignetRing", name = "Signet Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 4, attack = 0.05f, health = 0.03f },
+        // Renaissance
+        new GearSpec { id = "Morion", name = "Morion", slot = GearSlot.Head, look = GearLook.Morion, minPower = 5, health = 0.08f, armour = 12f, attack = 0.02f },
+        new GearSpec { id = "SteelCuirass", name = "Steel Cuirass", slot = GearSlot.Body, look = GearLook.Cuirass, minPower = 5, health = 0.16f, armour = 17f, speed = -0.02f },
+        new GearSpec { id = "Zweihander", name = "Zweihander", slot = GearSlot.Weapon, look = GearLook.Zweihander, minPower = 5, attack = 0.2f, haste = -0.03f },
+        new GearSpec { id = "Halberd", name = "Halberd", slot = GearSlot.Weapon, look = GearLook.Halberd, minPower = 5, attack = 0.15f, range = 0.1f },
+        new GearSpec { id = "SilverLocket", name = "Silver Locket", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 5, health = 0.06f, haste = 0.03f },
+        // Age of Enlightenment
+        new GearSpec { id = "Tricorne", name = "Tricorne", slot = GearSlot.Head, look = GearLook.Tricorne, minPower = 6, health = 0.05f, speed = 0.03f, attack = 0.02f },
+        new GearSpec { id = "OfficersCoat", name = "Officer's Coat", slot = GearSlot.Body, look = GearLook.Greatcoat, minPower = 6, health = 0.14f, armour = 12f, haste = 0.03f },
+        new GearSpec { id = "CavalrySabre", name = "Cavalry Sabre", slot = GearSlot.Weapon, look = GearLook.Sabre, minPower = 6, attack = 0.15f, haste = 0.08f },
+        new GearSpec { id = "BrassBugle", name = "Brass Bugle", slot = GearSlot.Trinket, look = GearLook.Horn, minPower = 6, speed = 0.05f, attack = 0.02f },
+        // Industrial
+        new GearSpec { id = "BrassGoggles", name = "Brass Goggles", slot = GearSlot.Head, look = GearLook.Goggles, minPower = 7, health = 0.05f, range = 0.06f, attack = 0.02f },
+        new GearSpec { id = "BrassPlate", name = "Brass Plate", slot = GearSlot.Body, look = GearLook.BrassPlate, minPower = 7, health = 0.17f, armour = 18f, speed = -0.03f },
+        new GearSpec { id = "PistonHammer", name = "Piston Hammer", slot = GearSlot.Weapon, look = GearLook.PistonHammer, minPower = 7, attack = 0.21f, haste = -0.02f },
+        new GearSpec { id = "GreatWrench", name = "Great Wrench", slot = GearSlot.Weapon, look = GearLook.Wrench, minPower = 7, attack = 0.16f, haste = 0.04f },
+        new GearSpec { id = "PocketWatch", name = "Pocket Watch", slot = GearSlot.Trinket, look = GearLook.Charm, minPower = 7, haste = 0.06f },
+        // Modern
+        new GearSpec { id = "SteelHelmet", name = "Steel Helmet", slot = GearSlot.Head, look = GearLook.SteelHelmet, minPower = 8, health = 0.08f, armour = 13f },
+        new GearSpec { id = "TrenchCoat", name = "Trench Coat", slot = GearSlot.Body, look = GearLook.TrenchCoat, minPower = 8, health = 0.15f, armour = 14f, speed = 0.02f },
+        new GearSpec { id = "TrenchShovel", name = "Trench Shovel", slot = GearSlot.Weapon, look = GearLook.Shovel, minPower = 8, attack = 0.16f, haste = 0.05f },
+        new GearSpec { id = "RiotShield", name = "Riot Shield", slot = GearSlot.Shield, look = GearLook.TowerShield, minPower = 8, armour = 18f, health = 0.05f, speed = -0.02f },
+        new GearSpec { id = "DogTags", name = "Dog Tags", slot = GearSlot.Trinket, look = GearLook.Charm, minPower = 8, health = 0.06f, attack = 0.03f },
+        // Electric
+        new GearSpec { id = "BubbleHelmet", name = "Bubble Helmet", slot = GearSlot.Head, look = GearLook.BubbleHelmet, minPower = 9, health = 0.08f, armour = 11f, speed = 0.02f },
+        new GearSpec { id = "ChromePlate", name = "Chrome Plate", slot = GearSlot.Body, look = GearLook.ChromePlate, minPower = 9, health = 0.17f, armour = 18f, speed = -0.02f },
+        new GearSpec { id = "PowerClaw", name = "Power Claw", slot = GearSlot.Weapon, look = GearLook.Claw, minPower = 9, attack = 0.18f, haste = 0.04f },
+        new GearSpec { id = "AtomRing", name = "Atom Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 9, attack = 0.06f, haste = 0.03f },
+        // Information
+        new GearSpec { id = "TacHelmet", name = "Tactical Helmet", slot = GearSlot.Head, look = GearLook.TacHelmet, minPower = 10, health = 0.08f, armour = 12f, range = 0.05f },
+        new GearSpec { id = "TacVest", name = "Tac Vest", slot = GearSlot.Body, look = GearLook.TacVest, minPower = 10, health = 0.16f, armour = 16f, speed = 0.02f },
+        new GearSpec { id = "EnergyBlade", name = "Energy Blade", slot = GearSlot.Weapon, look = GearLook.EnergyBlade, minPower = 10, attack = 0.18f, haste = 0.08f },
+        new GearSpec { id = "DataChip", name = "Data Chip", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 10, haste = 0.05f, range = 0.04f },
+        // Arcane
+        new GearSpec { id = "RuneVisor", name = "Rune Visor", slot = GearSlot.Head, look = GearLook.RuneVisor, minPower = 11, health = 0.07f, armour = 11f, attack = 0.03f },
+        new GearSpec { id = "WizardHat", name = "Wizard Hat", slot = GearSlot.Head, look = GearLook.WizardHat, minPower = 11, health = 0.05f, range = 0.08f, haste = 0.03f },
+        new GearSpec { id = "RunePlate", name = "Rune Plate", slot = GearSlot.Body, look = GearLook.RunePlate, minPower = 11, health = 0.17f, armour = 18f, speed = -0.02f },
+        new GearSpec { id = "Runeblade", name = "Runeblade", slot = GearSlot.Weapon, look = GearLook.Runeblade, minPower = 11, attack = 0.19f, haste = 0.05f },
+        new GearSpec { id = "ManaAmulet", name = "Mana Amulet", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 11, health = 0.06f, attack = 0.04f },
+        // Astral
+        new GearSpec { id = "StarHelm", name = "Star Helm", slot = GearSlot.Head, look = GearLook.StarHelm, minPower = 12, health = 0.09f, armour = 13f },
+        new GearSpec { id = "StarPlate", name = "Star Plate", slot = GearSlot.Body, look = GearLook.StarPlate, minPower = 12, health = 0.18f, armour = 19f, speed = -0.02f },
+        new GearSpec { id = "StarBlade", name = "Star Blade", slot = GearSlot.Weapon, look = GearLook.StarBlade, minPower = 12, attack = 0.2f, haste = 0.05f },
+        new GearSpec { id = "StarShield", name = "Star Shield", slot = GearSlot.Shield, look = GearLook.TowerShield, minPower = 12, armour = 19f, health = 0.06f },
+        new GearSpec { id = "AstralRing", name = "Astral Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 12, attack = 0.06f, speed = 0.03f },
+        // Stellar
+        new GearSpec { id = "SunHelm", name = "Sun Helm", slot = GearSlot.Head, look = GearLook.SunHelm, minPower = 13, health = 0.09f, armour = 13f, attack = 0.02f },
+        new GearSpec { id = "SolarPlate", name = "Solar Plate", slot = GearSlot.Body, look = GearLook.SolarPlate, minPower = 13, health = 0.18f, armour = 19f },
+        new GearSpec { id = "SunBlade", name = "Sun Blade", slot = GearSlot.Weapon, look = GearLook.SunBlade, minPower = 13, attack = 0.21f, haste = 0.04f },
+        new GearSpec { id = "SunAmulet", name = "Sun Amulet", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 13, health = 0.07f, attack = 0.04f },
+        // Interstellar
+        new GearSpec { id = "PhaseHelm", name = "Phase Helm", slot = GearSlot.Head, look = GearLook.PhaseHelm, minPower = 14, health = 0.09f, armour = 13f, speed = 0.03f },
+        new GearSpec { id = "PhasePlate", name = "Phase Plate", slot = GearSlot.Body, look = GearLook.PhasePlate, minPower = 14, health = 0.18f, armour = 18f, speed = 0.02f },
+        new GearSpec { id = "PhaseBlade", name = "Phase Blade", slot = GearSlot.Weapon, look = GearLook.PhaseBlade, minPower = 14, attack = 0.2f, haste = 0.08f },
+        new GearSpec { id = "FoldRing", name = "Fold Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 14, speed = 0.05f, haste = 0.03f },
+        // Galactic
+        new GearSpec { id = "GalaxyHelm", name = "Galaxy Helm", slot = GearSlot.Head, look = GearLook.GalaxyHelm, minPower = 15, health = 0.1f, armour = 14f },
+        new GearSpec { id = "StarCrown", name = "Crown of Stars", slot = GearSlot.Head, look = GearLook.StarCrown, minPower = 15, health = 0.06f, attack = 0.05f, haste = 0.03f },
+        new GearSpec { id = "CelestialPlate", name = "Celestial Plate", slot = GearSlot.Body, look = GearLook.CelestialPlate, minPower = 15, health = 0.19f, armour = 20f, speed = -0.02f },
+        new GearSpec { id = "SingularityBlade", name = "Singularity Blade", slot = GearSlot.Weapon, look = GearLook.SingularityBlade, minPower = 15, attack = 0.22f, haste = 0.05f },
+        new GearSpec { id = "AegisShield", name = "Aegis Shield", slot = GearSlot.Shield, look = GearLook.TowerShield, minPower = 15, armour = 20f, health = 0.07f },
+        new GearSpec { id = "GalaxyRing", name = "Galaxy Ring", slot = GearSlot.Trinket, look = GearLook.Ring, minPower = 15, attack = 0.07f, haste = 0.03f },
+        // Universal
+        new GearSpec { id = "GenesisHelm", name = "Genesis Helm", slot = GearSlot.Head, look = GearLook.GenesisHelm, minPower = 16, health = 0.1f, armour = 14f, attack = 0.02f },
+        new GearSpec { id = "ChronoHelm", name = "Chrono Helm", slot = GearSlot.Head, look = GearLook.ChronoHelm, minPower = 16, health = 0.07f, haste = 0.06f },
+        new GearSpec { id = "GenesisPlate", name = "Genesis Plate", slot = GearSlot.Body, look = GearLook.GenesisPlate, minPower = 16, health = 0.2f, armour = 20f },
+        new GearSpec { id = "ChronoPlate", name = "Chrono Plate", slot = GearSlot.Body, look = GearLook.ChronoPlate, minPower = 16, health = 0.17f, armour = 18f, haste = 0.04f },
+        new GearSpec { id = "Worldblade", name = "Worldblade", slot = GearSlot.Weapon, look = GearLook.Worldblade, minPower = 16, attack = 0.23f, haste = 0.05f },
+        new GearSpec { id = "ClockHammer", name = "Clock Hammer", slot = GearSlot.Weapon, look = GearLook.ClockHammer, minPower = 16, attack = 0.26f, haste = -0.02f },
+        new GearSpec { id = "HourglassPendant", name = "Hourglass Pendant", slot = GearSlot.Trinket, look = GearLook.Amulet, minPower = 16, health = 0.07f, haste = 0.05f },
     };
 
     [MenuItem("Tools/Age of Stickman/Setup Gear Data")]
@@ -61,7 +140,11 @@ public static partial class PlaceholderArt
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
         Directory.CreateDirectory("Assets/Data/Items");
         Directory.CreateDirectory(Path.Combine(Root, "Icons/Gear"));
-        db.itemTemplates = new List<ItemTemplate>();
+        // Keep templates other setups add (alien gear); replace only our own.
+        var ours = new HashSet<string>();
+        foreach (var spec in GearSpecs) ours.Add(spec.id);
+        if (db.itemTemplates == null) db.itemTemplates = new List<ItemTemplate>();
+        db.itemTemplates.RemoveAll(t => t == null || ours.Contains(t.id));
         foreach (var spec in GearSpecs)
         {
             string path = $"Assets/Data/Items/{spec.id}.asset";

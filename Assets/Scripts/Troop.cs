@@ -25,6 +25,9 @@ public class Troop : Unit
     /// <summary>Set when this troop is a hero (named, saved, wears gear).</summary>
     public HeroState Hero { get; private set; }
 
+    /// <summary>Set for a troop stationed here by troopship: its kind, as the garrison counts it.</summary>
+    public string GarrisonUnit { get; set; }
+
     private TextMeshPro nameTag;
     private SpriteRenderer heroGlow;
 
@@ -132,6 +135,38 @@ public class Troop : Unit
                         u.TakeDamage(Mathf.RoundToInt(attackPower * 1.4f), this);
                 Puff.Blast(at, 1.7f, true);
                 nextHeroAbility = Time.time + 7f;
+                break;
+            }
+            case HeroClass.Navigator:
+            {
+                // Warp Strike: fold space to stand beside a distant enemy, and hit it hard.
+                if (distance <= attackRange + 0.5f || distance > 9f) return;
+                Vector3 dir = (transform.position - target.transform.position).normalized;
+                Vector3 spot = target.transform.position + dir * Mathf.Max(0.4f, attackRange * 0.6f);
+                spot.z = transform.position.z;
+                var nav = MapNavigator.Current;
+                if (nav != null && !nav.IsWalkable(spot, Team)) return;
+                Puff.Spawn(transform.position + Vector3.up * 0.4f, 0.8f, new Color(0.5f, 0.9f, 1f, 0.8f), 6, 0.35f);
+                transform.position = spot;
+                Puff.Spawn(spot + Vector3.up * 0.4f, 0.8f, new Color(0.5f, 0.9f, 1f, 0.8f), 6, 0.35f);
+                target.TakeDamage(Mathf.RoundToInt(attackPower * 1.5f), this);
+                nextHeroAbility = Time.time + 9f;
+                break;
+            }
+            case HeroClass.Xenologist:
+            {
+                // Beguile: the nearest native fighter (not a chief) fights for you for a while.
+                Enemy pick = null;
+                float best = 6f;
+                foreach (var u in Living)
+                {
+                    if (!(u is Enemy e) || !e.IsAlive || e.Charmed || e.definition == null || !e.definition.isNative || e.definition.isBoss) continue;
+                    float d = Vector2.Distance(e.transform.position, transform.position);
+                    if (d < best) { best = d; pick = e; }
+                }
+                if (pick == null) return;
+                pick.Charm(12f + 0.5f * Hero.level);
+                nextHeroAbility = Time.time + 16f;
                 break;
             }
             case HeroClass.Priest:
@@ -613,6 +648,11 @@ public class Troop : Unit
         if (Hero != null && Settlement.Instance != null)
         {
             Settlement.Instance.HeroFell(Hero);
+        }
+        if (GarrisonUnit != null && Settlement.Instance != null)
+        {
+            Settlement.Instance.GarrisonLost(GarrisonUnit);
+            GarrisonUnit = null;
         }
         base.Die();
     }

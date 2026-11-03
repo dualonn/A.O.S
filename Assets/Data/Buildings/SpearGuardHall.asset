@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SpearGuardHall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SpearGuardHall
+  displayName: Spear Guard Hall
+  description: 'A long hall with round shields hung down its walls. Trains Spear
+    Guards: they hold the line and don''t give ground.'
+  icon: {fileID: 21300000, guid: 28d88e7d66803c944b854386f813aa98, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 28d88e7d66803c944b854386f813aa98, type: 3}
+    - {fileID: 21300000, guid: 1a5328b870d184d4c8d15244d4674ae3, type: 3}
+    - {fileID: 21300000, guid: a1dfbdc4ebe85c048a87f3d100d3d3dc, type: 3}
+    - {fileID: 21300000, guid: f34f52f7d01ede34abbcbbee7a26e7d4, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 2f83192f7ade39b4283bd9c1210d224f, type: 3}
+    - {fileID: 21300000, guid: 92aece579cd1c2546a576a7bd8751bab, type: 3}
+    - {fileID: 21300000, guid: 84038b0272dc4b1458ed8a7d92edd4c3, type: 3}
+    - {fileID: 21300000, guid: c31e19e96aac47c4988dade08a75c948, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 7c8e5aac233b4a140a855d8a3028e9c4, type: 3}
+    - {fileID: 21300000, guid: 847706bf38408704a99665d8a2590e03, type: 3}
+    - {fileID: 21300000, guid: 0dcd575d1115ae742a4ba47244c5ff3b, type: 3}
+    - {fileID: 21300000, guid: e389b634a259d2145b76779179b842d2, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 979ad855f2f642247968a8aa868a1e68, type: 3}
+    - {fileID: 21300000, guid: e67e935c998e280458f37d0a898cbfb9, type: 3}
+    - {fileID: 21300000, guid: 5dc78e43fc4cfbc4fa0cbcfe1353650b, type: 3}
+    - {fileID: 21300000, guid: 048bcfc1f45992949b03350f067acec0, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 3087d73a2191ee64eafedc94a68fd7c8, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 40
+  upgrades:
+  - name: Bigger Camp
+    description: +1 troop.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 180
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+    upgradeTime: 20
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Better Weapons
+    description: Troops trained here are 15% tougher and hit 10% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.15
+      attackMultiplier: 1.1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Seasoned Leaders
+    description: +1 troop, +75 health.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 45
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 75
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 35
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 420
+  housing: 0
+  workers: 3
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 3
+  trainsUnit: {fileID: 11400000, guid: a3fc17616a1138e46a171611c055e2fd, type: 2}
+  maxUnits: 4
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

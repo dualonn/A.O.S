@@ -49,6 +49,9 @@ public abstract class Unit : MonoBehaviour
     [HideInInspector] public float thorns;       // attackers take this share back
     [HideInInspector] public float mending;      // heal nearby allies this much per second
     [HideInInspector] public float rallying;     // nearby allies move this share faster
+    [HideInInspector] public float dodge;        // this share of hits miss (capped)
+    [HideInInspector] public float regen;        // heals itself this much per second
+    [HideInInspector] public float xenobane;     // this share more damage to the natives of other worlds
 
     private UnitStatModifier extraModifier;
     private float rallyBoost, rallyUntil, nextAura;
@@ -96,7 +99,7 @@ public abstract class Unit : MonoBehaviour
 
     // A target we couldn't get any closer to (across water, out of reach): left alone for a while.
     private Unit unreachableTarget;
-    private float unreachableUntil;
+    private float skipTargetUntil;
     private Vector3 chaseCheckPos;
     private float chaseCheckAt, chaseCheckGap;
     private const float ChaseCheckSeconds = 2.5f;
@@ -220,7 +223,7 @@ public abstract class Unit : MonoBehaviour
         targetsInRange.RemoveAll(u => u == null || !CanHit(u));
         if (unreachableTarget != null)
         {
-            if (Time.time >= unreachableUntil) unreachableTarget = null;
+            if (Time.time >= skipTargetUntil) unreachableTarget = null;
             else targetsInRange.Remove(unreachableTarget);
         }
         currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
@@ -345,6 +348,9 @@ public abstract class Unit : MonoBehaviour
         thorns = gear.thorns;
         mending = gear.mending;
         rallying = gear.rallying;
+        dodge = Mathf.Min(gear.dodge, Items.MaxDodge);
+        regen = gear.regen;
+        xenobane = gear.xenobane;
     }
 
     public void Heal(int amount)
@@ -359,11 +365,12 @@ public abstract class Unit : MonoBehaviour
     /// <summary>Healing and rallying auras, once a second.</summary>
     private void Auras()
     {
-        if ((mending <= 0 && rallying <= 0) || Time.time < nextAura)
+        if ((mending <= 0 && rallying <= 0 && regen <= 0) || Time.time < nextAura)
         {
             return;
         }
         nextAura = Time.time + 1f;
+        if (regen > 0) Heal(Mathf.CeilToInt(regen));
         const float radius = 3f;
         foreach (var u in All)
         {
@@ -585,6 +592,7 @@ public abstract class Unit : MonoBehaviour
         {
             anim.SetTrigger("Attack");
         }
+        if (!IsRanged) GameAudio.Swing(this);
     }
 
     private void LandHit()
@@ -607,6 +615,7 @@ public abstract class Unit : MonoBehaviour
             // Loose an arrow: it does the damage when it lands.
             Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, attackPower, this, definition.projectileArc,
                 definition.splashRadius, definition.splashFire);
+            GameAudio.Fire(GameAudio.WeaponOf(this), transform.position);
             if (definition.muzzleSmoke)
             {
                 Vector3 toward = (target.transform.position - transform.position).normalized;
@@ -617,6 +626,7 @@ public abstract class Unit : MonoBehaviour
         // Melee: missed if the target stepped well out of reach during the wind-up.
         if (Vector2.Distance(transform.position, target.transform.position) <= attackRange * 1.25f + 0.2f)
         {
+            GameAudio.MeleeHit(this, target);
             target.TakeDamage(attackPower, this);
             if (cleave > 0)
             {
@@ -734,7 +744,13 @@ public abstract class Unit : MonoBehaviour
         // Xenology: your people know where the natives of other worlds are soft.
         if (attacker != null && attacker.Team == Team.Player && definition != null && definition.isNative && Settlement.Instance != null)
         {
-            amount = Mathf.RoundToInt(amount * Settlement.Instance.XenologyFactor);
+            amount = Mathf.RoundToInt(amount * Settlement.Instance.XenologyFactor * (1f + attacker.xenobane));
+        }
+        // Xeno-artefacts: some hits just miss.
+        if (dodge > 0 && Random.value < dodge)
+        {
+            Puff.Spawn(transform.position + Vector3.up * 0.4f, 0.4f, new Color(0.7f, 0.95f, 1f, 0.6f), 3, 0.2f);
+            return;
         }
         if (armour > 0)
         {
@@ -762,6 +778,7 @@ public abstract class Unit : MonoBehaviour
         swingTarget = null;
         swingAction = null;
         SetMoving(false);
+        GameAudio.Death(this, definition != null && definition.isBoss);
         if (visual != null)
         {
             visual.PlayDeath();
@@ -830,7 +847,7 @@ public abstract class Unit : MonoBehaviour
         chaseCheckGap = distance;
         if (!stuck) return false;
         unreachableTarget = target;
-        unreachableUntil = Time.time + UnreachableSeconds;
+        skipTargetUntil = Time.time + UnreachableSeconds;
         engagedWith = null;
         chaseCheckAt = 0f;
         currentTarget = null;

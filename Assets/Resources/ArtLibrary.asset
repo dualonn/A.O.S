@@ -256,6 +256,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: db144289577b6234db8f251e3efe6c55, type: 3}
   - {fileID: 21300000, guid: dbf627f56bd48bb4ca850135ddb178d7, type: 3}
   - {fileID: 21300000, guid: 3afda847f78fc9f4e9fcaa7249c9c5fb, type: 3}
+  - {fileID: 21300000, guid: f08157cce57d9ba4ba2f2f1bef0abb77, type: 3}
   siteVeinIds:
   - GoldOre
   - Runestone
@@ -268,6 +269,7 @@ MonoBehaviour:
   - Heliolite
   - Riftstone
   - Stardust
+  - Primordium
   siteIcons:
   - {fileID: 21300000, guid: 83034151085e0d94b97a7a3ed034255d, type: 3}
   - {fileID: 21300000, guid: 2e985ef847e9e27408d14d34a472314f, type: 3}

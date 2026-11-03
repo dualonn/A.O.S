@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: WorldTree
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: WorldTree
+  displayName: World Tree
+  description: A tree the size of a city, grown from a seed of creation, its branches
+    full of homes and its leaves full of light. Houses 320 people.
+  icon: {fileID: 21300000, guid: fc1547abc370ec24f86dc2fe8a8e39e5, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: fc1547abc370ec24f86dc2fe8a8e39e5, type: 3}
+    - {fileID: 21300000, guid: 881f6a821e79a8e4893fad8df0504f0b, type: 3}
+    - {fileID: 21300000, guid: b8ab4dc327e30184c9f7558eb008afe4, type: 3}
+    - {fileID: 21300000, guid: 63bae0c6d9b057840beea5ccd164fb27, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 3b2dea9e7a1f7aa4b835f3316af7836f, type: 3}
+    - {fileID: 21300000, guid: 568b340fdd459c949a7e8f2abd45680c, type: 3}
+    - {fileID: 21300000, guid: 36ac10d1d54e01a49b8e857e9c6c15af, type: 3}
+    - {fileID: 21300000, guid: e414d2743f071df479d6cbf5139a7e44, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: b3889590d4f0c624ca16c5a64a68520c, type: 3}
+    - {fileID: 21300000, guid: 1f4e23a52a2cb6d43b7c49c07795efd2, type: 3}
+    - {fileID: 21300000, guid: 834fba4a1963ef34cbca6c10bdcd4132, type: 3}
+    - {fileID: 21300000, guid: 1eded7621483c1d49b542de69b15bc2e, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 8ffce7cd63cccfe4e9142a4ffe421421, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1450
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 87
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 320
+  upgrades:
+  - name: New Branches
+    description: +35 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 1020
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 58
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 35
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Canopy Cities
+    description: +40 people.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 116
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 320
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 40
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 2972
+  housing: 320
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

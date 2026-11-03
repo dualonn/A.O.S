@@ -41,6 +41,7 @@ public static partial class PlaceholderArt
         13 => new PxWallStyle { ramp = P.Synth, height = 34, kind = 11, crenels = true, towers = true },     // white stone inlaid with glowing gold suns
         14 => new PxWallStyle { ramp = P.Phase, height = 34, kind = 12, crenels = false, towers = true },    // a shimmering curtain of teal phase-light between black pylons
         15 => new PxWallStyle { ramp = P.Cosmic, height = 36, kind = 13, crenels = true, towers = true },    // night-black stone with the stars showing through
+        16 => new PxWallStyle { ramp = P.Pearl, height = 38, kind = 14, crenels = true, towers = true },     // pearl-white stone of the first moment, rainbow light in its seams
         _ => new PxWallStyle { ramp = P.Iron, height = 30, kind = 5, crenels = false, towers = true },     // riveted iron-plated wall
     };
 
@@ -81,6 +82,14 @@ public static partial class PlaceholderArt
                 if (tone < 0) tone += 4;
                 Color32 face = tone == 0 ? r[3] : r[2];
                 return rv == course - 1 ? PixelCanvas.Mix(face, P.White, 0.12f) : face;
+            }
+            case 14:   // primordial: pearl-white blocks, gold capstones, rainbow light running in the seams
+            {
+                if (v < 2) return r[1];
+                if (v >= s.height - 2) return P.Gold[3];
+                int bu = (((u + (v / 8 % 2) * 8) % 16) + 16) % 16;
+                if (v % 8 == 0 || bu == 0) return P.Prism[((u + v) / 6 % 4 + 4) % 4];
+                return ((u * 31 + v * 17) & 15) == 0 ? P.White : bu < 3 ? r[3] : r[2];
             }
             case 13:   // celestial: night-black stone, a silver rim, and the stars showing through as if through a window
             {
@@ -402,7 +411,7 @@ public static partial class PlaceholderArt
     private static void GenerateWallArt(int onlyTier)
     {
         var db = AssetDatabase.LoadAssetAtPath<GameDatabase>("Assets/Resources/GameDatabase.asset");
-        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate"), ("ConcreteWall", "ConcreteGate"), ("ForceFieldWall", "ForceFieldGate"), ("HardLightWall", "HardLightGate"), ("RunewardWall", "RunewardGate"), ("StarwardWall", "StarwardGate"), ("SunwardWall", "SunwardGate"), ("PhaseWall", "PhaseGate"), ("CelestialWall", "CelestialGate") };
+        var tiers = new[] { ("Palisade", "PalisadeGate"), ("MudBrickWall", "MudBrickGate"), ("StoneWall", "StoneGatehouse"), ("FortifiedWall", "FortifiedGatehouse"), ("CastleWall", "CastleGatehouse"), ("BastionWall", "BastionGate"), ("StarFortWall", "StarFortGate"), ("IroncladWall", "IroncladGate"), ("ConcreteWall", "ConcreteGate"), ("ForceFieldWall", "ForceFieldGate"), ("HardLightWall", "HardLightGate"), ("RunewardWall", "RunewardGate"), ("StarwardWall", "StarwardGate"), ("SunwardWall", "SunwardGate"), ("PhaseWall", "PhaseGate"), ("CelestialWall", "CelestialGate"), ("PrimordialWall", "PrimordialGate") };
         for (int age = 0; age < tiers.Length; age++)
         {
             if (onlyTier >= 0 && age != onlyTier) continue;

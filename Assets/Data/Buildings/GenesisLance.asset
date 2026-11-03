@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: GenesisLance
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: GenesisLance
+  displayName: Genesis Lance
+  description: A pearl spire with a seed of creation at its tip that fires bolts
+    of rainbow light.
+  icon: {fileID: 21300000, guid: 9707c11ad3686ec43b81069dc2e7172f, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 9707c11ad3686ec43b81069dc2e7172f, type: 3}
+    - {fileID: 21300000, guid: fc5adf0c2e8ee27458a4f3a28accc1c7, type: 3}
+    - {fileID: 21300000, guid: 7a0043a78ba001f40905cd870c280bec, type: 3}
+    - {fileID: 21300000, guid: a56c7fd170e356f4bab77913d8d931a1, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 3a8d7ddd536554f46ba76d761277ddc2, type: 3}
+    - {fileID: 21300000, guid: ceb444957a839aa439386f770522be62, type: 3}
+    - {fileID: 21300000, guid: 31c3eacb21b17824385d1235e6dcec8d, type: 3}
+    - {fileID: 21300000, guid: 6042f13ac46241f499b609498064500e, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: da26bebf82843ac4791f85e98c020912, type: 3}
+    - {fileID: 21300000, guid: 1c03abb6467c6154f8e26cad710f255c, type: 3}
+    - {fileID: 21300000, guid: 43fe62cdeb133cc45b662291298f7fc6, type: 3}
+    - {fileID: 21300000, guid: d887c1e4a99bca840b4a3b5425eef507, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: eb5a4b715d1f5ed4d9f4f31b0a0993aa, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 940
+    - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+      amount: 102
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 44
+  upgrades:
+  - name: Longer Reach
+    description: +1.5 range.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 87
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 480
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 1.5
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Harder Strikes
+    description: +22 damage.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 1a7f334c3a89eba488b356efa9cbce14, type: 2}
+        amount: 116
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 44
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 22
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 4060
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 13.5
+  towerDamage: 113
+  towerCooldown: 0.4
+  towerProjectile: {fileID: 21300000, guid: 7304baf5283dd1947a5e55983ae5a04f, type: 3}
+  towerProjectileArc: 0
+  towerProjectileSpeed: 34
+  towerSplash: 0.9
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 1, y: 1.6875}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 0.85, y: 1.45}

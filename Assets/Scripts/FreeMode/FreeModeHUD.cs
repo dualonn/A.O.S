@@ -179,6 +179,7 @@ public class FreeModeHUD : MonoBehaviour
             new Vector2(-10, 0), new Vector2(130, 40));
         speedLabel.alignment = TextAlignmentOptions.Center;
         speedLabel.text = "Speed x1";
+        GameAudio.AddSoundButton(bar, -610);
 
         canvasRect = (RectTransform)root;
         WorldSwitcher.Create(root, settlement);   // appears once you have more than one world
@@ -674,6 +675,7 @@ public class FreeModeHUD : MonoBehaviour
         new Color(0.45f, 0.85f, 1f), new Color(0.78f, 0.6f, 1f),         // Information, Arcane
         new Color(0.95f, 0.85f, 0.5f), new Color(1f, 0.75f, 0.35f),      // Astral, Stellar
         new Color(0.45f, 0.95f, 0.95f), new Color(0.75f, 0.65f, 1f),     // Interstellar, Galactic
+        new Color(1f, 0.94f, 0.78f),                                     // Universal
     };
 
     private CollapsibleSection AgeSection(Age age, Transform parent)

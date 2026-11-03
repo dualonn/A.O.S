@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: BossHeatDeath
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: The Heat Death
+  icon: {fileID: 21300000, guid: 420e8a4605997554499f80c63ad77c8a, type: 3}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  troopClass: {fileID: 11400000, guid: 0dc444c97130b234a8fecb97785d57ea, type: 2}
+  prefab: {fileID: 7953920481824403078, guid: 128e65c3ee4e6a644a24dbdb79e9467f, type: 3}
+  cost: 0
+  populationCost: 1
+  upkeep: []
+  maxHealth: 32000
+  moveSpeed: 0.55
+  attackPower: 380
+  attackCooldown: 3
+  attackRange: 11
+  hitDelay: 0.3
+  detectionRange: 11.5
+  projectile: {fileID: 21300000, guid: 87a67c9e355f0e74a9dc22488a0ce25c, type: 3}
+  projectileSpeed: 18
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.12
+  splashRadius: 3.2
+  splashFire: 0
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 1
+  bossAbility: 1
+  abilityCooldown: 7
+  abilityRadius: 3.6
+  abilityPower: 1.6
+  summons: {fileID: 0}
+  summonCount: 0

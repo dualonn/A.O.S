@@ -104,6 +104,7 @@ public partial class Settlement
         };
         string line = $"{Galaxy.Describe(kind).title} at {s.name}: {outcome}";
         State.codex.Add(line);
+        GameAudio.UI("anomaly");
         Notify(line);
         RaiseChanged();
         return outcome;
@@ -118,15 +119,16 @@ public partial class Settlement
         {
             var r = Database.GetResource(id);
             if (r == null) continue;
-            AddResource(r, amount);
-            parts.Add($"{amount} {r.displayName}");
+            int got = Mathf.RoundToInt(amount * XenoRewardFactor);
+            AddResource(r, got);
+            parts.Add($"{got} {r.displayName}");
         }
         return (intro.Length > 0 ? intro + ": " : "") + string.Join(", ", parts) + ".";
     }
 
     private string Item(float bonus, Rarity min)
     {
-        var item = GainLoot(bonus, 0.5f, "out among the stars", min);
+        var item = GainLoot(bonus, 0.5f, "out among the stars", min, true);
         return item != null ? $" Found: {item.name}." : "";
     }
 

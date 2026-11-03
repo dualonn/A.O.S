@@ -105,6 +105,9 @@ public class BuildingDefinition : GameData
     [Tooltip("A Star Gate: ships and cargo between two worlds that both have one arrive almost at once.")]
     public bool starGate;
 
+    [Tooltip("A Genesis Engine: while it stands, every one of your worlds produces 5% more (up to 5 engines).")]
+    public bool genesisEngine;
+
     [Header("Walls and gates (1x1, placed in lines)")]
     [Tooltip("Wall: blocks everyone. Gate: lets your units through, blocks raiders.")]
     public WallTile wallKind;

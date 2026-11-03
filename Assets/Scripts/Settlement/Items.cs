@@ -16,7 +16,11 @@ public enum Trait
     Cleave,      // hit others next to the target for this share
     Thorns,      // attackers take this share back
     Mending,     // heal nearby allies this many health per second
-    Rallying     // nearby allies move this share faster
+    Rallying,    // nearby allies move this share faster
+    // Xeno-artefacts only
+    Dodge,       // this share of hits miss
+    Regen,       // heals itself this many health per second
+    Xenobane     // this share more damage to the natives of other worlds
 }
 
 [Serializable]
@@ -48,11 +52,13 @@ public struct GearStats
 {
     public float health, attack, speed, haste, range, armour;
     public float lifeSteal, cleave, thorns, mending, rallying;
+    public float dodge, regen, xenobane;
 
     public void Add(GearStats o)
     {
         health += o.health; attack += o.attack; speed += o.speed; haste += o.haste; range += o.range; armour += o.armour;
         lifeSteal += o.lifeSteal; cleave += o.cleave; thorns += o.thorns; mending += o.mending; rallying += o.rallying;
+        dodge += o.dodge; regen += o.regen; xenobane += o.xenobane;
     }
 
     public UnitStatModifier ToModifier() => new UnitStatModifier
@@ -152,7 +158,7 @@ public static class Items
     }
 
     /// <summary>Roll a whole item: power, a template that fits it, rarity, traits and a name.</summary>
-    public static ItemInstance Roll(IList<ItemTemplate> templates, float progress, float sourceBonus, float luck, int uid, System.Random rng, Rarity minRarity = Rarity.Common)
+    public static ItemInstance Roll(IList<ItemTemplate> templates, float progress, float sourceBonus, float luck, int uid, System.Random rng, Rarity minRarity = Rarity.Common, bool xeno = false)
     {
         float power = RollPower(progress, sourceBonus, rng);
         // Templates that exist at this power, favouring ones made for around this level.
@@ -161,7 +167,7 @@ public static class Items
         float total = 0f;
         foreach (var t in templates)
         {
-            if (t == null || t.minPower > power + 0.25f) continue;
+            if (t == null || t.xeno != xeno || t.minPower > power + 0.25f) continue;   // xeno-artefacts only drop from alien finds
             float behind = Mathf.Max(0, power - t.minPower - 1f);
             float w = 1f / ((1f + 2f * behind) * (1f + 2f * behind)); // gear from long-past ages fades out fast
             fits.Add(t);
@@ -188,7 +194,7 @@ public static class Items
             rarity = (Rarity)Mathf.Max((int)minRarity, (int)RollRarity(luck, rng)),
         };
         int traitCount = RarityTraits[(int)item.rarity];
-        var pool = TraitsFor(template.slot);
+        var pool = TraitsFor(template);
         for (int i = 0; i < traitCount && pool.Count > 0; i++)
         {
             var trait = pool[rng.Next(pool.Count)];
@@ -197,6 +203,14 @@ public static class Items
         }
         item.name = NameFor(item, template, rng);
         return item;
+    }
+
+    /// <summary>The traits an item can roll: its slot's, plus the alien ones on a xeno-artefact.</summary>
+    private static List<Trait> TraitsFor(ItemTemplate template)
+    {
+        var pool = TraitsFor(template.slot);
+        if (template.xeno) pool.AddRange(new[] { Trait.Dodge, Trait.Regen, Trait.Xenobane });
+        return pool;
     }
 
     private static List<Trait> TraitsFor(GearSlot slot)
@@ -227,6 +241,9 @@ public static class Items
             case Trait.Thorns: return 0.12f * scale;
             case Trait.Mending: return 1.5f * scale;
             case Trait.Rallying: return 0.06f * scale;
+            case Trait.Dodge: return 0.04f * scale;
+            case Trait.Regen: return 1.2f * scale;
+            case Trait.Xenobane: return 0.12f * scale;
             default: return 0f;
         }
     }
@@ -257,6 +274,9 @@ public static class Items
             case Trait.Thorns: return "of Brambles";
             case Trait.Mending: return "of the Healer";
             case Trait.Rallying: return "of the War-horn";
+            case Trait.Dodge: return "of the Phantom";
+            case Trait.Regen: return "of the Undying Star";
+            case Trait.Xenobane: return "of the Far Hunter";
             default: return "";
         }
     }
@@ -298,7 +318,7 @@ public static class Items
         if (template == null) return;
         int count = item.traits.Count;
         item.traits.Clear();
-        var pool = TraitsFor(template.slot);
+        var pool = TraitsFor(template);
         for (int i = 0; i < count && pool.Count > 0; i++)
         {
             var trait = pool[rng.Next(pool.Count)];
@@ -325,6 +345,9 @@ public static class Items
         s.haste = template.haste * k;
         s.range = template.range * k;
         s.armour = template.armour * k;
+        s.dodge = template.dodge * k;
+        s.regen = template.regen * k;
+        s.xenobane = template.xenobane * k;
         var all = new List<TraitRoll>(item.traits);
         if (item.enchanted) all.Add(item.enchant);
         foreach (var t in all)
@@ -342,6 +365,9 @@ public static class Items
                 case Trait.Thorns: s.thorns += t.value; break;
                 case Trait.Mending: s.mending += t.value; break;
                 case Trait.Rallying: s.rallying += t.value; break;
+                case Trait.Dodge: s.dodge += t.value; break;
+                case Trait.Regen: s.regen += t.value; break;
+                case Trait.Xenobane: s.xenobane += t.value; break;
             }
         }
         return s;
@@ -363,11 +389,18 @@ public static class Items
         if (s.thorns > 0.001f) sb.Append($"<color=#9d9>Thorns: attackers take {s.thorns:P0} back</color>\n");
         if (s.mending > 0.01f) sb.Append($"<color=#8f8>Heals nearby allies {s.mending:0.#} health/s</color>\n");
         if (s.rallying > 0.001f) sb.Append($"<color=#8cf>Nearby allies move {s.rallying:P0} faster</color>\n");
+        if (s.dodge > 0.001f) sb.Append($"<color=#9ef>Dodges {Mathf.Min(s.dodge, MaxDodge):P0} of hits</color>\n");
+        if (s.regen > 0.01f) sb.Append($"<color=#8f8>Regenerates {s.regen:0.#} health/s</color>\n");
+        if (s.xenobane > 0.001f) sb.Append($"<color=#fc8>+{s.xenobane:P0} damage to the natives of other worlds</color>\n");
         return sb.ToString().TrimEnd();
     }
 
     /// <summary>Roughly how strong an item is overall (for sorting and comparing).</summary>
     public static float Score(GearStats s) =>
         s.health + s.attack * 1.2f + s.speed + s.haste + s.range * 0.6f + s.armour / 80f
-        + s.lifeSteal * 2f + s.cleave + s.thorns + s.mending * 0.05f + s.rallying;
+        + s.lifeSteal * 2f + s.cleave + s.thorns + s.mending * 0.05f + s.rallying
+        + s.dodge * 2f + s.regen * 0.05f + s.xenobane * 0.5f;
+
+    /// <summary>Dodging never goes past this, however much gear stacks up.</summary>
+    public const float MaxDodge = 0.4f;
 }

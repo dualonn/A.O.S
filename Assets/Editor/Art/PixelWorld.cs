@@ -481,6 +481,7 @@ public static partial class PlaceholderArt
             Ore.Heliolite => new[] { P.Heliolite[1], P.Heliolite[2], P.Heliolite[3] },   // stone that glows like embers
             Ore.Riftstone => new[] { P.Riftstone[1], P.Riftstone[2], P.Riftstone[3] },   // violet stone, half out of the world
             Ore.Stardust => new[] { P.Stardust[1], P.Stardust[2], P.Stardust[3] },      // glittering dust of dead stars
+            Ore.Primordium => new[] { P.Primordium[1], P.Primordium[2], P.Primordium[3] },   // stone of the first moment, still glowing
             Ore.Silicon => new[] { P.Linen[3], P.White, P.Neon[3] },        // glittering quartz
             _ => null,
         };

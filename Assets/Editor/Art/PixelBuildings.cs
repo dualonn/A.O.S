@@ -55,7 +55,9 @@ public static partial class PlaceholderArt
             && !AstralBuildingArt.TryGetValue(def.id, out art)
             && !StellarBuildingArt.TryGetValue(def.id, out art)
             && !InterstellarBuildingArt.TryGetValue(def.id, out art)
-            && !GalacticBuildingArt.TryGetValue(def.id, out art)) return;
+            && !GalacticBuildingArt.TryGetValue(def.id, out art)
+            && !EarlyDepthBuildingArt.TryGetValue(def.id, out art)
+            && !UniversalBuildingArt.TryGetValue(def.id, out art)) return;
         string dir = $"Buildings/{def.id}";
         ResetDir(dir);
         int artW = Mathf.RoundToInt(def.ArtSize.x * TilePx), artH = Mathf.RoundToInt(def.ArtSize.y * TilePx);

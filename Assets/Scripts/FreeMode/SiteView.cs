@@ -143,6 +143,15 @@ public class SiteView : MonoBehaviour
     private void Done(System.Action action)
     {
         action();
+        GameAudio.Play(State.kind switch
+        {
+            SiteKind.Cache => "chest_open",
+            SiteKind.LoreStone => "lore_stone",
+            SiteKind.Shrine => "shrine_bless",
+            SiteKind.Vein => "pick",
+            SiteKind.Lair => "monster_death",
+            _ => "discover",
+        }, Centre);
         wasDone = State.done;
         UpdateSprite();
         if (State.kind == SiteKind.Cache) gameObject.SetActive(false);

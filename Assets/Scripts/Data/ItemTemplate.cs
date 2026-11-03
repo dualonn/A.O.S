@@ -46,7 +46,9 @@ public enum GearLook
     // Interstellar Age (gravity-magic and warp tech)
     PhaseHelm, PhasePlate, PhaseBlade, GravityStaff, RiftMask, PrismHead, PrismBody,
     // Galactic Age (cosmic magic and megastructures)
-    GalaxyHelm, CelestialPlate, SingularityBlade, CosmicStaff, HiveHead, HiveCarapace, StarCrown
+    GalaxyHelm, CelestialPlate, SingularityBlade, CosmicStaff, HiveHead, HiveCarapace, StarCrown,
+    // Universal Age (creation and time)
+    GenesisHelm, GenesisPlate, Worldblade, LoomStaff, ChronoHelm, ChronoPlate, ClockHammer, UnmadeHead, UnmadeBody
 }
 
 /// <summary>
@@ -78,4 +80,13 @@ public class ItemTemplate : GameData
     public float range;
     [Tooltip("Armour points: each hit is cut by armour / (armour + 100).")]
     public float armour;
+
+    [Header("Xeno-artefacts (found only on other worlds and among the stars)")]
+    public bool xeno;
+    [Tooltip("Share of hits that miss.")]
+    public float dodge;
+    [Tooltip("Heals itself this many health per second.")]
+    public float regen;
+    [Tooltip("Extra damage share against the natives of other worlds.")]
+    public float xenobane;
 }

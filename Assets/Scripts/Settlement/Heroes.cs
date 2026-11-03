@@ -87,9 +87,11 @@ public partial class Settlement
             id = State.nextHeroId++,
             unitId = unit.name,
             homeBuilding = home.instanceId,
+            world = State.currentWorld,
         };
         hero.name = HeroName(hero.id);
         State.heroes.Add(hero);
+        if (!offWorld) GameAudio.UI("hero_recruit");
         Notify($"{hero.name} the {unit.displayName} is now a hero!");
         HeroChanged?.Invoke(hero);
         return hero;
@@ -120,6 +122,7 @@ public partial class Settlement
         {
             hero.xp -= XpToNext(hero);
             hero.level++;
+            if (!offWorld) GameAudio.UI("level_up");
             Notify($"{hero.name} reached level {hero.level + 1}!");
             HeroChanged?.Invoke(hero);
         }
@@ -202,6 +205,8 @@ public partial class Settlement
             case HeroClass.Ranger: total.range += 0.12f; total.haste += 0.1f + 0.01f * hero.level; break;
             case HeroClass.Mage: total.attack += 0.12f + 0.015f * hero.level; break;
             case HeroClass.Priest: total.mending += 1f + 0.3f * hero.level; break;
+            case HeroClass.Navigator: total.speed += 0.12f + 0.01f * hero.level; total.haste += 0.05f; break;
+            case HeroClass.Xenologist: total.xenobane += 0.25f + 0.02f * hero.level; total.health += 0.05f; break;
         }
         return total;
     }
@@ -216,6 +221,7 @@ public partial class Settlement
         if (hero == null || cls == HeroClass.None) { why = "No hero"; return false; }
         if (hero.heroClass != HeroClass.None) { why = $"Already a {hero.heroClass}"; return false; }
         if (hero.level < ClassLevel) { why = $"Reach level {ClassLevel + 1} first"; return false; }
+        if (!ClassUnlocked(cls)) { why = cls == HeroClass.Navigator ? "Research Navigation first" : "Research Xenology first"; return false; }
         var unit = FindUnit(hero.unitId);
         bool ranged = unit != null && unit.projectile != null;
         if (cls == HeroClass.Warrior && ranged) { why = "Warriors fight hand to hand"; return false; }
@@ -238,19 +244,58 @@ public partial class Settlement
         HeroClass.Ranger => "Longer reach and quicker shots. <b>Volley</b>: every few seconds, fires at three more enemies at once.",
         HeroClass.Mage => "Hits harder. <b>Firestorm</b>: every few seconds, fire bursts among the enemy it's fighting.",
         HeroClass.Priest => "Heals allies around it all the time. <b>Blessing</b>: every few seconds, heals everyone nearby a fifth of their health.",
+        HeroClass.Navigator => "Quicker on its feet and with its strikes. On its world, ships launched there fly faster and reach further. <b>Warp Strike</b>: folds space to appear beside a distant enemy and hit it hard.",
+        HeroClass.Xenologist => "Hits the natives of other worlds much harder. On its world, alien ruins, vaults, lairs and anomalies give more. <b>Beguile</b>: turns a native fighter to your side for a while.",
         _ => "",
     };
 
+    /// <summary>The star paths need their research: Navigation for Navigators, Xenology for Xenologists.</summary>
+    public bool ClassUnlocked(HeroClass cls) => cls switch
+    {
+        HeroClass.Navigator => State.researched.Contains("Navigation"),
+        HeroClass.Xenologist => State.researched.Contains("Xenology"),
+        _ => true,
+    };
+
+    /// <summary>The best level among heroes of a path on the world you're on and on their feet (-1: none).</summary>
+    private int BestHereLevel(HeroClass cls)
+    {
+        int best = -1;
+        foreach (var h in State.heroes)
+            if (h.heroClass == cls && HeroHere(h) && !IsDown(h)) best = Mathf.Max(best, h.level);
+        return best;
+    }
+
+    /// <summary>A Navigator here: ships go faster (a share) and further (light-years).</summary>
+    private float NavigatorSpeed { get { int l = BestHereLevel(HeroClass.Navigator); return l < 0 ? 1f : 1.2f + 0.02f * l; } }
+    private float NavigatorReach { get { int l = BestHereLevel(HeroClass.Navigator); return l < 0 ? 0f : 4f + 0.4f * l; } }
+
     // ---------- Loot ----------
+
+    /// <summary>
+    /// A chance of a xeno-artefact from something found on another world (a Xenologist on this
+    /// world makes it likelier).
+    /// </summary>
+    private void XenoFind(float chance, string from, Rarity minRarity = Rarity.Uncommon)
+    {
+        if (!OnAlienWorld) return;
+        if (UnityEngine.Random.value < chance * XenoRewardFactor) GainLoot(0.3f, 0.45f, from, minRarity, true);
+    }
+
+    /// <summary>How much more alien finds give: a Xenologist on this world knows what to look for.</summary>
+    public float XenoRewardFactor => 1f + XenologistBonus();
+
+    private float XenologistBonus() { int l = BestHereLevel(HeroClass.Xenologist); return l < 0 ? 0f : 0.3f + 0.02f * l; }
 
     /// <summary>
     /// Roll a piece of gear into the inventory. Its strength centres on your progress (plus
     /// 'sourceBonus' for tough sources) with a slim chance of something far beyond.
     /// </summary>
-    public ItemInstance GainLoot(float sourceBonus, float luck, string from, Rarity minRarity = Rarity.Common)
+    public ItemInstance GainLoot(float sourceBonus, float luck, string from, Rarity minRarity = Rarity.Common, bool xeno = false)
     {
         var rng = new System.Random(State.mapSeed ^ (State.nextItemId * 104729) ^ (int)(State.playTime * 10));
-        var item = Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng, minRarity);
+        var item = Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng, minRarity, xeno)
+            ?? (xeno ? Items.Roll(Database.itemTemplates, Progress, sourceBonus, luck, State.nextItemId, rng, minRarity) : null);   // (no artefacts set up yet)
         if (item == null)
         {
             return null;
@@ -258,6 +303,7 @@ public partial class Settlement
         State.nextItemId++;
         State.inventory.Add(item);
         string ahead = item.power >= State.ageIndex + 1.5f ? " <color=#fd6>(far beyond your age!)</color>" : "";
+        if (!offWorld) GameAudio.UI("drop_" + item.rarity.ToString().ToLowerInvariant());
         Notify($"Found <color=#{Items.RarityHex(item.rarity)}>{item.name}</color> {from}.{ahead}");
         return item;
     }
