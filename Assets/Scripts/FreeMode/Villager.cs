@@ -129,7 +129,7 @@ public class Villager : MonoBehaviour
                 if (beat != lastWorkBeat)
                 {
                     lastWorkBeat = beat;
-                    if (workSound != null) GameAudio.Play(workSound, transform.position, 0.3f);
+                    if (workSound != null) GameAudio.Detail(workSound, transform.position, 0.3f);
                 }
                 timer -= dt;
                 if (timer <= 0)

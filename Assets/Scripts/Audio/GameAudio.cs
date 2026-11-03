@@ -1,14 +1,14 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// The game's sound: one-shot effects, music that follows the age (battle music during raids),
-/// and an ambience loop that follows the biome under the camera.
+/// an ambience loop that follows the biome under the camera, and a weather layer on top.
 /// Clips live in Resources/Audio (built by Tools/Audio). A sound name like "sword_hit" picks a
-/// random variant (sword_hit_1, sword_hit_2...).
+/// random variant (sword_hit_1, sword_hit_2...). Effects load a few per frame at scene start
+/// (listed in Resources/Audio/sfx_index.txt), so nothing stalls the first fight.
 /// </summary>
 public static class GameAudio
 {
@@ -18,22 +18,27 @@ public static class GameAudio
     const int Voices = 28;              // one-shots playing at once
     const int MaxSameSound = 3;         // copies of one sound at once (big battles)
     const float SameSoundGap = 0.05f;   // seconds between two starts of one sound
+    const float DetailZoom = 10f;       // small work sounds only when zoomed in closer than this
 
-    static Dictionary<string, List<AudioClip>> clips;
+    static readonly Dictionary<string, List<AudioClip>> clips = new Dictionary<string, List<AudioClip>>();
     static readonly Dictionary<string, float> lastStart = new Dictionary<string, float>();
+    static readonly Dictionary<UnitDefinition, UnitSounds> unitSounds = new Dictionary<UnitDefinition, UnitSounds>();
     static AudioHost host;
     static Mode mode;
+    static string weather;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     static void ResetStatics()
     {
-        clips = null;
-        weather = null;
+        clips.Clear();
         lastStart.Clear();
+        unitSounds.Clear();
+        weather = null;
         host = null;
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    // Created before the first scene loads, so effects stream in while the map is being set up.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void Boot() => Ensure();
 
     public static Mode CurrentMode => mode;
@@ -43,25 +48,59 @@ public static class GameAudio
         if (host != null) return true;
         if (!Application.isPlaying) return false;
         mode = (Mode)PlayerPrefs.GetInt("AOS.SoundMode", 0);
-        clips = new Dictionary<string, List<AudioClip>>();
-        var variant = new Regex(@"_\d+$");
-        foreach (var clip in Resources.LoadAll<AudioClip>("Audio/SFX"))
-        {
-            string key = variant.Replace(clip.name, "");
-            if (!clips.TryGetValue(key, out var list)) clips[key] = list = new List<AudioClip>();
-            list.Add(clip);
-        }
         var go = new GameObject("GameAudio");
         Object.DontDestroyOnLoad(go);
         host = go.AddComponent<AudioHost>();
         host.Init(Voices);
+        host.StartCoroutine(LoadEffects());
         return true;
+    }
+
+    /// <summary>Load every effect a few per frame (async), so there is no hitch when the first ones play.</summary>
+    static IEnumerator LoadEffects()
+    {
+        var index = Resources.Load<TextAsset>("Audio/sfx_index");
+        if (index == null) yield break;
+        var paths = index.text.Split('\n');
+        Resources.UnloadAsset(index);
+        const int perFrame = 6;
+        var pending = new List<ResourceRequest>(perFrame);
+        for (int i = 0; i < paths.Length; i += perFrame)
+        {
+            pending.Clear();
+            for (int j = i; j < Mathf.Min(i + perFrame, paths.Length); j++)
+            {
+                string path = paths[j].Trim();
+                if (path.Length > 0) pending.Add(Resources.LoadAsync<AudioClip>(path));
+            }
+            foreach (var request in pending)
+            {
+                while (!request.isDone) yield return null;
+                if (request.asset is AudioClip clip)
+                {
+                    clip.LoadAudioData();
+                    string key = BaseName(clip.name);
+                    if (!clips.TryGetValue(key, out var list)) clips[key] = list = new List<AudioClip>();
+                    list.Add(clip);
+                }
+            }
+            yield return null;
+        }
+    }
+
+    /// <summary>"sword_hit_3" -> "sword_hit" (variants share a name).</summary>
+    static string BaseName(string name)
+    {
+        int u = name.LastIndexOf('_');
+        if (u <= 0 || u == name.Length - 1) return name;
+        for (int k = u + 1; k < name.Length; k++) if (name[k] < '0' || name[k] > '9') return name;
+        return name.Substring(0, u);
     }
 
     /// <summary>A sound out in the world: panned and faded by where it is on screen; skipped far off screen.</summary>
     public static void Play(string name, Vector3 at, float volume = 1f)
     {
-        if (!Ensure() || mode == Mode.Muted) return;
+        if (name == null || !Ensure() || mode == Mode.Muted) return;
         var cam = Camera.main;
         float pan = 0f;
         if (cam != null)
@@ -77,25 +116,25 @@ public static class GameAudio
         Start(name, volume * SfxVolume, pan, Random.Range(0.93f, 1.07f));
     }
 
+    /// <summary>A small everyday sound (tools, footsteps): only heard when zoomed in on it.</summary>
+    public static void Detail(string name, Vector3 at, float volume = 1f)
+    {
+        var cam = Camera.main;
+        if (cam != null && cam.orthographic && cam.orthographicSize > DetailZoom) return;
+        Play(name, at, volume);
+    }
+
     /// <summary>An interface or announcement sound: centred, no pitch change.</summary>
     public static void UI(string name, float volume = 1f)
     {
-        if (!Ensure() || mode == Mode.Muted) return;
+        if (name == null || !Ensure() || mode == Mode.Muted) return;
         Start(name, volume * UiVolume, 0f, 1f);
     }
 
     static void Start(string name, float volume, float pan, float pitch)
     {
         if (volume < 0.02f) return;
-        if (!clips.TryGetValue(name, out var list) || list.Count == 0)
-        {
-            if (Debug.isDebugBuild && !lastStart.ContainsKey("missing:" + name))
-            {
-                lastStart["missing:" + name] = 0f;
-                Debug.LogWarning($"GameAudio: no sound called '{name}'");
-            }
-            return;
-        }
+        if (!clips.TryGetValue(name, out var list) || list.Count == 0) return;   // unknown, or still loading
         float now = Time.unscaledTime;
         if (lastStart.TryGetValue(name, out float last) && now - last < SameSoundGap) return;
         if (host.CountPlaying(list) >= MaxSameSound) return;
@@ -103,56 +142,132 @@ public static class GameAudio
         host.PlayOneShot(list[Random.Range(0, list.Count)], volume, pan, pitch);
     }
 
-    // ------------------------------------------------------------------ combat helpers
+    // ------------------------------------------------------------------ combat
 
-    /// <summary>What a unit fights with (from its sprite setup).</summary>
-    public static WeaponClass WeaponOf(Unit u)
+    /// <summary>The sounds one kind of unit makes, worked out once from its weapon and name.</summary>
+    class UnitSounds
     {
-        var v = u != null ? u.GetComponent<SpriteUnitVisual>() : null;
-        return v != null ? v.weaponClass : WeaponClass.Melee;
+        public string swing, fire, projectileHit, meleeHit, death;
     }
 
-    /// <summary>Wolf, spider or none.</summary>
-    public static Beast BeastOf(Unit u)
+    static readonly string[] Machines = { "Automaton", "Android", "Robot", "Robo", "Mech", "Construct", "Car", "Tank", "Landship",
+        "Walker", "Crawler", "Mole", "Drone", "Plane", "Jet", "Airship", "Skyship", "Frigate", "Cruiser", "Ark", "Engine", "Barque",
+        "Skiff", "Sentinel", "Colossus", "Cannon", "Howitzer", "Throne", "GenesisShip", "RogueAI", "SunOrb", "Steam" };
+    static readonly string[] Monsters = { "Troll", "Skeleton", "Spider", "Hive", "Unmade", "Void", "Rift", "Shade", "Wraith", "Bear",
+        "Drake", "Wyvern", "Lich", "Devourer", "Herald", "Collapsar", "DarkSun", "HeatDeath", "Titan", "Golem", "Brute", "BarrowKing",
+        "Unweaver", "Elephant", "Griffin" };
+    static readonly string[] Lasers = { "Blaster", "Plasma", "Ray", "Laser", "Prism", "Nova", "Star", "Solar", "Sun", "Helion",
+        "Void", "Rift", "Gravi", "Seraph", "Comet", "Fold" };
+    static readonly string[] Rifles = { "Rifle", "Sniper", "Jager", "Infantry", "Commando", "MachineGun", "Gangster", "Hacker",
+        "Biplane", "Jet", "Trench", "Galvanist", "Airship" };
+    static readonly string[] Blasts = { "Tank", "Howitzer", "Cannon", "Grenadier", "Rocket", "Landship", "Armoured", "Walker", "Crawler" };
+
+    static bool Has(string name, string[] words)
     {
-        var v = u != null ? u.GetComponent<SpriteUnitVisual>() : null;
-        return v != null && v.figure != null ? v.figure.beast : Beast.None;
+        foreach (var w in words) if (name.Contains(w)) return true;
+        return false;
     }
 
-    /// <summary>A melee wind-up (beasts snarl now and then instead of whooshing a blade).</summary>
+    static UnitSounds SoundsFor(Unit u)
+    {
+        var def = u.definition;
+        if (def != null && unitSounds.TryGetValue(def, out var s)) return s;
+        s = new UnitSounds();
+        string id = def != null ? def.name : u.name;
+        var weapon = u.WeaponKind;
+        var beast = u.BeastKind;
+        bool machine = Has(id, Machines) && !id.Contains("Titan") && !id.Contains("Hive");
+        bool monster = !machine && (Has(id, Monsters) || (def != null && def.isNative));
+
+        // swing (melee wind-up)
+        if (beast != Beast.None || machine) s.swing = null;
+        else if (id.Contains("Axe") || id.Contains("Barbarian") || id.Contains("Reaver") || id.Contains("Brute") || id.Contains("Club")) s.swing = "axe_swing";
+        else if (id.Contains("Spear") || id.Contains("Pike") || id.Contains("Halberd") || id.Contains("Lance") || id.Contains("Hoplite")) s.swing = "spear_swing";
+        else if (id.Contains("Dagger") || id.Contains("Thug") || id.Contains("Saboteur") || id.Contains("TunnelRat") || id.Contains("Sapper")) s.swing = "dagger_swing";
+        else s.swing = "sword_swing";
+
+        // ranged shot, and what its projectile sounds like landing
+        if (Has(id, Blasts) || weapon == WeaponClass.Cannon) { s.fire = "cannon_shot"; s.projectileHit = null; }   // splash plays the blast
+        else if (weapon == WeaponClass.Staff) { s.fire = "staff_cast"; s.projectileHit = "magic_hit"; }
+        else if (Has(id, Lasers) && weapon != WeaponClass.Bow && weapon != WeaponClass.Thrown) { s.fire = "laser"; s.projectileHit = "flesh_hit"; }
+        else if (weapon == WeaponClass.Musket || Has(id, Rifles)) { s.fire = Has(id, Rifles) ? "rifle_shot" : "musket_shot"; s.projectileHit = "flesh_hit"; }
+        else if (weapon == WeaponClass.Crossbow) { s.fire = "crossbow_shot"; s.projectileHit = "arrow_hit"; }
+        else if (weapon == WeaponClass.Thrown) { s.fire = "throw"; s.projectileHit = "blunt_hit"; }
+        else { s.fire = "bow_shot"; s.projectileHit = "arrow_hit"; }
+
+        // melee blow landing (armour is checked per hit)
+        s.meleeHit = beast != Beast.None || monster ? "flesh_hit" : machine ? "blunt_hit" : null;
+
+        // falling
+        if (def != null && def.isBoss) s.death = machine ? "explosion" : "boss_death";
+        else if (beast == Beast.Wolf) s.death = "wolf_growl";
+        else if (beast == Beast.Spider) s.death = "spider_hiss";
+        else if (machine) s.death = "cannon_impact";
+        else if (monster) s.death = "monster_death";
+        else s.death = "death";
+
+        if (def != null) unitSounds[def] = s;
+        return s;
+    }
+
+    /// <summary>A melee wind-up (beasts snarl now and then; machines just clank).</summary>
     public static void Swing(Unit u)
     {
         if (u == null) return;
-        switch (BeastOf(u))
+        var s = SoundsFor(u);
+        if (s.swing != null) Play(s.swing, u.transform.position, 0.45f);
+        else if (Random.value < 0.25f)
         {
-            case Beast.Wolf: if (Random.value < 0.3f) Play("wolf_growl", u.transform.position, 0.6f); return;
-            case Beast.Spider: if (Random.value < 0.3f) Play("spider_hiss", u.transform.position, 0.6f); return;
+            var beast = u.BeastKind;
+            Play(beast == Beast.Wolf ? "wolf_growl" : beast == Beast.Spider ? "spider_hiss" : "machine", u.transform.position, 0.5f);
         }
-        Play("sword_swing", u.transform.position, 0.45f);
     }
 
-    /// <summary>A ranged unit (or tower) lets fly.</summary>
+    /// <summary>A unit lets fly.</summary>
+    public static void Fire(Unit u)
+    {
+        if (u != null) Play(SoundsFor(u).fire, u.transform.position, 0.8f);
+    }
+
+    /// <summary>A tower lets fly.</summary>
     public static void Fire(WeaponClass weapon, Vector3 at)
     {
         switch (weapon)
         {
             case WeaponClass.Crossbow: Play("crossbow_shot", at, 0.8f); break;
-            case WeaponClass.Thrown: Play("throw", at, 0.7f); break;
-            case WeaponClass.Staff: Play("staff_cast", at, 0.7f); break;
             case WeaponClass.Musket: Play("musket_shot", at, 0.8f); break;
             case WeaponClass.Cannon: Play("cannon_shot", at); break;
+            case WeaponClass.Staff: Play("staff_cast", at, 0.7f); break;
             default: Play("bow_shot", at, 0.8f); break;
         }
+    }
+
+    /// <summary>A projectile reaches its target (no shooter: a tower's arrow).</summary>
+    public static void ProjectileHit(Unit shooter, Vector3 at)
+    {
+        Play(shooter != null ? SoundsFor(shooter).projectileHit : "arrow_hit", at, 0.6f);
     }
 
     /// <summary>A melee blow connects.</summary>
     public static void MeleeHit(Unit attacker, Unit target)
     {
         if (target == null) return;
-        string sound = attacker != null && BeastOf(attacker) != Beast.None ? "flesh_hit"
-            : target.armour > 0 ? "sword_hit" : "blade_hit";
+        string sound = attacker != null ? SoundsFor(attacker).meleeHit : null;
+        if (sound == null) sound = target.armour > 0 ? "sword_hit" : "blade_hit";
         Play(sound, target.transform.position, 0.75f);
     }
+
+    /// <summary>A unit falls.</summary>
+    public static void Death(Unit u)
+    {
+        if (u == null) return;
+        var s = SoundsFor(u);
+        var at = u.transform.position;
+        Play(s.death, at, s.death == "death" ? 0.6f : 0.8f);
+        if (s.death != "cannon_impact" && s.death != "explosion") Play("body_fall", at, 0.5f);
+    }
+
+    // ------------------------------------------------------------------ town
 
     /// <summary>The tool sound a villager makes working at this building (null: works quietly).</summary>
     public static string WorkSound(BuildingDefinition def)
@@ -177,17 +292,7 @@ public static class GameAudio
         Play(name, controller.Grid.AreaCenter(building.cell, def.size), volume);
     }
 
-    /// <summary>A unit falls.</summary>
-    public static void Death(Unit u, bool boss)
-    {
-        if (u == null) return;
-        var at = u.transform.position;
-        if (boss) Play("boss_death", at);
-        else if (BeastOf(u) == Beast.Wolf) Play("wolf_growl", at, 0.8f);
-        else if (BeastOf(u) == Beast.Spider) Play("spider_hiss", at, 0.8f);
-        else Play("death", at, 0.6f);
-        Play("body_fall", at, 0.5f);
-    }
+    // ------------------------------------------------------------------ settings button
 
     /// <summary>Cycles sound on / music off / all off (kept between sessions).</summary>
     public static void CycleMode()
@@ -234,10 +339,6 @@ public static class GameAudio
         if (order <= 15) return "space";         // Astral, Stellar, Interstellar, Galactic
         return "universal";                      // Universal: choirs and a slow clock (creation and time)
     }
-
-    // ------------------------------------------------------------------ weather
-
-    static string weather;
 
     /// <summary>
     /// Weather sound on top of the biome ambience: "rain", "storm", "snow", "wind", or null for clear skies.
@@ -290,7 +391,7 @@ public static class GameAudio
     }
 }
 
-/// <summary>Holds the audio sources: a pool for one-shots, two for music and two for ambience (for cross-fades).</summary>
+/// <summary>Holds the audio sources: a pool for one-shots, and pairs for music, ambience and weather (for cross-fades).</summary>
 public class AudioHost : MonoBehaviour
 {
     AudioSource[] voices;
@@ -316,7 +417,6 @@ public class AudioHost : MonoBehaviour
         s.playOnAwake = false;
         s.loop = loop;
         s.spatialBlend = 0f;
-        s.ignoreListenerPause = false;
         return s;
     }
 

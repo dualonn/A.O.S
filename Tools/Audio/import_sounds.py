@@ -13,7 +13,8 @@ import pedalboard as pb
 from synth import ROOT, SR, hp, lp, loudness, rms_db, fade, n
 
 DL = sys.argv[1] if len(sys.argv) > 1 else '.'
-FILTERS = sys.argv[2:]
+SFX_ONLY = '--sfx' in sys.argv     # re-render effects only (skip music and ambience)
+FILTERS = [a for a in sys.argv[2:] if a != '--sfx']
 
 
 # ---------------------------------------------------------------- source specs
@@ -162,6 +163,32 @@ def write(x, rel, ogg=False, quality=0.45):
     return path
 
 
+def level(x, target, max_squash=9.0):
+    """Bring a sound to a loudness target. Sharp sounds (shots, bows, hits) would clip first, so their
+    peaks are limited (up to max_squash dB) instead of the whole sound being turned down."""
+    x = x * 10 ** ((target - loudness(x)) / 20)
+    pk = np.abs(x).max()
+    if pk > 0.95:
+        over = 20 * np.log10(pk / 0.95)
+        squash = min(over, max_squash)
+        if squash > 0.5:
+            x = x * 10 ** (-(over - squash) / 20)           # what the limiter can't take, turn down
+            st = x.T.astype(np.float32)
+            x = pb.Pedalboard([pb.Limiter(threshold_db=-squash - 0.5, release_ms=60)])(st, SR).T.astype(np.float64)
+            x = x * 10 ** ((target - loudness(x)) / 20)
+        x *= min(1.0, 0.95 / np.abs(x).max())
+    return x
+
+
+def write_index():
+    """Resources/Audio/sfx_index.txt: every effect clip, so the game can load them a few per frame."""
+    paths = sorted(os.path.relpath(p, ROOT).replace(os.sep, '/')[:-4]
+                   for p in glob.glob(os.path.join(ROOT, 'SFX', '**', '*.wav'), recursive=True))
+    with open(os.path.join(ROOT, 'sfx_index.txt'), 'w', encoding='utf-8', newline='\n') as f:
+        f.write('\n'.join('Audio/' + p for p in paths) + '\n')
+    return len(paths)
+
+
 def loop_xfade(x, xf=2.0):
     X = n(xf)
     if len(x) < 3 * X:
@@ -252,7 +279,7 @@ SFX = {
         'confirm': V('interface-sounds/**/confirmation_00[12].ogg'),
         'notify': V('interface-sounds/**/bong_001.ogg'),
         'age_up': V('Production_Intro_Theme.wav'),
-        'raid_warning': V('their-coming-generic-horn-sound/theircoming.ogg'),
+        'raid_warning': [S('their-coming-generic-horn-sound/theircoming.ogg', dur=6.6)],   # first two blasts only
         'victory': V('medieval-victory-theme/victory.wav'),
         'defeat': V('medieval-defeat-theme/defeat.wav'),
     },
@@ -267,7 +294,7 @@ SFX = {
     },
     'Sites': {
         'dungeon_enter': V('oga-100-CC0-SFX_0/**/door_0[12].ogg'),
-        'camp_destroyed': V('oga-80-CC0-RPG-SFX_0/**/stones_0[34].ogg'),
+        'camp_destroyed': L(S('oga-80-CC0-RPG-SFX_0/**/stones_03.ogg'), S('impactWood_heavy_001.ogg', gain=0.8), S('wood-twigs-break-02.wav', gain=0.6)),
         'chain': V('oga-80-CC0-RPG-SFX_0/**/chain_0*.ogg'),
     },
     'Space': {
@@ -286,7 +313,7 @@ SFX = {
     'World': {
         'thunder': [S('rain-thunder.ogg', start=21.3, dur=10), S('Dark_Rainy_Night(ambience).ogg', start=33.6, dur=5),
                     S('Dark_Rainy_Night(ambience).ogg', start=51.8, dur=4.5), S('Dark_Rainy_Night(ambience).ogg', start=89.5, dur=5)],
-        'event_card': L(S('rpg-audio/x/Audio/bookFlip1.ogg'), S('oga-100-CC0-SFX_0/**/bell_01.ogg', gain=0.35)),
+        'event_card': L(S('rpg-audio/x/Audio/bookFlip1.ogg'), S('oga-100-CC0-SFX_0/**/bell_01.ogg', gain=0.6)),
         'wonder_complete': L(S('oga-100-CC0-SFX_0/**/gong_01.ogg'), S('Heavenly Loop.flac', dur=7, gain=0.8)),
         'diplomacy': V('rpg-audio/**/bookPlace*.ogg'),
         'peace': V('oga-100-CC0-SFX_0/**/bell_02.ogg'),
@@ -298,7 +325,9 @@ SFX = {
 # loudest-0.3s loudness target per group (dB)
 LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15}
 QUIET_UI = {'click': -24, 'hover': -27, 'tab': -24, 'panel_open': -22, 'panel_close': -22, 'page_flip': -22}
-LONG = {'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -14}
+LONG = {'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -22}
+# per-sound loudness overrides (dB)
+TARGET = {'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22}
 
 # Music: era playlists (the game picks per age), played whole and cross-faded; stereo OGG.
 MUSIC = {
@@ -355,17 +384,14 @@ def main():
                     continue
                 long_ = name in LONG
                 x = tidy(x, mono=not long_)
-                target = LONG.get(name) or QUIET_UI.get(name) or LOUD[group]
-                x *= 10 ** ((target - loudness(x)) / 20)
-                pk = np.abs(x).max()
-                if pk > 0.95:
-                    x *= 0.95 / pk
+                target = TARGET.get(name) or LONG.get(name) or QUIET_UI.get(name) or LOUD[group]
+                x = level(x, target)
                 rel = f'SFX/{group}/{name}' + (f'_{i}' if len(variants) > 1 else '')
                 write(x, rel)
                 made += 1
                 print(f'{rel:32s} {len(x) / SR:5.2f}s  <- {" + ".join(os.path.basename(s.pattern) + ("#%d" % s.take if s.take is not None else "") for s in specs)}')
 
-    for era, files in MUSIC.items():
+    for era, files in ({} if SFX_ONLY else MUSIC).items():
         for i, f in enumerate(files, 1):
             name = f'{era}_{i}'
             if not want(name):
@@ -390,7 +416,7 @@ def main():
             made += 1
             print(f'Music/{name:24s} {len(x) / SR:6.1f}s  <- {os.path.basename(f)}')
 
-    for name, s in AMBIENCE.items():
+    for name, s in ({} if SFX_ONLY else AMBIENCE).items():
         if not want(name):
             continue
         try:
@@ -407,7 +433,7 @@ def main():
         made += 1
         print(f'Ambience/{name:21s} {len(x) / SR:6.1f}s  <- {os.path.basename(s.pattern)}')
 
-    print(made, 'files')
+    print(made, 'files;', write_index(), 'effects in sfx_index.txt')
     if missing:
         print('MISSING:\n  ' + '\n  '.join(missing))
 

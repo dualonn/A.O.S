@@ -263,6 +263,10 @@ public abstract class Unit : MonoBehaviour
 
     private IUnitVisual visual;
 
+    /// <summary>What this unit fights with, and whether it's a beast (read by sounds; no lookups).</summary>
+    public WeaponClass WeaponKind => visual is SpriteUnitVisual v ? v.weaponClass : WeaponClass.Melee;
+    public Beast BeastKind => visual is SpriteUnitVisual v && v.figure != null ? v.figure.beast : Beast.None;
+
     // Stats after research, before any building upgrades (captured on first use).
     private bool hasBaseStats;
     private int baseMaxHealth;
@@ -635,7 +639,7 @@ public abstract class Unit : MonoBehaviour
             // Loose an arrow: it does the damage when it lands.
             Projectile.Fire(definition.projectile, LaunchPoint, target, definition.projectileSpeed, WeatherFx.Ranged(attackPower), this, definition.projectileArc,
                 definition.splashRadius, definition.splashFire);
-            GameAudio.Fire(GameAudio.WeaponOf(this), transform.position);
+            GameAudio.Fire(this);
             if (definition.muzzleSmoke)
             {
                 Vector3 toward = (target.transform.position - transform.position).normalized;
@@ -798,7 +802,7 @@ public abstract class Unit : MonoBehaviour
         swingTarget = null;
         swingAction = null;
         SetMoving(false);
-        GameAudio.Death(this, definition != null && definition.isBoss);
+        GameAudio.Death(this);
         if (visual != null)
         {
             visual.PlayDeath();

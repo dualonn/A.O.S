@@ -1091,6 +1091,9 @@ def main(filters):
         done += 1
         print(f'{name:22s} {len(x) / SR:5.2f}s  {path.split("Audio")[-1]}')
     print(done, 'sounds')
+    sys.argv = sys.argv[:1] + ['.']          # import_sounds reads its own args; only its index writer is needed
+    from import_sounds import write_index
+    print(write_index(), 'effects in sfx_index.txt')
 
 
 if __name__ == '__main__':

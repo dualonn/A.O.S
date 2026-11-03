@@ -89,7 +89,7 @@ public class Projectile : MonoBehaviour
         {
             if (target != null && target.IsAlive)
             {
-                if (splash <= 0f) GameAudio.Play("arrow_hit", end, 0.6f);
+                if (splash <= 0f) GameAudio.ProjectileHit(source, end);
                 target.TakeDamage(damage, source);
             }
             if (splash > 0f)

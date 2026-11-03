@@ -434,7 +434,10 @@ def rms_db(x):
 
 # ---------------------------------------------------------------- output
 
-ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'Assets', 'Resources', 'Audio'))
+# Output folder. Set AOS_AUDIO_OUT to render somewhere else first (e.g. while the game is playing in the
+# editor: files landing in Assets mid-play make Unity re-import and recompile) and copy in afterwards.
+ROOT = os.environ.get('AOS_AUDIO_OUT') or os.path.normpath(
+    os.path.join(os.path.dirname(__file__), '..', '..', 'Assets', 'Resources', 'Audio'))
 
 
 def loudness(x, win=0.3):
