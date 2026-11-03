@@ -1,0 +1,48 @@
+﻿A.O.S audio credits
+All recordings below are CC0 (public domain): no attribution required, credited here anyway.
+Synthesized sounds (chimes, loot sparkles, some ambience beds) are made by Tools/Audio/sfx.py.
+
+Kenney (kenney.nl) - CC0: RPG Audio, Impact Sounds, Interface Sounds, UI Audio, Sci-fi Sounds, Digital Audio
+rubberduck (opengameart.org) - CC0: 100 CC0 SFX, 100 CC0 SFX #2, 80 CC0 RPG SFX, 80 CC0 creature SFX, 25 CC0 bang SFX
+artisticdude (opengameart.org/content/rpg-sound-pack) - CC0: RPG Sound Pack
+
+25 CC0 bang / firework SFX - rubberduck - CC0 - https://opengameart.org/node/92774
+A start to space - Centurion_of_war - CC0 - https://opengameart.org/content/a-start-to-space
+Birds and Wind - Ambient, Birds, Wind and Synth - Spring Spring - CC0 - https://opengameart.org/content/birds-and-wind-ambient-birds-wind-and-synth
+Boundless - Centurion_of_war - CC0 - https://opengameart.org/content/boundless
+C64 - Bach - wtk2-prelude2 - TheOuterLinux - CC0 - https://opengameart.org/content/c64-bach-wtk2-prelude2
+Call to War - Umplix - CC0 - https://opengameart.org/content/call-to-war
+Cannon fire - Thimras - CC0 - https://opengameart.org/content/cannon-fire
+Cannon hit cannon - Thimras - CC0 - https://opengameart.org/content/cannon-hit-cannon
+Cosmic Navigation - Synth-thetic - CC0 - https://opengameart.org/content/cosmic-navigation
+Exploration Theme - CleytonKauffman - CC0 - https://opengameart.org/content/exploration-theme
+Factory ambiance - yd - CC0 - https://opengameart.org/node/16130
+Fantasy Orchestral Theme - Joth - CC0 - https://opengameart.org/content/fantasy-orchestral-theme
+Fantasy Sound Effects (Tinysized SFX) - Vehicle - CC0 - https://opengameart.org/content/fantasy-sound-effects-tinysized-sfx
+Forest Ambience - TinyWorlds - CC0 - https://opengameart.org/content/forest-ambience
+Forest bird sounds - pauliuw - CC0 - https://opengameart.org/content/forest-bird-sounds
+Harpsichord Flurry - Spring Spring - CC0 - https://opengameart.org/content/harpsichord-flurry
+Medieval sound effects - Weapon Textures - Ben Jaszczak & Brian Nelson - CC0 - https://opengameart.org/content/medieval-sound-effects-weapon-textures
+Medieval: Battle - RandomMind - CC0 - https://opengameart.org/content/medieval-battle
+Medieval: Defeat Theme - RandomMind - CC0 - https://opengameart.org/content/medieval-defeat-theme
+Medieval: Exploration - RandomMind - CC0 - https://opengameart.org/content/medieval-exploration
+Medieval: Harvest Season - RandomMind - CC0 - https://opengameart.org/content/medieval-harvest-season
+Medieval: Market Day - RandomMind - CC0 - https://opengameart.org/content/medieval-market-day
+Medieval: Minstrel Dance - RandomMind - CC0 - https://opengameart.org/content/medieval-minstrel-dance
+Medieval: Rejoicing - RandomMind - CC0 - https://opengameart.org/content/medieval-rejoicing
+Medieval: The Bard's Tale - RandomMind - CC0 - https://opengameart.org/content/medieval-the-bards-tale
+Medieval: The Old Tower Inn - RandomMind - CC0 - https://opengameart.org/content/medieval-the-old-tower-inn
+Medieval: Victory Theme - RandomMind - CC0 - https://opengameart.org/content/medieval-victory-theme
+Menacing Otherworld - Ruskerdax - CC0 - https://opengameart.org/content/menacing-otherworld
+Nighum - cinameng - CC0 - https://opengameart.org/node/142379
+Outer Space Loop - wipics - CC0 - https://opengameart.org/content/outer-space-loop
+Production Theme Intro [Epic Orchestra] - nene - CC0 - https://opengameart.org/content/production-theme-intro-epic-orchestra
+Residue-sfx - FacadeGaikan - CC0 - https://opengameart.org/content/residue-sfx
+sansho - cinameng - CC0 - https://opengameart.org/node/122480
+Sea and river wave sounds - RandomMind - CC0 - https://opengameart.org/content/sea-and-river-wave-sounds
+Space Echo - Centurion_of_war - CC0 - https://opengameart.org/content/space-echo
+Space Music: Out There - yd - CC0 - https://opengameart.org/content/space-music-out-there
+Steampunk music - bertsz - CC0 - https://opengameart.org/content/steampunk-music
+Synth Wave by Alex - Pro Sensory - CC0 - https://opengameart.org/content/synth-wave-by-alex
+The Free Firearm Sound Library - bart - CC0 - https://opengameart.org/content/the-free-firearm-sound-library
+Their Coming (generic horn sound) - StumpyStrust - CC0 - https://opengameart.org/content/their-coming-generic-horn-sound
