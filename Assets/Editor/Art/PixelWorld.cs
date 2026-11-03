@@ -422,6 +422,7 @@ public static partial class PlaceholderArt
     private static void PixelDeposit(PixelCanvas c, int variant, Ore ore)
     {
         var rng = new System.Random(variant * 31 + (int)ore * 7);
+        if (PixelOre(c, variant, ore)) return;   // each ore's own look (PixelOres.cs)
         if (ore == Ore.Oil)
         {
             // not rock: a black seep of crude oil on bare earth, with a rainbow sheen and withered grass
