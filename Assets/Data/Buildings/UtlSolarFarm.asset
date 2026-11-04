@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlSolarFarm
   displayName: Solar Array
   description: Rows of dark glass panels turning to follow the sun. Clean power;
-    weaker on worlds of long nights, stronger on scorching ones.
+    weaker on worlds of long nights, stronger on scorching ones. Powers the district
+    round it.
   icon: {fileID: 21300000, guid: d765850ec1be94c42be08cf88844013e, type: 3}
   prefab: {fileID: 0}
   looks:

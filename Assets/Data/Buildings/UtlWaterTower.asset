@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlWaterTower
   displayName: Water Tower
   description: A riveted iron tank on a brick tower, keeping the pressure up in the
-    pipes of the quarter round it. Needs a pump on its mains.
+    pipes of the district round it. Needs a pump on its mains.
   icon: {fileID: 21300000, guid: 652700dbeaca69f4f889210d57ec8e34, type: 3}
   prefab: {fileID: 0}
   looks:

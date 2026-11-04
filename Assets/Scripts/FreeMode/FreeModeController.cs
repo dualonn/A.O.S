@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 /// Raiders roam in from a random direction, smash and loot buildings, and run off with
 /// what they can carry; troops defend the whole town.
 /// </summary>
-public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
+public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
 {
     [Header("Scene references")]
     public SettlementGrid grid;
@@ -1291,7 +1291,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         // Raiders set out from the nearest camp in range; with none, they gather just outside a
         // settlement's safe zone, on explored land.
         var camp = CampForRaid();
-        raidOrigin = camp != null ? BesideCamp(camp) : RaidSpawnPoint();
+        raidOrigin = RaidPartyOrigin(ref camp) ?? (camp != null ? BesideCamp(camp) : RaidSpawnPoint());   // a war party starts where it is (RaidMarchLive.cs)
         raidOrigin = RiverWorks.ConsiderNavalRaid(camp == null, raidOrigin, wave.units.Count);   // some raids come by sea
         var aim = NearestTarget(raidOrigin);
         raidTargetPoint = aim != null ? ClosestPointOn(aim, raidOrigin) : TownCenterPosition;
@@ -1345,7 +1345,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
                     enemy.InLiveWave = true;
                 }
             }
-            yield return new WaitForSeconds(secondsBetweenWaveSpawns);
+            yield return new WaitForSeconds(secondsBetweenWaveSpawns + RaidSpawnGap());   // war parties come in waves
         }
     }
 

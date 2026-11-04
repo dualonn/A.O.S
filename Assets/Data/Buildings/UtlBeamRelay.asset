@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlBeamRelay
   displayName: Beam Relay
-  description: A crystal lens on a slender tower, passing power on in a pencil of
-    light.
+  description: 'A crystal lens on a slender tower, passing power up to the collectors
+    in orbit and down again in a pencil of light: every grid on the world becomes
+    one.'
   icon: {fileID: 21300000, guid: c3ff19c8e3c315242998b7d3031e0b06, type: 3}
   prefab: {fileID: 0}
   looks:

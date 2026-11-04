@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlSmartGrid
   displayName: Smart Grid
   description: 'Meters that talk to the power stations, and demand that follows the
-    supply: generators give 10% more, and pollution -10%.'
+    supply: generators give 10% more, every power district reaches 2 tiles further,
+    and pollution -10%.'
   icon: {fileID: 0}
   age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
   requirements:

@@ -153,6 +153,7 @@ public class FreeModeHUD : MonoBehaviour
         peopleChip.AddComponent<Image>().color = Color.clear;
         UIBuilder.OnHover(peopleChip, () => tooltipSource = PeopleTooltip, HideTooltip);
         waveText = Chip(chips, art != null ? art.enemyIcon : null);
+        RaidThreatHud.Hook(waveText.transform.parent.gameObject, settlement, f => tooltipSource = f, HideTooltip);   // threat meter: hover for camps and war parties, click to look
         researchText = Chip(chips, art != null ? art.researchIcon : null);
 
         var zoomOut = UIBuilder.Button("ZoomOut", bar, () => cameraController?.ZoomOut(), out var zoomOutLabel, 40, 26);
@@ -284,6 +285,7 @@ public class FreeModeHUD : MonoBehaviour
         WarPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // army: regiments, commander, battle reports
         PeoplePanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // classes, needs, schooling: section and census
 
+        AdvisorPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // the advisor card: top issues, Show me
         // Dungeon progress (top centre, only while a party is underground)
         dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
         UIBuilder.Anchor(dungeonPanel, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -52), new Vector2(380, 0));
@@ -680,7 +682,7 @@ public class FreeModeHUD : MonoBehaviour
         string note = idle > 0 ? $" <size=70%><color=#9c9>{idle} idle</color></size>"
             : idle < 0 ? $" <size=70%><color=#fc6>{-idle} short</color></size>" : "";
         peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{note}";
-        waveText.text = $"<b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>";
+        waveText.text = RaidThreatHud.ChipText(settlement);   // Quiet / Restless camps / War party NE ~1 min / Under attack
         if (settlement.RaidsOff) waveText.text = "<b>Peaceful</b>";   // no raids in this game (new-game setup)
 
         // Research chip: the furthest-along project, and how many slots are in use.

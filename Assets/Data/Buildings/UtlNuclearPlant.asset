@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlNuclearPlant
   displayName: Atomic Power Station
   description: 'A chrome reactor dome, glowing blue, between two cooling towers:
-    enormous power from a little uranium. Needs cooling water.'
+    enormous power from a little uranium. Needs cooling water. Powers the district
+    round it.'
   icon: {fileID: 21300000, guid: 5b518160452cdf746b9a102ae4969a92, type: 3}
   prefab: {fileID: 0}
   looks:

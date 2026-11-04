@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// Utilities on the map of the world you're looking at:
 /// - Overlays (Mode: water, power, data or pollution), also shown by themselves while you place a
-///   utility: where each network reaches (blue, yellow, cyan; orange where it's short, red where it
-///   has nothing to give), with the links between its nodes, or the smog as a heat map.
+///   utility: each district's reach as a faint ring, the buildings its network reaches filled in
+///   (blue, yellow, cyan; orange where it's short, red for works and homes it misses), with the
+///   lines between its nodes, or the smog as a heat map.
 /// - Power cables hanging between poles and pylons (always).
 /// - Smog: a faint pixel haze over polluted quarters (greenish on toxic worlds).
 /// Fixed textures and renderer pools, redrawn only when the networks are worked out again.
@@ -29,7 +30,7 @@ public class UtlView : MonoBehaviour
 
     private Texture2D coverTex, hazeTex;
     private Color32[] coverPx, hazePx;
-    private byte[] best;
+    private byte[] best, fill;
     private SpriteRenderer cover, haze;
     private SpriteRenderer[] links, wires;
     private Sprite dot;
@@ -71,6 +72,7 @@ public class UtlView : MonoBehaviour
         coverTex = new Texture2D(CoverTex, CoverTex, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
         coverPx = new Color32[CoverTex * CoverTex];
         best = new byte[CoverTex * CoverTex];
+        fill = new byte[CoverTex * CoverTex];
         cover = MakeRenderer("Overlay", Sprite.Create(coverTex, new Rect(0, 0, CoverTex, CoverTex), Vector2.zero, 1f, 0, SpriteMeshType.FullRect), CoverOrder);
 
         int hp = HazeTiles * HazePx;
@@ -179,6 +181,12 @@ public class UtlView : MonoBehaviour
                 minX = Mathf.Min(minX, d.at.x - d.r); minY = Mathf.Min(minY, d.at.y - d.r);
                 maxX = Mathf.Max(maxX, d.at.x + d.r); maxY = Mathf.Max(maxY, d.at.y + d.r);
             }
+            foreach (var c in n.cover)
+            {
+                if (c.kind != mode) continue;
+                minX = Mathf.Min(minX, c.r.xMin - 1); minY = Mathf.Min(minY, c.r.yMin - 1);
+                maxX = Mathf.Max(maxX, c.r.xMax + 1); maxY = Mathf.Max(maxY, c.r.yMax + 1);
+            }
         }
         if (minX > maxX) { cover.enabled = false; HideFrom(links, 0); return; }
         int x0 = Mathf.FloorToInt(minX) - 1, y0 = Mathf.FloorToInt(minY) - 1;
@@ -238,10 +246,36 @@ public class UtlView : MonoBehaviour
                 }
             }
         }
+        // The buildings the network reaches (or misses), filled in a little stronger than the rings.
+        System.Array.Clear(fill, 0, fill.Length);
+        foreach (var c in n.cover)
+        {
+            if (c.kind != mode) continue;
+            byte lv = (byte)(1 + Mathf.RoundToInt(Mathf.Clamp01(c.level) * 254f));
+            for (int ty = c.r.yMin; ty < c.r.yMax; ty++)
+            {
+                int py = ty - y0;
+                if (py < 0 || py >= CoverTex) continue;
+                for (int tx = c.r.xMin; tx < c.r.xMax; tx++)
+                {
+                    int px = tx - x0;
+                    if (px < 0 || px >= CoverTex) continue;
+                    int i = py * CoverTex + px;
+                    if (fill[i] == 0 || lv < fill[i]) fill[i] = lv;   // a building short of supply shows as short
+                }
+            }
+        }
         for (int py = 0; py < drawH; py++)
             for (int px = 0; px < drawW; px++)
             {
                 int i = py * CoverTex + px;
+                if (fill[i] != 0)
+                {
+                    var col = LevelColor(mode, (fill[i] - 1) / 254f, false);
+                    col.a = 120;
+                    coverPx[i] = col;
+                    continue;
+                }
                 byte b = best[i];
                 if (b == 0) continue;
                 // The rim of the covered area is drawn bolder, so its reach reads at a glance.

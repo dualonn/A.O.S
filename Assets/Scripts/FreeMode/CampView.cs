@@ -175,6 +175,7 @@ public class CampView : MonoBehaviour
         if (Peaceful) controller.Settlement.BreakPeace("You attacked one of their camps.");
         health = Mathf.Max(0, health - amount);
         shake = 0.15f;
+        controller.Settlement.RaidCampHit(State, amount / Mathf.Max(1f, maxHealth));   // angry, and fewer fighters to send
         if (health <= 0)
         {
             controller.CampDestroyed(this);
@@ -237,6 +238,7 @@ public class CampView : MonoBehaviour
         label.text = hovered
             ? controller.Settlement.DiplomacyCampLabel(Chief) ?? $"<color=#ff9a8a>Raider camp</color>\n<size=75%>{age} raiders{(Chief != null ? $", led by <color=#ff8a70>{Chief.definition.displayName}</color>" : "")}. Select troops and right-click it to burn it down.</size>"
             : "";
+        if (hovered && label.text.Length > 0) label.text += controller.Settlement.RaidCampHoverNote(State);   // how restless it is
 
         KeepGuards();
     }
@@ -286,7 +288,9 @@ public class CampView : MonoBehaviour
                 }
             }
         }
+        int guardsHad = guards.Count;
         guards.RemoveAll(g => g == null || !g.IsAlive);
+        if (guardsHad > guards.Count) controller.Settlement.RaidCampLosses(State, guardsHad - guards.Count);
         bool firstFill = nextGuardCheck == 0f;
         nextGuardCheck = Time.time + 45f;
         int wanted = guardCount - guards.Count;

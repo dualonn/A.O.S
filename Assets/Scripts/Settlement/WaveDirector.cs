@@ -51,6 +51,7 @@ public class WaveDirector : MonoBehaviour
         {
             return;
         }
+        if (settlement.RaidMarchTick(Time.deltaTime)) return;   // raids come from camps now (RaidMarch.cs)
         // The countdown to the next raid waits while one is still being fought, so there's always a
         // breather after it (up to a few minutes per raid, in case a raider is stuck somewhere).
         var live = FreeModeController.Instance;

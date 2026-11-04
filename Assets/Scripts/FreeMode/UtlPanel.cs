@@ -77,15 +77,15 @@ public class UtlPanel : MonoBehaviour
         headerLabel.alignment = TextAlignmentOptions.Center;
         b.transform.SetSiblingIndex(Mathf.Max(1, header.childCount - 2));   // before the grouping button
         UIBuilder.OnHover(b.gameObject, () => setTip?.Invoke(() =>
-            "<b>Map overlay</b>\nClick to cycle: water, power, data, smog, off. Shows where each network reaches " +
-            "(orange where it's short, red where it has nothing to give).\nIt also shows by itself while you place a utility."), () => hideTip?.Invoke());
+            "<b>Map overlay</b>\nClick to cycle: water, power, data, smog, off. Rings show each district; the buildings a network reaches are filled in " +
+            "(orange where it's short, red for the ones it misses).\nIt also shows by itself while you place a utility."), () => hideTip?.Invoke());
     }
 
     private static string OverlayHelp(int mode) => mode switch
     {
-        1 => "<b>Water overlay</b>\nWhere your wells, fountains, towers and purifiers reach. Light blue: clean water. Red: a point with nothing to give (a tower with no pump, a fountain on a dry aqueduct).",
-        2 => "<b>Power overlay</b>\nWhere each grid reaches, and the links between its poles. Yellow: enough power. Orange: a brownout. Red: no generator on that grid.",
-        3 => "<b>Data overlay</b>\nWhere your data network reaches. Works in reach run 6% faster; data centres speed up research.",
+        1 => "<b>Water overlay</b>\nThe district round each well, fountain, tower and purifier, and the homes it waters (homes beside watered ones get it too). Light blue: clean water. Red: homes without water, or a point with nothing to give.",
+        2 => "<b>Power overlay</b>\nThe district round each generator and substation, the works it powers (works beside powered ones get it too), and the lines joining districts into grids. Yellow: enough power. Orange: a brownout. Red: works off every grid.",
+        3 => "<b>Data overlay</b>\nThe district round each data centre and relay, and the works it connects (6% faster); data centres speed up research.",
         _ => "<b>Smog overlay</b>\nHow polluted the air is: yellow haze, brown smog, violet where acid rain falls.",
     };
 

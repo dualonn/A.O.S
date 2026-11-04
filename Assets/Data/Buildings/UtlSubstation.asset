@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlSubstation
   displayName: Substation
-  description: 'Transformers humming behind a fence: they power a whole quarter round
-    them.'
+  description: 'Transformers humming behind a fence: they power a whole district
+    off the grid they''re linked to. A generator plus a substation or two powers
+    a town.'
   icon: {fileID: 21300000, guid: 54d967db278dbf84093dc44a461bf1e2, type: 3}
   prefab: {fileID: 0}
   looks:

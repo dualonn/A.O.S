@@ -19,11 +19,17 @@ using U = UtlCatalog;
 /// - Clean air: Physic Garden (Renaissance), City Park (Industrial), Recycling Plant (Modern), Air
 ///   Scrubber Tower (Information), Sylvan Grove (Arcane), Atmospheric Terraformer (Stellar).
 /// - Nine research items with small global bonuses (they don't count towards an age).
-/// Creates or updates only its own assets and art, and is safe to run again.
+/// Creates or updates only its own assets, and is safe to run again: its art is drawn only where
+/// it's missing (or an upgrade level was added), so running it again just refreshes the numbers and text.
 /// (Tools > Age of Stickman > Setup Utilities.)
 /// </summary>
 public static partial class PlaceholderArt
 {
+    /// <summary>Already has a look for every upgrade level, all drawn.</summary>
+    private static bool UtlHasArt(BuildingDefinition b) =>
+        b.icon != null && b.looks != null && b.looks.Count == b.upgrades.Count + 1 &&
+        b.looks.TrueForAll(l => l != null && l.frames != null && l.frames.Count > 0 && !l.frames.Exists(f => f == null));
+
     [MenuItem("Tools/Age of Stickman/Setup Utilities")]
     public static void SetupUtilities()
     {
@@ -94,7 +100,7 @@ public static partial class PlaceholderArt
         T(U.TechScrubbers, "Catalytic Scrubbers", electric,
             "Platinum honeycombs turn the fumes into steam and salt: pollution -15%.", 140f, C(steel, 300, power, 60, coin, 500));
         T(U.TechSmartGrid, "Smart Grid", information,
-            "Meters that talk to the power stations, and demand that follows the supply: generators give 10% more, and pollution -10%.",
+            "Meters that talk to the power stations, and demand that follows the supply: generators give 10% more, every power district reaches 2 tiles further, and pollution -10%.",
             150f, C(chips, 150, coin, 800));
         T(U.TechLeyAttune, "Ley Attunement", arcane,
             "The reactors are tuned to the ley lines' own rhythm: mana and aether reactors give 15% more power.", 150f, C(mana, 200, manastone, 60, gold, 200));
@@ -108,8 +114,8 @@ public static partial class PlaceholderArt
             int hp, int workers, float buildTime)
         {
             var b = Building(db, id, display, age, null, size, art, desc, cost, buildTime, hp, workers, null);
+            if (b.wallKind != WallTile.Conduit || b.pieces == null) b.pieces = new List<Sprite>();   // (the aqueduct keeps its drawn pieces)
             b.wallKind = WallTile.None;
-            b.pieces = new List<Sprite>();
             b.canBuildOnHills = false;
             b.production = new List<ResourceRate>();
             b.inputs = new List<ResourceRate>();
@@ -142,15 +148,15 @@ public static partial class PlaceholderArt
 
         // Water
         Add(B(U.Cistern, "Cistern", bronze, V(2, 2), V(2, 2),
-            "A plastered stone tank sunk into the ground, filled by the rain from roofs and gutters.", C(stone, 80, wood, 30), 300, 0, 15f));
+            "A plastered stone tank sunk into the ground, filled by the rain from roofs and gutters. Waters the district round it.", C(stone, 80, wood, 30), 300, 0, 15f));
         var aqueduct = Add(B(U.Aqueduct, "Aqueduct", classical, Vector2Int.one, Vector2Int.one,
             "A stone channel carried on arches, falling gently all the way from the river to the town. " +
-            "Drag out a line from a river or lake (or a water mill or pump) to your fountains; people walk under it.",
+            "Drag out a line from a river or lake (or a water mill or pump) into a district with no water: it waters the buildings along it and fills its fountains. People walk under it.",
             C(stone, 6), 400, 0, 3f));
         aqueduct.wallKind = WallTile.Conduit;
         aqueduct.canBuildOnHills = true;
         var fountain = Add(B(U.Fountain, "Fountain", classical, V(2, 2), V(2, 3),
-            "A castellum where the aqueduct ends, sharing its water out to a basin and spouting bronze lions. Set it beside an aqueduct.",
+            "A castellum where the aqueduct ends, sharing its water out to the whole district round it from spouting bronze lions. Set it beside an aqueduct.",
             C(stone, 150, gold, 15), 500, 1, 20f));
         fountain.upgrades = new List<BuildingUpgrade> { Up("Lead Pipes", "Pipes to the bath house and the rich men's houses: 20% more people served.", C(stone, 100, iron, 30)) };
         var wheel = Add(B(U.Waterwheel, "Water-wheel Pump", renaissance, V(2, 2), V(2, 3),
@@ -167,10 +173,10 @@ public static partial class PlaceholderArt
             Up("Second Bore", "Another well sunk beside the first.", C(stone, 200, steel, 100), 1.2f),
         };
         Add(B(U.WaterTower, "Water Tower", industrial, V(2, 2), V(2, 4),
-            "A riveted iron tank on a brick tower, keeping the pressure up in the pipes of the quarter round it. Needs a pump on its mains.",
+            "A riveted iron tank on a brick tower, keeping the pressure up in the pipes of the district round it. Needs a pump on its mains.",
             C(steel, 120, stone, 100, wood, 60), 900, 0, 25f));
         var purifier = Add(B(U.Purifier, "Purification Plant", modern, V(3, 3), V(3, 3),
-            "Settling tanks, sand filters and a chlorine house: clean water for the whole network it joins.",
+            "Settling tanks, sand filters and a chlorine house: clean water for the district round it and the whole network it joins.",
             C(stone, 400, steel, 250, coin, 300), 2000, 4, 40f));
         purifier.upgrades = new List<BuildingUpgrade>
         {
@@ -263,26 +269,26 @@ public static partial class PlaceholderArt
 
         // Power: carrying it
         var pole = Add(B(U.PowerPole, "Power Pole", industrial, Vector2Int.one, V(1, 2),
-            "A creosoted wooden pole with a crossarm and glass insulators. Cables hang to the next pole.", C(wood, 8, iron, 2), 120, 0, 3f));
+            "A creosoted wooden pole with a crossarm and glass insulators: a power line linking districts and towns into one grid (it powers nothing itself). Cables hang to the next pole.", C(wood, 8, iron, 2), 120, 0, 3f));
         pole.canBuildOnHills = true;
         var pylon = Add(B(U.Pylon, "Steel Pylon", modern, Vector2Int.one, V(1, 3),
-            "A lattice tower carrying the high-voltage lines over field and river.", C(steel, 10), 300, 0, 4f));
+            "A lattice tower carrying the high-voltage lines between districts and towns, over field and river.", C(steel, 10), 300, 0, 4f));
         pylon.canBuildOnHills = true;
         RiverRankUp(pole, pylon, null, 0.8f, 4f);
         Add(B(U.Substation, "Substation", modern, V(2, 2), V(2, 2),
-            "Transformers humming behind a fence: they power a whole quarter round them.", C(steel, 150, stone, 100, coin, 100), 900, 0, 20f));
+            "Transformers humming behind a fence: they power a whole district off the grid they're linked to. A generator plus a substation or two powers a town.", C(steel, 150, stone, 100, coin, 100), 900, 0, 20f));
         var tesla = Add(B(U.TeslaMast, "Tesla Mast", electric, Vector2Int.one, V(1, 3),
-            "A copper mast topped with a crackling sphere: power sent through the air, no cables needed.", C(steel, 40, power, 10, coin, 40), 600, 0, 10f));
+            "A copper mast topped with a crackling sphere: power sent through the air to districts far off, no cables needed.", C(steel, 40, power, 10, coin, 40), 600, 0, 10f));
         tesla.canBuildOnHills = true;
         var obelisk = Add(B(U.LeyObelisk, "Ley Obelisk", arcane, Vector2Int.one, V(1, 3),
-            "A rune-cut standing stone that sings power along the ley lines to its kin.", C(stone, 60, manastone, 15, mana, 20), 900, 0, 12f));
+            "A rune-cut standing stone that sings power along the ley lines to its kin, linking districts far apart.", C(stone, 60, manastone, 15, mana, 20), 900, 0, 12f));
         obelisk.canBuildOnHills = true;
         Add(B(U.BeamRelay, "Beam Relay", stellar, V(2, 2), V(2, 3),
-            "A crystal lens on a slender tower, passing power on in a pencil of light.", C(steel, 200, heliolite, 40, cores, 10), 2000, 0, 25f));
+            "A crystal lens on a slender tower, passing power up to the collectors in orbit and down again in a pencil of light: every grid on the world becomes one.", C(steel, 200, heliolite, 40, cores, 10), 2000, 0, 25f));
 
         // Data
         var relay = Add(B(U.DataRelay, "Data Relay Mast", information, Vector2Int.one, V(1, 3),
-            "A mast of antennas and microwave dishes blinking red at the top.", C(steel, 40, chips, 10), 500, 0, 10f));
+            "A mast of antennas and microwave dishes blinking red at the top: the works round it join the data network.", C(steel, 40, chips, 10), 500, 0, 10f));
         relay.canBuildOnHills = true;
         var centre = Add(B(U.DataCentre, "Data Centre", information, V(3, 2), V(3, 3),
             "A windowless hall of humming server racks and chillers on the roof. Needs a lot of power.",
@@ -319,20 +325,33 @@ public static partial class PlaceholderArt
             "A towering engine that cleans the sky for miles and, on toxic worlds, slowly makes the air fit to breathe (people grow faster there).",
             C(steel, 900, heliolite, 100, cores, 80, power, 200), 5000, 4, 60f));
 
+        // Generators and substations power the district round them.
+        foreach (var b in built)
+            if (U.TryGet(b.id, out var spec) && (spec.role == UtlRole.Generator || spec.district) && !b.description.Contains("district"))
+            {
+                b.description += " Powers the district round it.";
+                EditorUtility.SetDirty(b);
+            }
         EditorUtility.SetDirty(db);
         AssetDatabase.SaveAssets();
 
-        // ---------- Art (only this setup's own) ----------
+        // ---------- Art (only this setup's own, and only where it's missing) ----------
+        int drawn = 0;
         foreach (var b in built)
         {
-            if (b == aqueduct) continue;
+            if (b == aqueduct || UtlHasArt(b)) continue;
             GenerateUtlLooks(b);
+            drawn++;
         }
-        aqueduct.pieces = UtlAqueductPieces(aqueduct.id);
+        if (aqueduct.pieces == null || aqueduct.pieces.Count < 16 || aqueduct.pieces.Exists(p => p == null))
+        {
+            aqueduct.pieces = UtlAqueductPieces(aqueduct.id);
+            drawn++;
+        }
         aqueduct.icon = aqueduct.pieces[2 | 8];
         aqueduct.looks = new List<BuildingLook>();
         EditorUtility.SetDirty(aqueduct);
         AssetDatabase.SaveAssets();
-        Debug.Log($"Utilities set up: {built.Count} buildings (water, power, data, clean air) and {U.Techs.Length} research items.");
+        Debug.Log($"Utilities set up: {built.Count} buildings (water, power, data, clean air) and {U.Techs.Length} research items; {drawn} drawn (the rest already had their art).");
     }
 }

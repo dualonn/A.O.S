@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlManaReactor
   displayName: Mana Reactor
   description: 'A ring of runestones round a blazing crystal, wound in copper: mana
-    turned into lightning.'
+    turned into lightning. Powers the district round it.'
   icon: {fileID: 21300000, guid: 4a3d122cc26efa149a194564d36e33a2, type: 3}
   prefab: {fileID: 0}
   looks:

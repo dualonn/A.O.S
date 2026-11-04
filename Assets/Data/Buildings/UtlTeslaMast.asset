@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlTeslaMast
   displayName: Tesla Mast
   description: 'A copper mast topped with a crackling sphere: power sent through
-    the air, no cables needed.'
+    the air to districts far off, no cables needed.'
   icon: {fileID: 21300000, guid: da4d42e9743bf5d4dae084d5c31216fd, type: 3}
   prefab: {fileID: 0}
   looks:

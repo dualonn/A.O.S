@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlDataRelay
   displayName: Data Relay Mast
-  description: A mast of antennas and microwave dishes blinking red at the top.
+  description: 'A mast of antennas and microwave dishes blinking red at the top:
+    the works round it join the data network.'
   icon: {fileID: 21300000, guid: bc4528fa83b5f5b449e90ebff31708f3, type: 3}
   prefab: {fileID: 0}
   looks:

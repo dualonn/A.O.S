@@ -15,7 +15,7 @@ public enum UtlRole
     Fountain,
     /// <summary>Makes power for the grid. amount = power.</summary>
     Generator,
-    /// <summary>Carries power: poles, pylons, substations, wireless masts.</summary>
+    /// <summary>Carries power between districts: poles, pylons, wireless masts (and substations, which power a district too).</summary>
     PowerNode,
     /// <summary>Data: relays and computers. amount = compute.</summary>
     Data,
@@ -53,10 +53,15 @@ public class UtlSpec
     public bool mains;
     /// <summary>Part of an older system: not built by Setup Utilities (wells, reactors, data banks).</summary>
     public bool existing;
+    /// <summary>Powers a district round it ('cover' tiles, with conduction): generators and substations. Lines don't.</summary>
+    public bool district;
+    /// <summary>Joins every network of its kind on the world into one (the beam relay, the noosphere).</summary>
+    public bool world;
 
     public UtlSpec(UtlRole role, int cover, int link, float amount, float pollution = 0f, int demand = 0)
     {
         this.role = role; this.cover = cover; this.link = link; this.amount = amount; this.pollution = pollution; this.demand = demand;
+        district = role == UtlRole.Generator;
     }
 }
 
@@ -96,14 +101,27 @@ public static class UtlCatalog
     public static readonly string[] Techs =
         { TechHydraulics, TechSanitation, TechSmokeFilters, TechAlternating, TechScrubbers, TechSmartGrid, TechLeyAttune, TechAtmoEng, TechQuantumNet };
 
-    /// <summary>Generators' own links and reach.</summary>
-    public const int GeneratorCover = 6, GeneratorLink = 9;
+    /// <summary>Generators' links to lines, and their district (the early ones; later tiers reach further).</summary>
+    public const int GeneratorCover = 10, GeneratorLink = 9;
+
+    /// <summary>
+    /// Conduction: a building a district reaches passes the supply on to buildings within this gap
+    /// (tiles), up to this many hops, so it fills in a district's edges but doesn't light a whole town.
+    /// </summary>
+    public const float ConductGap = 1.5f;
+    public const int ConductHops = 2;
+
+    /// <summary>No district reaches further than this (with upgrades and research).</summary>
+    public const float MaxCover = 22f;
+
+    /// <summary>Worlds that had grids when districts came in: seconds before a building left off the grid feels it.</summary>
+    public const float DistrictGrace = 1800f;
 
     /// <summary>Water mains: pumps, towers and purifiers this far apart are joined underground.</summary>
     public const int MainsLink = 18;
 
     /// <summary>Fountains on a fed aqueduct, and the aqueduct's own water (plus each mill feeding it).</summary>
-    public const int FountainFedCover = 11, FountainBasinCover = 4;
+    public const int FountainFedCover = 12, FountainBasinCover = 4;
     public const float FountainBasinPeople = 30f, AqueductPeople = 400f, MillFeedPeople = 300f;
 
     /// <summary>Power: unpowered Electric Age (and later) works run this much slower; powered ones faster.</summary>
@@ -120,18 +138,18 @@ public static class UtlCatalog
     public static readonly Dictionary<string, UtlSpec> Specs = new Dictionary<string, UtlSpec>
     {
         // Water. amount = people served.
-        { Cistern, new UtlSpec(UtlRole.Water, 7, 0, 70f) },
+        { Cistern, new UtlSpec(UtlRole.Water, 9, 0, 70f) },
         { Aqueduct, new UtlSpec(UtlRole.Aqueduct, 0, 0, 0f, 0f, -1) },
         { Fountain, new UtlSpec(UtlRole.Fountain, FountainFedCover, 0, 180f) },
-        { Waterwheel, new UtlSpec(UtlRole.Water, 9, 0, 300f) { waterReach = 1, feeds = true } },
-        { PumpStation, new UtlSpec(UtlRole.Water, 5, MainsLink, 900f, 2f) { mains = true, feeds = true } },
-        { WaterTower, new UtlSpec(UtlRole.WaterNode, 13, MainsLink, 0f) { mains = true, demand = -1 } },
-        { Purifier, new UtlSpec(UtlRole.Water, 6, MainsLink, 1500f, 0f, 6) { mains = true, clean = true } },
+        { Waterwheel, new UtlSpec(UtlRole.Water, 10, 0, 300f) { waterReach = 1, feeds = true } },
+        { PumpStation, new UtlSpec(UtlRole.Water, 8, MainsLink, 900f, 2f) { mains = true, feeds = true } },
+        { WaterTower, new UtlSpec(UtlRole.WaterNode, 14, MainsLink, 0f) { mains = true, demand = -1 } },
+        { Purifier, new UtlSpec(UtlRole.Water, 10, MainsLink, 1500f, 0f, 6) { mains = true, clean = true } },
         { Extractor, new UtlSpec(UtlRole.Water, 12, MainsLink, 500f, 0f, 8) { mains = true, clean = true } },
-        { Font, new UtlSpec(UtlRole.Water, 15, MainsLink, 1200f, 0f, -1) { mains = true, clean = true } },
-        { Synth, new UtlSpec(UtlRole.Water, 24, MainsLink * 2, 6000f, 0f, 30) { mains = true, clean = true } },
+        { Font, new UtlSpec(UtlRole.Water, 14, MainsLink, 1200f, 0f, -1) { mains = true, clean = true } },
+        { Synth, new UtlSpec(UtlRole.Water, 20, MainsLink * 2, 6000f, 0f, 30) { mains = true, clean = true } },
         // ...and the disaster crews' wells and pumps (Setup Disasters) are small water sources too.
-        { DisCatalog.Well, new UtlSpec(UtlRole.Water, 6, 0, 40f, 0f, -1) { existing = true } },
+        { DisCatalog.Well, new UtlSpec(UtlRole.Water, 8, 0, 40f, 0f, -1) { existing = true } },
         { DisCatalog.FireWatch, new UtlSpec(UtlRole.Water, 8, 0, 60f, 0f, -1) { existing = true } },
         { DisCatalog.FireStation, new UtlSpec(UtlRole.Water, 10, 0, 100f) { existing = true } },
         { DisCatalog.FireDrones, new UtlSpec(UtlRole.Water, 12, 0, 150f) { existing = true } },
@@ -139,40 +157,40 @@ public static class UtlCatalog
         // Power. amount = power made at full work.
         { SteamDynamo, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 50f, 6f, -1) { cooling = true } },
         { HydroDam, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 70f, 0f, -1) { waterReach = 1 } },
-        { CoalPlant, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 160f, 10f, -1) { cooling = true } },
-        { OilPlant, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 130f, 7f, -1) { cooling = true } },
-        { WindTurbine, new UtlSpec(UtlRole.Generator, 3, GeneratorLink, 15f, 0f, -1) },
-        { NuclearPlant, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 450f, 1.5f, -1) { cooling = true } },
+        { CoalPlant, new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink, 160f, 10f, -1) { cooling = true } },
+        { OilPlant, new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink, 130f, 7f, -1) { cooling = true } },
+        { WindTurbine, new UtlSpec(UtlRole.Generator, 5, GeneratorLink, 15f, 0f, -1) },
+        { NuclearPlant, new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink, 450f, 1.5f, -1) { cooling = true } },
         { SolarFarm, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 60f, 0f, -1) },
-        { ManaReactor, new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 500f, 0.5f, -1) },
-        { AetherReactor, new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink + 4, 800f, 0f, -1) },
-        { StellarTap, new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink + 8, 1200f, 0f, -1) },
-        { DysonCollector, new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink + 12, 2200f, 0f, -1) },
-        { VoidEngine, new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink + 16, 4000f, 0f, -1) },
+        { ManaReactor, new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink, 500f, 0.5f, -1) },
+        { AetherReactor, new UtlSpec(UtlRole.Generator, GeneratorCover + 5, GeneratorLink + 4, 800f, 0f, -1) },
+        { StellarTap, new UtlSpec(UtlRole.Generator, GeneratorCover + 6, GeneratorLink + 8, 1200f, 0f, -1) },
+        { DysonCollector, new UtlSpec(UtlRole.Generator, GeneratorCover + 8, GeneratorLink + 12, 2200f, 0f, -1) },
+        { VoidEngine, new UtlSpec(UtlRole.Generator, GeneratorCover + 8, GeneratorLink + 16, 4000f, 0f, -1) },
         // ...and the reactors already in the game feed the grid as well as making power cells.
-        { "AtomicReactor", new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 120f, 1f, -1) { existing = true } },
+        { "AtomicReactor", new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink, 120f, 1f, -1) { existing = true } },
         { "SeaTidalGenerator", new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 45f, 0f, -1) { existing = true } },   // the sea's tidal generators
-        { "FusionReactor", new UtlSpec(UtlRole.Generator, GeneratorCover, GeneratorLink, 220f, 0f, -1) { existing = true } },
-        { "AstralReactor", new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink + 4, 300f, 0f, -1) { existing = true } },
-        { "SolarCollector", new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink + 8, 380f, 0f, -1) { existing = true } },
-        { "RiftTap", new UtlSpec(UtlRole.Generator, GeneratorCover + 2, GeneratorLink + 8, 500f, 0f, -1) { existing = true } },
-        { "DysonRelay", new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink + 12, 700f, 0f, -1) { existing = true } },
-        { "ZeroPointTap", new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink + 16, 1000f, 0f, -1) { existing = true } },
+        { "FusionReactor", new UtlSpec(UtlRole.Generator, GeneratorCover + 4, GeneratorLink, 220f, 0f, -1) { existing = true } },
+        { "AstralReactor", new UtlSpec(UtlRole.Generator, GeneratorCover + 5, GeneratorLink + 4, 300f, 0f, -1) { existing = true } },
+        { "SolarCollector", new UtlSpec(UtlRole.Generator, GeneratorCover + 6, GeneratorLink + 8, 380f, 0f, -1) { existing = true } },
+        { "RiftTap", new UtlSpec(UtlRole.Generator, GeneratorCover + 6, GeneratorLink + 8, 500f, 0f, -1) { existing = true } },
+        { "DysonRelay", new UtlSpec(UtlRole.Generator, GeneratorCover + 8, GeneratorLink + 12, 700f, 0f, -1) { existing = true } },
+        { "ZeroPointTap", new UtlSpec(UtlRole.Generator, GeneratorCover + 8, GeneratorLink + 16, 1000f, 0f, -1) { existing = true } },
 
-        // Carrying power.
-        { PowerPole, new UtlSpec(UtlRole.PowerNode, 4, 7, 0f, 0f, -1) },
-        { Pylon, new UtlSpec(UtlRole.PowerNode, 5, 13, 0f, 0f, -1) },
-        { Substation, new UtlSpec(UtlRole.PowerNode, 11, 10, 0f, 0f, -1) },
-        { TeslaMast, new UtlSpec(UtlRole.PowerNode, 8, 22, 0f, 0f, -1) { wireless = true } },
-        { LeyObelisk, new UtlSpec(UtlRole.PowerNode, 12, 30, 0f, 0f, -1) { wireless = true } },
-        { BeamRelay, new UtlSpec(UtlRole.PowerNode, 16, 48, 0f, 0f, -1) { wireless = true } },
+        // Carrying power between districts (a line's cover: the buildings round its foot it joins up, without powering a district).
+        { PowerPole, new UtlSpec(UtlRole.PowerNode, 2, 7, 0f, 0f, -1) },
+        { Pylon, new UtlSpec(UtlRole.PowerNode, 2, 13, 0f, 0f, -1) },
+        { Substation, new UtlSpec(UtlRole.PowerNode, 12, 18, 0f, 0f, -1) { district = true } },
+        { TeslaMast, new UtlSpec(UtlRole.PowerNode, 3, 22, 0f, 0f, -1) { wireless = true } },
+        { LeyObelisk, new UtlSpec(UtlRole.PowerNode, 3, 30, 0f, 0f, -1) { wireless = true } },
+        { BeamRelay, new UtlSpec(UtlRole.PowerNode, 3, 48, 0f, 0f, -1) { wireless = true, world = true } },
 
         // Data. amount = compute.
         { DataRelay, new UtlSpec(UtlRole.Data, 9, 20, 0f, 0f, 2) { wireless = true } },
         { DataCentre, new UtlSpec(UtlRole.Data, 10, 20, 3f, 0.5f, 20) { wireless = true } },
         { MindwebSpire, new UtlSpec(UtlRole.Data, 14, 40, 4f, 0f, 10) { wireless = true } },
         { QuantumNode, new UtlSpec(UtlRole.Data, 16, 80, 6f, 0f, 25) { wireless = true } },
-        { Noosphere, new UtlSpec(UtlRole.Data, 30, 100000, 12f, 0f, 40) { wireless = true } },
+        { Noosphere, new UtlSpec(UtlRole.Data, 30, 100000, 12f, 0f, 40) { wireless = true, world = true } },
         { "DataBank", new UtlSpec(UtlRole.Data, 6, 12, 1f) { existing = true, wireless = true } },
         { "DataArk", new UtlSpec(UtlRole.Data, 12, 16, 6f) { existing = true, wireless = true } },
         { "SmartTower", new UtlSpec(UtlRole.Data, 8, 16, 0.5f) { existing = true, wireless = true } },

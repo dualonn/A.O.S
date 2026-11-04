@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlPowerPole
   displayName: Power Pole
-  description: A creosoted wooden pole with a crossarm and glass insulators. Cables
-    hang to the next pole.
+  description: 'A creosoted wooden pole with a crossarm and glass insulators: a power
+    line linking districts and towns into one grid (it powers nothing itself). Cables
+    hang to the next pole.'
   icon: {fileID: 21300000, guid: fd8f663a693b8bd46a6d33f580475297, type: 3}
   prefab: {fileID: 0}
   looks:

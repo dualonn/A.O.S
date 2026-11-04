@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlSteamDynamo
   displayName: Steam Dynamo House
   description: 'A boiler house and a roaring dynamo under a tall chimney: the first
-    electric light. Burns coal; needs cooling water close by.'
+    electric light. Burns coal; needs cooling water close by. Powers the district
+    round it.'
   icon: {fileID: 21300000, guid: a31287aefc70f51479e1db22bee85a67, type: 3}
   prefab: {fileID: 0}
   looks:

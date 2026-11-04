@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlDysonCollector
   displayName: Dyson Collector
   description: 'The ground station of a swarm of mirrors round the star: a pillar
-    of light and a ring of receivers. Burns a little stardust to focus it.'
+    of light and a ring of receivers. Burns a little stardust to focus it. Powers
+    the district round it.'
   icon: {fileID: 21300000, guid: fd22c34f6735903438675468dfffe81e, type: 3}
   prefab: {fileID: 0}
   looks:

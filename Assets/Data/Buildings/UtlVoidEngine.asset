@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlVoidEngine
   displayName: Vacuum Engine
   description: A black sphere in a cage of light, drawing power out of empty space
-    itself. Feeds on a trickle of primordium.
+    itself. Feeds on a trickle of primordium. Powers the district round it.
   icon: {fileID: 21300000, guid: d906ad17e4fed924c81381378eef4e9b, type: 3}
   prefab: {fileID: 0}
   looks:

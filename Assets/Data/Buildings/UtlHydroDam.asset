@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlHydroDam
   displayName: Hydro Dam
   description: 'A stone weir across the stream and a turbine hall on the bank: clean
-    power, the more water round it the more. Build it on a riverbank.'
+    power, the more water round it the more. Build it on a riverbank. Powers the
+    district round it.'
   icon: {fileID: 21300000, guid: c336b4bf93b14bf44ba15c0b69ef4920, type: 3}
   prefab: {fileID: 0}
   looks:

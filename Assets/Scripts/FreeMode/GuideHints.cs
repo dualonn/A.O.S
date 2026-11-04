@@ -285,7 +285,7 @@ public class GuideHints : MonoBehaviour
 
         if (!Seen("raid") && s.wavesSurvived == 0 && settlement.Waves != null && settlement.Waves.SecondsUntilWave > 0f && settlement.Waves.SecondsUntilWave < 90f)
             return Hint("raid", out text, "Raiders are coming",
-                "The red chip on the top bar counts down to the next <b>raid</b>. Train troops (a <b>Barracks</b>) and build towers near your homes; walls slow raiders down. " +
+                "Raider camps gather fighters and send <b>war parties</b> across the map; the raid chip on the top bar shows the threat (hover it, click to look). Towers and lookouts spot them sooner. Train troops (a <b>Barracks</b>) and build towers near your homes; walls slow raiders down. " +
                 "Troops <b>Defend</b> the town by default; switch a building to <b>Attack</b> to hunt raiders and their camps.");
 
         if (!Seen("heroes") && s.heroes.Count == 0 && foundedFor > 240f && HasTroops())

@@ -15,6 +15,7 @@ MonoBehaviour:
   id: UtlAetherReactor
   displayName: Aether Reactor
   description: A spire where a bead of aether burns inside spinning golden rings.
+    Powers the district round it.
   icon: {fileID: 21300000, guid: cf47141f52ea3134ca2a5f8bedd902be, type: 3}
   prefab: {fileID: 0}
   looks:

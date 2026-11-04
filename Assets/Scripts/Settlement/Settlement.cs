@@ -1279,9 +1279,14 @@ public partial class Settlement : MonoBehaviour
     {
         // Many systems ask every frame; while playing, work it out once per frame (and again if buildings come or go).
         if (!Application.isPlaying) return ComputeSettlementZones();
-        if (zonesCache == null || zonesFrame != Time.frameCount || zonesBuildings != State.buildings.Count)
+        if (zonesCache != null && zonesBuildings == State.buildings.Count && (zonesFrame == Time.frameCount || ZonesUnchanged()))
+        {
+            zonesFrame = Time.frameCount;   // same buildings: same zones (RaidZonesCache.cs)
+        }
+        else
         {
             zonesCache = ComputeSettlementZones();
+            ZonesRemember();
             zonesFrame = Time.frameCount;
             zonesBuildings = State.buildings.Count;
         }

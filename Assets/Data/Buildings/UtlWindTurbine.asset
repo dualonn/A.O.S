@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlWindTurbine
   displayName: Wind Turbine
   description: A tall white mast and three long blades. Clean, small, and best on
-    hills and stormy worlds (weak in thin air).
+    hills and stormy worlds (weak in thin air). Powers the district round it.
   icon: {fileID: 21300000, guid: 38dee44968da33d45b9592ecaae9aa12, type: 3}
   prefab: {fileID: 0}
   looks:

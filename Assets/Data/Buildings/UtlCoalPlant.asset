@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlCoalPlant
   displayName: Coal Power Station
   description: 'Cooling towers, a turbine hall and a coal yard: a lot of power and
-    a lot of smoke. Burns coal; needs cooling water.'
+    a lot of smoke. Burns coal; needs cooling water. Powers the district round it.'
   icon: {fileID: 21300000, guid: 3d0eb3050320b464999bf3ef88b08c01, type: 3}
   prefab: {fileID: 0}
   looks:

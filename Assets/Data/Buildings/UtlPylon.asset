@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlPylon
   displayName: Steel Pylon
-  description: A lattice tower carrying the high-voltage lines over field and river.
+  description: A lattice tower carrying the high-voltage lines between districts
+    and towns, over field and river.
   icon: {fileID: 21300000, guid: fc3c305f014a5dd48a5edb3574a3727a, type: 3}
   prefab: {fileID: 0}
   looks:

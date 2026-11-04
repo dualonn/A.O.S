@@ -15,7 +15,8 @@ MonoBehaviour:
   id: UtlStellarTap
   displayName: Stellar Tap
   description: A mirrored dish that catches a beam sent down from collectors circling
-    the sun. No fuel at all; weaker under long nights.
+    the sun. No fuel at all; weaker under long nights. Powers the district round
+    it.
   icon: {fileID: 21300000, guid: 9b5019b4f88338144a757576d42cbf37, type: 3}
   prefab: {fileID: 0}
   looks:

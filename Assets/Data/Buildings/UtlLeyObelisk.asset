@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlLeyObelisk
   displayName: Ley Obelisk
   description: A rune-cut standing stone that sings power along the ley lines to
-    its kin.
+    its kin, linking districts far apart.
   icon: {fileID: 21300000, guid: f3fc29846494e0a43853f8a5cb93bac3, type: 3}
   prefab: {fileID: 0}
   looks:

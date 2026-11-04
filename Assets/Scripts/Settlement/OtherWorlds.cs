@@ -106,6 +106,7 @@ public partial class Settlement
     /// <summary>A background world's raid timer; raids there are settled by strength.</summary>
     private void TickBackgroundRaids(float dt)
     {
+        if (RaidMarchBackground(dt)) return;   // war parties from camps (RaidMarch.cs)
         State.secondsUntilWave -= dt;
         if (State.secondsUntilWave > 0) return;
         State.secondsUntilWave = Random.Range(Database.waveIntervalRange.x, Database.waveIntervalRange.y);

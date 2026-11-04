@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlAqueduct
   displayName: Aqueduct
-  description: A stone channel carried on arches, falling gently all the way from
+  description: 'A stone channel carried on arches, falling gently all the way from
     the river to the town. Drag out a line from a river or lake (or a water mill
-    or pump) to your fountains; people walk under it.
+    or pump) into a district with no water: it waters the buildings along it and
+    fills its fountains. People walk under it.'
   icon: {fileID: 21300000, guid: 3c469c20c1e012a47ab150e0f6d97312, type: 3}
   prefab: {fileID: 0}
   looks: []

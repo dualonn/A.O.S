@@ -83,6 +83,9 @@ public class WorldState
 
     [Tooltip("This world's government, laws, taxes and legitimacy (see Civics.cs).")]
     public CivicsWorld civics = new CivicsWorld();
+
+    [Tooltip("This world's raid threat: camps' moods and marching war parties (see RaidMarch.cs).")]
+    public RaidWorld raid = new RaidWorld();
 }
 
 /// <summary>

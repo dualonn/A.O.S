@@ -15,7 +15,7 @@ MonoBehaviour:
   id: UtlCistern
   displayName: Cistern
   description: A plastered stone tank sunk into the ground, filled by the rain from
-    roofs and gutters.
+    roofs and gutters. Waters the district round it.
   icon: {fileID: 21300000, guid: d8314f51ae439e8488dd3553d07f0e34, type: 3}
   prefab: {fileID: 0}
   looks:

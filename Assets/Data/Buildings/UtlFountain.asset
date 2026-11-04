@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
   id: UtlFountain
   displayName: Fountain
-  description: A castellum where the aqueduct ends, sharing its water out to a basin
-    and spouting bronze lions. Set it beside an aqueduct.
+  description: A castellum where the aqueduct ends, sharing its water out to the
+    whole district round it from spouting bronze lions. Set it beside an aqueduct.
   icon: {fileID: 21300000, guid: aa5df8bcc60d002438180c922a996b38, type: 3}
   prefab: {fileID: 0}
   looks:
