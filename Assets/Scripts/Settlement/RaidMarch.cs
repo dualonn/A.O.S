@@ -297,6 +297,7 @@ public partial class Settlement
             r.lastRallyNote = now;
             string why = src.mood.anger > 0.35f ? " to pay you back" : "";
             Notify($"<color=#ffd27a>War drums</color> at the camp to the {RaidCompass(src.camp.Centre - src.target.centre, false)}: they're gathering fighters{why}.");
+            if (!offWorld) GameAudio.UI("camp_war_drums");
             return;
         }
     }
@@ -313,7 +314,7 @@ public partial class Settlement
             if (!p.fromCamp || p.campCell != camp.cell) continue;
             r.parties.RemoveAt(i);
             r.partiesScattered++;
-            if (p.spotted || live) Notify($"With their camp in ashes, the {RaidNoun()} from the {RaidCompass(p.origin - p.target, false)} scatters.");
+            if (p.spotted || live) { Notify($"With their camp in ashes, the {RaidNoun()} from the {RaidCompass(p.origin - p.target, false)} scatters."); if (!offWorld) GameAudio.UI("war_party_scatter"); }
             XChronicle(XChronicleKind.War, $"{RaidANoun(true)} scattered when its camp was burnt.");
         }
     }
@@ -551,7 +552,7 @@ public partial class Settlement
         string lead = p.boss != null && RaidUnit(p.boss) is UnitDefinition b ? $", led by <color=#ff8a70>{b.displayName}</color>," : "";
         string doing = p.gatherLeft > 0f ? "gathering at" : "marching from";
         Notify($"<color=#ffa060>Scouts spot {RaidANoun()}</color> of about {RaidRound(p.units.Count)}{lead} {doing} {p.from}, bound for {p.town} (~{RaidEta(p.SecondsLeft)}). {RaidWhy(p)}");
-        GameAudio.UI("river_raid_horn", 0.45f);   // (a "raid_party_spotted" horn would suit better)
+        GameAudio.UI("raid_party_spotted");
     }
 
     // ---------- Arrival ----------

@@ -440,6 +440,13 @@ SFX = {
         'sea_pirate_horn': L(S('their-coming-generic-horn-sound/theircoming3.ogg', dur=4, rate=1.12, lowpass=2200, room=0.4),
                              S('battle-at-sea/cannon_fire_1.ogg', at=1.6, gain=0.4)),
         'hint_show': [S('pleasing-bell.wav', rate=1.4)],
+        # raids: marching war parties
+        'raid_party_spotted': L(S('war_horns.wav', start=8, dur=3.5, lowpass=1500, room=0.4, gain=0.8),
+                                S('horde_war_drums_by_william_hector.wav', dur=3.5, lowpass=1200, gain=0.45)),
+        'camp_war_drums': [S('horde_war_drums_by_william_hector.wav', dur=5, lowpass=3000, room=0.25),
+                           S('horde_war_drums_by_william_hector.wav', start=8, dur=5, lowpass=3000, room=0.25)],
+        'war_party_scatter': L(S('crowd_shouting.ogg', start=20, dur=2.5, gain=0.7), S('wood.mp3', take=6, at=0.2, gain=0.4),
+                               *[S('footstep_grass_00%d.ogg' % (i % 4), at=0.3 + 0.17 * i, gain=0.6 - 0.05 * i) for i in range(8)]),
     },
 }
 
@@ -451,7 +458,7 @@ LONG = {'great_person': -17, 'quest_complete': -17, 'achievement': -18, 'tame_le
 TARGET = {'river_raid_horn': -22, 'legend_roar': -12, 'earthquake': -13, 'collapse': -13, 'meteor': -13, 'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22,
           'disaster_flood_rush': -15, 'disaster_wildfire_roar': -15, 'disaster_eruption': -13, 'disaster_tremor': -14,
           'sea_monster_roar': -13, 'siege_throw': -15, 'utl_power_hum': -23, 'utl_aqueduct_flow': -22, 'sea_net_haul': -20,
-          'trade_coins': -20, 'civ_tax': -19, 'hint_show': -25, 'utl_tesla_crackle': -19, 'shield_hit': -16}
+          'trade_coins': -20, 'civ_tax': -19, 'hint_show': -25, 'utl_tesla_crackle': -19, 'shield_hit': -16, 'raid_party_spotted': -20, 'camp_war_drums': -19}
 
 # Music: era playlists (the game picks per age), played whole and cross-faded; stereo OGG.
 MUSIC = {

@@ -300,6 +300,8 @@ Audio/SFX/Space/scifi_door_2
 Audio/SFX/Space/warp_1
 Audio/SFX/Space/warp_2
 Audio/SFX/Space/warp_3
+Audio/SFX/Systems/camp_war_drums_1
+Audio/SFX/Systems/camp_war_drums_2
 Audio/SFX/Systems/civ_anarchy
 Audio/SFX/Systems/civ_government
 Audio/SFX/Systems/civ_pardon
@@ -314,6 +316,7 @@ Audio/SFX/Systems/disaster_tremor
 Audio/SFX/Systems/disaster_wildfire_roar
 Audio/SFX/Systems/fire_bell
 Audio/SFX/Systems/hint_show
+Audio/SFX/Systems/raid_party_spotted
 Audio/SFX/Systems/raid_routed
 Audio/SFX/Systems/sea_monster_roar_1
 Audio/SFX/Systems/sea_monster_roar_2
@@ -340,6 +343,7 @@ Audio/SFX/Systems/utl_power_hum_2
 Audio/SFX/Systems/utl_tesla_crackle_1
 Audio/SFX/Systems/utl_tesla_crackle_2
 Audio/SFX/Systems/utl_tesla_crackle_3
+Audio/SFX/Systems/war_party_scatter
 Audio/SFX/UI/age_up
 Audio/SFX/UI/book_close
 Audio/SFX/UI/book_open
