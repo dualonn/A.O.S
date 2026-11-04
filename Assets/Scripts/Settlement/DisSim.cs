@@ -584,7 +584,8 @@ public partial class Settlement
         Notify(msg);
         if (!offWorld)
         {
-            GameAudio.UI(kind == "Plague" ? "plague_bell" : "raid_warning", 0.7f);
+            GameAudio.UI(kind switch { "Plague" => "plague_bell", "Wildfire" => "fire_bell", "Volcano" or "Quake" => "disaster_tremor", _ => "raid_warning" }, 0.7f);
+            if (kind == "Wildfire") GameAudio.UI("disaster_wildfire_roar", 0.8f);
             DisasterNews?.Invoke(d);
         }
         RaiseChanged();
@@ -602,7 +603,7 @@ public partial class Settlement
                 d.left = Random.Range(50f, 80f) * d.severity;
                 string held = d.saved > 0 ? $" Levees and walls held the water back in {d.saved} places." : "";
                 Notify($"<color=#7cf>The river has burst its banks!</color> {d.tiles.Count} tiles are under water.{held}");
-                if (!offWorld) GameAudio.UI("river_splash");
+                if (!offWorld) GameAudio.UI("disaster_flood_rush");
                 break;
             }
             case "Volcano":
@@ -628,7 +629,7 @@ public partial class Settlement
                 if (n > 0) { State.population = Mathf.Max(1f, State.population - n); d.lost += n; }
                 Notify($"<color=#f84>The mountain erupts!</color> Lava pours down its side and ash falls on the town." +
                        (n > 0 ? $" {n} people were caught in the ash." : " Your people sheltered from the ash."));
-                if (!offWorld) { GameAudio.UI("explosion"); GameAudio.UI("earthquake", 0.8f); ApplyWeatherFx(); WeatherChanged?.Invoke(); }
+                if (!offWorld) { GameAudio.UI("disaster_eruption"); ApplyWeatherFx(); WeatherChanged?.Invoke(); }
                 break;
             }
             case "Quake":
@@ -1138,7 +1139,7 @@ public partial class Settlement
             var at = new Vector2(t.x + 0.5f, t.y + 0.5f);
             d.tiles.RemoveAt(i);
             d.times.RemoveAt(i);
-            if (DisBlocked(at)) { d.saved++; continue; }
+            if (DisBlocked(at)) { d.saved++; if (!offWorld) GameAudio.Play("shield_hit", at); continue; }
             foreach (var b in State.buildings)
             {
                 if (!b.IsBuilt || b.health <= 0) continue;

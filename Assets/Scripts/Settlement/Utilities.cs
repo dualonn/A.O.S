@@ -725,7 +725,7 @@ public partial class Settlement
             n.brownoutNoticeAt = State.playTime;
             UtlSave.brownouts++;
             Notify($"Brownout: your grid needs {n.demand:0} power but makes {n.supply:0}. Every building on it slows down; build more generators.");
-            if (!offWorld) GameAudio.UI("error", 0.5f);
+            if (!offWorld) GameAudio.UI("utl_brownout");
         }
         n.brownout = brown;
     }
@@ -849,6 +849,7 @@ public partial class Settlement
             n.acidNoticeAt = State.playTime;
             Notify($"Acid rain is eating at {hit} building{(hit == 1 ? "" : "s")} under the worst of the smog. " +
                    "<color=#aaa>(Parks, scrubbers, recycling and clean power clear the air.)</color>");
+            if (!offWorld) GameAudio.UI("utl_acid_rain", 0.7f);
         }
     }
 

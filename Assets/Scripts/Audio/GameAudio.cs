@@ -381,7 +381,23 @@ public static class GameAudio
     {
         var controller = FreeModeController.Instance;
         if (controller == null || controller.Grid == null || building == null || def == null) return;
-        Play(name, controller.Grid.AreaCenter(building.cell, def.size), volume);
+        var at = controller.Grid.AreaCenter(building.cell, def.size);
+        Play(name, at, volume);
+        if (name == "build_complete" && UtilitySound(def) is string settle) Play(settle, at, 0.8f);
+    }
+
+    /// <summary>The sound a finished utility makes as it comes to life (power, water, Tesla masts).</summary>
+    public static string UtilitySound(BuildingDefinition def)
+    {
+        string id = def != null ? def.name : "";
+        if (!id.StartsWith("Utl")) return null;
+        if (id.Contains("Tesla")) return "utl_tesla_crackle";
+        if (id.Contains("Aqueduct") || id.Contains("Fountain") || id.Contains("Waterwheel") || id.Contains("Pump") || id.Contains("Cistern"))
+            return "utl_aqueduct_flow";
+        if (id.Contains("Dynamo") || id.Contains("Plant") || id.Contains("Dam") || id.Contains("Turbine") || id.Contains("Reactor")
+            || id.Contains("Substation") || id.Contains("Pylon") || id.Contains("Tap") || id.Contains("Collector") || id.Contains("Engine"))
+            return "utl_power_hum";
+        return null;
     }
 
     // ------------------------------------------------------------------ settings button

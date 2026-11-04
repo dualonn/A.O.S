@@ -392,14 +392,66 @@ SFX = {
         'war_declared': V('their-coming-generic-horn-sound/theircoming3.ogg'),
         'clock_tick': V('ticking clock - tick*.wav'),
     },
+    # disasters, trade caravans, government, utilities, siege warfare, the sea, hints
+    'Systems': {
+        'disaster_flood_rush': L(S('30-cc0-sfx-loops/x/water_flowing.ogg'), S('30-cc0-sfx-loops/x/water_flowing.ogg', at=1.5),
+                                 S('sfx100v2_loop_water_02.ogg', dur=3.5, gain=0.8), S('rumble.wav', start=2, dur=3.5, gain=0.7, lowpass=500)),
+        'disaster_wildfire_roar': L(S('fireplace-sound-loop/fire.wav', start=5, dur=4, gain=2.5), S('oga-80-CC0-RPG-SFX_0/**/spell_fire_03.ogg', gain=0.8),
+                                    S('rumble.wav', start=6, dur=4, gain=0.6, lowpass=400), S('catching-fire/flame.ogg', at=0.7),
+                                    S('wood.mp3', take=3, at=1.4, gain=0.4)),
+        'disaster_eruption': L(S('lowFrequency_explosion_000.ogg', rate=0.6), S('battle-at-sea/cannon_hit_1.ogg', rate=0.55, gain=0.7),
+                               S('rumble.wav', start=1, dur=5, at=0.3, lowpass=600), S('oga-80-CC0-RPG-SFX_0/**/stones_02.ogg', at=1.2),
+                               S('fireplace-sound-loop/fire.wav', start=20, dur=3, at=1.5, gain=1.5)),
+        'disaster_tremor': L(S('rumble.wav', start=8, dur=4, lowpass=700), S('oga-80-CC0-RPG-SFX_0/**/stones_04.ogg', at=1.0, gain=0.5),
+                             S('sfx100v2_glass_02.ogg', at=1.7, gain=0.25)),
+        'fire_bell': L(*[S('oga-100-CC0-SFX_0/**/bell_0%d.ogg' % (1 + i % 2), rate=1.35, dur=0.5, at=0.24 * i) for i in range(8)]),
+        'shield_hit': V('electricity-game-sound-pack/shieldhit.wav') + V('electricity-game-sound-pack/hit.wav', dur=1.2),
+        'trade_coins': V('coins-shake-01.wav') + V('oga-80-CC0-RPG-SFX_0/**/item_coins_0[12].ogg'),
+        'trade_train_whistle': V('steam-whistle/steam*.wav'),
+        'trade_caravan_lost': L(S('impactWood_heavy_002.ogg'), S('wood.mp3', take=10, at=0.1), S('wood.mp3', take=14, at=0.35),
+                                S('oga-80-CC0-RPG-SFX_0/**/item_coins_02.ogg', at=0.5, gain=0.6), S('impactWood_heavy_000.ogg', at=0.7, gain=0.6)),
+        'civ_government': L(S('oga-100-CC0-SFX_0/**/gong_02.ogg', gain=0.7), S('war_horns.wav', start=20, dur=3.5, at=0.2, gain=0.8),
+                            S('crowd_shouting.ogg', start=4, dur=3.5, at=0.6, gain=0.4)),
+        'civ_anarchy': L(S('crowd_shouting.ogg', start=12, dur=4), S('sfx100v2_glass_04.ogg', at=1.0, gain=0.5),
+                         S('wood.mp3', take=5, at=1.8, gain=0.5), S('impactWood_heavy_003.ogg', at=2.4, gain=0.5)),
+        'civ_policy': [L(S('rpg-audio/x/Audio/bookFlip2.ogg'), S('impactWood_light_002.ogg', at=0.35)),
+                       L(S('rpg-audio/x/Audio/bookFlip3.ogg'), S('impactWood_light_000.ogg', at=0.3))],
+        'civ_pardon': L(S('rpg-audio/x/Audio/bookFlip1.ogg'), S('oga-100-CC0-SFX_0/**/bell_02.ogg', at=0.3),
+                        S('Well Done CCBY3.flac', at=0.7, gain=0.5)),
+        'civ_revolt': L(S('crowd_shouting.ogg', start=18, dur=4.5), S('their-coming-generic-horn-sound/theircoming.ogg', dur=3, gain=0.5, lowpass=1500),
+                        S('impactWood_heavy_001.ogg', at=1.2, gain=0.5), S('impactWood_heavy_004.ogg', at=1.9, gain=0.5)),
+        'civ_tax': V('coin-spin-fall-01.wav') + [L(S('rpg-audio/x/Audio/handleCoins2.ogg'), S('impactWood_light_001.ogg', at=0.4, gain=0.5))],
+        'utl_power_hum': [L(*[S('electricity-game-sound-pack/shieldloop.wav', at=0.9 * i, lowpass=1500) for i in range(3)]),
+                          S('30-cc0-sfx-loops/x/machine_08.ogg', dur=3, lowpass=2500)],
+        'utl_brownout': L(S('electricity-game-sound-pack/powerdown.wav'), S('MachinePowerOff.ogg', at=0.2, gain=0.7)),
+        'utl_aqueduct_flow': V('30-cc0-sfx-loops/x/water_flowing.ogg') + [S('sfx100v2_loop_water_01.ogg', dur=3)],
+        'utl_acid_rain': L(S('30-cc0-sfx-loops/x/rain.ogg'), S('water_boiling.ogg', dur=4, gain=0.6, highpass=1500)),
+        'utl_tesla_crackle': V('electricity-sound-effects-0/spark.wav') + V('crackleelectricityloop.wav')
+                             + [S('snaploop.wav', dur=1.5)],
+        'siege_horn': [S('war_horns.wav', start=0.5, dur=4.5, room=0.3, lowpass=2000)],
+        'siege_throw': [L(S('wood.mp3', take=2, gain=0.7), S('oga-rpg_sound_pack/**/swing.wav', rate=0.6, at=0.15)),
+                        L(S('wood.mp3', take=8, gain=0.7), S('oga-rpg_sound_pack/**/swing.wav', rate=0.5, at=0.1))],
+        'raid_routed': L(S('war_horns.wav', start=40, dur=4, gain=0.8), S('Well Done CCBY3.flac', at=0.5, gain=0.7)),
+        'sea_monster_roar': [L(S('Beast Growl 3.wav', rate=0.7), S('oga-100-CC0-SFX_0/**/splash_02.ogg', rate=0.7, at=0.1)),
+                             L(S('Demon Growl.wav', rate=0.8, dur=3.5), S('oga-100-CC0-SFX_0/**/splash_01.ogg', rate=0.7, at=0.2))],
+        'sea_net_haul': L(S('oga-100-CC0-SFX_0/**/splash_01.ogg', gain=0.6), S('rpg-audio/x/Audio/creak1.ogg', at=0.2),
+                          S('water-pour-01.wav', at=0.5, dur=1.0, gain=0.6)),
+        'sea_ship_bell': L(S('oga-100-CC0-SFX_0/**/bell_02.ogg', rate=1.2), S('oga-100-CC0-SFX_0/**/bell_02.ogg', rate=1.2, at=0.35)),
+        'sea_pirate_horn': L(S('their-coming-generic-horn-sound/theircoming3.ogg', dur=4, rate=1.12, lowpass=2200, room=0.4),
+                             S('battle-at-sea/cannon_fire_1.ogg', at=1.6, gain=0.4)),
+        'hint_show': [S('pleasing-bell.wav', rate=1.4)],
+    },
 }
 
 # loudest-0.3s loudness target per group (dB)
-LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15, 'Weapons': -14, 'Life': -17}
+LOUD = {'Combat': -14, 'Boss': -11, 'Building': -15, 'Gather': -17, 'UI': -19, 'Items': -17, 'Sites': -15, 'Space': -15, 'World': -15, 'Weapons': -14, 'Life': -17, 'Systems': -17}
 QUIET_UI = {'click': -24, 'hover': -27, 'tab': -24, 'panel_open': -22, 'panel_close': -22, 'page_flip': -22}
 LONG = {'great_person': -17, 'quest_complete': -17, 'achievement': -18, 'tame_legend': -16, 'faith_founded': -17, 'festival': -17, 'wonder_complete': -15, 'thunder': -13, 'age_up': -16, 'victory': -18, 'defeat': -18, 'raid_warning': -22}
 # per-sound loudness overrides (dB)
-TARGET = {'river_raid_horn': -22, 'legend_roar': -12, 'earthquake': -13, 'collapse': -13, 'meteor': -13, 'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22}
+TARGET = {'river_raid_horn': -22, 'legend_roar': -12, 'earthquake': -13, 'collapse': -13, 'meteor': -13, 'boss_summon': -17, 'war_declared': -19, 'event_card': -20, 'clock_tick': -22,
+          'disaster_flood_rush': -15, 'disaster_wildfire_roar': -15, 'disaster_eruption': -13, 'disaster_tremor': -14,
+          'sea_monster_roar': -13, 'siege_throw': -15, 'utl_power_hum': -23, 'utl_aqueduct_flow': -22, 'sea_net_haul': -20,
+          'trade_coins': -20, 'civ_tax': -19, 'hint_show': -25, 'utl_tesla_crackle': -19, 'shield_hit': -16}
 
 # Music: era playlists (the game picks per age), played whole and cross-faded; stereo OGG.
 MUSIC = {

@@ -271,7 +271,7 @@ public partial class Settlement
             CivDirty(w);
             var g = GovOf(w);
             Notify($"<color=#fd8>The {g.name} takes power.</color> The anarchy is over: its bonuses and your laws are in force.");
-            if (!offWorld) GameAudio.UI("crowd_cheer", 0.7f);
+            if (!offWorld) GameAudio.UI("civ_government");
         }
 
         var t = CivTotals(w, index);
@@ -368,7 +368,7 @@ public partial class Settlement
         CivDirty(w);
         var gov = GovOf(w);
         XChronicle(XChronicleKind.War, $"The people rose against the {gov.name} on {w.name}.");
-        if (!offWorld) GameAudio.UI("river_raid_horn", 0.7f);
+        if (!offWorld) GameAudio.UI("civ_revolt");
         // Rebels: a band about half a raid's size (none in a peaceful game: just the strike).
         var wave = Waves != null ? Waves.Generate() : null;
         if (wave != null && wave.units.Count > 0)
@@ -471,12 +471,12 @@ public partial class Settlement
         if (anarchy > 0f)
         {
             Notify($"<color=#fb7>Anarchy!</color> The old order falls on {w.name}. The {g.name} takes power in {anarchy / 60f:0.0} min; until then work and research slow and taxes dwindle.");
-            GameAudio.UI("plague_bell", 0.7f);
+            GameAudio.UI("civ_anarchy");
         }
         else
         {
             Notify($"<color=#fd8>The {g.name} takes power on {w.name}.</color>");
-            GameAudio.UI("crowd_cheer", 0.7f);
+            GameAudio.UI("civ_government");
         }
         return true;
     }
@@ -570,7 +570,7 @@ public partial class Settlement
         c.policies.Add(id);
         CivDirty(w);
         Notify($"<color=#fd8>New law on {w.name}: {p.name}.</color>");
-        GameAudio.UI("culture_tradition", 0.8f);
+        GameAudio.UI("civ_policy");
         return true;
     }
 
@@ -584,7 +584,7 @@ public partial class Settlement
         if (CivLegitCounts(w)) c.legitimacy = Mathf.Max(0f, c.legitimacy - 2f);
         CivDirty(w);
         Notify($"{PolicyById(id)?.name ?? "A law"} is repealed on {w.name}.");
-        GameAudio.UI("culture_tradition", 0.8f);
+        GameAudio.UI("civ_policy", 0.8f);
         return true;
     }
 
@@ -600,7 +600,7 @@ public partial class Settlement
         c.taxOffset = level - 2;
         if (level > before && CivLegitCounts(w)) c.legitimacy = Mathf.Max(0f, c.legitimacy - 2f * (level - before));
         CivDirty(w);
-        GameAudio.UI("coins", 0.7f);
+        GameAudio.UI("civ_tax");
     }
 
     public void CivSetTithe(int level)
@@ -640,7 +640,7 @@ public partial class Settlement
         c.revoltReadyAt = Mathf.Max(c.revoltReadyAt, now + 240f);
         CivDirty(w);
         Notify(calmed ? "A pardon is proclaimed: the rebels go home." : "A pardon is proclaimed, and bread handed out: the people think better of their rulers.");
-        GameAudio.UI("faith_blessing");
+        GameAudio.UI("civ_pardon");
         return true;
     }
 

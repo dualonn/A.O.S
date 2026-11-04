@@ -229,7 +229,7 @@ public class GuideHints : MonoBehaviour
         if (!g.seen.Contains(id)) g.seen.Add(id);   // seen once it's shown, so a reload never repeats it
         cardText.text = text;
         card.gameObject.SetActive(true);
-        GameAudio.UI("notify", 0.5f);
+        GameAudio.UI("hint_show");
     }
 
     private void Dismiss()
