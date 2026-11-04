@@ -119,6 +119,7 @@ public partial class Settlement
             f *= EventGrowthFactor;   // random events (festivals, feasts...)
             f *= NaturalWonderGrowth;
             f *= CultureGrowthFactor;
+            f *= SettlementHooks.GrowthOf(this);
             return f;
         }
     }

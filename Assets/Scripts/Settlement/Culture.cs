@@ -480,6 +480,7 @@ public partial class Settlement
         Reason(-wc.weariness, "war weariness");
         Reason(t.mood, "traditions and tenets");
         Reason(greatMood, "great people living here");
+        SettlementHooks.MoodOf(this, Reason);
         float effects = 0f, festival = 0f;
         foreach (var x in Ev.effects)
         {

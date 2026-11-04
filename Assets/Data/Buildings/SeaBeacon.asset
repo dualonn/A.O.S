@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaBeacon
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaBeacon
+  displayName: Beacon
+  description: 'A cairn tower with a fire basket on top. Beam: 14 tiles. Its beam
+    guides your boats (they fish more and come home safely), speeds ships along,
+    keeps pirates off your sea routes, and burns raiders'' and pirates'' hulls.'
+  icon: {fileID: 21300000, guid: 7837f873a01d24b4cb289c83309d7de9, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7837f873a01d24b4cb289c83309d7de9, type: 3}
+    - {fileID: 21300000, guid: 0d65e531b4bd070498feed0da4c2ad85, type: 3}
+    - {fileID: 21300000, guid: 0cf46bd5b99c53c498dcf975cf04cbe9, type: 3}
+    - {fileID: 21300000, guid: adc12ac035ab4f94e91ecfe5f2687672, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 0952ebea2287eef41ab7cb31ee5a5748, type: 3}
+    - {fileID: 21300000, guid: c67072f346706b44090fbf6c1c709e22, type: 3}
+    - {fileID: 21300000, guid: dea8f4468c33f8741bb6845c982f6a1f, type: 3}
+    - {fileID: 21300000, guid: fdc100c8c55fc0f4abc213a4f2b21a46, type: 3}
+    fps: 6
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 15c6065aff0be9c4b8ac12da7f682183, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 60
+  upgrades:
+  - name: Pitch Fires
+    description: Beam reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 60
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 2880cf10c66b564479dc71e15e09ed92, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 573429f1476a8df4883a16eb339bc36c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 132
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 36
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 12
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 300
+  housing: 0
+  workers: 1
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

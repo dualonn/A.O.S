@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaFishPens
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaFishPens
+  displayName: Fish Pens
+  description: Stone-walled pens let into the shore, where fish are kept and fattened.
+    A steady catch that needs no shoals (more on an ocean world). Build it across
+    the shoreline.
+  icon: {fileID: 21300000, guid: b0d42cee13e4b7744aac7ab050102ca1, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: b0d42cee13e4b7744aac7ab050102ca1, type: 3}
+    - {fileID: 21300000, guid: d3650b8912403964bb96723fe8f752ee, type: 3}
+    - {fileID: 21300000, guid: f508ac4d8d0f27b4b9ae4d9f4e214982, type: 3}
+    - {fileID: 21300000, guid: 3dddd0813cf93024cbdb5a0c54b524cd, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 0cc2d75fd6231324da1ec1a254c2889c, type: 3}
+    - {fileID: 21300000, guid: ecb23d1f27627f042bd11a2a311d8bd4, type: 3}
+    - {fileID: 21300000, guid: 0d9ba22e4cb7d0142bd9a59ac415c8f4, type: 3}
+    - {fileID: 21300000, guid: 55ef6913e94f5b74782dc4a5ef7ab7e4, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: f9370d7e2d340e54395a7048929f8c73, type: 3}
+    - {fileID: 21300000, guid: 33ce42c6c8242be44a008523428a4a0e, type: 3}
+    - {fileID: 21300000, guid: 9e30fb80d3391f749af09bfb3de2b63e, type: 3}
+    - {fileID: 21300000, guid: 03e25f9fb1adb794f8b54da96134441b, type: 3}
+    fps: 3
+  size: {x: 3, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 84e04fdcd848fbb49aeee1dbb9942580, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 60
+  upgrades:
+  - name: Bigger Pens
+    description: +25% catch.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 120
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Breeding Tanks
+    description: +20% catch.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 20
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 450
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 1.1
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

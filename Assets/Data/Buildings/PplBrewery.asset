@@ -1,0 +1,177 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplBrewery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplBrewery
+  displayName: Brewery
+  description: Barley malted, mashed and brewed (and grapes trodden for wine). Ale
+    cheers peasants, citizens and workers alike.
+  icon: {fileID: 21300000, guid: 818088b398979744a9e6a1dc9ab24aee, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 818088b398979744a9e6a1dc9ab24aee, type: 3}
+    - {fileID: 21300000, guid: 13edc319f3e545c4c9cfb53c19b16556, type: 3}
+    - {fileID: 21300000, guid: 73075fdca2023c842a30af2294f5250e, type: 3}
+    - {fileID: 21300000, guid: 2344e649dff778548a2f8ca0c92371db, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: cadc2a2899e2c744b9a1eed39986c50e, type: 3}
+    - {fileID: 21300000, guid: 17051f66fe95c09429054ccec592d0fd, type: 3}
+    - {fileID: 21300000, guid: 54e81a0365f03d24da5eea63e74a62c9, type: 3}
+    - {fileID: 21300000, guid: 6f3637b373a4de44b88511d7389d36f9, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 5b6e64d1e2e194a44a4de8a67c442b94, type: 3}
+    - {fileID: 21300000, guid: f72323a3631ddc54e830781161806013, type: 3}
+    - {fileID: 21300000, guid: e586a40bcb124b14daedea93f738a640, type: 3}
+    - {fileID: 21300000, guid: 60db6a36d00a3ac43b1fe80581b0fa56, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 255
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 220
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 125
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 25
+  upgrades:
+  - name: More Hands
+    description: 'Another workbench and an apprentice: +25% output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 125
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 110
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 65
+      - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+        amount: 15
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Craft
+    description: 'Better tools and a master''s eye: +30% more output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 190
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 165
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 95
+      - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+        amount: 20
+    upgradeTime: 25
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 32
+  maxCount: 0
+  maxHealth: 540
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: 352c4f7d32086d845abd69a38649f259, type: 2}
+    perSecond: 0.2
+  inputs:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.1
+  - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+    perSecond: 0.02
+  runsWithoutInputs: 0.25
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

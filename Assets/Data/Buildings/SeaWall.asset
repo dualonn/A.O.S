@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaWall
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaWall
+  displayName: Sea Wall
+  description: 'Great dressed stones heaped against the waves. Drag out a line along
+    the shore (within 3 tiles of the water): <color=#9cf>floodwater can''t get past
+    it</color>. It blocks everyone, like a wall.'
+  icon: {fileID: 21300000, guid: 36114d061de4d314c9e0bc955b4b3f9a, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: db142d96713c0174d9eb756912c7d40d, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2a9c313ee075eb44bb0c7c789557d98c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 5
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 55e0de16e32441e4bb0fcf181fd47fbe, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a7bf92979a9416047b390077c70eb4de, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 11
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 2
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: bf150a17b627a684ca9bec686e222cb5, type: 3}
+  - {fileID: 21300000, guid: b7bf96a2b18f64344907645bfdcdbac8, type: 3}
+  - {fileID: 21300000, guid: 2e1d77d7a091e15489b51ebb608fe073, type: 3}
+  - {fileID: 21300000, guid: 36114d061de4d314c9e0bc955b4b3f9a, type: 3}
+  - {fileID: 21300000, guid: 4f0ed503b962a4242a5ff4aac5061ffa, type: 3}
+  - {fileID: 21300000, guid: 027a0c7cb46e4e042ac932ea83c08a50, type: 3}
+  - {fileID: 21300000, guid: 651023a14f194c14a95158981e034ffb, type: 3}
+  - {fileID: 21300000, guid: aa62a317cf2eac94e829789b2cd3db00, type: 3}
+  - {fileID: 21300000, guid: a8e749bb72f64714a8f2e4f7ec37cd35, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 4
+  maxCount: 0
+  maxHealth: 800
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.03
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlFontOfWaters
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlFontOfWaters
+  displayName: Font of Endless Water
+  description: A rune-carved basin that never empties, its water drawn from somewhere
+    else entirely. Clean water anywhere; drinks a little mana.
+  icon: {fileID: 21300000, guid: 775afccfee39d5c409d36342bae60d3d, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 775afccfee39d5c409d36342bae60d3d, type: 3}
+    - {fileID: 21300000, guid: 252da38117238f546958df993a490aa4, type: 3}
+    - {fileID: 21300000, guid: 1f63f11cde553c54e9f04cfa0cd61a0e, type: 3}
+    - {fileID: 21300000, guid: 9456ea96671a15f4db2ef13c598b7549, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 60
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1800
+  housing: 0
+  workers: 1
+  production: []
+  inputs:
+  - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+    perSecond: 0.02
+  runsWithoutInputs: 0.3
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

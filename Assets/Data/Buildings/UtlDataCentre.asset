@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlDataCentre
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlDataCentre
+  displayName: Data Centre
+  description: A windowless hall of humming server racks and chillers on the roof.
+    Needs a lot of power.
+  icon: {fileID: 21300000, guid: 1d6d98565e66a834aac5233165571583, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1d6d98565e66a834aac5233165571583, type: 3}
+    - {fileID: 21300000, guid: 92b20d8d3bf3671488b131e9d4db18a6, type: 3}
+    - {fileID: 21300000, guid: 661a41e64269fef408a44a2e55ff852d, type: 3}
+    - {fileID: 21300000, guid: 87dd8c2802b2f4f4dbc5862518f7ff50, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: fe7c75b6a04b1f5408e5de6f287e29a6, type: 3}
+    - {fileID: 21300000, guid: a08d82b211018d3419901c1d375268b2, type: 3}
+    - {fileID: 21300000, guid: f9cb25d06ea3a004290dc9ce79ad7acc, type: 3}
+    - {fileID: 21300000, guid: 97521fde6d0a06e498845e79c06b8a02, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: e83e91fcd99e90a409c7a45afb088524, type: 3}
+    - {fileID: 21300000, guid: d403608ed6c150b4690a3c30cbb6ba54, type: 3}
+    - {fileID: 21300000, guid: 45057378c7353374a8e1321f07a690f6, type: 3}
+    - {fileID: 21300000, guid: 2a43a37e985a21b478a8d7827d470728, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 40
+  upgrades:
+  - name: Liquid Cooling
+    description: 'Racks packed twice as tight: 25% more compute.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Optical Backbone
+    description: 'Light instead of copper: 25% more compute.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 400
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 40
+  maxCount: 0
+  maxHealth: 2000
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

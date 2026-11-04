@@ -1,0 +1,182 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplScriptorium
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplScriptorium
+  displayName: Scriptorium
+  description: 'Copyists at their desks, and later a printing press: books for burghers,
+    gentry, mages and the Ascended.'
+  icon: {fileID: 21300000, guid: 32b1676a41d6cbd468bdcff42f634973, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 32b1676a41d6cbd468bdcff42f634973, type: 3}
+    - {fileID: 21300000, guid: c72a10fa0b30ae44d869d9c600065d2f, type: 3}
+    - {fileID: 21300000, guid: 15dd2aa661f8fda4f82f754d7c509e43, type: 3}
+    - {fileID: 21300000, guid: f052b21ca774d91439ab8062e8f81528, type: 3}
+    fps: 2
+  - frames:
+    - {fileID: 21300000, guid: e5bc91c6141932b45bd1e4381edf2d91, type: 3}
+    - {fileID: 21300000, guid: f3f2470418526204db500a572da8cb9d, type: 3}
+    - {fileID: 21300000, guid: 06098144fe1ad8b49a1dca79bd0f034c, type: 3}
+    - {fileID: 21300000, guid: 49999c18ef702914dbc7e44cbc99d813, type: 3}
+    fps: 2
+  - frames:
+    - {fileID: 21300000, guid: ad5195c3865586c43ac75379aa137244, type: 3}
+    - {fileID: 21300000, guid: aba45d2dacd6875458a94800d61363a2, type: 3}
+    - {fileID: 21300000, guid: 01d45a4ef2d72fd45ad964e0c8c7752d, type: 3}
+    - {fileID: 21300000, guid: 5aeaaf208bd0f4249ad00c3ccf409482, type: 3}
+    fps: 2
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4198e8a6dd92db84c865f1735e8d5a67, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 480
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 420
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 60
+  upgrades:
+  - name: More Hands
+    description: 'Another workbench and an apprentice: +25% output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 240
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 210
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 60
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Craft
+    description: 'Better tools and a master''s eye: +30% more output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 360
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 315
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 180
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 90
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 45
+    upgradeTime: 25
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 44
+  maxCount: 0
+  maxHealth: 860
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: 73a285e57b86b06469395db1d117f21b, type: 2}
+    perSecond: 0.12
+  inputs:
+  - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+    perSecond: 0.05
+  runsWithoutInputs: 0.25
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

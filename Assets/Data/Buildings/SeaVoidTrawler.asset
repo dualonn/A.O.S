@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaVoidTrawler
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaVoidTrawler
+  displayName: Void Trawler
+  description: A dock of star-steel whose trawlers draw nets of light through the
+    dark tides, out to 24 tiles. Its boats go out to the fish shoals in reach (silver
+    glints on the water); the richer they are, the bigger the catch. Shoals fished
+    hard thin out and move on, and regrow when left alone.
+  icon: {fileID: 21300000, guid: ca9b2cad1e22cb848b2352f9623b9cb7, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: ca9b2cad1e22cb848b2352f9623b9cb7, type: 3}
+    - {fileID: 21300000, guid: 40b6bb5d353fa7f45b36f7893bf70f69, type: 3}
+    - {fileID: 21300000, guid: c2a6ccb3b31ccec41ad0e9c85803bbf0, type: 3}
+    - {fileID: 21300000, guid: c963f9286c7673b4a8b584d9d6a3612f, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 8584ffa295b475341881f8e0f26162c6, type: 3}
+    - {fileID: 21300000, guid: f963ce57be1562d4ab401db09b4d6012, type: 3}
+    - {fileID: 21300000, guid: 312bc5fc05c7c384f876a8de6f101e11, type: 3}
+    - {fileID: 21300000, guid: 466a691a1719eb64a9078428751af833, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 3c3613bb4a96c4d439f4d79d00387375, type: 3}
+    - {fileID: 21300000, guid: 262104a8a7145b94eada6c97e4def726, type: 3}
+    - {fileID: 21300000, guid: 33f74875daedd784a97b086bbcbac482, type: 3}
+    - {fileID: 21300000, guid: 5c35024057d050d448f03798457b00ed, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: f9644073e2c5aae459781f0d216a6f1a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 120
+  upgrades:
+  - name: Tide Engines
+    description: +25% catch, reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Starlight Nets
+    description: +20% catch, one more trawler.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 4200
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 16
+  - resource: {fileID: 11400000, guid: 6138eb2c93dd7fe4e807ee9348664ca3, type: 2}
+    perSecond: 0.15
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

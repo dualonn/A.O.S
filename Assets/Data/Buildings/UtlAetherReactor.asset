@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlAetherReactor
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlAetherReactor
+  displayName: Aether Reactor
+  description: A spire where a bead of aether burns inside spinning golden rings.
+  icon: {fileID: 21300000, guid: cf47141f52ea3134ca2a5f8bedd902be, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: cf47141f52ea3134ca2a5f8bedd902be, type: 3}
+    - {fileID: 21300000, guid: f629933c81d45d848a8dcd1d93d6b3f4, type: 3}
+    - {fileID: 21300000, guid: 8a4a6caa4254d4143a83db83b67d8010, type: 3}
+    - {fileID: 21300000, guid: cb1aebfd7a5d5e848b47bf120f9da3b6, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a72c2c8774b25b44fa42c06801c9e094, type: 3}
+    - {fileID: 21300000, guid: 9b92016e16516a2428d3a0ab9660c030, type: 3}
+    - {fileID: 21300000, guid: b8c5f94684a95564c9cddeabec67b88f, type: 3}
+    - {fileID: 21300000, guid: d7d346b00571d634ea05cf4126846628, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 5}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+      amount: 40
+  upgrades:
+  - name: Harmonic Rings
+    description: 'Another ring, tuned a fifth higher: 20% more power.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 55
+  maxCount: 0
+  maxHealth: 4000
+  housing: 0
+  workers: 4
+  production: []
+  inputs:
+  - resource: {fileID: 11400000, guid: f92ab81316e7e5c40aadf1146f78f052, type: 2}
+    perSecond: 0.05
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

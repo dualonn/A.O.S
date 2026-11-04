@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d75f60a0c342ee8459daea5068ac911d, type: 3}
+  m_Name: Electronics
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceType
+  id: Electronics
+  displayName: Electronics
+  icon: {fileID: 21300000, guid: 9694ff375481e2840a155cd0bb3572b8, type: 3}
+  unlockedIn: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}

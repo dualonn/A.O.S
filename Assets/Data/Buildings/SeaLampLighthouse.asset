@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaLampLighthouse
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaLampLighthouse
+  displayName: Lamp Lighthouse
+  description: 'A banded tower with an oil lamp behind a ground-glass lens. Beam:
+    23 tiles. Its beam guides your boats (they fish more and come home safely), speeds
+    ships along, keeps pirates off your sea routes, and burns raiders'' and pirates''
+    hulls.'
+  icon: {fileID: 21300000, guid: 34ecfe226ff93de4ab93570ac1cfb741, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 34ecfe226ff93de4ab93570ac1cfb741, type: 3}
+    - {fileID: 21300000, guid: e6482b349cb92a34ea9ed910c6f69a79, type: 3}
+    - {fileID: 21300000, guid: d446162cea660bc49804431bacb58907, type: 3}
+    - {fileID: 21300000, guid: 21f9437132e587b478801afdb942d1df, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: a397af0418635244dba95520378f2bea, type: 3}
+    - {fileID: 21300000, guid: 512aa8aeaff52254eaef2da5df2e57d4, type: 3}
+    - {fileID: 21300000, guid: db67e88b186ae8f4b9adfb777f0c1979, type: 3}
+    - {fileID: 21300000, guid: 01a104bfbef047849b2fa6d634238c5e, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 5b1939fde33341944b80fc0231dbb06a, type: 3}
+    - {fileID: 21300000, guid: 308dcb79af4b1bd4e93834b8a857f2c4, type: 3}
+    - {fileID: 21300000, guid: f8ddbcd17dc831247b3ec3efcf93f296, type: 3}
+    - {fileID: 21300000, guid: e6a20b68b3e6bde408e933d82d39ab7d, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 7df96d365a0b6c84a8be15677e27de6a, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 400
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 150
+  upgrades:
+  - name: Fresnel Lens
+    description: Beam reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Fog Horn
+    description: Beam reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 200
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 9c46ee604f4cb6840b2fdf267c096c30, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e2fb9e0375ea633458af6ea00249f29c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 72
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 60
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 1400
+  housing: 0
+  workers: 1
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

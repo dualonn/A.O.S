@@ -56,6 +56,9 @@ public abstract class Unit : MonoBehaviour
     private UnitStatModifier extraModifier;
     private float rallyBoost, rallyUntil, nextAura;
 
+    /// <summary>Rank, morale and the commander's aura (WarField). Not saved: troops are trained again.</summary>
+    [System.NonSerialized] public WarMind War;
+
     [Header("Death")]
     [Tooltip("Seconds the body stays after the death animation starts, before fading.")]
     public float corpseTime = 2f;
@@ -74,7 +77,8 @@ public abstract class Unit : MonoBehaviour
     [Header("Runtime (read only)")]
     public Unit currentTarget;
 
-    private const float ScanInterval = 0.1f;
+    private const float ScanInterval = 0.1f, IdleScanInterval = 0.35f;
+    private bool engagedLastFrame;
     private static readonly ContactFilter2D ScanFilter = ContactFilter2D.noFilter;
 
     protected readonly List<Unit> targetsInRange = new List<Unit>();
@@ -230,7 +234,8 @@ public abstract class Unit : MonoBehaviour
         {
             // On real time: about ten scans a second whatever the game speed (at 5x, scanning on
             // game time meant every unit looking round, and choosing a target, nearly every frame).
-            nextScanTime = Time.time + ScanInterval * Mathf.Max(1f, Time.timeScale);
+            // Units not fighting look round less often (hundreds of idle camp guards and troops add up).
+            nextScanTime = Time.time + (engagedLastFrame ? ScanInterval : IdleScanInterval) * Mathf.Max(1f, Time.timeScale);
             UnityEngine.Profiling.Profiler.BeginSample("Unit.Scan");
             ScanForTargets();
             UnityEngine.Profiling.Profiler.EndSample();
@@ -256,8 +261,11 @@ public abstract class Unit : MonoBehaviour
         UnityEngine.Profiling.Profiler.EndSample();
 
         UnityEngine.Profiling.Profiler.BeginSample("Unit.Act");
-        if (currentTarget != null && ShouldEngage())
+        engagedLastFrame = false;
+        if (War != null && War.routing && War.Flee(this)) { engagedLastFrame = true; }   // broken: running for it (WarField)
+        else if (currentTarget != null && ShouldEngage())
         {
+            engagedLastFrame = true;
             Engage(currentTarget);
             UseAbility(currentTarget);
         }
@@ -275,6 +283,8 @@ public abstract class Unit : MonoBehaviour
     // The living units split by side, once a frame, for long-range scans.
     private static readonly List<Unit> scanPlayers = new List<Unit>(), scanOthers = new List<Unit>();
     private static int scanFrame = -1;
+    private static readonly List<Unit> hitPlayers = new List<Unit>(), hitOthers = new List<Unit>();
+    private static readonly List<Vector2> hitPlayersAt = new List<Vector2>(), hitOthersAt = new List<Vector2>();
 
     private static void BuildScanLists()
     {
@@ -282,7 +292,17 @@ public abstract class Unit : MonoBehaviour
         scanFrame = Time.frameCount;
         scanPlayers.Clear();
         scanOthers.Clear();
-        foreach (var u in All) if (u != null) (u.Team == Team.Player ? scanPlayers : scanOthers).Add(u);
+        hitPlayers.Clear(); hitOthers.Clear(); hitPlayersAt.Clear(); hitOthersAt.Clear();
+        foreach (var u in All)
+        {
+            if (u == null) continue;
+            bool player = u.Team == Team.Player;
+            (player ? scanPlayers : scanOthers).Add(u);
+            // Who can be hit at all this frame, and where (read once, not once per looker).
+            if (!u.Targetable || u.Peaceful) continue;
+            (player ? hitPlayers : hitOthers).Add(u);
+            (player ? hitPlayersAt : hitOthersAt).Add(u.transform.position);
+        }
     }
 
     /// <summary>What this unit fights with, and whether it's a beast (read by sounds; no lookups).</summary>
@@ -339,6 +359,7 @@ public abstract class Unit : MonoBehaviour
         {
             return;
         }
+        mod = WarField.Adjust(this, mod);   // rank, morale and the commander's aura
         if (extraModifier != null)
         {
             mod = Settlement.Combine(mod, extraModifier); // gear and levels stack on top
@@ -760,6 +781,9 @@ public abstract class Unit : MonoBehaviour
         return arrived;
     }
 
+    /// <summary>A step towards a point (a routing unit running for it).</summary>
+    public bool WarStep(Vector3 to, float speed) => MoveTowards(to, speed);
+
     protected void SetMoving(bool moving)
     {
         if (visual != null)
@@ -813,6 +837,7 @@ public abstract class Unit : MonoBehaviour
             amount = Mathf.Max(1, Mathf.RoundToInt(amount * 100f / (100f + armour)));
         }
         int dealt = Mathf.Min(health, amount);
+        WarField.Hit(this, attacker, dealt);
         health = Mathf.Max(0, health - amount);
         if (attacker != null && attacker.IsAlive)
         {
@@ -823,6 +848,7 @@ public abstract class Unit : MonoBehaviour
         {
             Die();
             if (attacker != null) attacker.OnKilled(this);
+            WarField.Died(this, attacker);
         }
     }
 
@@ -924,10 +950,15 @@ public abstract class Unit : MonoBehaviour
             Vector2 me = transform.position;
             float reach2 = detectionRange * detectionRange;
             BuildScanLists();
-            foreach (var other in Team == Team.Player ? scanOthers : scanPlayers)
+            if (Peaceful) return;
+            bool hitsAir = IsRanged || Moves == Movement.Air;
+            var others = Team == Team.Player ? hitOthers : hitPlayers;
+            var at = Team == Team.Player ? hitOthersAt : hitPlayersAt;
+            for (int i = 0; i < others.Count; i++)
             {
-                if (other == null || other.Team == Team) continue;
-                if (((Vector2)other.transform.position - me).sqrMagnitude > reach2 || !CanHit(other)) continue;
+                if ((at[i] - me).sqrMagnitude > reach2) continue;
+                var other = others[i];
+                if (other == null || other.Team == Team || (!hitsAir && other.Moves == Movement.Air)) continue;
                 targetsInRange.Add(other);
             }
             return;

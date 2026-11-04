@@ -602,7 +602,9 @@ public partial class Settlement : MonoBehaviour
         TickAges();
         XTickRecords(dt);
         TickTrade(dt);
+        SeaTick(dt);   // the sea: shoals, sea life, sea routes
         DisTick(dt);
+        UtlTick(dt);   // water, power, data, pollution
     }
 
     // ---------- Building stats and upgrades ----------
@@ -909,6 +911,7 @@ public partial class Settlement : MonoBehaviour
             {
                 building.buildProgress = 1f;
                 XRecordBuilt(def);
+                CivicsBuilt(def);
                 if (!offWorld) GameAudio.AtBuilding(def != null && def.IsWall ? "place" : "build_complete", building, def, def != null && def.IsWall ? 0.4f : 1f);
                 if (def == null || !def.IsWall)
                 {
@@ -965,7 +968,7 @@ public partial class Settlement : MonoBehaviour
             {
                 if (rate.resource != null)
                 {
-                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource) * TradeLinkFactor(building);
+                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource) * TradeLinkFactor(building) * SettlementHooks.ProductionOf(this, building, def, rate.resource);
                     AddResource(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                     XRecordGathered(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                 }
@@ -997,6 +1000,7 @@ public partial class Settlement : MonoBehaviour
                 var tech = Database.GetTechnology(id);
                 if (tech != null) tax += tech.coinPerPersonPerSecond;
             }
+            tax *= CivicsTaxFactor * ClassTaxFactor;   // government, laws, tax rate (Civics.cs); richer classes (People.cs)
             return tax * CultureTaxFactor;
         }
     }
@@ -1035,6 +1039,7 @@ public partial class Settlement : MonoBehaviour
         foreach (var pair in UpkeepPerSecond(out _))
         {
             float amount = pair.Value * dt;
+            amount *= CivicsUpkeepFactor;   // laws (Civics.cs)
             float have = GetAmount(pair.Key);
             if (have < amount) shortNow = true;
             AddResource(pair.Key, -Mathf.Min(have, amount));
@@ -1422,7 +1427,7 @@ public partial class Settlement : MonoBehaviour
             workers += stats.workers;
             jobs.Add((building, stats.workers, i));
         }
-        Housing = housing;
+        Housing = housing + PeopleBonusHousing;   // comfortable homes (People.cs)
         WorkersNeeded = workers;
 
         // Fill jobs: high priority first, then in the order buildings were placed.
@@ -1550,7 +1555,7 @@ public partial class Settlement : MonoBehaviour
     {
         get
         {
-            float speed = CultureResearchFactor;
+            float speed = CultureResearchFactor * SettlementHooks.ResearchOf(this);
             foreach (var id in State.researched)
             {
                 var tech = Database.GetTechnology(id);
@@ -1615,6 +1620,8 @@ public partial class Settlement : MonoBehaviour
     /// </summary>
     public bool CheckSite(BuildingDefinition def, Vector2Int cell, out float quality, out string reason)
     {
+        if (SeaCheckSite(def, cell, out quality, out reason) is bool seaSite) return seaSite;   // shore, floating and offshore buildings
+        if (UtlCheckSite(def, cell, out quality, out reason) is bool utlSite) return utlSite;   // dams and mills by the water
         if (RiverCheckSite(def, cell, out quality, out reason) is bool riverSite) return riverSite;   // bridges, docks, harbours
         quality = 1f;
         var area = new RectInt(cell, def.size);
@@ -1904,6 +1911,7 @@ public partial class Settlement : MonoBehaviour
     {
         var total = new UnitStatModifier();
         CultureUnitModifier(total);
+        CivicsUnitModifier(total);   // government and laws (Civics.cs)
         foreach (var id in State.researched)
         {
             var tech = Database.GetTechnology(id);
@@ -1978,7 +1986,7 @@ public partial class Settlement : MonoBehaviour
                 }
                 if (def.trainsUnit != null)
                 {
-                    var mod = Combine(GetUnitModifier(def.trainsUnit), stats.trainedUnits);
+                    var mod = Combine(Combine(GetUnitModifier(def.trainsUnit), stats.trainedUnits), WarRegimentModifier(building));
                     total += stats.maxUnits * UnitPower(def.trainsUnit, mod);
                 }
             }

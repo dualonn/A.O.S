@@ -1407,7 +1407,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         foreach (var view in views.Values)
         {
             // Walls aren't worth raiding: raiders only smash the ones in their way.
-            if (!IsStanding(view) || view.Definition.IsWall)
+            if (!IsStanding(view) || view.Definition.IsWall || Settlement.SeaOutOfReach(view.State, view.Definition))
             {
                 continue;
             }
@@ -1456,6 +1456,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// </summary>
     public int WallMask(Vector2Int cell)
     {
+        if (UtlWorks.ConduitMaskFor(this, cell, out int utlMask)) return utlMask;   // aqueducts join aqueducts
         if (TradeWorks.RoadMaskFor(this, cell, out int roadMask)) return roadMask;   // roads join roads, rail joins rail
         if (RiverWorks.WallMaskFor(this, cell, out int riverMask)) return riverMask;   // bridges join bridges, walls join walls
         bool n = WallAt(cell + Vector2Int.up) != null, e = WallAt(cell + Vector2Int.right) != null;

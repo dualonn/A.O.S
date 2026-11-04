@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaStiltHuts
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaStiltHuts
+  displayName: Stilt Huts
+  description: 'Reed huts on posts over the shallows, a walkway between. Build them
+    across the shoreline: room for 5.'
+  icon: {fileID: 21300000, guid: 686979f8e71ab41409c3799eb282e4ee, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 686979f8e71ab41409c3799eb282e4ee, type: 3}
+    - {fileID: 21300000, guid: 964ef21bbb16ebc47949237fb641781b, type: 3}
+    - {fileID: 21300000, guid: 810873c009d6fbf4b89dcae3ced347e8, type: 3}
+    - {fileID: 21300000, guid: 7d3da04e92a247046872035cf2494cc2, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 6c10b36b591cefe44adadf81120070fe, type: 3}
+    - {fileID: 21300000, guid: dce5614eb107bea4793e07c2eee8e564, type: 3}
+    - {fileID: 21300000, guid: 06e19a8c120c4424c96c46a1ff556820, type: 3}
+    - {fileID: 21300000, guid: e462532d936e36248945db9bb3100ee0, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 730e4e29990a61145851f9c0efe99b06, type: 3}
+    - {fileID: 21300000, guid: 857a8b6819cde884b8212dc0040dc89a, type: 3}
+    - {fileID: 21300000, guid: b0dd897496acc324ea462eae229af9a8, type: 3}
+    - {fileID: 21300000, guid: a1705c38e2c7dc64b8a6ce7b3d8dea06, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ec1131b8c4f4ea7428ef027a12440762, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2228c1d587856e24e858ed4b537838c4, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 45
+  upgrades:
+  - name: Reed Walls
+    description: +2 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 30
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 2
+    extraHealth: 20
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Raised Floors
+    description: +2 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 2
+    extraHealth: 40
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: f0410a1182204344487c2b0ae266dab6, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bda4efeae4b8a0b43a7f5e1c3800e3dc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 48
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 15
+  maxCount: 0
+  maxHealth: 140
+  housing: 5
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplPotter
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplPotter
+  displayName: Potter's Kiln
+  description: 'A potter''s wheel and a domed kiln: jars, bowls and lamps from clay.
+    Villagers need pots; later folk still use them.'
+  icon: {fileID: 21300000, guid: 8d88d619e3444e343bc87afab35f759a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 8d88d619e3444e343bc87afab35f759a, type: 3}
+    - {fileID: 21300000, guid: 61fd42ee1ac121b42a6929c756d9dde1, type: 3}
+    - {fileID: 21300000, guid: 5433778e79d7fa541b3d5f43171c3e63, type: 3}
+    - {fileID: 21300000, guid: e364a9cadfbdcf5499e3c61357e326b0, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 13d5df9be7deec14a93ec957df31f404, type: 3}
+    - {fileID: 21300000, guid: 329ed44998f8cd246aa0b2240de07bc9, type: 3}
+    - {fileID: 21300000, guid: 34ad278c03b93db42901721fe9de953d, type: 3}
+    - {fileID: 21300000, guid: 39dddd663c30eb3489ce1c8f0ea7acc0, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 3648aa28bc5c96e40a8c4f348a8dab4b, type: 3}
+    - {fileID: 21300000, guid: f00870d24ecadf84e9501be6aaeccbc3, type: 3}
+    - {fileID: 21300000, guid: e290a9c5d6522a34cab7a716af4a6a2a, type: 3}
+    - {fileID: 21300000, guid: e6604a38337ab2d43a2f3335fa58361a, type: 3}
+    fps: 4
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 5a81c1e7b39ea8a4bb4d3c77114ee893, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 135
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 75
+  upgrades:
+  - name: More Hands
+    description: 'Another workbench and an apprentice: +25% output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 75
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 65
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Craft
+    description: 'Better tools and a master''s eye: +30% more output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 115
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 55
+    upgradeTime: 25
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 26
+  maxCount: 0
+  maxHealth: 380
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: 3bdfcba6c76c80d45aa83b80a0e9c481, type: 2}
+    perSecond: 0.15
+  inputs:
+  - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+    perSecond: 0.05
+  - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+    perSecond: 0.04
+  runsWithoutInputs: 0.25
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

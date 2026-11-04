@@ -103,6 +103,9 @@ public class SettlementState
     [Tooltip("How this game was set up (new-game screen). Old saves: all defaults = the classic game.")]
     public GameOptions options = new GameOptions();
 
+    [Tooltip("Warfare: regiments' experience, commanders and their traits, battle reports (see WarSettlement.cs).")]
+    public WarSave war = new WarSave();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>

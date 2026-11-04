@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaWhalingStation
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaWhalingStation
+  displayName: Whaling Station
+  description: 'A slipway with whaleboats, a try-works boiling blubber and barrels
+    stacked high. Its boats hunt the whales of the open sea within 18 tiles: meat
+    and coin. Build it by open sea.'
+  icon: {fileID: 21300000, guid: 157cb66e3eadd8c409a087e33ccf97c2, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 157cb66e3eadd8c409a087e33ccf97c2, type: 3}
+    - {fileID: 21300000, guid: cb59b12be29781f4caf9af2661d8919a, type: 3}
+    - {fileID: 21300000, guid: bfb8b02fa33ec9c4fbbb07b75c7e8946, type: 3}
+    - {fileID: 21300000, guid: e7bfaa2d4a92a4d46b56e3ed6fe084ca, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 73f532df04b4da44c8ded970bb5b4044, type: 3}
+    - {fileID: 21300000, guid: 5a38752c5ce693348a14ad8cd6656429, type: 3}
+    - {fileID: 21300000, guid: c053052868dbdc7468752263ae18b97c, type: 3}
+    - {fileID: 21300000, guid: feed37dd1915e1847b031dd2349d58d4, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 8f277425d08fd01498594df4335411e6, type: 3}
+    - {fileID: 21300000, guid: 2f4f69622f3e1f8429df661e9334fd15, type: 3}
+    - {fileID: 21300000, guid: 4e663d9f0bb14bb4793bcead01e05ed6, type: 3}
+    - {fileID: 21300000, guid: 338ef4a2bcb081048a39d96018c19699, type: 3}
+    fps: 4
+  size: {x: 3, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 43bc318fc5235844fb390ccdbf627eb0, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 220
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 40
+  upgrades:
+  - name: Try-Works
+    description: +25% output, hunts faster.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+        amount: 40
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Boat
+    description: +20% output, hunts faster, reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 732c256961184084e9fbb0e464a32a36, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a7bf92979a9416047b390077c70eb4de, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 36
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 500
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 1.4
+  - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+    perSecond: 0.1
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

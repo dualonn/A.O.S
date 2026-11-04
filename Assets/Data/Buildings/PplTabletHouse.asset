@@ -1,0 +1,176 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplTabletHouse
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplTabletHouse
+  displayName: House of Tablets
+  description: 'Scribes teach the young their signs on clay tablets. Schools people:
+    research goes faster and schooled people work better.'
+  icon: {fileID: 21300000, guid: 44b67ad970a26f94dadd100de510b052, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 44b67ad970a26f94dadd100de510b052, type: 3}
+    - {fileID: 21300000, guid: 476090dac7990db409c3e1fa4098d80c, type: 3}
+    - {fileID: 21300000, guid: 1fe3c3d9949329d4d8866d793037d72a, type: 3}
+    - {fileID: 21300000, guid: 834be9b0f9311874fa0bffb16e6bd9c5, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 7a469256995dba349947334055ba3158, type: 3}
+    - {fileID: 21300000, guid: 7888b09429c270a48a928f0b54b882f5, type: 3}
+    - {fileID: 21300000, guid: 6905db79da03a7c43bae4a11187a2f36, type: 3}
+    - {fileID: 21300000, guid: 76dc86bd2a814d846a7e647bb9e7a6b5, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: f1c3d5b48543c664fbb6b22c1e5d8dbb, type: 3}
+    - {fileID: 21300000, guid: e4ff90c6d9f4fe54e96b7de20816b1e0, type: 3}
+    - {fileID: 21300000, guid: 3d776de0d270d604aa34424f6e2b05bf, type: 3}
+    - {fileID: 21300000, guid: 3b9ef9938b8318543bee184fb64baa83, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 6d4a08643c36da04b9e9c29ae9211705, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 190
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 165
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 95
+  upgrades:
+  - name: More Teachers
+    description: 'More teachers and a bigger hall: +35% pupils.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 85
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 75
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 45
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Great Library
+    description: 'A library worth the journey: +35% more pupils.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 125
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 110
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: b27a8baba0516d349be2e765601cb625, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 270
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 135
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 25
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 70
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 38
+  maxCount: 0
+  maxHealth: 500
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlSteamDynamo
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlSteamDynamo
+  displayName: Steam Dynamo House
+  description: 'A boiler house and a roaring dynamo under a tall chimney: the first
+    electric light. Burns coal; needs cooling water close by.'
+  icon: {fileID: 21300000, guid: a31287aefc70f51479e1db22bee85a67, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a31287aefc70f51479e1db22bee85a67, type: 3}
+    - {fileID: 21300000, guid: 5dca2d9dee675fc469bf96fd61e5eaa0, type: 3}
+    - {fileID: 21300000, guid: d8c89800c14685f48b15b2d54abae6ff, type: 3}
+    - {fileID: 21300000, guid: 6806bb6d448d06b4796a1fd1bde341cd, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 585f1ff327e11c647a9e7cf7328f18e9, type: 3}
+    - {fileID: 21300000, guid: ec8d58b2e7e998f47a625c67bbb4e512, type: 3}
+    - {fileID: 21300000, guid: 6868ff06ca906a84693a6474e4b1b6ed, type: 3}
+    - {fileID: 21300000, guid: e4d2dec37ff87b44083defce94a9d188, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 69c2b36abd67c774bae648708f6ae44d, type: 3}
+    - {fileID: 21300000, guid: 87d16d1c8b10ab34a84999bfc970d50b, type: 3}
+    - {fileID: 21300000, guid: dfe725c397c8f4248a6a304a6766dad5, type: 3}
+    - {fileID: 21300000, guid: 68981c122bffeb3469dbc2a52ba45d81, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 150
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 20
+  upgrades:
+  - name: Compound Engine
+    description: 'Steam used twice over: 20% more power. Each also cuts its pollution
+      by 30%.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 200
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Feedwater Heater
+    description: 'Hot water into the boiler: 20% more power. Each also cuts its pollution
+      by 30%.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 300
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 40
+  maxCount: 0
+  maxHealth: 1500
+  housing: 0
+  workers: 4
+  production: []
+  inputs:
+  - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+    perSecond: 0.12
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

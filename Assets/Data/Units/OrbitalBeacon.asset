@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: OrbitalBeacon
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Orbital Beacon
+  icon: {fileID: 21300000, guid: aa5475ae60da82940a9b53c9cd0a3c2a, type: 3}
+  age: {fileID: 11400000, guid: b7a06c990c46cb246827dc062a825fce, type: 2}
+  troopClass: {fileID: 11400000, guid: 260f25378f7cce245b28dc541dd1a0be, type: 2}
+  prefab: {fileID: 7314386759447070356, guid: 6ad90a69eb5c25c40a8da5d377210f7b, type: 3}
+  cost: 0
+  populationCost: 4
+  upkeep:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.04
+  - resource: {fileID: 11400000, guid: ca875f17279243646a56a7131bdeed27, type: 2}
+    perSecond: 0.05
+  maxHealth: 3600
+  moveSpeed: 0.5
+  attackPower: 600
+  attackCooldown: 8
+  attackRange: 14
+  hitDelay: 0.6
+  detectionRange: 6.5
+  projectile: {fileID: 21300000, guid: 234d247b3604d014b9a8ef074e390239, type: 3}
+  projectileSpeed: 26
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0
+  splashRadius: 2.2
+  splashFire: 1
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

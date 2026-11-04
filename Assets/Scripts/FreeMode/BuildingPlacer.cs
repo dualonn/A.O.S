@@ -220,7 +220,8 @@ public class BuildingPlacer : MonoBehaviour
         var settlement = controller.Settlement;
         var grid = controller.Grid;
         var cells = LineCells(lineStart.Value, RiverWorks.LineEnd(Current, lineStart.Value, cell));
-        TradeWorks.Staircase(Current, cells);   // roads and rail
+        TradeWorks.Staircase(Current, cells);
+        UtlWorks.Staircase(Current, cells);   // aqueducts   // roads and rail
         int good = 0;
         for (int i = 0; i < cells.Count; i++)
         {

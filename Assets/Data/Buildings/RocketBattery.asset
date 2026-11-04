@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RocketBattery
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RocketBattery
+  displayName: Rocket Battery
+  description: 'A motor pool and a control bunker for missile carriers: they ripple
+    rockets onto camps (4x damage).'
+  icon: {fileID: 21300000, guid: 453e1bda3799430498480919b0dde157, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 453e1bda3799430498480919b0dde157, type: 3}
+    - {fileID: 21300000, guid: f0d05176c175c5443a01157cdc040cd4, type: 3}
+    - {fileID: 21300000, guid: 1fbb9dbe73cb85f43a037b8b801b9a0e, type: 3}
+    - {fileID: 21300000, guid: a1146f9771b79cc4ea8dd30363c53015, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 4624afadfc005c14cbb5d45d65e87d13, type: 3}
+    - {fileID: 21300000, guid: bf34e18d0ec393047ad14997d7a21547, type: 3}
+    - {fileID: 21300000, guid: e376f8d47e81beb4ebd09bd46553efa6, type: 3}
+    - {fileID: 21300000, guid: 0a2775ce8194c6d4b8d7dc201fac6146, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 386426579c6c485419c43bc17cc71628, type: 3}
+    - {fileID: 21300000, guid: f4030073036f1204c97a5af5464b60f9, type: 3}
+    - {fileID: 21300000, guid: 9649814333f96e44aabaa7238f430e48, type: 3}
+    - {fileID: 21300000, guid: c2723ec775239824d953fcb6a2a2ea93, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 521e493fa6b4dcf44872b59e79cc6423, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 320
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 30
+  upgrades:
+  - name: Second Crew
+    description: +1 engine.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 720
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Engineers
+    description: Engines built here are 20% tougher and hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 600
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: c8e8c32c27642d344980991e3c9cae16, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2d6785015a451d7468482ccb7e9b2bdc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 69e08591c4ab6664683cede531656d21, type: 2}
+      amount: 40
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 0
+  fullOutputTiles: 1
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 2100
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 1
+  trainsUnit: {fileID: 11400000, guid: 8ef24734e9b7e36409436a102824e671, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

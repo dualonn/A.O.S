@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaPearlDivers
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaPearlDivers
+  displayName: Pearl Divers
+  description: 'A diving platform over clear water. Its divers work the oyster beds
+    in reach (pale shells on the water near the shore) for pearls: gold, and a little
+    happiness in every town (+1 mood each, up to 3).'
+  icon: {fileID: 21300000, guid: cd8828a83adb08f488644f1bc2f93ce5, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: cd8828a83adb08f488644f1bc2f93ce5, type: 3}
+    - {fileID: 21300000, guid: 3a8e926eca44db84fbbf9931e0ef1db1, type: 3}
+    - {fileID: 21300000, guid: babc28686dc22a846951ff378916bffc, type: 3}
+    - {fileID: 21300000, guid: 27750256ccf9b984ca222bf4899318aa, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: c202e76ed0d533c4893db7c0c05d2bd8, type: 3}
+    - {fileID: 21300000, guid: e1b4f49180bef394a9d4c8be26bfae95, type: 3}
+    - {fileID: 21300000, guid: 124aa5059fa06e74bb2823741a6e55f7, type: 3}
+    - {fileID: 21300000, guid: 457c3eed698943643bedd15ca81da7a4, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: bc5b588a2b19c5142856283dc2faf663, type: 3}
+    - {fileID: 21300000, guid: a0c1656c461994f49ab9eb77bf5f7fa5, type: 3}
+    - {fileID: 21300000, guid: fefe90ede5e48ab42a00bc7723162652, type: 3}
+    - {fileID: 21300000, guid: 2408c346d98f2a545873b31b42058d26, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 84e04fdcd848fbb49aeee1dbb9942580, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 40
+  upgrades:
+  - name: Diving Stones
+    description: +25% pearls.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 10
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Oyster Knives
+    description: +20% pearls, reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 30
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 20
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 260
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+    perSecond: 0.12
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

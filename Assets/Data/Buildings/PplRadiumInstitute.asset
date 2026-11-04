@@ -1,0 +1,187 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplRadiumInstitute
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplRadiumInstitute
+  displayName: Radium Institute
+  description: 'A gleaming tower of labs crowned with a Tesla spire. Schools people:
+    research and skilled work.'
+  icon: {fileID: 21300000, guid: 6b9c3d573cb66104ba43f94c16ac8589, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 6b9c3d573cb66104ba43f94c16ac8589, type: 3}
+    - {fileID: 21300000, guid: 1ecf9eca7711db44cb6cefe8eae3988d, type: 3}
+    - {fileID: 21300000, guid: 12144baa5af80c34082b3342fc0060f8, type: 3}
+    - {fileID: 21300000, guid: 01694132dfae1a04fb3d51024a62dcbc, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a7215859607dcbc4cb6c134f99fb2d2f, type: 3}
+    - {fileID: 21300000, guid: 0a6af3190d09b8b4c8964e40384f5d8c, type: 3}
+    - {fileID: 21300000, guid: 4e27858b97bcf934cb2a5b860750a4f2, type: 3}
+    - {fileID: 21300000, guid: 18a1b260868f7da4f8275137593ce8a9, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 018315fe402acc247af2388c811705af, type: 3}
+    - {fileID: 21300000, guid: aa18935bec86c1748a2bbc02008aa714, type: 3}
+    - {fileID: 21300000, guid: 73c59c3d5f3e3274898da3f09e15709a, type: 3}
+    - {fileID: 21300000, guid: fed7812e404ca724caf9dfd3686597cd, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 5}
+  age: {fileID: 11400000, guid: e7a4a82fa6ad74646a7d68aaa4e292cf, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 1425
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1245
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 710
+    - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+      amount: 140
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 105
+  upgrades:
+  - name: More Teachers
+    description: 'More teachers and a bigger hall: +35% pupils.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 640
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 560
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 320
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 65
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 50
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Great Library
+    description: 'A library worth the journey: +35% more pupils.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 925
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 810
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 460
+      - resource: {fileID: 11400000, guid: 63aedb7ee3d809a46ad6bb26a7afcd69, type: 2}
+        amount: 90
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 70
+    upgradeTime: 25
+    productionMultiplier: 1.35
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 6346a07fec47b0442b861cd837e1fc1a, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 960
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 840
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 480
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 70
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 60
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 102
+  maxCount: 0
+  maxHealth: 2100
+  housing: 0
+  workers: 6
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaOilRig
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaOilRig
+  displayName: Offshore Oil Rig
+  description: 'Steel legs standing in the open sea, a derrick and a gas flare. Drills
+    the oil under the sea: more in deeper water. Build it at least 2 tiles out from
+    the shore.'
+  icon: {fileID: 21300000, guid: a11a3c44f1d95f3429ab13a289da404b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a11a3c44f1d95f3429ab13a289da404b, type: 3}
+    - {fileID: 21300000, guid: 6745d81650cb6d94eb8f999da004508b, type: 3}
+    - {fileID: 21300000, guid: 6996557718a38e644bddc6a89222bf52, type: 3}
+    - {fileID: 21300000, guid: a9c82e4a807b23a4bb3540b99d397c44, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 28d209b2488bc194c8288b29f84415b6, type: 3}
+    - {fileID: 21300000, guid: 1df9423539a7e1645afc2f81acb0c948, type: 3}
+    - {fileID: 21300000, guid: 3bb04ffcf6a32d84e81e0222559f9007, type: 3}
+    - {fileID: 21300000, guid: 4e484a9192629a14f98c8535f86c42b5, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 9716dd5cd0ba8a94fba32671ecaada74, type: 3}
+    - {fileID: 21300000, guid: 3124517925a156b4c9ae5ee7b315001c, type: 3}
+    - {fileID: 21300000, guid: 21a5f795ccf05b048932b9fa3c7e37d0, type: 3}
+    - {fileID: 21300000, guid: 80bde1190debce14eb3d5cfd12d105e1, type: 3}
+    fps: 5
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: d82e484d9ca519b4889c06ffe8c7c4f3, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 200
+  upgrades:
+  - name: Second Well
+    description: +25% oil.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Deep Drill
+    description: +20% oil.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 1800
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: 1fdff9e2095f5a44b9777514d4d179a8, type: 2}
+    perSecond: 0.9
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

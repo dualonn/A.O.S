@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaPierHouses
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaPierHouses
+  displayName: Pier Houses
+  description: 'Timber-framed houses on a pier with washing lines between. Build
+    them across the shoreline: room for 36.'
+  icon: {fileID: 21300000, guid: bc9222396a6ab554d9ddbe75d2080c66, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: bc9222396a6ab554d9ddbe75d2080c66, type: 3}
+    - {fileID: 21300000, guid: 7c6445397c335e54890860ddd9977e5a, type: 3}
+    - {fileID: 21300000, guid: c12b289a9d23ad543a593e1a7c8d8423, type: 3}
+    - {fileID: 21300000, guid: 45bf36f64020e0e4e9334e86a4768056, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: f861274180c2283489da14195d457b63, type: 3}
+    - {fileID: 21300000, guid: fd878cb52b75b00468097e89d5dcd88e, type: 3}
+    - {fileID: 21300000, guid: 977d91ae9360c5948be0c855a045eea5, type: 3}
+    - {fileID: 21300000, guid: bb968737e09145845b8f6a8d369f7e03, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 11c9a9f8139a45f46a08a526f21c3f88, type: 3}
+    - {fileID: 21300000, guid: 111239d8e7215e04393190419ca3c81d, type: 3}
+    - {fileID: 21300000, guid: 9088bb95d7203774089f41dbd86cb48e, type: 3}
+    - {fileID: 21300000, guid: 9a062f3c4e65e084cb8e8ceaaea9cdac, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 52f764a08cf7cea4fa095e5631b7fbf2, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: bda4efeae4b8a0b43a7f5e1c3800e3dc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 80
+  upgrades:
+  - name: Upper Floors
+    description: +6 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 6
+    extraHealth: 100
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Fish Market
+    description: +6 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 6
+    extraHealth: 100
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 700
+  housing: 36
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

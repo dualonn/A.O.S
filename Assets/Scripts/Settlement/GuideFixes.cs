@@ -48,7 +48,7 @@ public partial class Settlement
     }
 
     /// <summary>What buying 'amount' costs in Coin, priced along the way.</summary>
-    private float XBuyCost(ResourceType r, float amount) => amount * XBaseValue(r) * XTradeFactor(r, amount) * XBuyShare;
+    private float XBuyCost(ResourceType r, float amount) => amount * XBaseValue(r) * XTradeFactor(r, amount) * XBuyShare * CivicsBuyFactor;
 
     /// <summary>The most (up to 'amount', whole units) that 'have' Coin buys.</summary>
     private float XAffordable(ResourceType r, float amount, float have)

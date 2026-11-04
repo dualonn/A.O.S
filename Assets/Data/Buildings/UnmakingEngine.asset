@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UnmakingEngine
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UnmakingEngine
+  displayName: Unmaking Engine
+  description: A ring of pale stone round a fold in the world. Reality breakers float
+    out of it and erase camps (5x damage).
+  icon: {fileID: 21300000, guid: f6aba11209378864cbc9ea963057af3e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: f6aba11209378864cbc9ea963057af3e, type: 3}
+    - {fileID: 21300000, guid: ed98088d99631b844b122903b4777eb8, type: 3}
+    - {fileID: 21300000, guid: e1032e04e82fba243910298cd001bdc6, type: 3}
+    - {fileID: 21300000, guid: 4dc7ac9228c899443becca9c1dc842bf, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: c516f37aa36ca134aa1d307479ec671a, type: 3}
+    - {fileID: 21300000, guid: 4d22c3f83bcdcbf4d92866de6ce6d5c6, type: 3}
+    - {fileID: 21300000, guid: 7ddde39ae3cca8f4e8c2237461b12ad6, type: 3}
+    - {fileID: 21300000, guid: 72a62e4921f397045b01611545fc4997, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 41f64af82a09cc2479caa5f6dbc6cae6, type: 3}
+    - {fileID: 21300000, guid: 3ab42b95e6db08e44a49343b6670b785, type: 3}
+    - {fileID: 21300000, guid: cb117d56f5437e040b884bb8b9431f3a, type: 3}
+    - {fileID: 21300000, guid: e808c7b796d70bc4b93e3936055db421, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 0270378efd31104429e929de454bdd45, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: be343476826e2c342acb26cfecbbaae1, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 53f165e5bfd1cf240bf60c62fb71cba6, type: 2}
+      amount: 50
+    - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+      amount: 40
+  upgrades:
+  - name: Second Crew
+    description: +1 engine.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 53f165e5bfd1cf240bf60c62fb71cba6, type: 2}
+        amount: 1080
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Engineers
+    description: Engines built here are 20% tougher and hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: a33d91907d64a5d498b272bba92d0994, type: 2}
+        amount: 900
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 0
+  fullOutputTiles: 1
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 2820
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 1
+  trainsUnit: {fileID: 11400000, guid: 92a5b6cddf05cea49bc0fc54db42dd96, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

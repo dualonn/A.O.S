@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlManaReactor
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlManaReactor
+  displayName: Mana Reactor
+  description: 'A ring of runestones round a blazing crystal, wound in copper: mana
+    turned into lightning.'
+  icon: {fileID: 21300000, guid: 4a3d122cc26efa149a194564d36e33a2, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 4a3d122cc26efa149a194564d36e33a2, type: 3}
+    - {fileID: 21300000, guid: 561e6846dfca9664da9e86d0765e9d0d, type: 3}
+    - {fileID: 21300000, guid: 878b8e473f4daee4a90be41e3e9bbed7, type: 3}
+    - {fileID: 21300000, guid: 7ea256be4b0019a4ab7ce2b03bd8265d, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: 79b8ba5a6d125b44b9ec75e7b6b5bf36, type: 3}
+    - {fileID: 21300000, guid: 2a9249f944ffbbe45847d765ff6653ba, type: 3}
+    - {fileID: 21300000, guid: f18046b8c76c8094d91c1a288f9608c4, type: 3}
+    - {fileID: 21300000, guid: 603d2e0b9cd349442ad0b16f5167fbe8, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 500
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 69e08591c4ab6664683cede531656d21, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 150
+  upgrades:
+  - name: Second Crystal
+    description: 'A twin crystal in the ring: 20% more power.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 69e08591c4ab6664683cede531656d21, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 150
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 50
+  maxCount: 0
+  maxHealth: 3000
+  housing: 0
+  workers: 4
+  production: []
+  inputs:
+  - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+    perSecond: 0.06
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

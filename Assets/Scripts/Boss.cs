@@ -129,6 +129,7 @@ public class Boss : MonoBehaviour
         }
         RingPulse.Spawn(transform.position, 7f, new Color(0.95f, 0.25f, 0.2f, 0.7f));
         GameAudio.Play("boss_warcry", transform.position);
+        WarField.Roar(transform.position, 7f);
     }
 
     /// <summary>Call more raiders to the fight.</summary>

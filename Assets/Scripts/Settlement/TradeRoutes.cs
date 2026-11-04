@@ -389,7 +389,7 @@ public partial class Settlement
         float size = 0.6f + 0.04f * Mathf.Min(60, r.sizeA + r.sizeB);
         float posts = (TradePostOutput(r.a) + TradePostOutput(r.b)) * 0.5f;
         float roads = 1f + 0.25f * Mathf.Max(r.roadShare, r.railShare);
-        return 0.3f * length * TradeCatalog.Capacity[tier] * size * posts * roads * TradeResearchFactor;
+        return 0.3f * length * TradeCatalog.Capacity[tier] * size * posts * roads * TradeResearchFactor * CivicsTradeFactor;
     }
 
     private float TradePostOutput(int id)

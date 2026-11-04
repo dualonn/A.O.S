@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: UtlSolarFarm
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: UtlSolarFarm
+  displayName: Solar Array
+  description: Rows of dark glass panels turning to follow the sun. Clean power;
+    weaker on worlds of long nights, stronger on scorching ones.
+  icon: {fileID: 21300000, guid: d765850ec1be94c42be08cf88844013e, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d765850ec1be94c42be08cf88844013e, type: 3}
+    - {fileID: 21300000, guid: f28755695786d1441a8cd07b70f82ceb, type: 3}
+    - {fileID: 21300000, guid: b9198c1bdbf72fb48875b6dfe1d398a1, type: 3}
+    - {fileID: 21300000, guid: 495657ed7559a0d43a0976e03c0583ca, type: 3}
+    fps: 2
+  - frames:
+    - {fileID: 21300000, guid: f335bc7e5c77dca45bea8fdefce52c83, type: 3}
+    - {fileID: 21300000, guid: 7ac5a46064c79b4429723b7112b5605d, type: 3}
+    - {fileID: 21300000, guid: c3b8e3c9a6bb72a4db328452e7cf36c8, type: 3}
+    - {fileID: 21300000, guid: cfc4754ad01ad5c4bb0a4d8e02cad658, type: 3}
+    fps: 2
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 91c5840e11c24e64986660fa9ee32778, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: 48ce001747447ff45be4adf2afde3f22, type: 2}
+      amount: 15
+  upgrades:
+  - name: Tracking Mounts
+    description: 'Panels that follow the sun all day: 20% more power.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 30
+  maxCount: 0
+  maxHealth: 1200
+  housing: 0
+  workers: 1
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

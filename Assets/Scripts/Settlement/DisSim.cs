@@ -144,6 +144,7 @@ public partial class Settlement
     {
         disGuards.Clear();
         disGuardsWorld = State.currentWorld;
+        UtlAddWaterGuards();   // fountains, towers, pumps... (Utilities.cs)
         foreach (var b in State.buildings)
         {
             var def = Database.GetBuilding(b.definitionId);
@@ -780,6 +781,7 @@ public partial class Settlement
         float max = StatsOf(def, b.upgradeLevel).maxHealth;
         float floor = Mathf.Round(max * floorShare);
         if (b.health <= floor) return false;
+        share *= CivicsDisasterFactor;   // laws (Civics.cs)
         b.health = Mathf.Max(floor, b.health - Mathf.Max(1f, Mathf.Round(max * share)));
         if (!d.damaged.Contains(b.instanceId)) d.damaged.Add(b.instanceId);
         if (b.health <= 0f)

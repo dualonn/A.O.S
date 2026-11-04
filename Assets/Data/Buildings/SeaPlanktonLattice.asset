@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaPlanktonLattice
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaPlanktonLattice
+  displayName: Plankton Lattice
+  description: 'A lattice of glowing tubes where plankton blooms under tuned light:
+    food for a world. Stands out over the water, close to land or to another building
+    on the water: raiders on foot can''t reach it.'
+  icon: {fileID: 21300000, guid: b44902bfeb26e074d92809c0ae065e66, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: b44902bfeb26e074d92809c0ae065e66, type: 3}
+    - {fileID: 21300000, guid: db976fb2c26bd8543853d97333e1a4d9, type: 3}
+    - {fileID: 21300000, guid: 6639bce09bd68a240982cd84003f57aa, type: 3}
+    - {fileID: 21300000, guid: 6cb3bb2fbd421e1488ef1a87bb0fa2a1, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 44c9d45d9f79b1c438b818c416fe0add, type: 3}
+    - {fileID: 21300000, guid: 5d8961ed581978f4abfeb99968bd45fb, type: 3}
+    - {fileID: 21300000, guid: 6e16c4ab7a1156f4c9077c0ec873fc98, type: 3}
+    - {fileID: 21300000, guid: ffdc22b5c80194445a890d0c5d1d3327, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 3cd6485a3ad9ec645b931030af5c8a8d, type: 3}
+    - {fileID: 21300000, guid: ec9be853a5223a54fb9b7608ae959afc, type: 3}
+    - {fileID: 21300000, guid: 2ce0098afa21b0a489caeaa0338a43d4, type: 3}
+    - {fileID: 21300000, guid: a0d833309e92f0c41b77962a8afd02e6, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: fe95bb00ba184564c9567020fb6ea1a9, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 120
+  upgrades:
+  - name: Bloom Lamps
+    description: +25% harvest.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Seeded Strains
+    description: +20% harvest.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 120
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 2600
+  housing: 0
+  workers: 2
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 9
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

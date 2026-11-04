@@ -1,0 +1,228 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4070cefb0107584e932c88073e2d005, type: 3}
+  m_Name: SeaLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SeaLibrary
+  fishingBoats:
+  - frames:
+    - {fileID: 21300000, guid: a2b9959cab7c8ac47af7068cd4f79d62, type: 3}
+    - {fileID: 21300000, guid: 8297f98ab24add041ae287b753d3d27b, type: 3}
+    - {fileID: 21300000, guid: 482e0f0fb3d1b664aa6e80649ac934da, type: 3}
+    - {fileID: 21300000, guid: 34f5353dd7406db44ab8009b540361d8, type: 3}
+    - {fileID: 21300000, guid: cdc239f17f08ede41babf67aabadf85c, type: 3}
+    - {fileID: 21300000, guid: 68b617644f91a184fadd78edee29c7fe, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 7f3ff0a6880d95646839620c345df8ea, type: 3}
+    - {fileID: 21300000, guid: fc15733159a21944abf01f6d5b6fc876, type: 3}
+    - {fileID: 21300000, guid: 04dc715a0a182f04fa4ecc1698c60cd6, type: 3}
+    - {fileID: 21300000, guid: c0613c2df802bcb459a29af4d78b5acd, type: 3}
+    - {fileID: 21300000, guid: d9de49d4cb518b5488ee05c1c06633da, type: 3}
+    - {fileID: 21300000, guid: db02794f6d7a25042a0d5da3be4151b6, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 05e476367db44f543813f02745c12781, type: 3}
+    - {fileID: 21300000, guid: fc44455bdbb5c9b4a965a4dceaf4da03, type: 3}
+    - {fileID: 21300000, guid: 7b105125bd8b8d64d87562f077a6429a, type: 3}
+    - {fileID: 21300000, guid: 595e5bad6475fe541a6797c5aa89d4b1, type: 3}
+    - {fileID: 21300000, guid: 342ab5ffc506f3647b483489a091df43, type: 3}
+    - {fileID: 21300000, guid: d21ea69810e62ca4fab9ef88673a0959, type: 3}
+    fps: 3
+    smoke: {x: -0.27, y: 0.72}
+  - frames:
+    - {fileID: 21300000, guid: 6a57c37491d20ac4cad4aceb520b6e38, type: 3}
+    - {fileID: 21300000, guid: d655beb0ac93ce04188ee98216e6a5b7, type: 3}
+    - {fileID: 21300000, guid: ce9eb32882b400348a56eaa73ced1ad5, type: 3}
+    - {fileID: 21300000, guid: 6bd5b2367ba7b7445b2f099b3f1872b3, type: 3}
+    - {fileID: 21300000, guid: f56eb07a1fdea364681f3b0c34e183fa, type: 3}
+    - {fileID: 21300000, guid: 0328715e5f934db43b5449236eae8262, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: ddb5a4d0362164441b38c4ae71f35a84, type: 3}
+    - {fileID: 21300000, guid: 33080fbfc54b79f40a750d3e9fd7d3d4, type: 3}
+    - {fileID: 21300000, guid: d96c9223c356e2b4295c67d9c564b760, type: 3}
+    - {fileID: 21300000, guid: 834092f85e8d76f4bb7cfd6fccd8d23f, type: 3}
+    - {fileID: 21300000, guid: 87b737aa86e4c8848905db59cf04bd1e, type: 3}
+    - {fileID: 21300000, guid: fc4077493a4273846b217b7d15f3ee70, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 855633c7bbec77341a48313b2813305a, type: 3}
+    - {fileID: 21300000, guid: 14cffa34b81c5044184f268376987d63, type: 3}
+    - {fileID: 21300000, guid: cc56a6bb11a3dec489d78afd9240af76, type: 3}
+    - {fileID: 21300000, guid: 6b8c10b0c589bda4f9a07333a95a60aa, type: 3}
+    - {fileID: 21300000, guid: cb2a9617cc27b504f8c871d8dd62a840, type: 3}
+    - {fileID: 21300000, guid: 02a9b2b678c3d184193b6e67fd06947e, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  merchantShips:
+  - frames:
+    - {fileID: 21300000, guid: d3d43e2ffe0fd6b408c6d5c5f912127e, type: 3}
+    - {fileID: 21300000, guid: 9ed099fa95f9bf1468b3b9c2cc1cb74a, type: 3}
+    - {fileID: 21300000, guid: 881faa51d0bda064eabe2b56bc6d75c7, type: 3}
+    - {fileID: 21300000, guid: b6bdc12437e8f59448298ebb811d752e, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 7d2aa6dc2e6a65048992d6b1d8232879, type: 3}
+    - {fileID: 21300000, guid: a0ffd50eeff51094bad753df6bf82f04, type: 3}
+    - {fileID: 21300000, guid: 304d69523ec2ba64eb40da3bfce46c35, type: 3}
+    - {fileID: 21300000, guid: 378079872eaed4a4980184e41c5943b1, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: e322fcf036027074aa41b3ead9b39bf9, type: 3}
+    - {fileID: 21300000, guid: fbbfadfafe3f097479b061194cb0ba11, type: 3}
+    - {fileID: 21300000, guid: f929e5e2a50d1a7468eb419c5675753d, type: 3}
+    - {fileID: 21300000, guid: 3336e782401a6964fb96a33afe7856ff, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 412f8f7a798bc9b44881c28f94ec9a18, type: 3}
+    - {fileID: 21300000, guid: 58a9e40f95d20644984eaf132ea5fff7, type: 3}
+    - {fileID: 21300000, guid: aab03290df24ff54585bc22b7a4f8bb0, type: 3}
+    - {fileID: 21300000, guid: 6e46992140ce9d144bf5b777d81e68d6, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 1.15}
+  - frames:
+    - {fileID: 21300000, guid: da2b4a425972a1b4e85282160cf79ebb, type: 3}
+    - {fileID: 21300000, guid: 48edca5b53b430640bbd9c93f8448e66, type: 3}
+    - {fileID: 21300000, guid: b8bf56967354dea4598c8bbf2015ead1, type: 3}
+    - {fileID: 21300000, guid: 0105ddf84b8f83848a422f6e98420a02, type: 3}
+    fps: 3
+    smoke: {x: -1.28, y: 1}
+  - frames:
+    - {fileID: 21300000, guid: 51e80708b23f2f44d806dcf4de890c25, type: 3}
+    - {fileID: 21300000, guid: 626228736de3c47469c946d0adb59d4e, type: 3}
+    - {fileID: 21300000, guid: a2c7e315935c85f498645f4074e2eae7, type: 3}
+    - {fileID: 21300000, guid: ba0322bfa13d1414b94c49390e888549, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  - frames:
+    - {fileID: 21300000, guid: 666094bf0632442479b41b578f728049, type: 3}
+    - {fileID: 21300000, guid: 87301ab9d03ca2d4b9f3afdd0278b749, type: 3}
+    - {fileID: 21300000, guid: 508dc8a2c4219b44193aabdfbd6dd69f, type: 3}
+    - {fileID: 21300000, guid: 8d1273824c0fe664082f15e3a888419a, type: 3}
+    fps: 3
+    smoke: {x: 0, y: 0}
+  shoalFish:
+  - {fileID: 21300000, guid: 1f76698f0f05220409c8e05ffd57b636, type: 3}
+  - {fileID: 21300000, guid: fe940898305f6194a963165899d3e0e2, type: 3}
+  - {fileID: 21300000, guid: b450bb2f0f214dc478443f659eac75a5, type: 3}
+  - {fileID: 21300000, guid: c0c15a829a198e34ea7820599024084f, type: 3}
+  shoalOysters:
+  - {fileID: 21300000, guid: 401aeecc4eea6ef458bcfb6419b75e7c, type: 3}
+  - {fileID: 21300000, guid: dd95d7eeddf4df743bcad2ddeeebcabc, type: 3}
+  - {fileID: 21300000, guid: 75537b1725fdb9941ac1c040c5d7c324, type: 3}
+  - {fileID: 21300000, guid: 349f3fc2f13691c4197d2ae0eed82fdd, type: 3}
+  shoalBlob: {fileID: 21300000, guid: 5eba0d64541d515469e752e7974b5603, type: 3}
+  oysterBlob: {fileID: 21300000, guid: 353bf3b8036333047ae8d5eab543e09b, type: 3}
+  creatures:
+  - species: SeaWhale
+    frames:
+    - {fileID: 21300000, guid: f08967b0c9ccea24a909c644738bfde0, type: 3}
+    - {fileID: 21300000, guid: 79ae45ca4286e2f459921bc8fdc1fece, type: 3}
+    - {fileID: 21300000, guid: a3248dfa217cc9743b916b847cc474c7, type: 3}
+    - {fileID: 21300000, guid: e4c84af0ef2b85942b87b24d3a4bc8c7, type: 3}
+    - {fileID: 21300000, guid: 1cff0ee5fdd7ada43a3cefd74eb0ac28, type: 3}
+    - {fileID: 21300000, guid: a25f7866a7e40bd44a00c558d4d7b6f8, type: 3}
+    - {fileID: 21300000, guid: 3557f0d0df83ac2409f94c84a2a919ac, type: 3}
+    - {fileID: 21300000, guid: 23244b97b5c0941489cfed4d0a541152, type: 3}
+    - {fileID: 21300000, guid: db3882bb523e2e8408565c16ebe35ab9, type: 3}
+    - {fileID: 21300000, guid: 6ddc27e3b7fd4ba47bc477b7788c96cf, type: 3}
+    - {fileID: 21300000, guid: 73be56edcdda73a4d92209628536949c, type: 3}
+    - {fileID: 21300000, guid: bbd0965645c28094fafb18c152578f05, type: 3}
+    unit: {fileID: 0}
+  - species: SeaSerpent
+    frames:
+    - {fileID: 21300000, guid: 366131bf26987844dbdc1feee8c717fb, type: 3}
+    - {fileID: 21300000, guid: 276e67778f3634043b244127f0e99e50, type: 3}
+    - {fileID: 21300000, guid: 4eb3011f392e2fe4f8acff6c2f0f9cf6, type: 3}
+    - {fileID: 21300000, guid: 27e2b3b37506fa44b982aad82269ab93, type: 3}
+    - {fileID: 21300000, guid: 64627c4f27b53c043a198d7646116a43, type: 3}
+    - {fileID: 21300000, guid: 0c9f10abd67092d4eafe6c95cc90396c, type: 3}
+    - {fileID: 21300000, guid: 8c92b63192d9c7145b02992d38cb9d79, type: 3}
+    - {fileID: 21300000, guid: 4c50ac7bd84bbbb4e832b8cf45d0a534, type: 3}
+    - {fileID: 21300000, guid: f3f14654022bd124cab07206b3846faa, type: 3}
+    - {fileID: 21300000, guid: 514dc7f71890f624c9cb48acd539d2da, type: 3}
+    - {fileID: 21300000, guid: 5fce57046a2668e48936c8d365c0a096, type: 3}
+    - {fileID: 21300000, guid: 2dd5820be79beca4db6741e4ea443e55, type: 3}
+    unit: {fileID: 11400000, guid: 91b57966f9d15d949b060f28ec94a71b, type: 2}
+  - species: SeaKraken
+    frames:
+    - {fileID: 21300000, guid: 12ee25647eec0374aa9b135c73fe33a4, type: 3}
+    - {fileID: 21300000, guid: 223f8b2880656a444ad4d2b00f646028, type: 3}
+    - {fileID: 21300000, guid: dab2d04a15e6a294986145db1d67b163, type: 3}
+    - {fileID: 21300000, guid: 9f34e89ff22f64f4b8b785c032920a4f, type: 3}
+    - {fileID: 21300000, guid: e3d86afd838b5fd4aafbbf90b3a3de03, type: 3}
+    - {fileID: 21300000, guid: 09d76c7f3c4560c4cb05734d21d1c9ac, type: 3}
+    - {fileID: 21300000, guid: 001d7d80ce479714498740892a819f5d, type: 3}
+    - {fileID: 21300000, guid: 8a8a04515ec39a74c95af562c48dded4, type: 3}
+    - {fileID: 21300000, guid: e16650f3cfdd89644a63e9bd3136908d, type: 3}
+    - {fileID: 21300000, guid: 3c29c498e8ff9ed4f87e4ab6ef8b8f04, type: 3}
+    - {fileID: 21300000, guid: f906aea586cbd1f4b80e83ed6232aef6, type: 3}
+    - {fileID: 21300000, guid: 1b2ea7380d2325f45a5becf711722d85, type: 3}
+    unit: {fileID: 11400000, guid: e8ac39862cf17ce4ca49e27bf053bc5a, type: 2}
+  - species: SeaGlassRay
+    frames:
+    - {fileID: 21300000, guid: e6c359786c237cd4589be5f3ae09a608, type: 3}
+    - {fileID: 21300000, guid: ec31b9758a5e4ca49aeef15db3d8c0e1, type: 3}
+    - {fileID: 21300000, guid: 1965287a339502149ae410ce72b32ac3, type: 3}
+    - {fileID: 21300000, guid: 745a4d55d9a47434780f806db272d66e, type: 3}
+    - {fileID: 21300000, guid: 2441db07bd1bd764f8fe13944e1ced83, type: 3}
+    - {fileID: 21300000, guid: 142cc75dbfc76584b8a8b2ad8acfc1e0, type: 3}
+    - {fileID: 21300000, guid: 1fc5f984b9120124f89e36810f2bbf74, type: 3}
+    - {fileID: 21300000, guid: 4547d88edec06434c9c11c839ab87e19, type: 3}
+    - {fileID: 21300000, guid: 8561c953fac416544b929009784a3809, type: 3}
+    - {fileID: 21300000, guid: 1608627107882fd448880869d420198b, type: 3}
+    - {fileID: 21300000, guid: 2fffaa70a152e9d4eadbdc4574af6cc1, type: 3}
+    - {fileID: 21300000, guid: 9ddf47e9786c5f74cb748920d26f5ea9, type: 3}
+    unit: {fileID: 0}
+  - species: SeaVoidEel
+    frames:
+    - {fileID: 21300000, guid: edfd0bb7cabcc034e8582bed9ffce6e6, type: 3}
+    - {fileID: 21300000, guid: 1f23b679c50656b4b9853e65afecc482, type: 3}
+    - {fileID: 21300000, guid: 314ef18fec93e9e46b531bc90372826c, type: 3}
+    - {fileID: 21300000, guid: 1b4d97dd76bec174c813585e38a5d1f2, type: 3}
+    - {fileID: 21300000, guid: 96f9ccd4d2491b54fb33551e600d56c0, type: 3}
+    - {fileID: 21300000, guid: e0701407c64ae9b44ab4495ad26083d0, type: 3}
+    - {fileID: 21300000, guid: 7ec94d960c6004a40bca6874b41ee489, type: 3}
+    - {fileID: 21300000, guid: d0f467d5b56511e4ab24dd2f45651d97, type: 3}
+    - {fileID: 21300000, guid: 79398860b73832548a5fec7872d8b1b9, type: 3}
+    - {fileID: 21300000, guid: 867c45e80077a6f4ca14bf17b173ddc6, type: 3}
+    - {fileID: 21300000, guid: d01070795c690f94e8490bcca5c6ea2d, type: 3}
+    - {fileID: 21300000, guid: 91ea31ed75cf554469ef7ff129f5ca69, type: 3}
+    unit: {fileID: 11400000, guid: cedb8394fd4661c4d8a31558b740b515, type: 2}
+  - species: SeaLeviathan
+    frames:
+    - {fileID: 21300000, guid: c67dfe0e055a934428864df3b41f9443, type: 3}
+    - {fileID: 21300000, guid: a44eb7a5f69ccad458e5da6fb3082099, type: 3}
+    - {fileID: 21300000, guid: 0ed070ddb64254b4fad4a671cd79103d, type: 3}
+    - {fileID: 21300000, guid: 393b8423b7c37e545812d52a4b089615, type: 3}
+    - {fileID: 21300000, guid: c9b9fc8473263a043aa36dbd4e1bd814, type: 3}
+    - {fileID: 21300000, guid: d3095399dc20eee489cab99ccb1a1380, type: 3}
+    - {fileID: 21300000, guid: ed968bae714b39b45a0ddbff3f4b3406, type: 3}
+    - {fileID: 21300000, guid: ad526b3a1c1310d4f86a369e6e45650d, type: 3}
+    - {fileID: 21300000, guid: cb216644ef81f224081872276a7e333f, type: 3}
+    - {fileID: 21300000, guid: ecb360c6f2abdf64b9c347c6ff609439, type: 3}
+    - {fileID: 21300000, guid: e8df2cd4532071c4cb62f67d256a98d1, type: 3}
+    - {fileID: 21300000, guid: a6939ff645b14ce46bfd3c093e9623ae, type: 3}
+    unit: {fileID: 11400000, guid: 45742b19ad2529b4f9ad2d34e9352d05, type: 2}
+  pirates:
+  - {fileID: 11400000, guid: e5c04cde61cd00542b7029f8fcd12534, type: 2}
+  - {fileID: 11400000, guid: fa029ceb4b11d8a4ab8683fe99dfe3a8, type: 2}
+  - {fileID: 11400000, guid: 92cdbac532347f348b8732953d96768d, type: 2}
+  - {fileID: 11400000, guid: 9a63f97065b60fd4e87c47e074783e02, type: 2}
+  - {fileID: 11400000, guid: a8636f7ae34f7aa4c98213090c7fd58e, type: 2}

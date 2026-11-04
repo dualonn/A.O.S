@@ -276,8 +276,13 @@ public class FreeModeHUD : MonoBehaviour
         // The Chronicle: history, achievements, statistics, your worlds, the market, messages.
         XRecordsPanel.Create(root, settlement, controller, this, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);
         TradePanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // trade routes
+        UtlPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // water, power, data, pollution
+        SeaPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // sea routes, fishing grounds, sea life
+        CivicsPanel.Create(root, settlement, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // government, laws, taxes
         GuideHints.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // beginner hints, Help (F1)
         GamesPanel.Create(root, settlement, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // saved games and new games
+        WarPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // army: regiments, commander, battle reports
+        PeoplePanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // classes, needs, schooling: section and census
 
         // Dungeon progress (top centre, only while a party is underground)
         dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
@@ -295,6 +300,7 @@ public class FreeModeHUD : MonoBehaviour
         UIBuilder.OnHover(upgradeButton.gameObject, () => tooltipSource = UpgradeTooltip, HideTooltip);
         stanceButton = UIBuilder.Button("Stance", selectionPanel, ToggleSelectedStance, out stanceLabel, 50);
         UIBuilder.OnHover(stanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
+        WarPanel.CreateDrill(selectionPanel, controller, f => tooltipSource = f, HideTooltip);   // drill line for training buildings
         repairButton = UIBuilder.Button("Repair", selectionPanel, RepairSelected, out repairLabel, 44);
         // Priority and automation: small toggles side by side.
         automationRow = UIBuilder.Row("Automation", selectionPanel, 6);
@@ -310,6 +316,7 @@ public class FreeModeHUD : MonoBehaviour
 
         // Selected troops (same spot as the building panel; only one shows at a time)
         unitPanel = new UnitPanel(controller, root, source => tooltipSource = source, HideTooltip);
+        WarPanel.CreateUnitBlock(unitPanel.Extras, controller, source => tooltipSource = source, HideTooltip);   // rank, morale, command
 
         // Founding banner (top centre, until the Campfire is placed)
         foundingBanner = UIBuilder.Panel("FoundingBanner", root, new Color(0.1f, 0.08f, 0.02f, 0.9f)).rectTransform;
@@ -833,7 +840,7 @@ public class FreeModeHUD : MonoBehaviour
 
     // ---------- Build menu grouping and search ----------
 
-    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Military, Defence, Walls, Culture, Wonders }
+    private enum BuildCategory { Settlement, Housing, Food, Materials, Industry, Utilities, Military, Defence, Walls, Culture, Wonders }
 
     private static string CategoryName(BuildCategory c) => c switch
     {
@@ -848,6 +855,7 @@ public class FreeModeHUD : MonoBehaviour
         BuildCategory.Food => new Color(0.65f, 0.85f, 0.45f),
         BuildCategory.Materials => new Color(0.75f, 0.65f, 0.5f),
         BuildCategory.Industry => new Color(0.95f, 0.6f, 0.35f),
+        BuildCategory.Utilities => new Color(0.5f, 0.82f, 0.95f),
         BuildCategory.Military => new Color(0.95f, 0.45f, 0.4f),
         BuildCategory.Defence => new Color(0.6f, 0.75f, 0.95f),
         BuildCategory.Culture => new Color(0.9f, 0.62f, 0.85f),
@@ -860,6 +868,7 @@ public class FreeModeHUD : MonoBehaviour
     {
         if (def.wonder) return BuildCategory.Wonders;
         if (Settlement.IsCultureBuilding(def.id)) return BuildCategory.Culture;
+        if (UtlCatalog.IsUtility(def)) return BuildCategory.Utilities;   // water, power, data, clean air
         if (def.IsWall && def.wallKind != WallTile.Bridge && !TradeCatalog.IsRoad(def)) return BuildCategory.Walls;   // bridges sit with the settlement's works
         if (def.isTownCenter) return BuildCategory.Settlement;
         if (Settlement.TrainsTroops(def)) return BuildCategory.Military;
@@ -1021,6 +1030,7 @@ public class FreeModeHUD : MonoBehaviour
         }
         sb.Append(StatsText(def, state.upgradeLevel));
         sb.Append(settlement.CultureSelectionText(state, def));
+        sb.Append(settlement.PeopleSelectionText(state, def));
         if (def.requiredDeposit != null || def.waterBonus > 0)
         {
             string color = state.siteQuality >= 0.99f ? "#8f8" : state.siteQuality >= 0.5f ? "#fe8" : "#fb7";
@@ -1048,6 +1058,9 @@ public class FreeModeHUD : MonoBehaviour
         }
         settlement.AppendWildlifeInfo(sb, state, def);
         settlement.TradeSelectionInfo(sb, state, def);
+        settlement.UtlSelectionInfo(sb, state, def);
+        settlement.SeaSelectionInfo(sb, state, def);
+        settlement.WarSelectionInfo(sb, state, def);
         selectionText.text = sb.ToString().TrimEnd();
 
         bool trains = Settlement.TrainsTroops(def);
@@ -1509,6 +1522,7 @@ public class FreeModeHUD : MonoBehaviour
         sb.Append($"{people} living here, room for {room}\n");
         sb.Append($"{working} working, {people - working} idle");
         sb.Append(settlement.MoodTooltipLine());
+        sb.Append(settlement.PeopleTooltipLine());
         if (jobs > people)
         {
             sb.Append($"\n<color=#fc6>{jobs - people} jobs unfilled: buildings run at {settlement.WorkerEfficiency:P0}</color>");
@@ -1575,6 +1589,8 @@ public class FreeModeHUD : MonoBehaviour
         sb.Append($"Cost: {(kit ? "<color=#8f8>Free: your colony ship brought a Starport kit</color>" : CostText(def.requirements.cost))}   Build time: {def.buildTime:0}s\n");
         sb.Append(StatsText(def, 0));
         sb.Append(settlement.CultureBuildingText(def, 0));
+        sb.Append(settlement.UtlBuildingText(def));
+        sb.Append(settlement.PeopleBuildingText(def));
         sb.Append(PlacementText(def));
         if (def.upgrades.Count > 0)
         {

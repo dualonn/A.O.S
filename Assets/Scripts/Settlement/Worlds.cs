@@ -71,6 +71,18 @@ public class WorldState
 
     [Tooltip("This world's trade routes between your towns (see TradeRoutes.cs).")]
     public TradeWorldState trade = new TradeWorldState();
+
+    [Tooltip("This world's utilities: the phase-in for old saves (see Utilities.cs).")]
+    public UtlWorldSave utl = new UtlWorldSave();
+
+    [Tooltip("This world's fishing grounds, sea life and sea routes (see SeaData.cs).")]
+    public SeaWorldState sea = new SeaWorldState();
+
+    [Tooltip("This world's classes, comfort of its homes and schooling (see People.cs).")]
+    public PeopleWorldState people = new PeopleWorldState();
+
+    [Tooltip("This world's government, laws, taxes and legitimacy (see Civics.cs).")]
+    public CivicsWorld civics = new CivicsWorld();
 }
 
 /// <summary>

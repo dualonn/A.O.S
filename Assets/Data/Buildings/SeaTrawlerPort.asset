@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaTrawlerPort
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaTrawlerPort
+  displayName: Trawler Port
+  description: A concrete quay with an ice plant and big diesel stern trawlers that
+    fish shoals far out (16 tiles). A huge catch where the shoals are rich, little
+    where they aren't. Its boats go out to the fish shoals in reach (silver glints
+    on the water); the richer they are, the bigger the catch. Shoals fished hard
+    thin out and move on, and regrow when left alone.
+  icon: {fileID: 21300000, guid: fed5480ea7208c745ac78d1cf8c3b6d3, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: fed5480ea7208c745ac78d1cf8c3b6d3, type: 3}
+    - {fileID: 21300000, guid: f16eafbbb9f85c44a808ec9e8b19f089, type: 3}
+    - {fileID: 21300000, guid: 6046bb938a875a943907605a71cb5006, type: 3}
+    - {fileID: 21300000, guid: 7ab4168630af5c344b3604761b9cd828, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: dd8d44d02171b014ca78666e1ee98e3a, type: 3}
+    - {fileID: 21300000, guid: 9314866bf252b4c478ba8b4e7c1f2d3c, type: 3}
+    - {fileID: 21300000, guid: 866743e8f8d776a498d4f1285e77fb84, type: 3}
+    - {fileID: 21300000, guid: 772f68b9ec6b0ee4082711c924155e7f, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: bc3d77e9758dbfe41a6a13dffe639002, type: 3}
+    - {fileID: 21300000, guid: 47b23f19c01b2544a92a8254785a86f0, type: 3}
+    - {fileID: 21300000, guid: 130c49bbf5c1cdc42b9b21f78857e16a, type: 3}
+    - {fileID: 21300000, guid: 5dc61bad2fd9aa04890434a4667eaf98, type: 3}
+    fps: 5
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 379d9d1f476785546a42ca10b99ad4dc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 260
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 150
+  upgrades:
+  - name: Freezer Holds
+    description: +25% catch, reaches 2 tiles further.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 100
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Fish Finders
+    description: +20% catch, reaches 2 tiles further, one more trawler.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 1fdff9e2095f5a44b9777514d4d179a8, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 421524b91711be246bf4a4ffa3afac01, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 411343aaaf4fd7048b1eeaf262a9487e, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+      amount: 36
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 180
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 1600
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 5
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

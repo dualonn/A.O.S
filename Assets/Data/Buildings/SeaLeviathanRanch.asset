@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaLeviathanRanch
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaLeviathanRanch
+  displayName: Leviathan Ranch
+  description: A pen of rune-carved posts out in the sea where tamed leviathans graze,
+    calmed by old songs. A vast catch, and mana from the singers. Build it by open
+    sea; best on an ocean world.
+  icon: {fileID: 21300000, guid: 1bde4db84ffdd3c40944e167606b3d41, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1bde4db84ffdd3c40944e167606b3d41, type: 3}
+    - {fileID: 21300000, guid: b224d21895424c742bc6488a1ff1ed5a, type: 3}
+    - {fileID: 21300000, guid: d758748cf54aa764091812a4f9aecb63, type: 3}
+    - {fileID: 21300000, guid: db6364304abce124fa6ac55c9963c9b1, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 9affb5f2b59723044955e8a166112b23, type: 3}
+    - {fileID: 21300000, guid: f1be279fd4e5b384f899ae831aa04c35, type: 3}
+    - {fileID: 21300000, guid: 34c4554d8dc866544be9141fcb5783ad, type: 3}
+    - {fileID: 21300000, guid: 2ed28040e59ecd341bd87d1ab803291e, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 688fabfae18a22d4a93e6bde41c2466e, type: 3}
+    - {fileID: 21300000, guid: b95891204f49fe045831c14e0492f4be, type: 3}
+    - {fileID: 21300000, guid: b71bf00dec083364dbf469cb5b6dec0d, type: 3}
+    - {fileID: 21300000, guid: 484f7705777b7da4aa24fe09e9a6d2a0, type: 3}
+    fps: 4
+  size: {x: 4, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a021d0bfc241d1e47b1a483a99148938, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+  upgrades:
+  - name: Song Circles
+    description: +25% output.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Pen
+    description: +20% output.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 3500
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 10
+  - resource: {fileID: 11400000, guid: 401d340779088164bb10cd633995c6f2, type: 2}
+    perSecond: 0.3
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

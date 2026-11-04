@@ -191,6 +191,7 @@ public class BuildingView : MonoBehaviour
             return;
         }
         if (RiverWorks.BridgePiece(this, wallMask, body, force)) return;
+        if (UtlWorks.ConduitPiece(this, wallMask, body, force)) return;   // aqueducts
         if (TradeWorks.RoadPiece(this, wallMask, body, force)) return;   // roads and rail   // bridges and fords
         if (Definition.wallKind == WallTile.Gate && Time.time >= nextGateCheck)
         {

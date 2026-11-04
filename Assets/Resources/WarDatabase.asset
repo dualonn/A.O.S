@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9369401d3b8d2541a411561f611e9c2, type: 3}
+  m_Name: WarDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::WarDatabase
+  siege:
+  - age: 1
+    player: {fileID: 11400000, guid: 0b05b6804378b344cba22972a403c489, type: 2}
+    raider: {fileID: 11400000, guid: c67c2d07e8bf79a4bbe582d1af6558ac, type: 2}
+  - age: 3
+    player: {fileID: 11400000, guid: 3dc1eac0f2e4e684e987e091e494a01a, type: 2}
+    raider: {fileID: 11400000, guid: a86bcb9c222184d47818c8942b1b6541, type: 2}
+  - age: 4
+    player: {fileID: 11400000, guid: bdb8ad62da7ee854fbe6173720a46c35, type: 2}
+    raider: {fileID: 11400000, guid: 848fc5bb4afa48a439a8ee0b513744ca, type: 2}
+  - age: 5
+    player: {fileID: 11400000, guid: caa67afdb9a1bea488055c32069acde4, type: 2}
+    raider: {fileID: 11400000, guid: 03b9b29e7af756041b37e69e235a40d2, type: 2}
+  - age: 7
+    player: {fileID: 11400000, guid: 8b9ed7d3337bfde44b40eabd821035f8, type: 2}
+    raider: {fileID: 11400000, guid: 1ed010cc090a3ca4fbed39be0a711ba8, type: 2}
+  - age: 8
+    player: {fileID: 11400000, guid: 48ed814df119390448c66cad3a4e5842, type: 2}
+    raider: {fileID: 11400000, guid: 30b61d73ea7fbb94d80b3b7b5b6ca94c, type: 2}
+  - age: 10
+    player: {fileID: 11400000, guid: 8ef24734e9b7e36409436a102824e671, type: 2}
+    raider: {fileID: 11400000, guid: 96a0d95370dec3745a7a0ae78ac59f7b, type: 2}
+  - age: 11
+    player: {fileID: 11400000, guid: 3b4362970a2eac94ea73612f68973433, type: 2}
+    raider: {fileID: 11400000, guid: 9ff09d6f25836404bab075cc40859a1e, type: 2}
+  - age: 13
+    player: {fileID: 11400000, guid: b473d064fc1ba3c46b201fe4150c3d38, type: 2}
+    raider: {fileID: 11400000, guid: 9572f6178d227e240ba1dacada93239d, type: 2}
+  - age: 15
+    player: {fileID: 11400000, guid: 1ba834f1ca319bd40bb59f3dc484fdb6, type: 2}
+    raider: {fileID: 11400000, guid: fad20d6942aa9294e8d30fd7794d1da6, type: 2}
+  - age: 16
+    player: {fileID: 11400000, guid: 92a5b6cddf05cea49bc0fc54db42dd96, type: 2}
+    raider: {fileID: 11400000, guid: a25d004bede61e7418b47058fbb3622e, type: 2}

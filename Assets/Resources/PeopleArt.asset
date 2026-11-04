@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63d0560a00ddf484181c36dfe20410da, type: 3}
+  m_Name: PeopleArt
+  m_EditorClassIdentifier: Assembly-CSharp::PeopleArt
+  decor:
+  - {fileID: 21300000, guid: 992742575c5bac447ae793b8def14dc4, type: 3}
+  - {fileID: 21300000, guid: 8f7dbbe960b1b7f408c54e5a0f85356e, type: 3}
+  - {fileID: 21300000, guid: 2fad0d87ae3c874459695652f317f2a0, type: 3}
+  - {fileID: 21300000, guid: 4517d88929975c744b35ae96a006c5e7, type: 3}
+  - {fileID: 21300000, guid: 7e8c011bed3df064592b64bc1b838325, type: 3}
+  - {fileID: 21300000, guid: abdb62de451470f4385af17cad98dc94, type: 3}
+  - {fileID: 21300000, guid: 8ebb97e1542c72d4d904db813378d8c7, type: 3}
+  - {fileID: 21300000, guid: 4fd29d0e25ead6140a36bb259116307b, type: 3}
+  - {fileID: 21300000, guid: 33268cb53e60b0949936ec838ee1abf1, type: 3}
+  - {fileID: 21300000, guid: 486981a60ce82e14692cdd015816c780, type: 3}
+  - {fileID: 21300000, guid: 77d0d6b57261d1c47ac0e7e06a2b7bee, type: 3}
+  - {fileID: 21300000, guid: 6e5c73c64eb0c3148b3f63704c8dda35, type: 3}

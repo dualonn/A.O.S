@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: RamShed
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: RamShed
+  displayName: Ram Shed
+  description: 'A yard and a hide-roofed shed where covered rams are built. Rams
+    don''t fight troops: they batter camps (6x damage).'
+  icon: {fileID: 21300000, guid: dc9a5d854cb311d4fb6c731c8b4de3d2, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: dc9a5d854cb311d4fb6c731c8b4de3d2, type: 3}
+    - {fileID: 21300000, guid: 638e9a1368074ac468bf23de38351462, type: 3}
+    - {fileID: 21300000, guid: e7ad9e1d7070c2a48ad763a8c713c9b5, type: 3}
+    - {fileID: 21300000, guid: 83e61802728ce1f46ae4203244a00eda, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 60519d647024d63429e65bca0e22d9b5, type: 3}
+    - {fileID: 21300000, guid: 64b887cf6a4d5f14da25d34a9ba438ba, type: 3}
+    - {fileID: 21300000, guid: f3e9aa36d731dd84ba0e54bd1cb6eeff, type: 3}
+    - {fileID: 21300000, guid: 1735bca5bf8de8e4aa1497204a8a89df, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 346689ca6fe5c56449a1dcdda35556cf, type: 3}
+    - {fileID: 21300000, guid: 6d58e645012a1b148a30e916fd2492fa, type: 3}
+    - {fileID: 21300000, guid: 883a88023f89eab45b1070bae492e384, type: 3}
+    - {fileID: 21300000, guid: 4181782d9d2632946a6d7ee3d5e69a51, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e31af98dc2d4e2e4abe1880369cfd5cc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 260
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 80
+  upgrades:
+  - name: Second Crew
+    description: +1 engine.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 120
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Engineers
+    description: Engines built here are 20% tougher and hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 100
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 5045301dd729cc6499930747e6c7c9b1, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 65240628343b6cf49ad7bc333d2aa85b, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 60
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 0
+  fullOutputTiles: 1
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 1020
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 1
+  trainsUnit: {fileID: 11400000, guid: 0b05b6804378b344cba22972a403c489, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,183 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: PplHoloStudio
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: PplHoloStudio
+  displayName: Holo Studio
+  description: Dream-weavers recording whole worlds of light. Holo-media keeps the
+    Augmented, Synthetics, Starborn and Ascended content.
+  icon: {fileID: 21300000, guid: 1e42f882f8a11ff418075abe4ac12e4b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 1e42f882f8a11ff418075abe4ac12e4b, type: 3}
+    - {fileID: 21300000, guid: 8af03a9e1ad346d4cb9acabe45a28f6f, type: 3}
+    - {fileID: 21300000, guid: 7e7d3c4ee3510834090330b6fb7060d4, type: 3}
+    - {fileID: 21300000, guid: bf7f3826a99188747a732742d840cf13, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: d6d45b30ca2b0cd47bc0eaafc33029b7, type: 3}
+    - {fileID: 21300000, guid: ac12268e10eae9246b77dc44d6c827c4, type: 3}
+    - {fileID: 21300000, guid: c352bfebad7f20345987daa5b81a0598, type: 3}
+    - {fileID: 21300000, guid: 0c70b1a5cfd2f764a8635b874f109c39, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 7ccf204125a9b6142aadab0913286103, type: 3}
+    - {fileID: 21300000, guid: 569ce064bfe0bd04bb78aae9bbf80ad0, type: 3}
+    - {fileID: 21300000, guid: 0710524b79dbf104db951192ddfd1c58, type: 3}
+    - {fileID: 21300000, guid: 399da44bbf4abaf479af630eed1dcc1e, type: 3}
+    fps: 5
+  size: {x: 3, y: 2}
+  artSize: {x: 3, y: 3}
+  age: {fileID: 11400000, guid: f937929e4b30e9d4bbe4156c4a4c5814, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 1735
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 1515
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 865
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 85
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 65
+  upgrades:
+  - name: More Hands
+    description: 'Another workbench and an apprentice: +25% output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 865
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 760
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 435
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 45
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 30
+    upgradeTime: 25
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Craft
+    description: 'Better tools and a master''s eye: +30% more output.'
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 1300
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 1135
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 650
+      - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+        amount: 65
+      - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+        amount: 50
+    upgradeTime: 25
+    productionMultiplier: 1.3
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 98
+  maxCount: 0
+  maxHealth: 2300
+  housing: 0
+  workers: 4
+  production:
+  - resource: {fileID: 11400000, guid: e55bd8ce38f25e948a9b4469eab942f7, type: 2}
+    perSecond: 0.4
+  inputs:
+  - resource: {fileID: 11400000, guid: f5fff5f212ebf4543b5e82a6306ce66a, type: 2}
+    perSecond: 0.02
+  - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+    perSecond: 0.01
+  runsWithoutInputs: 0.25
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 0
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -127,6 +127,7 @@ public class WaveDirector : MonoBehaviour
         agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
         float budget = settlement.ThreatLevel * agePower * settlement.WorldThreatFactor * settlement.DiplomacyThreatFactor;
         budget *= settlement.RaidStrengthFactor;   // difficulty (new-game setup)
+        budget *= settlement.CivicsThreatFactor;   // government and laws (Civics.cs)
         wave.boss = PickBoss();
         if (wave.boss != null)
         {

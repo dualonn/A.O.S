@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 843242a0db7409146af07f0636c53530, type: 3}
+  m_Name: MissileCarrier
+  m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
+  displayName: Missile Carrier
+  icon: {fileID: 21300000, guid: d187f39764e9cb54cbe7becb1489de92, type: 3}
+  age: {fileID: 11400000, guid: 701676d1630dadc4782456c5b7f0508e, type: 2}
+  troopClass: {fileID: 11400000, guid: 260f25378f7cce245b28dc541dd1a0be, type: 2}
+  prefab: {fileID: 5735571359706938672, guid: 86de67e8c646cef4fa43d9228e81a82c, type: 3}
+  cost: 0
+  populationCost: 3
+  upkeep:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 0.04
+  - resource: {fileID: 11400000, guid: b9c7a3d30faddfd41a55b3d6c4c3ee8b, type: 2}
+    perSecond: 0.04
+  maxHealth: 2200
+  moveSpeed: 0.8
+  attackPower: 220
+  attackCooldown: 6.5
+  attackRange: 13
+  hitDelay: 0.6
+  detectionRange: 6.5
+  projectile: {fileID: 21300000, guid: 92a8bfcf864954549ab4b4bd3a6451e3, type: 3}
+  projectileSpeed: 15
+  movement: 0
+  flyHeight: 1.4
+  projectileArc: 0.25
+  splashRadius: 2
+  splashFire: 1
+  muzzleSmoke: 0
+  healer: 0
+  healRange: 8
+  isNative: 0
+  isBoss: 0
+  bossAbility: 0
+  abilityCooldown: 8
+  abilityRadius: 2.2
+  abilityPower: 1.3
+  summons: {fileID: 0}
+  summonCount: 2

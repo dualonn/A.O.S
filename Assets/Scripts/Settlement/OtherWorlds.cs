@@ -98,7 +98,9 @@ public partial class Settlement
         TickCulture(dt);
         TickBackgroundRaids(dt);
         TickTrade(dt);
+        SeaTick(dt);   // the sea: shoals, sea life, sea routes
         DisTickBackground(dt);
+        UtlTick(dt);
     }
 
     /// <summary>A background world's raid timer; raids there are settled by strength.</summary>

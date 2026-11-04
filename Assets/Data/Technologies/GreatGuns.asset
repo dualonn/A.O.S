@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9179b88e3e57e4895ff65ee860da55, type: 3}
+  m_Name: GreatGuns
+  m_EditorClassIdentifier: Assembly-CSharp::Technology
+  id: GreatGuns
+  displayName: Great Guns
+  description: 'Bronze cast as thick as a man''s arm: the great bombard breaks walls
+    in an afternoon. The yard ranks up into the Bombard Foundry.'
+  icon: {fileID: 0}
+  age: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+  requirements:
+    minimumAge: {fileID: 11400000, guid: a63ba45933291814189d6cfb5e9d4c32, type: 2}
+    technologies:
+    - {fileID: 11400000, guid: 9fb4fb51805bd2646a3dcd2c94763a13, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 4fcd61ff9b24ee74ea43d7c82897b7b0, type: 2}
+      amount: 250
+    - resource: {fileID: 11400000, guid: f65a410805a8e6c459770bbdc798d44b, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 150
+  researchTime: 100
+  unitModifiers: []
+  productionModifiers: []
+  buildingHealthMultiplier: 1
+  coinPerPersonPerSecond: 0
+  researchSpeedMultiplier: 1
+  navigationRange: 0
+  driveSpeed: 0
+  maxLevel: 1
+  extraLevelsPerAge: 0
+  levelCostGrowth: 1.5
+  levelTimeGrowth: 1.25

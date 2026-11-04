@@ -92,8 +92,8 @@ public partial class Settlement
     }
 
     /// <summary>Coin for one unit, selling and buying.</summary>
-    public float XSellPrice(ResourceType r) => XBaseValue(r) * XPriceOf(r).factor * XSellShare;
-    public float XBuyPrice(ResourceType r) => XBaseValue(r) * XPriceOf(r).factor * XBuyShare;
+    public float XSellPrice(ResourceType r) => XBaseValue(r) * XPriceOf(r).factor * XSellShare * CivicsSellFactor;
+    public float XBuyPrice(ResourceType r) => XBaseValue(r) * XPriceOf(r).factor * XBuyShare * CivicsBuyFactor;
 
     /// <summary>A size of trade that moves the price a few percent (bigger in later ages).</summary>
     public float XMarketLot => 100f * (1f + State.ageIndex);
@@ -146,7 +146,7 @@ public partial class Settlement
         if (!XCanTrade(out result)) return false;
         amount = Mathf.Floor(Mathf.Min(amount, GetAmount(r)));
         if (amount < 1f) { result = $"You have no {r.displayName} to sell."; return false; }
-        float coin = Mathf.Floor(amount * XBaseValue(r) * XTradeFactor(r, -amount) * XSellShare);
+        float coin = Mathf.Floor(amount * XBaseValue(r) * XTradeFactor(r, -amount) * XSellShare * CivicsSellFactor);
         if (coin < 1f) { result = "Not worth anything at that price."; return false; }
         bool boom = XShock(r) > 0;
         AddResource(r, -amount);

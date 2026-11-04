@@ -88,7 +88,7 @@ public class RiverWorks : MonoBehaviour
         bool Same(Vector2Int at)
         {
             var v = c.WallAt(at);
-            return v != null && RiverCatalog.IsBridge(v.Definition) == bridge && !TradeCatalog.IsRoad(v.Definition);
+            return v != null && RiverCatalog.IsBridge(v.Definition) == bridge && !TradeCatalog.IsRoad(v.Definition) && !UtlCatalog.IsConduit(v.Definition);
         }
         bool n = Same(cell + Vector2Int.up), e = Same(cell + Vector2Int.right), s = Same(cell + Vector2Int.down), w = Same(cell + Vector2Int.left);
         mask = (n ? 1 : 0) | (e ? 2 : 0) | (s ? 4 : 0) | (w ? 8 : 0);

@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaHarpoonWharf
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaHarpoonWharf
+  displayName: Harpoon Wharf
+  description: 'Steam catchers with harpoon guns at the bow, out to 24 tiles: they
+    hunt sea serpents too, and bring in whale oil.'
+  icon: {fileID: 21300000, guid: 48fbcfbe37dd68f4894e7e5844d143a4, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 48fbcfbe37dd68f4894e7e5844d143a4, type: 3}
+    - {fileID: 21300000, guid: 33a12e3b32ee3ef418114871362217fb, type: 3}
+    - {fileID: 21300000, guid: aeec6e7734cf9e748adfe4ce9f516e07, type: 3}
+    - {fileID: 21300000, guid: 04bc6c202db0d224094571a37db0218f, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: f59edd7afec631d49bc57a4bffc06468, type: 3}
+    - {fileID: 21300000, guid: d91558ff040572a4c80e8bfe93518248, type: 3}
+    - {fileID: 21300000, guid: 03aa740591f0fbd4ab294eda1e452515, type: 3}
+    - {fileID: 21300000, guid: 29e6a7d59162b9c4bb4bef1b66ec3a0c, type: 3}
+    fps: 5
+  - frames:
+    - {fileID: 21300000, guid: 3d1d0c06523933c4681ca6c8946c97b7, type: 3}
+    - {fileID: 21300000, guid: 21a2c690826951e408e2c0b0badb5144, type: 3}
+    - {fileID: 21300000, guid: 27d05d868a98fc746a8a04b82bb02d38, type: 3}
+    - {fileID: 21300000, guid: 5de98738e4c1f5b488e8de56416eba0d, type: 3}
+    fps: 5
+  size: {x: 3, y: 2}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: f884a0b4f4e1e7c49b0650b96e5d136a, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: a7bf92979a9416047b390077c70eb4de, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+      amount: 60
+  upgrades:
+  - name: Explosive Harpoons
+    description: +25% output, hunts faster.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 054f3e35c35fb2b43a8d811de0453494, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1.25
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Factory Ship
+    description: +20% output, hunts faster.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 1300
+  housing: 0
+  workers: 3
+  production:
+  - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+    perSecond: 2.6
+  - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+    perSecond: 0.25
+  - resource: {fileID: 11400000, guid: 1fdff9e2095f5a44b9777514d4d179a8, type: 2}
+    perSecond: 0.12
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

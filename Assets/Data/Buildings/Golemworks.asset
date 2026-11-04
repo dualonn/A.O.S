@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: Golemworks
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: Golemworks
+  displayName: Golemworks
+  description: A rune-lit quarry where colossi are carved and woken. They stride
+    into camps and pound them (5x damage), and fight what gets in the way.
+  icon: {fileID: 21300000, guid: 7d466a35042cc1846ae2a61886f0095a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 7d466a35042cc1846ae2a61886f0095a, type: 3}
+    - {fileID: 21300000, guid: 9c88aee311a0f7648b42bd7fb458c0af, type: 3}
+    - {fileID: 21300000, guid: 422fba84d1bf331449f054c16efed5ef, type: 3}
+    - {fileID: 21300000, guid: 5968274599524364f9090d2fe074f301, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: b62e1be5534d6014fbe8a5ebc8b4e09f, type: 3}
+    - {fileID: 21300000, guid: 1c116cc02e5bbc946bb62a5eb9b91fff, type: 3}
+    - {fileID: 21300000, guid: db45dd76d93cabc48bad8e6363164e5d, type: 3}
+    - {fileID: 21300000, guid: d3c4b42908a9edf4ea024852bb6fe590, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: 22af0b2e99b421644b081c966c9ecbaa, type: 3}
+    - {fileID: 21300000, guid: 516bbde37979f2b4eb764ef5c0a23373, type: 3}
+    - {fileID: 21300000, guid: 6a2128e367ef87f4e8f83e1c222f5325, type: 3}
+    - {fileID: 21300000, guid: 8e8df320061ea124f861edf437b1237d, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ff29bc38fce28ca478f06c0239fcb83f, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 2d6785015a451d7468482ccb7e9b2bdc, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 600
+    - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+      amount: 60
+  upgrades:
+  - name: Second Crew
+    description: +1 engine.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 720
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 1
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Master Engineers
+    description: Engines built here are 20% tougher and hit 25% harder.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: d6ec231a69ed13646b3253994f22a0c8, type: 2}
+        amount: 600
+    upgradeTime: 35
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1.2
+      attackMultiplier: 1.25
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: cf6e98bb96d90104094ef48b07f91998, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: 4dc74823031f6b64b8d37fcede27d14d, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 4a92770df13cc4a48b28307a4fe813a6, type: 2}
+      amount: 80
+    - resource: {fileID: 11400000, guid: affae76a1bbad6841bd703664f509f76, type: 2}
+      amount: 30
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 0
+  fullOutputTiles: 1
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 20
+  maxCount: 0
+  maxHealth: 2220
+  housing: 0
+  workers: 4
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 1
+  trainsUnit: {fileID: 11400000, guid: 3b4362970a2eac94ea73612f68973433, type: 2}
+  maxUnits: 2
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -1,0 +1,163 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: SeaDome
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: SeaDome
+  displayName: Sea Dome
+  description: 'A glass dome on a ring of floats with gardens and towers inside:
+    room for 160. Stands out over the water, close to land or to another building
+    on the water: raiders on foot can''t reach it.'
+  icon: {fileID: 21300000, guid: d62f73b87d4f0814db6d5bf8981662e9, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: d62f73b87d4f0814db6d5bf8981662e9, type: 3}
+    - {fileID: 21300000, guid: 9f4fb15361333854bb3ab9a6ece5aa02, type: 3}
+    - {fileID: 21300000, guid: fa28fa4e41a8e404b9e8cd830fb84755, type: 3}
+    - {fileID: 21300000, guid: 50d90722e3dfbee438359cda61ee94ae, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: b048ecf8b3e1ad44083fafa3c279d8cd, type: 3}
+    - {fileID: 21300000, guid: 113c16ede0f3ab449946750898ec7e5c, type: 3}
+    - {fileID: 21300000, guid: 52ee6daeb2d8a234e8a475f6f4f3c7f5, type: 3}
+    - {fileID: 21300000, guid: 992748e880afc164e8dbe47a1d75c926, type: 3}
+    fps: 4
+  - frames:
+    - {fileID: 21300000, guid: a3910e6b50ba6614482375765e395991, type: 3}
+    - {fileID: 21300000, guid: f60064a4cded2aa4297b2563cd85be31, type: 3}
+    - {fileID: 21300000, guid: 71144a3865454884b80292024e1e69f0, type: 3}
+    - {fileID: 21300000, guid: d1a8e97be3a13c84d92615ece17fa68f, type: 3}
+    fps: 4
+  size: {x: 3, y: 3}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies:
+    - {fileID: 11400000, guid: e2fb9e0375ea633458af6ea00249f29c, type: 2}
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 350
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 100
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+  upgrades:
+  - name: Hanging Gardens
+    description: +30 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 200
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 30
+    extraHealth: 400
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Second Ring
+    description: +30 room.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 80
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 30
+    extraHealth: 400
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 0
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 40
+  maxCount: 0
+  maxHealth: 4000
+  housing: 160
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

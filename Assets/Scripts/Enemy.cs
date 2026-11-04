@@ -266,7 +266,7 @@ public class Enemy : Unit
         }
     }
 
-    private void Retreat()
+    public void Retreat()
     {
         if (retreating)
         {
