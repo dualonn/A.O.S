@@ -176,7 +176,7 @@ public partial class Settlement
             if (s.kind == QuestStepKind.VisitWorld)
             {
                 // Checked wherever you are: some hero has reached a world other than the quest's.
-                var h = State.heroes.Find(x => x.world != q.world);
+                var h = State.heroes.Find(x => x.world >= 0 && x.world != q.world);   // (-1: still aboard a troopship)
                 if (h != null) QuestAdvance(q, h.id);
                 continue;
             }
@@ -795,6 +795,7 @@ public partial class Settlement
             foreach (var o in others) if (Vector2.Distance(o, spot) < 8f) near = true;
             foreach (var b in State.buildings) if (Vector2.Distance(b.cell, spot) < 6f) { near = true; break; }
             if (near && attempt < 30) continue;
+            if (attempt < 12 && !QuestReachable(home, spot)) continue;   // across water: try another spot
             return spot;
         }
         return home + new Vector2(lo, 0);

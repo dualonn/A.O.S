@@ -90,6 +90,19 @@ public class SettlementState
     [Tooltip("Statistics, achievements, the Chronicle and the market (see XRecords).")]
     public XRecords xrecords = new XRecords();
 
+    [Tooltip("Natural disasters on each world: what's under way and when the next may come (see DisSim.cs).")]
+    public DisasterSave disasters = new DisasterSave();
+    [Tooltip("Natural disasters happen at all (a game setting).")]
+    public bool disastersEnabled = true;
+    [Tooltip("How often natural disasters come (1 = normal, 0.5 = half as often, 2 = twice).")]
+    public float disasterFrequency = 1f;
+
+    [Tooltip("Beginner hints: on/off and which were shown (see GuideHints). Off for old saves.")]
+    public GuideState guide = new GuideState();
+
+    [Tooltip("How this game was set up (new-game screen). Old saves: all defaults = the classic game.")]
+    public GameOptions options = new GameOptions();
+
     // ----- The current world's fields (each world keeps its own; see WorldState) -----
 
     /// <summary>The world you're looking at.</summary>

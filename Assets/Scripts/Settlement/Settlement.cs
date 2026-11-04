@@ -35,7 +35,7 @@ public partial class Settlement : MonoBehaviour
         if (world == State.currentWorld && Map != null) return Map;
         if (worldMaps.TryGetValue(world, out var map)) return map;
         var w = State.worlds[world];
-        map = MapGenerator.Create(w.seed, Database, w.explored, WorldProfile.Get(w.profile));
+        map = MapGenerator.Create(w.seed, Database, w.explored, GamesProfileOf(w), GamesInsetOf(w));
         worldMaps[world] = map;
         return map;
     }
@@ -86,7 +86,7 @@ public partial class Settlement : MonoBehaviour
     }
 
     /// <summary>True once the player has placed their town center (Campfire).</summary>
-    public bool IsFounded => State.buildings.Exists(b => Database.GetBuilding(b.definitionId)?.isTownCenter == true);
+    public bool IsFounded => GuideFoundedNow();
 
     /// <summary>Something structural changed (building placed/finished/removed, research done, new age).</summary>
     public event Action Changed;
@@ -160,7 +160,7 @@ public partial class Settlement : MonoBehaviour
 
     private string loadedFrom;
 
-    private static string SaveFileName => UsingTestSave ? "settlement_test.json" : "settlement.json";
+    private static string SaveFileName => UsingTestSave ? "settlement_test.json" : SlotFileName(ActiveSlot);   // slot 1 = settlement.json (see GamesSlots.cs)
     public static bool HasSave => File.Exists(SavePath);
 
     // ---------- Lifetime ----------
@@ -420,6 +420,7 @@ public partial class Settlement : MonoBehaviour
         Database = database;
         // Save back to the file we loaded from, even if the test-save switch changes meanwhile.
         loadedFrom = SavePath;
+        GamesNoteSlot();
         if (UsingTestSave)
         {
             Debug.Log("[Settlement] Playing on the TEST save (settlement_test.json). Your real save is untouched.");
@@ -431,7 +432,7 @@ public partial class Settlement : MonoBehaviour
         }
         UpgradeOldSave();
         MoveOldResearch();
-        Map = MapGenerator.Create(CurrentWorld.seed, Database, State.explored, WorldProfile.Get(CurrentWorld.profile));
+        Map = MapGenerator.Create(CurrentWorld.seed, Database, State.explored, GamesProfileOf(CurrentWorld), GamesInsetOf(CurrentWorld));
         State.explored = Map.RevealedZones();
         // Older saves could hold fractional building health; snap it to whole points.
         foreach (var building in State.buildings)
@@ -444,6 +445,7 @@ public partial class Settlement : MonoBehaviour
         Waves.Initialise(this);
         RollCamps(Map.RevealedZones());
         RollSites(Map.RevealedZones());
+        GamesAfterInitialise();   // a brand-new game: saved at once and announced (NewGameHooks.Started)
     }
 
     /// <summary>The save format this build writes.</summary>
@@ -501,6 +503,7 @@ public partial class Settlement : MonoBehaviour
                 state.resources.Add(new ResourceStock { id = start.resource.id, amount = start.amount });
             }
         }
+        GamesApplyOptions(state);   // the new-game setup's choices (defaults = the classic start)
         return state;
     }
 
@@ -598,6 +601,8 @@ public partial class Settlement : MonoBehaviour
         TickQuests(dt);
         TickAges();
         XTickRecords(dt);
+        TickTrade(dt);
+        DisTick(dt);
     }
 
     // ---------- Building stats and upgrades ----------
@@ -923,7 +928,7 @@ public partial class Settlement : MonoBehaviour
             {
                 continue;
             }
-            float staff = StaffingOf(building);
+            float staff = StaffingOf(building) * DisWorkFactor(building);
             if (staff <= 0)
             {
                 continue;
@@ -960,7 +965,7 @@ public partial class Settlement : MonoBehaviour
             {
                 if (rate.resource != null)
                 {
-                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource);
+                    float multiplier = ProductionMultiplier(rate.resource) * building.siteQuality * WorldProductionFactor(rate.resource) * TradeLinkFactor(building);
                     AddResource(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                     XRecordGathered(rate.resource, rate.perSecond * dt * activity * run * multiplier);
                 }
@@ -2124,6 +2129,7 @@ public partial class Settlement : MonoBehaviour
         try
         {
             File.WriteAllText(loadedFrom ?? SavePath, JsonUtility.ToJson(State, false));
+            GamesWriteSummary();
         }
         catch (Exception e)
         {

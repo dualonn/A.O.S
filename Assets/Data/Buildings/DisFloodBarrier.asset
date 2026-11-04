@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: DisFloodBarrier
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: DisFloodBarrier
+  displayName: Flood Barrier
+  description: 'A wall of poured concrete with a steel coping. Drag out a line along
+    the riverbank: <color=#9cf>floodwater and lava can''t get past it</color>. It
+    blocks everyone, like a wall (leave gaps by your bridges).'
+  icon: {fileID: 21300000, guid: aaed986422197f5418bbee6b080e8877, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 20
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 3
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 1
+  pieces:
+  - {fileID: 21300000, guid: dc77854f45293574a86b94612483e246, type: 3}
+  - {fileID: 21300000, guid: 34e8b6d8157a0154b8f3c94a7ebd1410, type: 3}
+  - {fileID: 21300000, guid: 71834988db9868b49b44850788519c3e, type: 3}
+  - {fileID: 21300000, guid: aaed986422197f5418bbee6b080e8877, type: 3}
+  - {fileID: 21300000, guid: 87201e8851b14a14292094dce3753d7c, type: 3}
+  - {fileID: 21300000, guid: 5d44388746147c24c9c2e25c70344515, type: 3}
+  - {fileID: 21300000, guid: b26a072f11ff2e442a8a965381ffe5c6, type: 3}
+  - {fileID: 21300000, guid: 38faccc5e93e28d4486e04214d0515fc, type: 3}
+  - {fileID: 21300000, guid: ed1259dff9cad6848aba8acaddcc3b7e, type: 3}
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 3
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 4
+  maxCount: 0
+  maxHealth: 2600
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0.03
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

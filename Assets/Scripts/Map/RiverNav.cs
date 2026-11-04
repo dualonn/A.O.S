@@ -140,6 +140,7 @@ public static class RiverNav
         while (heap.Count > 0 && expansions++ < maxExpansions)
         {
             int cur = Pop();
+            if (lastPri > cost[cur] + H(cur) + 0.001f) { expansions--; continue; }   // stale entry (queued again cheaper)
             if (cur == goal) { reached = true; break; }
             float h = H(cur);
             if (h < closestH) { closestH = h; closest = cur; }
@@ -201,9 +202,12 @@ public static class RiverNav
         }
     }
 
+    private static float lastPri;
+
     private static int Pop()
     {
         int top = heap[0].node;
+        lastPri = heap[0].pri;
         int last = heap.Count - 1;
         heap[0] = heap[last];
         heap.RemoveAt(last);

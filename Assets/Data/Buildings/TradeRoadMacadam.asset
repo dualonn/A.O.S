@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeRoadMacadam
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeRoadMacadam
+  displayName: Macadam Road
+  description: Layers of crushed stone, rolled hard and cambered to shed the rain.
+    Drag out a line like a wall. Everyone on a road moves 40% faster, caravans earn
+    more on roads, and paths prefer them.
+  icon: {fileID: 21300000, guid: 2326770c4b0569841abf441195c11a07, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: ce68232eaafdba74a98f0a78655d2d3c, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 5
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: a78fbc95ea7b7ac4886a09b3e48bbfbc, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 1fdff9e2095f5a44b9777514d4d179a8, type: 2}
+      amount: 1
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 2
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 4
+  pieces:
+  - {fileID: 21300000, guid: cd1fca8f8d3a0e44fbb42d04b3ffa11b, type: 3}
+  - {fileID: 21300000, guid: bf0273e7be61e8d45a791db90fa45bad, type: 3}
+  - {fileID: 21300000, guid: 46efb5f727071ba4da3806f77bcddaf7, type: 3}
+  - {fileID: 21300000, guid: 2d171fbd41a886a4b8738899e83226b2, type: 3}
+  - {fileID: 21300000, guid: d94a136535dfdcc4d99ee9e4b4223fe7, type: 3}
+  - {fileID: 21300000, guid: 827c8b21fc721f04d8ab3dd2038efe23, type: 3}
+  - {fileID: 21300000, guid: f6c91a54830f5ec4fb70c36b7f980f70, type: 3}
+  - {fileID: 21300000, guid: cad12a3251166e24dac8bdcb4709ae25, type: 3}
+  - {fileID: 21300000, guid: e27160567049b664faccccf2bbee6d40, type: 3}
+  - {fileID: 21300000, guid: 25932414dda67414d97a7345da804bb2, type: 3}
+  - {fileID: 21300000, guid: 2326770c4b0569841abf441195c11a07, type: 3}
+  - {fileID: 21300000, guid: 556c3e7874bba70458b18adfd572c995, type: 3}
+  - {fileID: 21300000, guid: 9103b658e53930044a5c809c1296193d, type: 3}
+  - {fileID: 21300000, guid: 743a2d2cb9789284d87d220415a84581, type: 3}
+  - {fileID: 21300000, guid: 04247f48c31409a469aba74f48422272, type: 3}
+  - {fileID: 21300000, guid: 6a6b70aa958df344cbe6ea2f509eeb84, type: 3}
+  sortLine: 4
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 2
+  maxCount: 0
+  maxHealth: 450
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

@@ -63,6 +63,8 @@ public class WildlifeView : MonoBehaviour
     private readonly Dictionary<int, Follower> followers = new Dictionary<int, Follower>();
     private readonly List<Vector2> people = new List<Vector2>();
     private readonly List<int> gone = new List<int>();
+    private readonly HashSet<int> liveWork = new HashSet<int>(), seenWork = new HashSet<int>(), keepWork = new HashSet<int>();
+    private readonly Dictionary<int, Troop> heroWork = new Dictionary<int, Troop>();
     private float nextSync, nextCheck, nextPens, nextFollow, nextHover;
     private TextMeshPro label;
     private Transform root;
@@ -112,7 +114,8 @@ public class WildlifeView : MonoBehaviour
     private void SyncHerds()
     {
         var list = S.Wild.herds;
-        var live = new HashSet<int>();
+        var live = liveWork;
+        live.Clear();
         foreach (var h in list)
         {
             live.Add(h.id);
@@ -364,7 +367,8 @@ public class WildlifeView : MonoBehaviour
 
     private void KeepPens()
     {
-        var seen = new HashSet<int>();
+        var seen = seenWork;
+        seen.Clear();
         foreach (var view in controller.Buildings)
         {
             if (view == null || !Settlement.IsBeastPen(view.Definition)) continue;
@@ -432,10 +436,12 @@ public class WildlifeView : MonoBehaviour
 
     private void SyncFollowers()
     {
-        var heroTroops = new Dictionary<int, Troop>();
+        var heroTroops = heroWork;
+        heroTroops.Clear();
         foreach (var u in Unit.Living)
             if (u is Troop t && t.Hero != null && t.IsAlive) heroTroops[t.Hero.id] = t;
-        var keep = new HashSet<int>();
+        var keep = keepWork;
+        keep.Clear();
         foreach (var comp in S.WildGlobal.companions)
         {
             if (!heroTroops.TryGetValue(comp.hero, out var troop)) continue;

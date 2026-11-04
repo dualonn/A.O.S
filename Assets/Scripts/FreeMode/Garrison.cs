@@ -40,6 +40,7 @@ public class Garrison
             nextSpawn = Time.time + 0.15f;
             return;
         }
+        nextSpawn = Time.time + 0.5f;
     }
 
     /// <summary>Troops here that can board: not heroes, not down a dungeon.</summary>
@@ -63,6 +64,7 @@ public class Garrison
     {
         var s = c.Settlement;
         var list = Boardable(pick);
+        list.RemoveAll(t => t.definition == null || t.Moves == Movement.Water || s.FindUnit(t.definition.name) == null);
         count = Mathf.Min(count, list.Count, s.GarrisonRoom(to));
         if (!s.CanSendTroops(to, count, null, out string why)) { c.ShowMessage(why); return false; }
         var stocks = new List<GarrisonStock>();

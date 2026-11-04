@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeRoadAsphalt
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeRoadAsphalt
+  displayName: Asphalt Road
+  description: Smooth black tarmac with a dashed white line down the middle. Drag
+    out a line like a wall. Everyone on a road moves 40% faster, caravans earn more
+    on roads, and paths prefer them.
+  icon: {fileID: 21300000, guid: 93ffab04d131d564fadaf34559ac39e1, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 545b80bbb2d47404a8b442be45453624, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 1fdff9e2095f5a44b9777514d4d179a8, type: 2}
+      amount: 2
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 3
+  upgrades: []
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 4
+  pieces:
+  - {fileID: 21300000, guid: 6b08da83d0590f941908551f204c583c, type: 3}
+  - {fileID: 21300000, guid: ba3ceceb3a37d2f4bbdbfc60f88a7886, type: 3}
+  - {fileID: 21300000, guid: 5d8e8bd6bfaa216439d14f7bd1b1e4a7, type: 3}
+  - {fileID: 21300000, guid: ddda3b44bab218e4fba8dd6847890b93, type: 3}
+  - {fileID: 21300000, guid: 9979ee3bd2ed6d24dbb9a9aaff227198, type: 3}
+  - {fileID: 21300000, guid: 34428d4206209ee48a2da05fe4b80ad1, type: 3}
+  - {fileID: 21300000, guid: 702c44a6fb1169f44801c2028ca2f373, type: 3}
+  - {fileID: 21300000, guid: 12a218bfb46d36c4abd49c78f7039837, type: 3}
+  - {fileID: 21300000, guid: 87ac43a4a6f2e2b4f9d03fa94ec5c343, type: 3}
+  - {fileID: 21300000, guid: 223a1975fe4d312498dc036b2435a2fd, type: 3}
+  - {fileID: 21300000, guid: 93ffab04d131d564fadaf34559ac39e1, type: 3}
+  - {fileID: 21300000, guid: 60f4e24d03e927a4fa46cfb8a641bb89, type: 3}
+  - {fileID: 21300000, guid: ba2745c620451814495db15931ac43f7, type: 3}
+  - {fileID: 21300000, guid: 31fa14c18ebdf454dadc4aae10bd4d6a, type: 3}
+  - {fileID: 21300000, guid: 7ead314394d8f4240b81b357e7ff7f9a, type: 3}
+  - {fileID: 21300000, guid: eb14a005de4b66844bef472900710bb0, type: 3}
+  sortLine: 4
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 2
+  maxCount: 0
+  maxHealth: 700
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

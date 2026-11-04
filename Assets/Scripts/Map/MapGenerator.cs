@@ -92,7 +92,7 @@ public static class MapGenerator
     public static int LegacyZonesPerRow(GameDatabase db) => Mathf.CeilToInt(Limit(db).x / (float)Mathf.Max(4, db.chunkSize));
 
     /// <summary>Create the map: the starting area plus any zones explored in a saved game.</summary>
-    public static MapData Create(int seed, GameDatabase db, List<Vector2Int> savedZones, WorldProfile profile = null)
+    public static MapData Create(int seed, GameDatabase db, List<Vector2Int> savedZones, WorldProfile profile = null, int inset = 0)
     {
         var deposits = new List<DepositType>(db.deposits.FindAll(d => d != null));
         var map = new MapData(seed, Mathf.Max(4, db.chunkSize), deposits);
@@ -101,9 +101,9 @@ public static class MapGenerator
 
         var zones = new List<Vector2Int>();
         int c = map.ChunkSize;
-        for (int cy = initial.yMin / c; cy < Mathf.CeilToInt(initial.yMax / (float)c); cy++)
+        for (int cy = initial.yMin / c + inset; cy < Mathf.CeilToInt(initial.yMax / (float)c) - inset; cy++)
         {
-            for (int cx = initial.xMin / c; cx < Mathf.CeilToInt(initial.xMax / (float)c); cx++)
+            for (int cx = initial.xMin / c + inset; cx < Mathf.CeilToInt(initial.xMax / (float)c) - inset; cx++)
             {
                 zones.Add(new Vector2Int(cx, cy));
             }

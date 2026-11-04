@@ -471,6 +471,7 @@ public partial class Settlement
                 Vector2 step = to / d * Mathf.Min(d, speed * dt);
                 Vector2 next = h.pos + step;
                 if (sp.flyer || Map.IsWalkable(new Vector3(next.x, next.y))) h.pos = next;
+                else if (h.toTown) { h.toTown = false; h.target = h.home; }   // no way into town: back to the wild
                 else h.target = h.pos;   // water in the way: pick somewhere else
             }
             else if (!h.toTown && UnityEngine.Random.value < dt * 0.08f)

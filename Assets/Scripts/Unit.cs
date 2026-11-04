@@ -119,7 +119,11 @@ public abstract class Unit : MonoBehaviour
     /// <summary>Every living unit (read only).</summary>
     public static IReadOnlyList<Unit> Living => All;
 
-    protected virtual void OnEnable() => All.Add(this);
+    protected virtual void OnEnable()
+    {
+        All.Add(this);
+        nextScanTime = Time.time + Random.Range(0f, ScanInterval);   // spread out: a squad spawned together doesn't scan in the same frame
+    }
 
     protected virtual void OnDisable() => All.Remove(this);
 
@@ -235,16 +239,19 @@ public abstract class Unit : MonoBehaviour
         // Pick who to fight after each scan, or straight away if the target is gone; not every
         // frame (with a big army, choosing among everyone in sight each frame is costly).
         UnityEngine.Profiling.Profiler.BeginSample("Unit.Select");
-        bool repick = scanned || currentTarget == null || !currentTarget.IsAlive || !CanHit(currentTarget);
+        // (with no target and a pick that found nobody, wait for the next scan: nothing new to choose from)
+        bool repick = scanned || (currentTarget == null ? !pickedNobody : !currentTarget.IsAlive || !CanHit(currentTarget));
         if (repick)
         {
-            targetsInRange.RemoveAll(u => u == null || !u.IsAlive || !CanHit(u));
+            if (dropTarget == null) dropTarget = u => u == null || !u.IsAlive || !CanHit(u);
+            targetsInRange.RemoveAll(dropTarget);
             if (unreachableTarget != null)
             {
                 if (Time.time >= skipTargetUntil) unreachableTarget = null;
                 else targetsInRange.Remove(unreachableTarget);
             }
             currentTarget = targetsInRange.Count > 0 ? SelectTarget(targetsInRange) : null;
+            pickedNobody = currentTarget == null;
         }
         UnityEngine.Profiling.Profiler.EndSample();
 
@@ -262,6 +269,21 @@ public abstract class Unit : MonoBehaviour
     }
 
     private IUnitVisual visual;
+    private System.Predicate<Unit> dropTarget;   // (made once: a lambda per pick allocated every frame)
+    private bool pickedNobody;
+
+    // The living units split by side, once a frame, for long-range scans.
+    private static readonly List<Unit> scanPlayers = new List<Unit>(), scanOthers = new List<Unit>();
+    private static int scanFrame = -1;
+
+    private static void BuildScanLists()
+    {
+        if (scanFrame == Time.frameCount) return;
+        scanFrame = Time.frameCount;
+        scanPlayers.Clear();
+        scanOthers.Clear();
+        foreach (var u in All) if (u != null) (u.Team == Team.Player ? scanPlayers : scanOthers).Add(u);
+    }
 
     /// <summary>What this unit fights with, and whether it's a beast (read by sounds; no lookups).</summary>
     public WeaponClass WeaponKind => visual is SpriteUnitVisual v ? v.weaponClass : WeaponClass.Melee;
@@ -901,7 +923,8 @@ public abstract class Unit : MonoBehaviour
         {
             Vector2 me = transform.position;
             float reach2 = detectionRange * detectionRange;
-            foreach (var other in All)
+            BuildScanLists();
+            foreach (var other in Team == Team.Player ? scanOthers : scanPlayers)
             {
                 if (other == null || other.Team == Team) continue;
                 if (((Vector2)other.transform.position - me).sqrMagnitude > reach2 || !CanHit(other)) continue;

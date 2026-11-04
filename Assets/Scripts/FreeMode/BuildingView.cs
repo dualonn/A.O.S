@@ -190,7 +190,8 @@ public class BuildingView : MonoBehaviour
         {
             return;
         }
-        if (RiverWorks.BridgePiece(this, wallMask, body, force)) return;   // bridges and fords
+        if (RiverWorks.BridgePiece(this, wallMask, body, force)) return;
+        if (TradeWorks.RoadPiece(this, wallMask, body, force)) return;   // roads and rail   // bridges and fords
         if (Definition.wallKind == WallTile.Gate && Time.time >= nextGateCheck)
         {
             // Open for any of your units close by (and always shown open once ruined).

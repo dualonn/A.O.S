@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradePost
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradePost
+  displayName: Trading Post
+  description: 'A mud-brick store and an awning over sacks of grain and pots of oil.
+    Runs ox wagons on 1 route. Build one in each of two towns (a town has housing
+    or a town centre) and a trade route opens between them; caravans then go to and
+    fro, and every trip brings coin and goods: more for long routes between big towns,
+    and more on roads. Outposts the route passes produce more. Raiders attack caravans
+    on the road.'
+  icon: {fileID: 21300000, guid: 0fd8e14560a9bf14e8e6abf7b7a747e3, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 0fd8e14560a9bf14e8e6abf7b7a747e3, type: 3}
+    - {fileID: 21300000, guid: fd3c95d2c860bec468e19878d5a21bf6, type: 3}
+    - {fileID: 21300000, guid: 34e3a9823163e5746af195763f785fe7, type: 3}
+    - {fileID: 21300000, guid: 9195c5f2b69ffab4c80c62deac8cade8, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 2df8cfc5ac8c0e946917b2981162bd7d, type: 3}
+    - {fileID: 21300000, guid: ed08061372a8943459fc42628f3d86ae, type: 3}
+    - {fileID: 21300000, guid: 133e28dab8305a34caca60abab9fa9ca, type: 3}
+    - {fileID: 21300000, guid: fd840eaf77db2854bb8fa97812b84550, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: fa7a8937f22fed34b83129fca6347842, type: 3}
+    - {fileID: 21300000, guid: 429ab2d2938e699489ef32f428382c76, type: 3}
+    - {fileID: 21300000, guid: f689af32248217d448513f849866dc37, type: 3}
+    - {fileID: 21300000, guid: 633caab7089746e45a86699539e673db, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 40
+    - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+      amount: 40
+  upgrades:
+  - name: Second Wagon
+    description: Another ox team and wagon. +1 route, and its routes earn 20% more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Storehouse
+    description: Room for more goods. +1 route, and its routes earn 20% more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 80
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 20
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: f2ccd54cc97fb5b4b895aebb92dc3390, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 18
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 0
+  maxHealth: 400
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

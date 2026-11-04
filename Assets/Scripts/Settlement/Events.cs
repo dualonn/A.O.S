@@ -222,13 +222,13 @@ public partial class Settlement
             case "Festival": return pop >= 20 ? (GetAmountId("Coin") > 200 * AgeScale ? 1.4f : 0.9f) : 0f;
             case "Harvest": return biome == Biome.Barren ? 0.2f : 1f;
             case "Drought": return biome == Biome.Desert ? 1.6f : biome == Biome.Tundra ? 0.4f : 0.7f;
-            case "Plague": return pop < 25 ? 0f : Mathf.Min(1.2f, 0.3f + pop / 250f);
+            case "Plague": return DisReplacesCards || pop < 25 ? 0f : Mathf.Min(1.2f, 0.3f + pop / 250f);
             case "Meteor": return alien ? 0.9f : 0.6f;
             case "Refugees": return Housing - pop >= 5 ? 0.8f : 0f;
             case "WanderingHero": return State.heroes.Count < HeroSlots && TrainerHere() != null ? 0.7f : 0f;
             case "Stranger": return alien ? 0.9f : 0.6f;
             case "GoldRush": return HasTrait(RichVeins) ? 1.2f : 0.6f;
-            case "Wildfire": return !forest ? 0f : HasTrait(Scorching) ? 1.2f : 0.6f;
+            case "Wildfire": return DisReplacesCards || !forest ? 0f : HasTrait(Scorching) ? 1.2f : 0.6f;
             case "Eclipse": return State.ageIndex >= 1 ? 0.5f : 0f;
             case "Rival": return HeroHere() != null ? 0.6f : 0f;
             case "LostCaravan": return 0.6f;

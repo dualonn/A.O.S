@@ -108,7 +108,7 @@ public partial class Settlement
     /// <summary>A troopship lands: its troops join the garrison, its hero moves in.</summary>
     private void ArriveTroops(ShipState ship, Planet planet)
     {
-        int to = WorldIndexOf(planet);
+        int to = planet != null ? WorldIndexOf(planet) : -1;
         if (to < 0) to = Mathf.Clamp(ship.fromWorld, 0, State.worlds.Count - 1);   // nowhere to land: back home
         var w = State.worlds[to];
         int count = 0;

@@ -587,6 +587,14 @@ public class Troop : Unit
     // Filtering targets happens in this reused list, in place (a new list each pick made a lot of garbage).
     private readonly List<Unit> candidatesWork = new List<Unit>();
 
+    /// <summary>Keep the candidates within 'range' of 'at' (in place, in order).</summary>
+    private static void KeepNear(List<Unit> list, Vector3 at, float range)
+    {
+        int keep = 0;
+        for (int i = 0; i < list.Count; i++) { var u = list[i]; if (Vector2.Distance(u.transform.position, at) <= range) list[keep++] = u; }
+        list.RemoveRange(keep, list.Count - keep);
+    }
+
     protected override Unit SelectTarget(List<Unit> candidates)
     {
         if (IsHealer) return null;   // medics don't fight
@@ -615,7 +623,7 @@ public class Troop : Unit
         if (TargetCamp != null && TargetCamp.IsStanding)
         {
             float reach = CampClose(TargetCamp) ? CampGuardReach + personalSpace : OrderFightRange;
-            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, transform.position) <= reach));
+            KeepNear(candidates, transform.position, reach);
             return candidates.Count == 0 ? null : base.SelectTarget(candidates);
         }
 
@@ -623,7 +631,7 @@ public class Troop : Unit
         if (HasOrder)
         {
             var me = transform.position;
-            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, me) <= OrderFightRange));
+            KeepNear(candidates, me, OrderFightRange);
             if (candidates.Count == 0) return null;
         }
 
@@ -635,8 +643,14 @@ public class Troop : Unit
             var me = transform.position;
             var controller = FreeModeController.Instance;
             bool raidOnHome = controller != null && controller.RaidTargets(defendArea);   // once per pick, not per raider
-            candidates.RemoveAll(u => !(Vector2.Distance(u.transform.position, me) <= OrderFightRange
-                || (raidOnHome && u is Enemy en && en.InLiveWave) || InDefendArea(u.transform.position)));
+            int keep = 0;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                var u = candidates[i];
+                if (Vector2.Distance(u.transform.position, me) <= OrderFightRange || (raidOnHome && u is Enemy en && en.InLiveWave) || InDefendArea(u.transform.position))
+                    candidates[keep++] = u;
+            }
+            candidates.RemoveRange(keep, candidates.Count - keep);
             if (candidates.Count == 0)
             {
                 return null;
@@ -647,7 +661,9 @@ public class Troop : Unit
         // (Troops you've sent somewhere fight whatever they meet there.)
         if (hasDefendZone && Stance == TroopStance.Defend && !HasOrder)
         {
-            candidates.RemoveAll(u => !(InDefendArea(u.transform.position)));
+            int keep = 0;
+            for (int i = 0; i < candidates.Count; i++) if (InDefendArea(candidates[i].transform.position)) candidates[keep++] = candidates[i];
+            candidates.RemoveRange(keep, candidates.Count - keep);
             if (candidates.Count == 0)
             {
                 return null;

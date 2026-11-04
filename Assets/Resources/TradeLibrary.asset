@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0805d9477883f974dbdf3ca601cc76a3, type: 3}
+  m_Name: TradeLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::TradeLibrary
+  vehicles:
+  - name: Ox wagon
+    frames:
+    - {fileID: 21300000, guid: 7c76e92eb9bae294097c18885a85c15c, type: 3}
+    - {fileID: 21300000, guid: f244badda765ade4e9af8c8850ba76e6, type: 3}
+    - {fileID: 21300000, guid: ce6c91b263b5cf141878fe618fee29a5, type: 3}
+    - {fileID: 21300000, guid: f1310651d6209ab408a21a8687ce6404, type: 3}
+    - {fileID: 21300000, guid: d000008d9eac6ae408fa2f4d6ca499af, type: 3}
+    fps: 6
+    smoke: {x: 0, y: 0}
+  - name: Horse caravan
+    frames:
+    - {fileID: 21300000, guid: 599f4be779631e849bab6c4589f16945, type: 3}
+    - {fileID: 21300000, guid: 9f5cc20d2cb88ef4595c4257bc891eb3, type: 3}
+    - {fileID: 21300000, guid: 8c7f8e5486e35c94faa93400f7100903, type: 3}
+    - {fileID: 21300000, guid: c34e77ec2d2911a4fa5655720e9e6ffa, type: 3}
+    - {fileID: 21300000, guid: 03e41c69bfa6b854fa4e096051511b24, type: 3}
+    fps: 6
+    smoke: {x: 0, y: 0}
+  - name: Wagon train
+    frames:
+    - {fileID: 21300000, guid: 6adf91314fd6d9640bc221b26304e13f, type: 3}
+    - {fileID: 21300000, guid: d11fd4ca3cb131f4baf2f4ffd6361466, type: 3}
+    - {fileID: 21300000, guid: 46bb28c1bf9503543937ffaa5138b6ad, type: 3}
+    - {fileID: 21300000, guid: 8c1400989c02b414ab3a9bc052796b96, type: 3}
+    - {fileID: 21300000, guid: 967a005f5bc3c194c83449fc1674e2a0, type: 3}
+    fps: 6
+    smoke: {x: 0, y: 0}
+  - name: Steam train
+    frames:
+    - {fileID: 21300000, guid: 77dd3894417e0f846bc6d200ce67d7e8, type: 3}
+    - {fileID: 21300000, guid: e22bf71dee24022469174d927b525ab3, type: 3}
+    - {fileID: 21300000, guid: fb17620a63da7d349a397af56e726392, type: 3}
+    - {fileID: 21300000, guid: da93ecf7987fed842b5ae321e53d09e1, type: 3}
+    - {fileID: 21300000, guid: 9fec306cbe047ca48aa02de09cc3b87a, type: 3}
+    fps: 8
+    smoke: {x: 2.28125, y: 1.125}
+  - name: Maglev freighter
+    frames:
+    - {fileID: 21300000, guid: a7b9bd72f43be104983dd89b4e36beb8, type: 3}
+    - {fileID: 21300000, guid: f7e903c69909cf243a031523aed0f2a8, type: 3}
+    - {fileID: 21300000, guid: 1215e495cf33fc7468c242419fc89780, type: 3}
+    - {fileID: 21300000, guid: 3be70d4b16a20364a9137ae141e2324a, type: 3}
+    - {fileID: 21300000, guid: d6fc16bcac8c61c4b902079760f6ecde, type: 3}
+    fps: 8
+    smoke: {x: 0, y: 0}
+  - name: Hover freighter
+    frames:
+    - {fileID: 21300000, guid: f0063c2800b73764199aebd9bbf20fbc, type: 3}
+    - {fileID: 21300000, guid: fbe4a3dfcd71de74b8d8d3b9fecc74bb, type: 3}
+    - {fileID: 21300000, guid: 6a31f2dcf10deca4ca2f4e02905f9e3a, type: 3}
+    - {fileID: 21300000, guid: 863b2f0be94ea5d4b9af398b0c8eb004, type: 3}
+    - {fileID: 21300000, guid: aec933f18197faf4aac3253054bcc5ee, type: 3}
+    fps: 8
+    smoke: {x: -1.75, y: 0.90625}

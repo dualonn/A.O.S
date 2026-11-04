@@ -97,6 +97,8 @@ public partial class Settlement
         TickWildlife(dt);
         TickCulture(dt);
         TickBackgroundRaids(dt);
+        TickTrade(dt);
+        DisTickBackground(dt);
     }
 
     /// <summary>A background world's raid timer; raids there are settled by strength.</summary>
@@ -105,6 +107,7 @@ public partial class Settlement
         State.secondsUntilWave -= dt;
         if (State.secondsUntilWave > 0) return;
         State.secondsUntilWave = Random.Range(Database.waveIntervalRange.x, Database.waveIntervalRange.y);
+        State.secondsUntilWave *= RaidIntervalFactor;
         var wave = Waves.Generate();
         if (wave.units.Count == 0) return;
         float severity = Waves.AutoResolve(wave);

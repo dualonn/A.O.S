@@ -68,6 +68,9 @@ public class WorldState
 
     [Tooltip("This world's mood and war weariness (see Culture.cs).")]
     public WorldCulture culture = new WorldCulture();
+
+    [Tooltip("This world's trade routes between your towns (see TradeRoutes.cs).")]
+    public TradeWorldState trade = new TradeWorldState();
 }
 
 /// <summary>

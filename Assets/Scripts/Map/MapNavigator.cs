@@ -81,7 +81,7 @@ public class MapNavigator
 
     /// <summary>Movement speed multiplier at a position (slower on hills).</summary>
     public float SpeedFactor(Vector3 world) =>
-        map.GetTerrain(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y)) == TerrainType.Hill ? hillSpeed : 1f;
+        TradeRoads.Speed(map, Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y), hillSpeed);   // roads, rail, hills
 
     /// <summary>
     /// True if a straight walk from a to b never crosses water. Away from the two ends it also
@@ -201,6 +201,25 @@ public class MapNavigator
         }
     }
 
+    // Trade routes (TradeWorks): a long search of their own, run a slice at a time.
+    private Search routeSearch;
+
+    public void BeginRouteSearch(Vector3 from, Vector3 to)
+    {
+        routeSearch ??= new Search(map);
+        routeSearch.Begin(from, NearestWalkable(to, Team.Player), to, Team.Player, LongExpansions, 1.2f, this);
+    }
+
+    /// <summary>Search on for up to 'budget' tiles; true once done ('path' is then the way, or as near as it got).</summary>
+    public bool RunRouteSearch(int budget, out List<Vector3> path, out bool reached)
+    {
+        path = null;
+        reached = false;
+        if (routeSearch == null || !routeSearch.Run(budget)) return routeSearch == null;
+        path = routeSearch.Result(out reached);
+        return true;
+    }
+
     /// <summary>'p' if it's dry, otherwise the centre of the nearest dry tile.</summary>
     public Vector3 NearestWalkable(Vector3 p, Team team = Team.Player)
     {
@@ -249,7 +268,7 @@ public class MapNavigator
         /// <summary>Where the trip was asked to go (before snapping to dry land).</summary>
         public Vector3 Asked { get; private set; }
 
-        private const byte Clear = 1, Dry = 2, Hill = 4;
+        private const byte Clear = 1, Dry = 2, Hill = 4, Road = 8;
 
         public Search(MapData map) { this.map = map; }
 
@@ -303,6 +322,7 @@ public class MapNavigator
                 b |= Dry;
                 if (map.Passable(wx, wy, team)) b |= Clear;
                 if (map.GetTerrain(wx, wy) == TerrainType.Hill) b |= Hill;
+                if (TradeRoads.IsRoadTile(map.WallAt(wx, wy))) b |= Road;
             }
             info[i] = b;
             infoStamp[i] = id;
@@ -325,6 +345,7 @@ public class MapNavigator
             {
                 if (open.Count == 0 || expansions++ >= maxExpansions) { done = true; break; }
                 int current = open.Pop();
+                if (open.LastPriority > cost[current] + Heuristic(current, goal) * weight + 0.001f) { expansions--; continue; }   // stale entry
                 if (current == goal) { found = true; done = true; break; }
                 int cx = current % w, cy = current / w;
                 float h = Heuristic(current, goal);
@@ -342,7 +363,7 @@ public class MapNavigator
                         // No cutting corners past water or walls.
                         if (dx != 0 && dy != 0 && ((Info(nx, cy) & Clear) == 0 || (Info(cx, ny) & Clear) == 0)) continue;
                         int next = ny * w + nx;
-                        float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * ((inf & Hill) != 0 ? 2f : 1f) + (clear ? 0f : WallBreakCost);
+                        float step = (dx != 0 && dy != 0 ? 1.414f : 1f) * ((inf & Road) != 0 ? 0.7f : (inf & Hill) != 0 ? 2f : 1f) + (clear ? 0f : WallBreakCost);
                         float newCost = cost[current] + step;
                         if (stamp[next] != id || newCost < cost[next])
                         {
@@ -443,9 +464,13 @@ public class MapNavigator
             }
         }
 
+        /// <summary>The priority of the entry Pop last returned.</summary>
+        public float LastPriority { get; private set; }
+
         public int Pop()
         {
             int top = items[0].node;
+            LastPriority = items[0].priority;
             int last = items.Count - 1;
             items[0] = items[last];
             items.RemoveAt(last);

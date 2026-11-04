@@ -167,7 +167,7 @@ public partial class Settlement
             if (!offWorld && to == State.currentWorld) GameAudio.UI("cargo_drop");
             return;
         }
-        if (ship.kind == Troopship && planet != null)
+        if (ship.kind == Troopship)
         {
             ArriveTroops(ship, planet);
             return;

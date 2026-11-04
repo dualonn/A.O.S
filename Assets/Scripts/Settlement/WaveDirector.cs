@@ -66,6 +66,7 @@ public class WaveDirector : MonoBehaviour
                 Database.waveIntervalRange.x,
                 Database.waveIntervalRange.y
             );
+            State.secondsUntilWave *= settlement.RaidIntervalFactor;   // raid frequency (new-game setup)
             heldFor = 0f;
             Launch(Generate());
         }
@@ -80,6 +81,7 @@ public class WaveDirector : MonoBehaviour
     public Wave Generate()
     {
         var wave = new Wave();
+        if (settlement.RaidsOff) return wave;   // a peaceful game (new-game setup)
         if (settlement.RaidsPaused) return wave;   // tribute paid / bandits bought off
         var pool = new List<UnitDefinition>();
         for (int i = 0; i <= State.ageIndex; i++)
@@ -124,6 +126,7 @@ public class WaveDirector : MonoBehaviour
         }
         agePower = ageUnits > 0 ? agePower / ageUnits : 1f;
         float budget = settlement.ThreatLevel * agePower * settlement.WorldThreatFactor * settlement.DiplomacyThreatFactor;
+        budget *= settlement.RaidStrengthFactor;   // difficulty (new-game setup)
         wave.boss = PickBoss();
         if (wave.boss != null)
         {

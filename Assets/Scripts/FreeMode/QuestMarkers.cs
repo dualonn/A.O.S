@@ -197,7 +197,7 @@ public class QuestMarkers : MonoBehaviour
         }
         m.minions.RemoveAll(e => e == null || !e.IsAlive);
         if (m.slain) return;
-        if (m.boss != null && !m.boss.IsAlive)
+        if (!ReferenceEquals(m.boss, null) && !m.boss.IsAlive)   // (also once its body has faded and been destroyed)
         {
             m.slain = true;
             var hero = NearestHero(s.spot, 25f);

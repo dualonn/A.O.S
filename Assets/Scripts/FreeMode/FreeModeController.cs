@@ -94,7 +94,8 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
         var life = new GameObject("AmbientLife").AddComponent<AmbientLife>();
         life.transform.SetParent(transform, false);
         life.Init(this);
-        gameObject.AddComponent<RiverWorks>().Init(this);   // bridges, ferries, warships, naval raids
+        gameObject.AddComponent<RiverWorks>().Init(this);
+        gameObject.AddComponent<TradeWorks>().Init(this);   // trade routes, caravans, road pieces   // bridges, ferries, warships, naval raids
 
         var wildlife = new GameObject("Wildlife").AddComponent<WildlifeView>();
         wildlife.transform.SetParent(transform, false);
@@ -1455,6 +1456,7 @@ public class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaidTargets
     /// </summary>
     public int WallMask(Vector2Int cell)
     {
+        if (TradeWorks.RoadMaskFor(this, cell, out int roadMask)) return roadMask;   // roads join roads, rail joins rail
         if (RiverWorks.WallMaskFor(this, cell, out int riverMask)) return riverMask;   // bridges join bridges, walls join walls
         bool n = WallAt(cell + Vector2Int.up) != null, e = WallAt(cell + Vector2Int.right) != null;
         bool sth = WallAt(cell + Vector2Int.down) != null, w = WallAt(cell + Vector2Int.left) != null;

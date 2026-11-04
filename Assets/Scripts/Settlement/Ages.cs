@@ -34,7 +34,7 @@ public partial class Settlement
 
         foreach (var tech in Database.technologies)
         {
-            if (tech == null || tech.IsLevelled) continue;   // Mastery research sits outside the ages
+            if (tech == null || tech.IsLevelled || TradeCatalog.IsTradeTech(tech.id)) continue;   // Mastery research sits outside the ages
             var techAge = tech.age != null ? tech.age : Database.GetAge(0);
             if (techAge != age) continue;
             info.researchTotal++;
@@ -45,7 +45,7 @@ public partial class Settlement
         {
             // Walls are optional defences, and a building that trains one kind of unit is a choice of
             // army (you may never use that class), so neither counts unless research needs it.
-            if (def == null || def.age != age || def.IsWall) continue;
+            if (def == null || def.age != age || def.IsWall || TradeCatalog.IsPost(def)) continue;
             if (def.trainsUnit != null && !NeededForResearch(def)) continue;
             info.buildingsTotal++;
             if (HaveOrOutgrew(def)) info.buildingsDone++;

@@ -146,7 +146,7 @@ public partial class Settlement
         if (!XCanTrade(out result)) return false;
         amount = Mathf.Floor(Mathf.Min(amount, GetAmount(r)));
         if (amount < 1f) { result = $"You have no {r.displayName} to sell."; return false; }
-        float coin = Mathf.Floor(amount * XSellPrice(r));
+        float coin = Mathf.Floor(amount * XBaseValue(r) * XTradeFactor(r, -amount) * XSellShare);
         if (coin < 1f) { result = "Not worth anything at that price."; return false; }
         bool boom = XShock(r) > 0;
         AddResource(r, -amount);
@@ -169,8 +169,9 @@ public partial class Settlement
         float each = XBuyPrice(r);
         float have = GetAmount(Database.coin);
         amount = Mathf.Floor(Mathf.Min(amount, have / Mathf.Max(0.0001f, each)));
+        amount = XAffordable(r, amount, have);
         if (amount < 1f) { result = $"Not enough {Database.coin.displayName}."; return false; }
-        float coin = Mathf.Ceil(amount * each);
+        float coin = Mathf.Ceil(XBuyCost(r, amount));
         AddResource(Database.coin, -coin);
         AddResource(r, amount);
         XMovePrice(r, amount);

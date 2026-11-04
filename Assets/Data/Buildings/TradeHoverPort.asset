@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeHoverPort
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeHoverPort
+  displayName: Hover Port
+  description: 'A landing pad of glowing rings and a dome hangar. Runs hover freighters
+    on 4 routes: they skim straight over land and water alike, and need no track.
+    Build one in each of two towns (a town has housing or a town centre) and a trade
+    route opens between them; caravans then go to and fro, and every trip brings
+    coin and goods: more for long routes between big towns, and more on roads. Outposts
+    the route passes produce more. Raiders attack caravans on the road.'
+  icon: {fileID: 21300000, guid: 19879412746210d46bf797a615e4f01a, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 19879412746210d46bf797a615e4f01a, type: 3}
+    - {fileID: 21300000, guid: f92881756a622d54fb252f24520e7f92, type: 3}
+    - {fileID: 21300000, guid: 85314a1ee2f99ac429cd09953232a0fa, type: 3}
+    - {fileID: 21300000, guid: f5236ffd9bad20342ab976c272aa648e, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: b1577630180e5aa4b8342ab9d62c7403, type: 3}
+    - {fileID: 21300000, guid: dfa45210a434b484f87d8879df38b41d, type: 3}
+    - {fileID: 21300000, guid: 3439103b661b56a408e3a8f9c753edb2, type: 3}
+    - {fileID: 21300000, guid: 59641ef6b79d5a643a8e3f07e519dc37, type: 3}
+    fps: 6
+  - frames:
+    - {fileID: 21300000, guid: a44580cfe024a3946a11096a210d6d77, type: 3}
+    - {fileID: 21300000, guid: 950d4263f7a35034fa31e485a778f58d, type: 3}
+    - {fileID: 21300000, guid: ad07e0c106ad23e439c9878bcb364ee9, type: 3}
+    - {fileID: 21300000, guid: 7d89d8b3597029a49bf7b2c805a5e3d4, type: 3}
+    fps: 6
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: 3846fbddd7cbdce45a713d43c5e2ac83, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+      amount: 800
+    - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+      amount: 60
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 1200
+  upgrades:
+  - name: Second Pad
+    description: Another freighter in the air. +1 route, and its routes earn 20%
+      more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: aa95a5509a65af64da3d0aa2637203ce, type: 2}
+        amount: 500
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 200
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Grav Cradles
+    description: Bigger pods, gently held. +1 route, and its routes earn 20% more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 5d506a13b3b139d4ab5b34c5e0fd10d1, type: 2}
+        amount: 400
+      - resource: {fileID: 11400000, guid: 9b10b8c3140a81f4dbe8ca7c830d52b5, type: 2}
+        amount: 40
+      - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+        amount: 1000
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 50
+  maxCount: 0
+  maxHealth: 5000
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

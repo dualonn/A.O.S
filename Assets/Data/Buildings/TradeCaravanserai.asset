@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeCaravanserai
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeCaravanserai
+  displayName: Caravanserai
+  description: 'A walled courtyard for caravans to rest in, with a great arched gate.
+    Runs horse caravans on 2 routes. Build one in each of two towns (a town has housing
+    or a town centre) and a trade route opens between them; caravans then go to and
+    fro, and every trip brings coin and goods: more for long routes between big towns,
+    and more on roads. Outposts the route passes produce more. Raiders attack caravans
+    on the road.'
+  icon: {fileID: 21300000, guid: a2512eecd00dd364aaafb4b003c2e05b, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: a2512eecd00dd364aaafb4b003c2e05b, type: 3}
+    - {fileID: 21300000, guid: 6e68949c5c9d8ae4d8551f5d31add66c, type: 3}
+    - {fileID: 21300000, guid: 28e298dfa81125c4aba95660358c6662, type: 3}
+    - {fileID: 21300000, guid: 82d14e2ab32f9e34fb76222b8a01d19e, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: ef702b834f95182499a332d25dce1b9d, type: 3}
+    - {fileID: 21300000, guid: f8f7dd245d33945448baede7e7b1275f, type: 3}
+    - {fileID: 21300000, guid: 37885a7e52a2d0c469344cff0364a309, type: 3}
+    - {fileID: 21300000, guid: 30a7c63d33eba684e8cc03920350e481, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: df933822204459645a3531d6f1c70049, type: 3}
+    - {fileID: 21300000, guid: f3ddd0345866c3e4d91461bbab8d27fc, type: 3}
+    - {fileID: 21300000, guid: ee6b722610732f64a93fba46011f86a9, type: 3}
+    - {fileID: 21300000, guid: fb51e9eaa83bd774287b478943f731b6, type: 3}
+    fps: 3
+  size: {x: 3, y: 3}
+  artSize: {x: 3, y: 4}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 300
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 30
+  upgrades:
+  - name: Stables
+    description: Fresh horses at every stop. +1 route, and its routes earn 20% more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: eb9adc402a1372446a14aa82208b60dc, type: 2}
+        amount: 150
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Bazaar
+    description: Merchants trade in the courtyard itself. +1 route, and its routes
+      earn 20% more.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 250
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1.2
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 11400000, guid: 735e86f18aee0704385a84b90cf1bf09, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 240
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 180
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 48
+    - resource: {fileID: 11400000, guid: d85ab25bee101274f96d6c21e907f7cf, type: 2}
+      amount: 60
+  rankUpTime: 40
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 35
+  maxCount: 0
+  maxHealth: 900
+  housing: 0
+  workers: 2
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

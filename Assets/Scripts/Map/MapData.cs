@@ -20,7 +20,11 @@ public enum WallTile : byte
     /// <summary>Lets your units through; blocks raiders.</summary>
     Gate,
     /// <summary>A bridge or ford over water: everyone walks over it; boats can't pass under.</summary>
-    Bridge
+    Bridge,
+    /// <summary>A road on land (TradeRoads): everyone walks over it, faster.</summary>
+    Road,
+    /// <summary>Rail track on land: everyone walks over it; trains run on it.</summary>
+    Rail
 }
 
 /// <summary>
@@ -158,7 +162,7 @@ public class MapData
         int i = Local(x, y);
         var w = chunk.wall != null ? (WallTile)chunk.wall[i] : WallTile.None;
         if (chunk.terrain[i] == TerrainType.Water) return w == WallTile.Bridge;   // rivers: bridges and fords
-        return w == WallTile.None || w == WallTile.Bridge || (w == WallTile.Gate && team == Team.Player);
+        return w == WallTile.None || w == WallTile.Bridge || w == WallTile.Road || w == WallTile.Rail || (w == WallTile.Gate && team == Team.Player);
     }
 
     public bool Passable(Vector3 world, Team team) => Passable(Mathf.FloorToInt(world.x), Mathf.FloorToInt(world.y), team);

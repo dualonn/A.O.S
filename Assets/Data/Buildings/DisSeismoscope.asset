@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: DisSeismoscope
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: DisSeismoscope
+  displayName: Seismoscope
+  description: 'A bronze urn ringed by eight dragons, each with a ball in its mouth:
+    when the earth stirs, a ball drops into a toad below. <color=#fc8>Warns of earthquakes
+    and eruptions on this world 35 seconds earlier</color>, and people braced in
+    time take 15% less quake damage. One is enough.'
+  icon: {fileID: 21300000, guid: 4eef4d5abc8a43148afea3665520897f, type: 3}
+  prefab: {fileID: 0}
+  looks:
+  - frames:
+    - {fileID: 21300000, guid: 4eef4d5abc8a43148afea3665520897f, type: 3}
+    - {fileID: 21300000, guid: f746e130531e7764c9fd59955f14b92f, type: 3}
+    - {fileID: 21300000, guid: 45bb8e854ade9c44e90790202c87ed24, type: 3}
+    - {fileID: 21300000, guid: 19da52cce204a0c428cf34e7cb15487b, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: 0e97920cbbff6b1419cf2010436536be, type: 3}
+    - {fileID: 21300000, guid: 01c5c4de5b2c2a24a8418fc5eb28de5c, type: 3}
+    - {fileID: 21300000, guid: 6ae462d3ad9534847a9c8243e0b6b789, type: 3}
+    - {fileID: 21300000, guid: af4d0f90673cac340a8553d7a5e85a51, type: 3}
+    fps: 3
+  - frames:
+    - {fileID: 21300000, guid: b5016562353df5043a4b99f0863ee6e6, type: 3}
+    - {fileID: 21300000, guid: 3ab7a5f182af01841bb51baedd97c3ef, type: 3}
+    - {fileID: 21300000, guid: 243a69067e2409f4691efc56d5727d04, type: 3}
+    - {fileID: 21300000, guid: 021a3b7addee7ad4eb010c36acff620e, type: 3}
+    fps: 3
+  size: {x: 2, y: 2}
+  artSize: {x: 2, y: 3}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+      amount: 120
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 200
+    - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+      amount: 30
+  upgrades:
+  - name: Signal Drums
+    description: Warnings come 15 seconds sooner.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+        amount: 150
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 40
+    upgradeTime: 25
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  - name: Pendulum Vault
+    description: Warnings come 15 seconds sooner.
+    requirements:
+      minimumAge: {fileID: 0}
+      technologies: []
+      buildings: []
+      population: 0
+      cost:
+      - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+        amount: 300
+      - resource: {fileID: 11400000, guid: 707d7f7f72a261942a46d208f3ae7c3e, type: 2}
+        amount: 100
+      - resource: {fileID: 11400000, guid: 5cdb1f0f5d49e654cbb5eb50f79e6d81, type: 2}
+        amount: 60
+    upgradeTime: 30
+    productionMultiplier: 1
+    extraHousing: 0
+    extraHealth: 0
+    extraDefense: 0
+    extraUnits: 0
+    extraCatchment: 0
+    trainedUnits:
+      troopClass: {fileID: 0}
+      healthMultiplier: 1
+      attackMultiplier: 1
+      speedMultiplier: 1
+      cooldownMultiplier: 1
+      rangeMultiplier: 1
+    extraTowerRange: 0
+    extraTowerDamage: 0
+    operatorLift: 0
+  rankUpTo: {fileID: 0}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost: []
+  rankUpTime: 30
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 0
+  pieces: []
+  sortLine: 0
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 0
+  waterBonus: 0
+  buildTime: 25
+  maxCount: 1
+  maxHealth: 500
+  housing: 0
+  workers: 1
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

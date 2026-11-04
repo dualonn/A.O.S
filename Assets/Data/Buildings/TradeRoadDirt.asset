@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeRoadDirt
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeRoadDirt
+  displayName: Dirt Track
+  description: Packed earth worn into ruts by cartwheels. Drag out a line like a
+    wall. Everyone on a road moves 40% faster, caravans earn more on roads, and paths
+    prefer them.
+  icon: {fileID: 21300000, guid: bdadd98bd9a718d4f8bc55da113ff864, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 21e9f69be7e3b6b4c96bcefb25405fdc, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 062205c6da84a1c4fbf8a570dd4b05d2, type: 2}
+      amount: 2
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 2dd61a7257ec2d240806b6633cd04aac, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 2
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 4
+  pieces:
+  - {fileID: 21300000, guid: e31de5a6da44a0949a5934d77342c0bc, type: 3}
+  - {fileID: 21300000, guid: eac30162e4e604f4c88a68e5f9e0c043, type: 3}
+  - {fileID: 21300000, guid: 3f4cbfbd22aecec4598068f0b30a6704, type: 3}
+  - {fileID: 21300000, guid: 8420f6e7367309646895efcc380a2091, type: 3}
+  - {fileID: 21300000, guid: 6080caafa25e2c44c90fc8f2c808a307, type: 3}
+  - {fileID: 21300000, guid: 25929dfd1e6916541ac92f4b21200b9f, type: 3}
+  - {fileID: 21300000, guid: 2e396a6fb5fd3444396a95ac5df4ff73, type: 3}
+  - {fileID: 21300000, guid: 039522e8cbf6a8940813918855bb6920, type: 3}
+  - {fileID: 21300000, guid: 6ceccb76fb77f6c4d9b2b26c6e6744b2, type: 3}
+  - {fileID: 21300000, guid: 06a9ebf6a8f0efd4f85c68a8b5edf81f, type: 3}
+  - {fileID: 21300000, guid: bdadd98bd9a718d4f8bc55da113ff864, type: 3}
+  - {fileID: 21300000, guid: 2f1ca19a417c08243885ddcdbef95b3c, type: 3}
+  - {fileID: 21300000, guid: edf9bf9f802fa4d4ab39e24072975e45, type: 3}
+  - {fileID: 21300000, guid: fed2ef1a3c5e01646a873d39f894503e, type: 3}
+  - {fileID: 21300000, guid: 60ab93c232ede3647a46ed2e1a3b9399, type: 3}
+  - {fileID: 21300000, guid: f779a9c666084ed45b99372084ae6971, type: 3}
+  sortLine: 4
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 2
+  maxCount: 0
+  maxHealth: 150
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

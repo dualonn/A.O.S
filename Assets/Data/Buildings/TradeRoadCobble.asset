@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ce85000b4c98049b54e2d6859899ae, type: 3}
+  m_Name: TradeRoadCobble
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
+  id: TradeRoadCobble
+  displayName: Cobbled Road
+  description: Rounded setts laid in sand between kerb stones. Drag out a line like
+    a wall. Everyone on a road moves 40% faster, caravans earn more on roads, and
+    paths prefer them.
+  icon: {fileID: 21300000, guid: 3efccb752a2d46c46ac34f1c0e7fe1ac, type: 3}
+  prefab: {fileID: 0}
+  looks: []
+  size: {x: 1, y: 1}
+  artSize: {x: 0, y: 0}
+  age: {fileID: 11400000, guid: 84dcbe1874bad68488839802dd4817ef, type: 2}
+  requirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 4
+  upgrades: []
+  rankUpTo: {fileID: 11400000, guid: 2c1bbff126f4eeb42b6fd23e1f9e8cb1, type: 2}
+  rankUpRequirements:
+    minimumAge: {fileID: 0}
+    technologies: []
+    buildings: []
+    population: 0
+    cost:
+    - resource: {fileID: 11400000, guid: 891dd609428f0c048a6ba38270def478, type: 2}
+      amount: 3
+  rankUpTime: 6
+  isTownCenter: 0
+  launchesShips: 0
+  foundsColonies: 0
+  starGate: 0
+  genesisEngine: 0
+  wonder: 0
+  wonderEffect: {fileID: 0}
+  wallKind: 4
+  pieces:
+  - {fileID: 21300000, guid: 044a46e1718555b4b90dc2433f5531ff, type: 3}
+  - {fileID: 21300000, guid: f31685463f4f3714187ce6367e884161, type: 3}
+  - {fileID: 21300000, guid: 8b34aa9bcc21bfd4298087f004d0e047, type: 3}
+  - {fileID: 21300000, guid: e869b149a2469c0419e455afc6576f5c, type: 3}
+  - {fileID: 21300000, guid: e54cccc49f34acc4f9f53eab1f9c644b, type: 3}
+  - {fileID: 21300000, guid: bceebad3e84e6dd4eb93ac81082d7a89, type: 3}
+  - {fileID: 21300000, guid: 1d509e39157819d4fb7e2fe4bd57790e, type: 3}
+  - {fileID: 21300000, guid: 4259ad3b66f3d514caa17aae43045a16, type: 3}
+  - {fileID: 21300000, guid: deb229e16de07af409219aa4376e6c42, type: 3}
+  - {fileID: 21300000, guid: 73b08cc771d6ba949b38787e01585fc1, type: 3}
+  - {fileID: 21300000, guid: 3efccb752a2d46c46ac34f1c0e7fe1ac, type: 3}
+  - {fileID: 21300000, guid: aa503e0717b4bd54b910ee5eacf2419b, type: 3}
+  - {fileID: 21300000, guid: 6afd6cf0a59d20c48830a7f9ad5609cf, type: 3}
+  - {fileID: 21300000, guid: 740c3bb2b2638c1489346a423f8c932f, type: 3}
+  - {fileID: 21300000, guid: 835af660ac1176b4b9c69c6d15a90ba3, type: 3}
+  - {fileID: 21300000, guid: 79aa9530ab6e30a46b0f727dbed3a173, type: 3}
+  sortLine: 4
+  requiredDeposit: {fileID: 0}
+  catchmentRadius: 0
+  minDepositTiles: 2
+  fullOutputTiles: 10
+  canBuildOnHills: 1
+  waterBonus: 0
+  buildTime: 2
+  maxCount: 0
+  maxHealth: 300
+  housing: 0
+  workers: 0
+  production: []
+  inputs: []
+  runsWithoutInputs: 0
+  defensePower: 0
+  trainsUnit: {fileID: 0}
+  maxUnits: 0
+  towerRange: 0
+  towerDamage: 10
+  towerCooldown: 1.5
+  towerProjectile: {fileID: 0}
+  towerProjectileArc: 0.15
+  towerProjectileSpeed: 11
+  towerSplash: 0
+  towerMuzzleSmoke: 0
+  towerMuzzle: {x: 0, y: 0}
+  operatorIdle: {fileID: 0}
+  operatorShoot: []
+  operatorReleaseFrame: 2
+  operatorOffset: {x: 1, y: 1.3}

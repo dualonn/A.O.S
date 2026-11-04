@@ -147,13 +147,18 @@ public class Enemy : Unit
         }
     }
 
+    private static readonly List<Unit> guardWork = new List<Unit>();
+
     protected override Unit SelectTarget(List<Unit> candidates)
     {
         if (Charmed) return base.SelectTarget(candidates);   // anyone of its own kind nearby
         if (guarding)
         {
             // Only see off intruders near the camp; don't chase them across the map.
-            candidates = candidates.FindAll(u => Vector2.Distance(u.transform.position, guardHome) <= guardRadius * 1.6f);
+            guardWork.Clear();
+            float guardReach = guardRadius * 1.6f;
+            foreach (var u in candidates) if (Vector2.Distance(u.transform.position, guardHome) <= guardReach) guardWork.Add(u);
+            candidates = guardWork;
             if (candidates.Count == 0) return null;
         }
         return base.SelectTarget(candidates);

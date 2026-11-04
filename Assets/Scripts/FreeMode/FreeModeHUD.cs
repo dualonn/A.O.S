@@ -275,6 +275,9 @@ public class FreeModeHUD : MonoBehaviour
         QuestPanel.Create(root, settlement, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // hero quests: section, card, log
         // The Chronicle: history, achievements, statistics, your worlds, the market, messages.
         XRecordsPanel.Create(root, settlement, controller, this, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);
+        TradePanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // trade routes
+        GuideHints.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // beginner hints, Help (F1)
+        GamesPanel.Create(root, settlement, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // saved games and new games
 
         // Dungeon progress (top centre, only while a party is underground)
         dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
@@ -629,7 +632,10 @@ public class FreeModeHUD : MonoBehaviour
     {
         ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b> <size=75%><color=#aaa>{settlement.CurrentAgeProgress:P0}</color></size>";
 
-        var visible = new HashSet<ResourceType>(VisibleResources());
+        visibleWork.Clear();
+        foreach (var vr in VisibleResources()) visibleWork.Add(vr);
+        var visible = visibleWork;
+        int chipKey = 17, chipIndex = 0;
         foreach (var pair in resourceChips)
         {
             var res = pair.Key;
@@ -637,15 +643,30 @@ public class FreeModeHUD : MonoBehaviour
             float amount = settlement.GetAmount(res);
             // Nothing in stock and nothing coming in: leave it off the bar (hover the build menu for costs).
             bool show = visible.Contains(res) && (amount >= 1f || Mathf.Abs(rate) >= 0.05f);
-            pair.Value.transform.parent.gameObject.SetActive(show);
+            chipShown[res] = show;
+            chipIndex++;
             if (!show) continue;
             // The stock, and the rate small underneath, so a full bar of resources still fits.
             string rateText = Mathf.Abs(rate) < 0.05f ? "" :
                 rate > 0 ? $"\n<color=#8f8><size=62%>+{rate:0.0}/s</size></color>" : $"\n<color=#f88><size=62%>{rate:0.0}/s</size></color>";
             string name = res.icon == null ? res.displayName + " " : "";
             pair.Value.text = $"{name}<b>{Short(amount)}</b>{rateText}";
+            chipKey = unchecked(chipKey * 31 + chipIndex * 1009 + pair.Value.text.Length);
         }
-        FitResourceChips();
+        chipKey = unchecked(chipKey * 31 + ageText.text.Length * 7 + peopleText.text.Length * 13 + waveText.text.Length * 17
+            + (researchText.transform.parent.gameObject.activeSelf ? researchText.text.Length * 19 + 1 : 0));
+        if (chipKey != shownChipKey || Time.unscaledTime >= chipRefitAt)
+        {
+            shownChipKey = chipKey;
+            chipRefitAt = Time.unscaledTime + 2f;
+            foreach (var pair in resourceChips)
+            {
+                bool want = chipShown.TryGetValue(pair.Key, out bool sh) && sh;
+                var chip = pair.Value.transform.parent.gameObject;
+                if (chip.activeSelf != want) chip.SetActive(want);
+            }
+            FitResourceChips();
+        }
 
         // People / room, plus one small note: idle people, or how many jobs are going unfilled.
         int idle = settlement.Population - settlement.WorkersNeeded;
@@ -653,6 +674,7 @@ public class FreeModeHUD : MonoBehaviour
             : idle < 0 ? $" <size=70%><color=#fc6>{-idle} short</color></size>" : "";
         peopleText.text = $"<b>{settlement.Population}/{settlement.Housing}</b>{note}";
         waveText.text = $"<b>{FormatTime(settlement.Waves.SecondsUntilWave)}</b>";
+        if (settlement.RaidsOff) waveText.text = "<b>Peaceful</b>";   // no raids in this game (new-game setup)
 
         // Research chip: the furthest-along project, and how many slots are in use.
         var jobs = settlement.ResearchJobs;
@@ -666,6 +688,11 @@ public class FreeModeHUD : MonoBehaviour
             researchText.text = $"{researching.displayName} <b>{lead.progress:P0}</b>{more}";
         }
     }
+
+    private readonly HashSet<ResourceType> visibleWork = new HashSet<ResourceType>();
+    private readonly Dictionary<ResourceType, bool> chipShown = new Dictionary<ResourceType, bool>();
+    private int shownChipKey;
+    private float chipRefitAt;
 
     private static string ZoomHelp() =>
         "<b>View</b>\nMouse wheel or +/- to zoom\nWASD / arrow keys or middle-drag to move";
@@ -717,15 +744,19 @@ public class FreeModeHUD : MonoBehaviour
     }
 
     /// <summary>Let each side panel grow with its list, but stop at the bottom of the screen (then it scrolls).</summary>
-    private void FitSidePanels()
+    private void FitSidePanels() => FitSidePanels(true);
+
+    /// <summary>Size the side panels to their lists. 'force' lays the lists out first (after a click); the regular
+    /// refresh reads the layout Unity built last frame instead.</summary>
+    private void FitSidePanels(bool force)
     {
-        FitSidePanel(buildPanel, buildScroll, buildContent);
-        FitSidePanel(researchPanel, researchScroll, researchContent);
+        FitSidePanel(buildPanel, buildScroll, buildContent, force);
+        FitSidePanel(researchPanel, researchScroll, researchContent, force);
     }
 
-    private void FitSidePanel(RectTransform panel, LayoutElement scroll, RectTransform content)
+    private void FitSidePanel(RectTransform panel, LayoutElement scroll, RectTransform content, bool force = true)
     {
-        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+        if (force) LayoutRebuilder.ForceRebuildLayoutImmediate(content);
         float wanted = LayoutUtility.GetPreferredHeight(content);
         float rest = LayoutUtility.GetPreferredHeight(panel) - scroll.preferredHeight;
         float room = canvasRect.rect.height - 66 - 14 - rest;
@@ -774,7 +805,7 @@ public class FreeModeHUD : MonoBehaviour
         // Section headers: only the current grouping's, hidden when empty, with how many can be built.
         foreach (var pair in categorySections) RefreshBuildSection(pair.Value, groupByType, searching, null);
         foreach (var pair in buildSections) RefreshBuildSection(pair.Value, !groupByType, searching, pair.Key);
-        FitSidePanels();
+        FitSidePanels(false);
     }
 
     private void RefreshBuildSection(CollapsibleSection section, bool active, bool searching, Age age)
@@ -829,7 +860,7 @@ public class FreeModeHUD : MonoBehaviour
     {
         if (def.wonder) return BuildCategory.Wonders;
         if (Settlement.IsCultureBuilding(def.id)) return BuildCategory.Culture;
-        if (def.IsWall && def.wallKind != WallTile.Bridge) return BuildCategory.Walls;   // bridges sit with the settlement's works
+        if (def.IsWall && def.wallKind != WallTile.Bridge && !TradeCatalog.IsRoad(def)) return BuildCategory.Walls;   // bridges sit with the settlement's works
         if (def.isTownCenter) return BuildCategory.Settlement;
         if (Settlement.TrainsTroops(def)) return BuildCategory.Military;
         if (Settlement.IsHuntBuilding(def)) return BuildCategory.Food;
@@ -1016,6 +1047,7 @@ public class FreeModeHUD : MonoBehaviour
             }
         }
         settlement.AppendWildlifeInfo(sb, state, def);
+        settlement.TradeSelectionInfo(sb, state, def);
         selectionText.text = sb.ToString().TrimEnd();
 
         bool trains = Settlement.TrainsTroops(def);
