@@ -236,6 +236,7 @@ public partial class Settlement
     /// <summary>The first free slot for a new game (never slot 1).</summary>
     public static int FreeSlot()
     {
+        if (MenuMode && !SlotExists(1)) return 1;   // a first game from the title screen goes in slot 1
         for (int n = 2; n < 1000; n++)
             if (!SlotExists(n) && n != ActiveSlot) return n;
         return -1;
@@ -257,14 +258,43 @@ public partial class Settlement
         if (Instance == null || FreeModeController.Instance == null) { why = "No game is running."; return false; }
         if (slot < 1) { why = "No such game."; return false; }
         if (newGame == null && !SlotExists(slot)) { why = "That game's save file is missing."; return false; }
-        if (newGame != null && (slot < 2 || SlotExists(slot))) { why = "That slot is already used."; return false; }
-        if (newGame == null && slot == Instance.gamesSlot) { why = "You're playing that game."; return false; }
+        if (newGame != null && (SlotExists(slot) || slot < 2 && !MenuMode)) { why = "That slot is already used."; return false; }
+        if (newGame == null && slot == Instance.gamesSlot && !MenuMode) { why = "You're playing that game."; return false; }
         int sceneIndex = FreeModeController.Instance.gameObject.scene.buildIndex;
         if (sceneIndex < 0) { why = "The free mode scene isn't in the build list."; return false; }
         switchingGame = true;
         var go = new GameObject("ChangingGame");
         DontDestroyOnLoad(go);
         go.AddComponent<GamesSwitcher>().Begin(slot, newGame != null ? newGame.Copy() : null, sceneIndex);
+        return true;
+    }
+
+    /// <summary>Title screen: carry on with the last game played (or the editor's test save).</summary>
+    public static bool ContinueGame(out string why)
+    {
+        why = "";
+        if (switchingGame) { why = "Already changing game."; return false; }
+        if (FreeModeController.Instance == null) { why = "Not ready yet."; return false; }
+        int slot = ActiveSlot;
+        if (!UsingTestSave && !SlotExists(slot)) { why = "There's no saved game yet: start a new one."; return false; }
+        switchingGame = true;
+        var go = new GameObject("ChangingGame");
+        DontDestroyOnLoad(go);
+        go.AddComponent<GamesSwitcher>().Begin(slot, null, FreeModeController.Instance.gameObject.scene.buildIndex);
+        return true;
+    }
+
+    /// <summary>A game is there to continue (the editor's test save counts).</summary>
+    public static bool CanContinue => UsingTestSave ? File.Exists(SavePath) : SlotExists(ActiveSlot);
+
+    /// <summary>In game: save, then go back to the title screen.</summary>
+    public static bool ReturnToTitle()
+    {
+        if (switchingGame || MenuMode || FreeModeController.Instance == null) return false;
+        switchingGame = true;
+        var go = new GameObject("ChangingGame");
+        DontDestroyOnLoad(go);
+        go.AddComponent<GamesSwitcher>().Begin(ActiveSlot, null, FreeModeController.Instance.gameObject.scene.buildIndex, toTitle: true);
         return true;
     }
 
@@ -317,9 +347,9 @@ public partial class Settlement
 /// <summary>Runs a change of game across scene loads (see Settlement.SwitchGame).</summary>
 public class GamesSwitcher : MonoBehaviour
 {
-    public void Begin(int slot, GameOptions newGame, int sceneIndex) => StartCoroutine(Run(slot, newGame, sceneIndex));
+    public void Begin(int slot, GameOptions newGame, int sceneIndex, bool toTitle = false) => StartCoroutine(Run(slot, newGame, sceneIndex, toTitle));
 
-    private IEnumerator Run(int slot, GameOptions newGame, int sceneIndex)
+    private IEnumerator Run(int slot, GameOptions newGame, int sceneIndex, bool toTitle)
     {
         Time.timeScale = 1f;
         var old = FreeModeController.Instance != null ? FreeModeController.Instance.gameObject.scene : SceneManager.GetActiveScene();
@@ -340,8 +370,9 @@ public class GamesSwitcher : MonoBehaviour
         // 2. Save the old game to its own file and remove it.
         Settlement.ShutDownForSwitch();
         yield return null;
-        // 3. Remember the new slot, 4. load the scene: it starts the settlement from that slot.
-        Settlement.SelectSlot(slot, newGame);
+        // 3. Remember the new slot (or head for the title screen), 4. load the scene: it starts the settlement from that slot.
+        Settlement.MenuMode = toTitle;
+        if (!toTitle) Settlement.SelectSlot(slot, newGame);
         Debug.Log(newGame != null
             ? $"[Settlement] Starting a new game in slot {slot} ({Settlement.SlotFileName(slot)})."
             : $"[Settlement] Loading game {slot} ({Settlement.SlotFileName(slot)}).");

@@ -853,6 +853,14 @@ public class SettlementGrid : MonoBehaviour
         }
     }
 
+    /// <summary>Take the trees and bushes off these tiles (the title screen clears room for its towns).</summary>
+    public void ClearDepositTiles(RectInt area)
+    {
+        for (int y = area.yMin; y < area.yMax; y++)
+            for (int x = area.xMin; x < area.xMax; x++)
+                RegionAt(x, y).deposits.SetTile(new Vector3Int(x, y, 0), null);
+    }
+
     public Vector3 CellToWorld(Vector2Int cell) =>
         transform.position + new Vector3(cell.x * cellSize, cell.y * cellSize, 0);
 

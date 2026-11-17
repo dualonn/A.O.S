@@ -305,7 +305,10 @@ public partial class Settlement
             if (ra == rb) continue;
             utlParent[ra] = rb;
             var a = nodes[e.i]; var c = nodes[e.j];
-            n.links.Add(new UtlLink { a = a.at, b = c.at, ha = UtlTopOf(a), hb = UtlTopOf(c), kind = kind, wired = kind == 2 && !a.wireless && !c.wireless });
+            // Cables hang from poles and pylons: two plants joined across a district aren't drawn as a
+            // wire strung between their roofs (that hung in mid-air over everything between them).
+            bool line = a.spec != null && a.spec.role == UtlRole.PowerNode || c.spec != null && c.spec.role == UtlRole.PowerNode;
+            n.links.Add(new UtlLink { a = a.at, b = c.at, ha = UtlTopOf(a), hb = UtlTopOf(c), kind = kind, wired = kind == 2 && !a.wireless && !c.wireless && line });
         }
         // Number the groups 0..k-1.
         utlRoots.Clear();

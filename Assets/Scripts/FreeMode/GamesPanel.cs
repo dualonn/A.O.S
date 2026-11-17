@@ -108,6 +108,9 @@ public class GamesPanel : MonoBehaviour
         panel.gameObject.SetActive(false);
     }
 
+    /// <summary>Open the window on its saved-games list, or on the new-game setup (the title screen uses this).</summary>
+    public void OpenTab(bool newGame) => Open(newGame ? Tab.NewGame : Tab.Saved);
+
     private void Open(Tab t)
     {
         tab = t;

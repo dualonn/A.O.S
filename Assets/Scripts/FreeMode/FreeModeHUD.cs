@@ -103,8 +103,13 @@ public class FreeModeHUD : MonoBehaviour
         {
             controller.MessageShown -= AddMessage;
         }
+        GameSettings.Changed -= ApplyUIScale;
         Time.timeScale = 1f;
     }
+
+    private CanvasScaler hudScaler;
+
+    private void ApplyUIScale() => GameSettings.ApplyUIScale(hudScaler);
 
     // ---------- Layout ----------
 
@@ -123,6 +128,9 @@ public class FreeModeHUD : MonoBehaviour
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = 0.5f;
+        hudScaler = scaler;
+        GameSettings.ApplyUIScale(scaler);   // the player's UI scale (Settings), re-applied when it changes
+        GameSettings.Changed += ApplyUIScale;
         canvasObject.AddComponent<GraphicRaycaster>();
         Transform root = canvasObject.transform;
 

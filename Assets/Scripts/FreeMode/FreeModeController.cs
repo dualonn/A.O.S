@@ -109,6 +109,8 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
         Settlement.Waves.LiveBattlefield = this;
         Settlement.RaidUnderway = () => waveInProgress;
         SyncViews();
+        if (Settlement.MenuMode) TitleScreen.Create(this);   // the title screen and its age montage
+        else PauseMenu.Create(this);
     }
 
     /// <summary>Another world is now in view: rebuild the whole scene round its map.</summary>
@@ -610,12 +612,20 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
 
     private void Update()
     {
-        UpdateSelectionInput();
-        UpdateUnitOrders();
-        if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing && !HUDWindows.EscapeClosedWindow())   // an open window takes Escape first
+        if (!Settlement.MenuMode)   // (on the title screen the map is only a backdrop)
         {
-            Select(null);
-            SetUnitSelection(null);
+            UpdateSelectionInput();
+            UpdateUnitOrders();
+            // Escape: an open window takes it first, then a selection; otherwise it opens the pause menu.
+            if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing && !HUDWindows.EscapeClosedWindow() && !PauseMenu.HandledEscape)
+            {
+                if (selection.Count > 0 || unitSelection.Count > 0)
+                {
+                    Select(null);
+                    SetUnitSelection(null);
+                }
+                else PauseMenu.Toggle();
+            }
         }
         SyncCamps();
         SyncSites();

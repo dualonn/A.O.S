@@ -137,7 +137,6 @@ public partial class Settlement : MonoBehaviour
         Database.waveBaseUnits + State.researched.Count * Database.waveUnitsPerTech
         + State.wavesSurvived * Database.waveUnitsPerWaveSurvived);
 
-    private const float AutosaveInterval = 30f;
     private float autosaveTimer;
     private float populationTimer;
 
@@ -170,7 +169,22 @@ public partial class Settlement : MonoBehaviour
     private static void ResetStatics()
     {
         Instance = null;
+        // Every launch opens on the title screen (in the editor, Age of Stickman > Skip title screen goes straight in).
+#if UNITY_EDITOR
+        MenuMode = !UnityEditor.EditorPrefs.GetBool(SkipTitleKey, false);
+#else
+        MenuMode = true;
+#endif
     }
+
+    /// <summary>
+    /// True on the title screen: the world behind the menu is a throwaway one made in memory (the
+    /// age montage). It is never loaded from or written to any save.
+    /// </summary>
+    public static bool MenuMode { get; set; } = true;
+
+    /// <summary>EditorPrefs key: when set, playing in the editor skips the title screen.</summary>
+    public const string SkipTitleKey = "AOS.SkipTitle";
 
     /// <summary>Once free mode has been started, keep it running from game launch.</summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -419,13 +433,22 @@ public partial class Settlement : MonoBehaviour
         Instance = this;
         Database = database;
         // Save back to the file we loaded from, even if the test-save switch changes meanwhile.
-        loadedFrom = SavePath;
+        loadedFrom = MenuMode ? null : SavePath;
         GamesNoteSlot();
-        if (UsingTestSave)
+        if (MenuMode) gamesSlot = 0;
+        if (UsingTestSave && !MenuMode)
         {
             Debug.Log("[Settlement] Playing on the TEST save (settlement_test.json). Your real save is untouched.");
         }
-        State = LoadState() ?? NewState();
+        State = MenuMode ? NewState() : LoadState() ?? NewState();
+        DisastersAllowed = !MenuMode;   // the title's towns stay calm
+        if (MenuMode)
+        {
+            State.options.raids = GameRaids.Off;
+            State.disastersEnabled = false;
+            Guide.on = false;
+            Guide.decided = true;
+        }
         if (State.mapSeed == 0)
         {
             State.mapSeed = NewSeed();
@@ -445,7 +468,7 @@ public partial class Settlement : MonoBehaviour
         Waves.Initialise(this);
         RollCamps(Map.RevealedZones());
         RollSites(Map.RevealedZones());
-        GamesAfterInitialise();   // a brand-new game: saved at once and announced (NewGameHooks.Started)
+        if (!MenuMode) GamesAfterInitialise();   // a brand-new game: saved at once and announced (NewGameHooks.Started)
     }
 
     /// <summary>The save format this build writes.</summary>
@@ -582,7 +605,7 @@ public partial class Settlement : MonoBehaviour
         Tick(Time.deltaTime);
 
         autosaveTimer += Time.unscaledDeltaTime;   // real time: a faster game shouldn't save more often
-        if (autosaveTimer >= AutosaveInterval)
+        if (autosaveTimer >= GameSettings.AutosaveSeconds)   // (Settings: every 30 s to 10 min)
         {
             autosaveTimer = 0;
             Save();
@@ -2218,9 +2241,9 @@ public partial class Settlement : MonoBehaviour
 
     public void Save()
     {
-        if (State == null)
+        if (State == null || MenuMode)
         {
-            return;
+            return;   // (the title screen's world is never saved)
         }
         if (Map != null)
         {
@@ -2290,6 +2313,7 @@ public partial class Settlement : MonoBehaviour
 
     private void Notify(string message)
     {
+        if (MenuMode) return;   // the title screen's towns go about their business quietly
         // News from a world you're not looking at says where it's from.
         if (offWorld) message = $"<color=#9cf>[{CurrentWorld.name}]</color> {message}";
         Debug.Log($"[Settlement] {message}");

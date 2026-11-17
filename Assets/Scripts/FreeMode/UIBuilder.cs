@@ -193,6 +193,59 @@ public static class UIBuilder
         return field;
     }
 
+    /// <summary>
+    /// A labelled slider row: the caption ('name') on the left, the bar in the middle and a value
+    /// label on the right (returned through 'label'; fill it in from 'onChange').
+    /// </summary>
+    public static Slider Slider(string name, Transform parent, float min, float max, float value,
+        UnityAction<float> onChange, out TextMeshProUGUI label, float height = 32)
+    {
+        var row = Row(name, parent, 10);
+        row.gameObject.AddComponent<LayoutElement>().preferredHeight = height;
+        var caption = Text("Caption", row, name, FontBody, TextAlignmentOptions.MidlineLeft);
+        var captionElement = caption.gameObject.AddComponent<LayoutElement>();
+        captionElement.preferredWidth = captionElement.minWidth = 160;
+
+        var root = Rect("Slider", row);
+        var element = root.gameObject.AddComponent<LayoutElement>();
+        element.flexibleWidth = 1;
+        element.preferredHeight = element.minHeight = height;
+
+        // The groove, a little thinner than the row
+        var back = Panel("Background", root, new Color(0f, 0f, 0f, 0.45f));
+        Anchor(back.rectTransform, new Vector2(0, 0.5f), new Vector2(1, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(0, 10));
+
+        var fillArea = Rect("Fill Area", root);
+        Anchor(fillArea, new Vector2(0, 0.5f), new Vector2(1, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(-12, 10));
+        var fill = Panel("Fill", fillArea, TabActiveColor);
+        fill.rectTransform.sizeDelta = new Vector2(12, 0);
+
+        var handleArea = Rect("Handle Slide Area", root);
+        Stretch(handleArea);
+        handleArea.offsetMin = new Vector2(8, 0);
+        handleArea.offsetMax = new Vector2(-8, 0);
+        var handle = Panel("Handle", handleArea, new Color(0.85f, 0.85f, 0.9f, 1f));
+        handle.rectTransform.sizeDelta = new Vector2(16, -8);
+
+        var slider = root.gameObject.AddComponent<Slider>();
+        slider.fillRect = fill.rectTransform;
+        slider.handleRect = handle.rectTransform;
+        slider.targetGraphic = handle;
+        slider.direction = UnityEngine.UI.Slider.Direction.LeftToRight;
+        slider.minValue = min;
+        slider.maxValue = max;
+        slider.SetValueWithoutNotify(value);
+        var nav = slider.navigation;
+        nav.mode = Navigation.Mode.None;   // arrow keys pan the camera, not the slider
+        slider.navigation = nav;
+        if (onChange != null) slider.onValueChanged.AddListener(onChange);
+
+        label = Text("Value", row, "", FontBody, TextAlignmentOptions.MidlineRight);
+        var valueElement = label.gameObject.AddComponent<LayoutElement>();
+        valueElement.preferredWidth = valueElement.minWidth = 64;
+        return slider;
+    }
+
     /// <summary>The standard close button: a small "X" (30 high, 34 wide) for a window's header row.</summary>
     public static Button CloseButton(Transform parent, UnityAction onClose)
     {

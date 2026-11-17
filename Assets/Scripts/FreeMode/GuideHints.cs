@@ -212,7 +212,7 @@ public class GuideHints : MonoBehaviour
         Decide();
         RefreshToggle();
         var g = settlement.Guide;
-        if (!g.on) { if (showing != null) Hide(); return; }
+        if (!g.on || !GameSettings.ShowHints) { if (showing != null) Hide(); return; }   // (Settings can turn hints off everywhere)
         if (showing != null || Time.unscaledTime < quietUntil) return;
         string id = NextHint(out string text);
         if (id == null) return;
