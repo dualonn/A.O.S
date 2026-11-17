@@ -133,27 +133,15 @@ public class CivicsPanel : MonoBehaviour
 
     private void BuildWindow(RectTransform root)
     {
-        panel = UIBuilder.VerticalPanel("GovernmentWindow", root, 12, 6);
-        UIBuilder.Anchor(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(760, 0));
-        var head = UIBuilder.Row("Head", panel, 8);
+        panel = UIBuilder.Window("GovernmentWindow", root, 760, "", () => Show(false), out title, out var head);
         crest = UIBuilder.Icon("Crest", head, null, 44);
-        title = UIBuilder.Text("Title", head, "", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        crest.transform.SetAsFirstSibling();
+        HUDWindows.Register(panel, () => Show(false));
 
-        var tabs = UIBuilder.Row("Tabs", panel, 4);
-        tabs.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
-        foreach (Tab t in Enum.GetValues(typeof(Tab)))
-        {
-            var tt = t;
-            var b = UIBuilder.Button(t.ToString(), tabs, () => { tab = tt; note.text = ""; Rebuild(); }, out var label, 30, 15);
-            label.text = t == Tab.Overview ? "Overview" : t == Tab.Laws ? "Laws" : t.ToString();
-            label.alignment = TextAlignmentOptions.Center;
-            b.GetComponent<LayoutElement>().flexibleWidth = 1;
-            tabButtons[t] = b;
-        }
+        var tabs = (Tab[])Enum.GetValues(typeof(Tab));
+        var names = Array.ConvertAll(tabs, t => t.ToString());
+        var buttons = UIBuilder.TabRow(panel, names, i => { tab = tabs[i]; note.text = ""; Rebuild(); });
+        for (int i = 0; i < tabs.Length; i++) tabButtons[tabs[i]] = buttons[i];
         info = UIBuilder.Text("Info", panel, "", 15);
         info.textWrappingMode = TextWrappingModes.Normal;
         search = UIBuilder.SearchField("Search", panel, "Search laws (name or effect)...", text => { filter = text.Trim(); Rebuild(true); });
@@ -180,10 +168,8 @@ public class CivicsPanel : MonoBehaviour
     {
         panel.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
-        if (!open) { hideTip?.Invoke(); return; }
-        transform.SetAsLastSibling();
-        var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(panel); hideTip?.Invoke(); return; }
+        HUDWindows.Opened(panel);   // closes the other centre windows, and draws this one on top
         note.text = "";
         Rebuild();
     }
@@ -198,7 +184,7 @@ public class CivicsPanel : MonoBehaviour
         }
         if (!IsOpen) return;
         if (!settlement.IsFounded) { Show(false); return; }
-        if (Input.GetKeyDown(KeyCode.Escape) && !UIBuilder.Typing) { Show(false); return; }
+        // (Escape closes it through HUDWindows)
         if (Time.unscaledTime < refreshAt) return;
         refreshAt = Time.unscaledTime + 1f;
         RefreshInfo();

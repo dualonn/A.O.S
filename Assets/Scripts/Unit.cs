@@ -543,8 +543,11 @@ public abstract class Unit : MonoBehaviour
 
     // Units bucketed by area once a frame, so pushing apart only looks at neighbours, not the whole army.
     private const float NudgeCell = 4f;
-    private static readonly Dictionary<long, List<Unit>> nudgeGrid = new Dictionary<long, List<Unit>>();
-    private static readonly Stack<List<Unit>> nudgeLists = new Stack<List<Unit>>();
+    // Each entry keeps the unit's position and kind as of this frame, so neighbours don't each ask
+    // the engine for every other unit's transform (hundreds of units made that the biggest cost).
+    private struct NudgeEntry { public Unit unit; public Vector2 pos; public bool air, burrowed; }
+    private static readonly Dictionary<long, List<NudgeEntry>> nudgeGrid = new Dictionary<long, List<NudgeEntry>>();
+    private static readonly Stack<List<NudgeEntry>> nudgeLists = new Stack<List<NudgeEntry>>();
     private static int nudgeFrame = -1;
 
     private static long NudgeKey(int cx, int cy) => ((long)cx << 32) ^ (uint)cy;
@@ -557,15 +560,15 @@ public abstract class Unit : MonoBehaviour
         nudgeGrid.Clear();
         foreach (var u in All)
         {
-            if (u == null) continue;
+            if (u == null || !u.IsAlive) continue;
             Vector3 p = u.transform.position;
             long key = NudgeKey(Mathf.FloorToInt(p.x / NudgeCell), Mathf.FloorToInt(p.y / NudgeCell));
             if (!nudgeGrid.TryGetValue(key, out var list))
             {
-                list = nudgeLists.Count > 0 ? nudgeLists.Pop() : new List<Unit>();
+                list = nudgeLists.Count > 0 ? nudgeLists.Pop() : new List<NudgeEntry>();
                 nudgeGrid[key] = list;
             }
-            list.Add(u);
+            list.Add(new NudgeEntry { unit = u, pos = p, air = u.Moves == Movement.Air, burrowed = u.Burrowed });
         }
     }
 
@@ -578,24 +581,30 @@ public abstract class Unit : MonoBehaviour
         BuildNudgeGrid();
         int gx = Mathf.FloorToInt(pos.x / NudgeCell), gy = Mathf.FloorToInt(pos.y / NudgeCell);
         int reach = Mathf.CeilToInt(space / NudgeCell);   // big units look further
+        bool air = Moves == Movement.Air, burrowed = Burrowed;
+        float space2 = space * space;
+        Vector2 here = pos;
         for (int cy = gy - reach; cy <= gy + reach; cy++)
         {
             for (int cx = gx - reach; cx <= gx + reach; cx++)
             {
                 if (!nudgeGrid.TryGetValue(NudgeKey(cx, cy), out var cell)) continue;
-                foreach (var other in cell)
+                for (int i = 0; i < cell.Count; i++)
                 {
-                    if (other == null || other == this || !other.IsAlive || (other.Moves == Movement.Air) != (Moves == Movement.Air) || other.Burrowed != Burrowed)
+                    var other = cell[i];
+                    if (other.air != air || other.burrowed != burrowed || ReferenceEquals(other.unit, this))
                     {
                         continue;   // flyers and ground troops (and tunnellers below) pass over each other
                     }
-                    Vector2 away = pos - other.transform.position;
-                    float d = away.magnitude;
-                    if (d < space && d > 0.0001f)
+                    Vector2 away = here - other.pos;
+                    float d2 = away.sqrMagnitude;
+                    if (d2 >= space2) continue;
+                    if (d2 > 0.00000001f)
                     {
+                        float d = Mathf.Sqrt(d2);
                         push += away / d * (space - d);
                     }
-                    else if (d <= 0.0001f)
+                    else
                     {
                         push += Random.insideUnitCircle * 0.1f;
                     }
@@ -603,6 +612,10 @@ public abstract class Unit : MonoBehaviour
             }
         }
         Vector2 step = push * SeparationStrength * Time.deltaTime + knockVelocity * Time.deltaTime;
+        if (step.sqrMagnitude < 1e-10f && (Time.frameCount + GetInstanceID()) % 16 != 0)
+        {
+            return;   // nothing pushing (most idle units): skip the move, checking for water now and then
+        }
         Vector3 nudged = pos + new Vector3(step.x, step.y, 0);
         var nav = MapNavigator.Current;
         if (nav == null || Moves != Movement.Ground)

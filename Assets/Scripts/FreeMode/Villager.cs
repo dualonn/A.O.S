@@ -39,13 +39,13 @@ public class Villager : MonoBehaviour
 
         body = gameObject.AddComponent<SpriteRenderer>();
         body.sprite = art.villagerIdle;
-        body.sortingOrder = BuildingView.SortingOrder;
+        body.sortingOrder = Sorting.World;
 
         carried = new GameObject("Carried").AddComponent<SpriteRenderer>();
         carried.transform.SetParent(transform, false);
-        carried.transform.localPosition = new Vector3(0.12f, 0.78f, -0.001f);
+        carried.transform.localPosition = new Vector3(0.12f, 0.78f, Sorting.Front);
         carried.transform.localScale = Vector3.one * 0.32f;
-        carried.sortingOrder = BuildingView.SortingOrder;
+        carried.sortingOrder = Sorting.World;
         carried.enabled = false;
 
         // Pixel art: everyone is drawn at the same pixel size (no random scaling).
@@ -150,7 +150,7 @@ public class Villager : MonoBehaviour
 
         // Depth: lower on screen = nearer the viewer.
         var p = transform.position;
-        transform.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
+        transform.position = new Vector3(p.x, p.y, Sorting.Depth(p.y));
     }
 
     /// <summary>Pick what to do next.</summary>

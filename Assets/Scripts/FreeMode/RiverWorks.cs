@@ -427,7 +427,7 @@ public class RiverWorks : MonoBehaviour
         trip.boat.transform.position = homeWater;
         trip.boat.transform.localScale = Vector3.one * controller.unitScale;
         trip.sprite = trip.boat.AddComponent<SpriteRenderer>();
-        trip.sprite.sortingOrder = BuildingView.SortingOrder;
+        trip.sprite.sortingOrder = Sorting.World;
         if (look != null)
         {
             if (look.idle != null) trip.idle.Add(look.idle);
@@ -491,7 +491,7 @@ public class RiverWorks : MonoBehaviour
             else { t.position = Vector3.MoveTowards(t.position, target, step); step = 0f; }
         }
         var p = t.position;
-        t.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
+        t.position = new Vector3(p.x, p.y, Sorting.Depth(p.y));
     }
 
     private void Animate(Trip trip, bool moving)

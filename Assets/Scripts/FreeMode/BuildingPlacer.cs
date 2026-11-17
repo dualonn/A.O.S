@@ -29,19 +29,19 @@ public class BuildingPlacer : MonoBehaviour
         catchment = new GameObject("Catchment").AddComponent<SpriteRenderer>();
         catchment.transform.SetParent(transform, false);
         catchment.sprite = SimpleSprites.Square;
-        catchment.sortingOrder = 9;
+        catchment.sortingOrder = Sorting.PlaceCatchment;
         catchment.enabled = false;
 
         ghost = new GameObject("PlacementGhost").AddComponent<SpriteRenderer>();
         ghost.transform.SetParent(transform, false);
         ghost.sprite = SimpleSprites.Square;
-        ghost.sortingOrder = 10;
+        ghost.sortingOrder = Sorting.PlaceGhost;
         ghost.enabled = false;
 
         // Preview of the building's art, drawn over the footprint tint.
         ghostSprite = new GameObject("PlacementPreview").AddComponent<SpriteRenderer>();
         ghostSprite.transform.SetParent(transform, false);
-        ghostSprite.sortingOrder = 11;
+        ghostSprite.sortingOrder = Sorting.PlaceGhostSprite;
         ghostSprite.color = new Color(1, 1, 1, 0.7f);
         ghostSprite.enabled = false;
 
@@ -53,7 +53,7 @@ public class BuildingPlacer : MonoBehaviour
         info.outlineWidth = 0.25f;
         info.outlineColor = new Color32(0, 0, 0, 230);
         info.rectTransform.sizeDelta = new Vector2(14, 3);
-        info.sortingOrder = 12;
+        info.sortingOrder = Sorting.PlaceInfo;
         info.enabled = false;
     }
 
@@ -320,7 +320,7 @@ public class BuildingPlacer : MonoBehaviour
             var g = new GameObject("WallGhost").AddComponent<SpriteRenderer>();
             g.transform.SetParent(transform, false);
             g.sprite = SimpleSprites.Square;
-            g.sortingOrder = 10;
+            g.sortingOrder = Sorting.PlaceGhost;
             lineGhosts.Add(g);
         }
         lineGhosts[i].enabled = true;

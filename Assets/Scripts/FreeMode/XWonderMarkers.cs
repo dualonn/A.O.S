@@ -25,7 +25,6 @@ public class XWonderMarkers : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics() => glowSprite = null;
 
-    private const int Order = 31;
 
     public void Init(FreeModeController owner)
     {
@@ -38,7 +37,7 @@ public class XWonderMarkers : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 230);
         label.rectTransform.sizeDelta = new Vector2(16, 3);
-        label.sortingOrder = Order + 2;
+        label.sortingOrder = Sorting.WonderLabel;
         label.textWrappingMode = TextWrappingModes.Normal;
         label.text = "";
     }
@@ -92,8 +91,8 @@ public class XWonderMarkers : MonoBehaviour
                 m.glow.transform.SetParent(transform, false);
                 m.icon.transform.SetParent(transform, false);
                 m.glow.sprite = Glow();
-                m.glow.sortingOrder = Order - 1;
-                m.icon.sortingOrder = Order;
+                m.glow.sortingOrder = Sorting.WonderGlow;
+                m.icon.sortingOrder = Sorting.WonderIcon;
                 markers.Add(m);
             }
             markers[i].site = site;

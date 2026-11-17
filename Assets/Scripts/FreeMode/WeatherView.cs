@@ -12,7 +12,6 @@ using UnityEngine.Tilemaps;
 public class WeatherView : MonoBehaviour
 {
     private const int MaxParticles = 150;
-    private const int OverlayOrder = 90, ParticleOrder = 91;
 
     private Settlement settlement;
     private Camera cam;
@@ -53,14 +52,14 @@ public class WeatherView : MonoBehaviour
         if (settlement == null || cam == null) { enabled = false; return; }
         MakeSprites();
 
-        overlay = MakeRenderer("Tint", pixelSprite, OverlayOrder);
-        flash = MakeRenderer("Flash", pixelSprite, OverlayOrder + 2);
+        overlay = MakeRenderer("Tint", pixelSprite, Sorting.WeatherTint);
+        flash = MakeRenderer("Flash", pixelSprite, Sorting.WeatherFlash);
         flash.color = new Color(1f, 1f, 1f, 0f);
-        bolt = MakeRenderer("Bolt", boltSprite, ParticleOrder + 1);
+        bolt = MakeRenderer("Bolt", boltSprite, Sorting.WeatherBolt);
         bolt.enabled = false;
         for (int i = 0; i < MaxParticles; i++)
         {
-            var sr = MakeRenderer("Drop", rainSprite, ParticleOrder);
+            var sr = MakeRenderer("Drop", rainSprite, Sorting.WeatherParticle);
             sr.enabled = false;
             particles.Add(sr.transform);
             particleRenderers.Add(sr);
@@ -70,7 +69,7 @@ public class WeatherView : MonoBehaviour
         aurora.SetParent(transform, false);
         for (int i = 0; i < 3; i++)
         {
-            var sr = MakeRenderer("Band", bandSprite, OverlayOrder + 1);
+            var sr = MakeRenderer("Band", bandSprite, Sorting.WeatherBand);
             sr.transform.SetParent(aurora, false);
             auroraBands.Add(sr);
         }

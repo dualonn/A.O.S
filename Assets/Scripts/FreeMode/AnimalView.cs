@@ -86,7 +86,7 @@ public class WildlifeView : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 220);
         label.rectTransform.sizeDelta = new Vector2(10, 2f);
-        label.sortingOrder = 8;
+        label.sortingOrder = Sorting.Labels;
         label.text = "";
     }
 
@@ -214,7 +214,7 @@ public class WildlifeView : MonoBehaviour
         go.transform.SetParent(root, false);
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = art.frames[0];
-        sr.sortingOrder = BuildingView.SortingOrder;
+        sr.sortingOrder = Sorting.World;
         go.transform.localScale = Vector3.one * controller.unitScale * scale;
         var c = new Critter { go = go, sr = sr, pos = at, goal = at, rest = Random.Range(0f, 3f), anim = Random.Range(0f, 2f) };
         Place(c);
@@ -227,7 +227,7 @@ public class WildlifeView : MonoBehaviour
     }
 
     private static void Place(Critter c) =>
-        c.go.transform.position = new Vector3(c.pos.x, c.pos.y, BuildingView.DepthFor(c.pos.y));
+        c.go.transform.position = new Vector3(c.pos.x, c.pos.y, Sorting.Depth(c.pos.y));
 
     // ---------- Reactions: fleeing, fighting, calming ----------
 

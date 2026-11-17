@@ -14,7 +14,9 @@ using UnityEngine.UI;
 /// </summary>
 public class DisView : MonoBehaviour
 {
-    private const int GroundOrder = -18, SootOrder = -5, FlameOrder = -3, DropOrder = -2, SmokeOrder = 89, SkyOrder = 92;
+    // Soot and flames stand in the world band, Y-sorted (soot darkens the trees on its tile, flames sit
+    // just in front of what burns); water arcs are Fx, smoke and meteors are sky.
+    private const int GroundOrder = Sorting.GroundFx, SootOrder = Sorting.World, FlameOrder = Sorting.World, DropOrder = Sorting.Fx, SmokeOrder = Sorting.Smoke, SkyOrder = Sorting.Sky;
     private const int GroundCap = 640, FlameCap = 200, PuffCap = 90, DropCap = 40, MeteorCap = 10;
 
     private Settlement settlement;
@@ -186,7 +188,7 @@ public class DisView : MonoBehaviour
                         var t = d.tiles[i];
                         if (!view.Contains(new Vector2(t.x, t.y))) continue;
                         Ground(t, lava[(frame + (int)(Hash(t.x, t.y) & 3)) & 3], 1f);
-                        if ((Hash(t.x, t.y) & 7) == 0) Flame(new Vector2(t.x + 0.5f, t.y + 0.3f), frame, 0.7f);
+                        if ((Hash(t.x, t.y) & 7) == 0) Flame(new Vector2(t.x + 0.5f, t.y + 0.3f), frame, 0.7f, t.y - 0.1f);
                     }
                     break;
                 case "Wildfire":
@@ -197,8 +199,8 @@ public class DisView : MonoBehaviour
                         burning.Add(p);
                         if (!view.Contains(p)) continue;
                         Ground(t, burnt, 1f, SootOrder);
-                        Flame(p, frame, 1f);
-                        if ((Hash(t.x, t.y) & 1) == 0) Flame(p + new Vector2(0.28f, 0.18f), frame + 2, 0.75f);
+                        Flame(p, frame, 1f, t.y - 0.1f);
+                        if ((Hash(t.x, t.y) & 1) == 0) Flame(p + new Vector2(0.28f, 0.18f), frame + 2, 0.75f, t.y - 0.1f);
                     }
                     foreach (int id in d.hit)
                     {
@@ -208,7 +210,7 @@ public class DisView : MonoBehaviour
                         {
                             var p = new Vector2(b.cell.x + 0.5f + f * (def.size.x - 1f) / Mathf.Max(1, Mathf.Max(2, def.size.x) - 1), b.cell.y + def.size.y * 0.75f);
                             burning.Add(p);
-                            if (view.Contains(p)) Flame(p, frame + f, 1.15f);
+                            if (view.Contains(p)) Flame(p, frame + f, 1.15f, b.cell.y);
                         }
                     }
                     break;
@@ -243,17 +245,19 @@ public class DisView : MonoBehaviour
         var sr = ground[groundUsed++];
         sr.sprite = s;
         sr.sortingOrder = order;
-        sr.transform.position = new Vector3(t.x + 0.5f, t.y + 0.5f, 0f);
+        // soot (world band) sorts as standing at the tile's front edge, in front of the trees on it
+        sr.transform.position = new Vector3(t.x + 0.5f, t.y + 0.5f, order == SootOrder ? Sorting.Depth(t.y - 0.1f) + Sorting.Front : 0f);
         sr.color = new Color(1f, 1f, 1f, alpha);
         sr.enabled = true;
     }
 
-    private void Flame(Vector2 p, int frame, float scale)
+    /// <summary>A flame at p, sorted as standing at footY: just in front of the tile's trees or the burning building's front.</summary>
+    private void Flame(Vector2 p, int frame, float scale, float footY)
     {
         if (flamesUsed >= FlameCap) return;
         var sr = flames[flamesUsed++];
         sr.sprite = flame[(frame + (int)(Hash(Mathf.FloorToInt(p.x * 4f), Mathf.FloorToInt(p.y * 4f)) & 3)) & 3];
-        sr.transform.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y) - 0.05f);
+        sr.transform.position = new Vector3(p.x, p.y, Sorting.Depth(footY) + Sorting.Front);
         sr.transform.localScale = Vector3.one * scale;
         sr.enabled = true;
     }

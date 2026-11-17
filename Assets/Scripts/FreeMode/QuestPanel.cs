@@ -67,14 +67,8 @@ public class QuestPanel : MonoBehaviour
         UIBuilder.Anchor(card, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -106), new Vector2(470, 0));
         card.gameObject.SetActive(false);
 
-        log = UIBuilder.VerticalPanel("QuestLog", rt, 12, 6);
-        UIBuilder.Anchor(log, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 20), new Vector2(600, 0));
-        var head = UIBuilder.Row("Head", log, 8);
-        UIBuilder.Text("Title", head, "<b>Quest Log</b>", 24).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => SetLog(false), out var closeLabel, 32, 16);
-        closeLabel.text = "Close";
-        closeLabel.alignment = TextAlignmentOptions.Center;
-        close.GetComponent<LayoutElement>().preferredWidth = 90;
+        log = UIBuilder.Window("QuestLog", rt, 600, "<b>Quest Log</b>", () => SetLog(false));
+        HUDWindows.Register(log, () => SetLog(false));
         logBody = UIBuilder.Rect("Body", log);
         var layout = logBody.gameObject.AddComponent<VerticalLayoutGroup>();
         layout.spacing = 5;
@@ -148,8 +142,9 @@ public class QuestPanel : MonoBehaviour
         var offers = settlement.QuestOffersHere;
         var top = offers.Count > 0 ? offers[0] : null;
         if (top == null) cardOpen = false;
-        // An event card waiting has the same spot under the top bar: it goes first.
-        bool show = cardOpen && top != null && settlement.PendingHere.Count == 0;
+        // The event card has the same spot under the top bar: while it's up this one waits (and both
+        // wait while a centre window is open).
+        bool show = cardOpen && top != null && !EventPanel.CardWanted && !HUDWindows.AnyModalOpen;
         card.gameObject.SetActive(show);
         if (!show) return;
         if (top.id != cardShownId) BuildCard(top);
@@ -167,7 +162,8 @@ public class QuestPanel : MonoBehaviour
         var art = QuestArt.Get();
         var head = UIBuilder.Row("Head", card, 8);
         if (art != null && art.icon != null) UIBuilder.Icon("Icon", head, art.icon, 40);
-        UIBuilder.Text("Title", head, $"<b>{q.title}</b>", 22);
+        UIBuilder.Text("Title", head, $"<b>{q.title}</b>", UIBuilder.FontTitle).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        UIBuilder.CloseButton(head, () => { cardOpen = false; card.gameObject.SetActive(false); });   // same as "Later"
         var sb = new StringBuilder();
         sb.Append($"<color=#aaa>{q.giver}:</color>\n<i>{q.intro}</i>\n");
         for (int i = 0; i < q.steps.Count; i++) sb.Append($"<color=#fd6>{i + 1}.</color> {q.steps[i].text}\n");
@@ -203,6 +199,7 @@ public class QuestPanel : MonoBehaviour
     {
         log.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
+        if (open) HUDWindows.Opened(log); else HUDWindows.Closed(log);
         logKey = null;
         if (open) RefreshLog();
     }

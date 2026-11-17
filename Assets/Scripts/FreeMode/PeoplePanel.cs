@@ -78,14 +78,8 @@ public class PeoplePanel : MonoBehaviour
 
     private void BuildWindow(RectTransform root)
     {
-        window = UIBuilder.VerticalPanel("CensusPanel", root, 12, 6);
-        UIBuilder.Anchor(window, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -104), new Vector2(600, 0));
-        var head = UIBuilder.Row("Head", window, 6);
-        title = UIBuilder.Text("Title", head, "<b>Census</b>", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        window = UIBuilder.Window("CensusPanel", root, 600, "<b>Census</b>", () => Show(false), out title, out _);
+        HUDWindows.Register(window, () => Show(false));
 
         info = UIBuilder.Text("Info", window, "", 15);
         info.textWrappingMode = TextWrappingModes.Normal;
@@ -111,11 +105,8 @@ public class PeoplePanel : MonoBehaviour
         if (window == null) return;
         window.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
-        if (!open) { hideTip?.Invoke(); return; }
-        window.SetAsLastSibling();
-        transform.SetAsLastSibling();
-        var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(window); hideTip?.Invoke(); return; }
+        HUDWindows.Opened(window);   // closes the other centre windows, and draws this one on top
         refreshAt = 0f;
     }
 

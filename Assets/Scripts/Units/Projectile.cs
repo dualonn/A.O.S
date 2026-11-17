@@ -56,7 +56,7 @@ public class Projectile : MonoBehaviour
         var go = new GameObject("Projectile");
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = sprite;
-        sr.sortingOrder = 9;
+        sr.sortingOrder = Sorting.Projectile;
         var p = go.AddComponent<Projectile>();
         p.start = from;
         p.end = to;

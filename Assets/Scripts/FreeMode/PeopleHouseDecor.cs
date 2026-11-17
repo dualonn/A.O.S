@@ -20,10 +20,10 @@ public class PeopleHouseDecor : MonoBehaviour
         d.settlement = settlement;
         var go = new GameObject("Comfort");
         go.transform.SetParent(view.transform, false);
-        go.transform.localPosition = new Vector3(0f, 0f, -0.004f);   // just in front of the house
+        go.transform.localPosition = new Vector3(0f, 0f, Sorting.Front4);   // just in front of the house
         go.transform.localScale = Vector3.one * cellSize;
         d.sr = go.AddComponent<SpriteRenderer>();
-        d.sr.sortingOrder = BuildingView.SortingOrder;
+        d.sr.sortingOrder = Sorting.World;
         d.sr.enabled = false;
         d.checkAt = Time.unscaledTime + Random.Range(0f, 2f);
     }

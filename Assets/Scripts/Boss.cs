@@ -49,7 +49,7 @@ public class Boss : MonoBehaviour
         nameTag.outlineColor = new Color32(0, 0, 0, 220);
         nameTag.color = new Color(1f, 0.45f, 0.35f);
         nameTag.rectTransform.sizeDelta = new Vector2(8, 0.8f);
-        nameTag.sortingOrder = 8;
+        nameTag.sortingOrder = Sorting.Labels;
         nameTag.text = Title;
     }
 
@@ -180,11 +180,11 @@ public class RingPulse : MonoBehaviour
     public static void Spawn(Vector3 at, float radius, Color color)
     {
         var go = new GameObject("RingPulse");
-        go.transform.position = new Vector3(at.x, at.y, BuildingView.DepthFor(at.y) - 0.001f);
+        go.transform.position = new Vector3(at.x, at.y, Sorting.Depth(at.y) + Sorting.Front);
         var pulse = go.AddComponent<RingPulse>();
         pulse.ring = go.AddComponent<SpriteRenderer>();
         pulse.ring.sprite = SimpleSprites.Ring;
-        pulse.ring.sortingOrder = BuildingView.SortingOrder - 1;
+        pulse.ring.sortingOrder = Sorting.Rings;
         pulse.radius = radius;
         pulse.color = color;
         pulse.start = Time.time;

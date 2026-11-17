@@ -59,6 +59,7 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     public bool HasHeroRig => figure != null && pixelsPerUnit > 0f;
 
     private SpriteRenderer body;
+    private Unit unit;
     private SpriteRenderer barBack;
     private SpriteRenderer barFill;
     private bool moving;
@@ -69,13 +70,15 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     private float walkTime;
     private readonly List<Object> heroArt = new List<Object>();
     private string heroLookKey;
+    private long shownGearKey;
 
     private void Awake()
     {
         body = GetComponent<SpriteRenderer>();
-        body.sortingOrder = BuildingView.SortingOrder;
-        barBack = MakeBar("HealthBack", new Color(0, 0, 0, 0.65f), 7);
-        barFill = MakeBar("HealthFill", new Color(0.3f, 0.9f, 0.3f), 8);
+        unit = GetComponent<Unit>();
+        body.sortingOrder = Sorting.World;
+        barBack = MakeBar("HealthBack", new Color(0, 0, 0, 0.65f), Sorting.Bars);
+        barFill = MakeBar("HealthFill", new Color(0.3f, 0.9f, 0.3f), Sorting.BarFill);
         SetHealth(1f);
     }
 
@@ -166,8 +169,11 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     private void LateUpdate()
     {
         // Lower on screen = nearer the viewer, same rule as buildings and villagers.
+        // Flyers draw over everything standing on the ground (still Y-sorted among themselves).
         var p = transform.position;
-        transform.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
+        transform.position = new Vector3(p.x, p.y, Sorting.Depth(p.y));
+        int order = unit != null && unit.Moves == Movement.Air && !dead ? Sorting.Air : Sorting.World;
+        if (body.sortingOrder != order) body.sortingOrder = order;
     }
 
     // ---------- Hero gear ----------
@@ -180,6 +186,16 @@ public class SpriteUnitVisual : MonoBehaviour, IUnitVisual
     public void ShowGear(IList<GearLook> looks, IList<Rarity> rarities)
     {
         if (!HasHeroRig) return;
+        // Asked a few times a second per hero: leave quickly (no garbage) while the gear is unchanged.
+        long gearKey = 1;
+        for (int i = 0; i < 5; i++)
+        {
+            var l = i < looks.Count ? looks[i] : GearLook.None;
+            var r = i < rarities.Count ? rarities[i] : Rarity.Common;
+            gearKey = gearKey * 1009 + (int)l * 17 + (int)r;
+        }
+        if (heroLookKey != null && gearKey == shownGearKey) return;
+        shownGearKey = gearKey;
         var style = figure.Clone();
         style.trims = new Rarity[5];
         var key = new System.Text.StringBuilder();

@@ -27,11 +27,11 @@ public class BuildingView : MonoBehaviour
     private float nextTroopSync;           // keeping troops' orders in line runs a few times a second, not every frame
     private Settlement.BuildingStats? syncedStats;
 
-    /// <summary>Sorting order shared by building sprites and villagers; depth within it comes from z.</summary>
-    public const int SortingOrder = -6;
+    /// <summary>Sorting order shared by building sprites and villagers; depth within it comes from z. (Forwards to Sorting.World.)</summary>
+    public const int SortingOrder = Sorting.World;
 
     /// <summary>Things lower on screen get a nearer z, so they draw in front.</summary>
-    public static float DepthFor(float worldY) => worldY * 0.01f;
+    public static float DepthFor(float worldY) => Sorting.Depth(worldY);
 
     private const float Margin = 0.06f;
     private static readonly Color RuinedTint = new Color(0.42f, 0.36f, 0.33f);
@@ -53,7 +53,7 @@ public class BuildingView : MonoBehaviour
         transform.position = new Vector3(corner.x, corner.y, DepthFor(corner.y + frontWall));
 
         selectionOutline = MakeQuad("Selection", new Vector2(-Margin, -Margin), size + Vector2.one * Margin * 2,
-            new Color(1f, 0.9f, 0.2f, 0.35f), -8);
+            new Color(1f, 0.9f, 0.2f, 0.35f), Sorting.Selection);
         selectionOutline.enabled = false;
 
         if (def.prefab != null)
@@ -90,14 +90,15 @@ public class BuildingView : MonoBehaviour
             scaffold.drawMode = SpriteDrawMode.Tiled;
             scaffold.tileMode = SpriteTileMode.Continuous;
             scaffold.size = new Vector2(size.x, size.y);
-            scaffold.sortingOrder = -5;
+            scaffold.sortingOrder = SortingOrder;
+            scaffold.transform.localPosition = new Vector3(0, 0, Sorting.Front);   // over the building, behind figures in front of it
         }
 
         float barWidth = Mathf.Min(size.x - 0.3f, 1.6f);
         float barX = (size.x - barWidth) / 2;
         float top = def.ArtSize.y * grid.cellSize;
-        barBack = MakeQuad("BarBack", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), new Color(0, 0, 0, 0.6f), 6);
-        barFill = MakeQuad("BarFill", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), Color.green, 7);
+        barBack = MakeQuad("BarBack", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), new Color(0, 0, 0, 0.6f), Sorting.Bars);
+        barFill = MakeQuad("BarFill", new Vector2(barX, top + 0.05f), new Vector2(barWidth, 0.16f), Color.green, Sorting.BarFill);
 
         var labelObject = new GameObject("Label");
         labelObject.transform.SetParent(transform, false);
@@ -108,7 +109,7 @@ public class BuildingView : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 220);
         label.rectTransform.sizeDelta = new Vector2(Mathf.Max(4, size.x + 2), 1.5f);
-        label.sortingOrder = 8;
+        label.sortingOrder = Sorting.Labels;
 
         Refresh();
     }
@@ -157,8 +158,7 @@ public class BuildingView : MonoBehaviour
 
     private void Update()
     {
-        hovered = !controller.Placer.IsPlacing && controller.Grid != null &&
-                  Contains(controller.Grid.WorldToCell(SettlementGrid.MouseWorld()));
+        hovered = !controller.Placer.IsPlacing && controller.Grid != null && Contains(MouseCell(controller.Grid));
         UnityEngine.Profiling.Profiler.BeginSample("BuildingView.Refresh");
         Refresh();
         UnityEngine.Profiling.Profiler.EndSample();
@@ -274,10 +274,10 @@ public class BuildingView : MonoBehaviour
         {
             backRuns[slot] = new GameObject("WallRun").AddComponent<SpriteRenderer>();
             backRuns[slot].transform.SetParent(body.transform, false);
-            backRuns[slot].transform.localPosition = new Vector3(0, 0, 0.002f);
+            backRuns[slot].transform.localPosition = new Vector3(0, 0, Sorting.Behind2);
             backRuns[slot].sortingOrder = SortingOrder;
         }
-        backRuns[slot].transform.localPosition = new Vector3(0, 0, inFront ? -0.002f : 0.002f);
+        backRuns[slot].transform.localPosition = new Vector3(0, 0, inFront ? Sorting.Front2 : Sorting.Behind2);
         backRuns[slot].sprite = sprite;
         backRuns[slot].enabled = true;
         backRuns[slot].color = body.color;
@@ -352,7 +352,7 @@ public class BuildingView : MonoBehaviour
             // Just in front of the tower: crew sprites are cut at the waist, and that cut sits on the
             // parapet top (operatorOffset), so the archer reads as standing behind it.
             float pivotToCut = CrewCutAbovePivot;
-            towerOperator.transform.localPosition = new Vector3(Definition.operatorOffset.x, Definition.operatorOffset.y + lift - pivotToCut, -0.001f);
+            towerOperator.transform.localPosition = new Vector3(Definition.operatorOffset.x, Definition.operatorOffset.y + lift - pivotToCut, Sorting.Front);
         }
         return towerOperator;
     }
@@ -467,11 +467,55 @@ public class BuildingView : MonoBehaviour
         }
     }
 
+    // The cell under the mouse, worked out once a frame for every building (not once per building).
+    private static int mouseCellFrame = -1;
+    private static Vector2Int mouseCell;
+
+    private static Vector2Int MouseCell(SettlementGrid grid)
+    {
+        if (mouseCellFrame != Time.frameCount)
+        {
+            mouseCellFrame = Time.frameCount;
+            mouseCell = grid.WorldToCell(SettlementGrid.MouseWorld());
+        }
+        return mouseCell;
+    }
+
+    // What the bar and label last showed, so an unchanged building does no work (there are hundreds).
+    private int shownKey;
+    private float statsAt = -1f, problemAt;
+    private Settlement.BuildingStats shownStats;
+    private string problem = "";
+
     private void Refresh()
     {
         bool built = State.IsBuilt;
         bool ruined = built && State.health <= 0;
-        var stats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        // Upgrades and research change the stats now and then; staffing and inputs drift slowly.
+        if (statsAt < 0f || Time.unscaledTime >= statsAt)
+        {
+            statsAt = Time.unscaledTime + 0.5f + (State.instanceId % 7) * 0.03f;
+            shownStats = Settlement.StatsOf(Definition, State.upgradeLevel);
+        }
+        if (Time.unscaledTime >= problemAt)
+        {
+            problemAt = Time.unscaledTime + 0.5f + (State.instanceId % 11) * 0.02f;
+            problem = built && !ruined ? ProblemText() : "";
+        }
+        var stats = shownStats;
+        unchecked
+        {
+            int key = (built ? 1 : 0) | (ruined ? 2 : 0) | (selected ? 4 : 0) | (hovered ? 8 : 0)
+                | (State.rankingUp ? 16 : 0) | (State.upgrading ? 32 : 0) | (State.Paused ? 64 : 0);
+            key = key * 31 + Mathf.RoundToInt(State.health * 4f);
+            key = key * 31 + Mathf.RoundToInt(stats.maxHealth);
+            key = key * 31 + Mathf.RoundToInt(State.buildProgress * 200f);
+            key = key * 31 + Mathf.RoundToInt(State.upgradeProgress * 200f);
+            key = key * 31 + State.upgradeLevel;
+            key = key * 31 + problem.GetHashCode();
+            if (key == shownKey) return;
+            shownKey = key;
+        }
         float healthShare = State.health / stats.maxHealth;
 
         if (body != null)
@@ -506,17 +550,18 @@ public class BuildingView : MonoBehaviour
             : State.rankingUp ? "<color=#fd6>Ranking up</color>"
             : State.upgrading ? "<color=#fd6>Upgrading</color>"
             : State.Paused ? "<color=#aaa>Paused</color>"
-            : ProblemText();
+            : problem;
         string name = State.upgradeLevel > 0 ? $"{Definition.displayName} <size=75%>Lv {State.upgradeLevel + 1}</size>" : Definition.displayName;
         bool showName = selected || hovered;
         if (Definition.IsWall && !showName)
         {
             status = ""; // no "Building" over every wall piece
         }
-        label.text = showName && status.Length > 0 ? $"{name}\n<size=75%>{status}</size>"
+        string text = showName && status.Length > 0 ? $"{name}\n<size=75%>{status}</size>"
             : showName ? name
             : status.Length > 0 ? $"<size=75%>{status}</size>"
             : "";
+        if (label.text != text) label.text = text;
     }
 
     /// <summary>Short of workers or inputs (shown on the label even when not hovered).</summary>
@@ -553,6 +598,21 @@ public class BuildingView : MonoBehaviour
         troop.MakeHero(hero);
     }
 
+    // Every building's id, gathered once a frame (each troop building checks each hero's home).
+    private static readonly HashSet<int> buildingIds = new HashSet<int>();
+    private static int buildingIdsFrame = -1;
+
+    private static bool BuildingExists(Settlement settlement, int instanceId)
+    {
+        if (buildingIdsFrame != Time.frameCount)
+        {
+            buildingIdsFrame = Time.frameCount;
+            buildingIds.Clear();
+            foreach (var b in settlement.State.buildings) buildingIds.Add(b.instanceId);
+        }
+        return buildingIds.Contains(instanceId);
+    }
+
     /// <summary>Keep this building's heroes on the field (and bring them back once recovered).</summary>
     private void KeepHeroes(Settlement.BuildingStats stats)
     {
@@ -575,7 +635,7 @@ public class BuildingView : MonoBehaviour
                 continue;
             }
             // Heroes whose home is gone move in with the first troop building that notices.
-            if (hero.homeBuilding != State.instanceId && !settlement.State.buildings.Exists(b => b.instanceId == hero.homeBuilding))
+            if (hero.homeBuilding != State.instanceId && !BuildingExists(settlement, hero.homeBuilding))
             {
                 hero.homeBuilding = State.instanceId;
             }

@@ -196,7 +196,7 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
         var sr = new GameObject(objectName).AddComponent<SpriteRenderer>();
         sr.transform.SetParent(transform, false);
         sr.sprite = sprite;
-        sr.sortingOrder = 30;
+        sr.sortingOrder = Sorting.MapMarker;
         sr.enabled = false;
         return sr;
     }
@@ -612,7 +612,7 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
     {
         UpdateSelectionInput();
         UpdateUnitOrders();
-        if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing)
+        if (Input.GetKeyDown(KeyCode.Escape) && !Placer.IsPlacing && !HUDWindows.EscapeClosedWindow())   // an open window takes Escape first
         {
             Select(null);
             SetUnitSelection(null);
@@ -1099,7 +1099,7 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
             orderMarker = new GameObject("OrderMarker").AddComponent<SpriteRenderer>();
             orderMarker.transform.SetParent(transform, false);
             orderMarker.sprite = SimpleSprites.Ring;
-            orderMarker.sortingOrder = 18;
+            orderMarker.sortingOrder = Sorting.OrderMarker;
         }
         orderMarker.color = color;
         orderMarker.transform.position = new Vector3(at.x, at.y, -1f);
@@ -1141,13 +1141,13 @@ public partial class FreeModeController : MonoBehaviour, ILiveBattlefield, IRaid
             boxOutline.useWorldSpace = true;
             boxOutline.material = new Material(Shader.Find("Sprites/Default"));
             boxOutline.startColor = boxOutline.endColor = new Color(1f, 0.92f, 0.3f, 0.95f);
-            boxOutline.sortingOrder = 20;
+            boxOutline.sortingOrder = Sorting.BoxOutline;
             boxFill = new GameObject("Fill").AddComponent<SpriteRenderer>();
             boxFill.transform.SetParent(boxOutline.transform, false);
             var tex = Texture2D.whiteTexture;
             boxFill.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero, tex.width);
             boxFill.color = new Color(1f, 0.92f, 0.3f, 0.12f);
-            boxFill.sortingOrder = 19;
+            boxFill.sortingOrder = Sorting.BoxFill;
         }
         ShowBox(true);
         Vector3 min = Vector3.Min(a, b), max = Vector3.Max(a, b);

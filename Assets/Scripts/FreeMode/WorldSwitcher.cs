@@ -28,11 +28,15 @@ public class WorldSwitcher : MonoBehaviour
         s.button = UIBuilder.Button("Current", rt, s.Toggle, out s.label, 36, 17);
         UIBuilder.Stretch((RectTransform)s.button.transform);
         s.label.alignment = TextAlignmentOptions.Center;
+        s.label.enableAutoSizing = true;   // a long world name shrinks a little, then ends in "..."
+        s.label.fontSizeMin = 12;
+        s.label.fontSizeMax = 17;
         s.list = UIBuilder.VerticalPanel("Worlds", rt, 8, 4);
         UIBuilder.Anchor(s.list, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 1), new Vector2(0, -4), new Vector2(300, 0));
         var fit = s.list.gameObject.AddComponent<ContentSizeFitter>();
         fit.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
         s.list.gameObject.SetActive(false);
+        HUDWindows.Register(s.list, () => s.SetList(false), modal: false);   // a drop-down: Escape closes it
         s.Refresh();
         return s;
     }
@@ -50,7 +54,7 @@ public class WorldSwitcher : MonoBehaviour
         var worlds = settlement.State.worlds;
         bool many = worlds.Count > 1;
         button.gameObject.SetActive(many);
-        if (!many) { list.gameObject.SetActive(false); return; }
+        if (!many) { SetList(false); return; }
         var current = settlement.CurrentWorld;
         label.text = $"<b>{current.name}</b>  <size=80%><color=#9cf>{WorldProfile.Get(current.profile).displayName}</color>  v</size>";
         if (shownCount != worlds.Count) BuildRows();
@@ -74,14 +78,26 @@ public class WorldSwitcher : MonoBehaviour
 
     private void Toggle()
     {
-        if (!list.gameObject.activeSelf) BuildRows();
-        list.gameObject.SetActive(!list.gameObject.activeSelf);
-        GameAudio.UI(list.gameObject.activeSelf ? "panel_open" : "panel_close");
+        bool open = !list.gameObject.activeSelf;
+        if (open) BuildRows();
+        list.gameObject.SetActive(open);
+        GameAudio.UI(open ? "panel_open" : "panel_close");
+        if (open) HUDWindows.Opened(list); else HUDWindows.Closed(list);
+    }
+
+    private void SetList(bool open)
+    {
+        if (list.gameObject.activeSelf == open) return;
+        if (open) { Toggle(); return; }
+        list.gameObject.SetActive(false);
+        GameAudio.UI("panel_close");
+        HUDWindows.Closed(list);
     }
 
     private void Pick(int world)
     {
         list.gameObject.SetActive(false);
+        HUDWindows.Closed(list);
         settlement.SwitchWorld(world);
     }
 }

@@ -23,6 +23,7 @@ public class DiplomacyPanel : MonoBehaviour
     private readonly List<(Enemy unit, float leaveAt)> allies = new List<(Enemy, float)>();
 
     private const float RaidHelpSeconds = 120f, WarPartySeconds = 150f;
+    private const float BadgeX = 344f, BadgeWidth = 220f;   // just right of the culture badge (136 to 336 from the centre)
 
     public bool IsOpen => panel != null && panel.gameObject.activeSelf;
 
@@ -55,20 +56,17 @@ public class DiplomacyPanel : MonoBehaviour
 
     private void Build(RectTransform root)
     {
-        // The badge: who lives here and where you stand.
-        badge = UIBuilder.Button("DiplomacyBadge", root, () => Show(!IsOpen), out badgeLabel, 32, 15);
-        UIBuilder.Anchor((RectTransform)badge.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-10, -64), new Vector2(220, 32));
+        // The badge: who lives here and where you stand (in the row under the top bar, right of the culture badge).
+        badge = UIBuilder.Button("DiplomacyBadge", root, () => Show(!IsOpen), out badgeLabel, 36, 15);
+        UIBuilder.Anchor((RectTransform)badge.transform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, 1), new Vector2(BadgeX, -64), new Vector2(BadgeWidth, 36));
         badgeLabel.alignment = TextAlignmentOptions.Center;
+        badgeLabel.enableAutoSizing = true;
+        badgeLabel.fontSizeMin = 12;
+        badgeLabel.fontSizeMax = 15;
         badge.gameObject.SetActive(false);
 
-        panel = UIBuilder.VerticalPanel("DiplomacyPanel", root, 12, 6);
-        UIBuilder.Anchor(panel, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-10, -100), new Vector2(380, 0));
-        var head = UIBuilder.Row("Head", panel, 6);
-        title = UIBuilder.Text("Title", head, "", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        panel = UIBuilder.Window("DiplomacyPanel", root, 420, "", () => Show(false), out title, out _);
+        HUDWindows.Register(panel, () => Show(false));
         info = UIBuilder.Text("Info", panel, "", 15);
         info.textWrappingMode = TextWrappingModes.Normal;
         actions = UIBuilder.VerticalPanel("Actions", panel, 0, 4);
@@ -82,11 +80,10 @@ public class DiplomacyPanel : MonoBehaviour
     {
         panel.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
+        if (!open) HUDWindows.Closed(panel);
         if (open)
         {
-            panel.SetAsLastSibling();
-            var tip = panel.parent.parent != null ? panel.parent.parent.Find("Tooltip") : null;
-            if (tip != null) tip.SetAsLastSibling();
+            HUDWindows.Opened(panel);   // closes the other centre windows, and draws this one on top
             note.text = "";
             Rebuild();
         }
@@ -113,6 +110,11 @@ public class DiplomacyPanel : MonoBehaviour
             string col = ColorUtility.ToHtmlStringRGB(Settlement.StandingColour(s));
             string extra = settlement.Diplomacy.peace ? " · at peace" : settlement.Diplomacy.war ? " · at war" : "";
             badgeLabel.text = $"{f.name}: <color=#{col}>{Settlement.StandingName(s)}</color>{extra}";
+            // Narrow screens: give up width rather than run under the research panel.
+            float room = HUDLayout.CanvasWidth * 0.5f - HUDLayout.RightInset - 10f - BadgeX;
+            var rt = (RectTransform)badge.transform;
+            float width = Mathf.Clamp(room, 120f, BadgeWidth);
+            if (!Mathf.Approximately(rt.sizeDelta.x, width)) rt.sizeDelta = new Vector2(width, rt.sizeDelta.y);
         }
         if (IsOpen) RefreshInfo();
     }

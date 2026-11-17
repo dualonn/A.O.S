@@ -19,7 +19,7 @@ public class UtlView : MonoBehaviour
     public static int Mode;
     public static readonly string[] ModeNames = { "Off", "Water", "Power", "Data", "Smog" };
 
-    private const int CoverOrder = 85, LinkOrder = 86, WireOrder = -4, HazeOrder = 88;
+    private const int CoverOrder = Sorting.UtlCover, LinkOrder = Sorting.UtlLink, WireOrder = Sorting.UtlWire, HazeOrder = Sorting.UtlHaze;
     private const int CoverTex = 384;           // tiles across (1 pixel a tile)
     private const int HazeTiles = 192, HazePx = 2;
     private const int LinkCap = 300, WireCap = 400;

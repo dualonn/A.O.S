@@ -23,7 +23,9 @@ public class FreeModeHUD : MonoBehaviour
     private readonly Dictionary<ResourceType, TextMeshProUGUI> resourceChips = new Dictionary<ResourceType, TextMeshProUGUI>();
     private TextMeshProUGUI moreText;
     private readonly List<ResourceType> overflowResources = new List<ResourceType>();
-    private TextMeshProUGUI messageLog;
+    private readonly TextMeshProUGUI[] messageLines = new TextMeshProUGUI[MessageLines];
+    private const int MessageLines = 3;
+    private const float MessageLineHeight = 27f;   // a little over one 18pt line (a shorter strip hides the text)
     private RectTransform tooltip;
     private TextMeshProUGUI tooltipText;
     private RectTransform selectionPanel;
@@ -130,7 +132,13 @@ public class FreeModeHUD : MonoBehaviour
         var chips = UIBuilder.Row("Chips", bar, 16);
         UIBuilder.Stretch(chips);
         chips.offsetMin = new Vector2(16, 0);
-        chips.offsetMax = new Vector2(-806, 0);   // room for the star map and sound buttons, and the season and weather
+        chips.offsetMax = new Vector2(-806, 0);   // set from the controls on the right as they are (see FitChipsToControls)
+        chipRow = chips;
+        // The controls on the right, in one row that sizes itself: weather, sound, stars, stance, zoom, speed.
+        rightControls = UIBuilder.Row("RightControls", bar, 8);
+        UIBuilder.Anchor(rightControls, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-10, 0), new Vector2(700, 40));
+        rightControls.GetComponent<HorizontalLayoutGroup>().childAlignment = TextAnchor.MiddleRight;
+        rightControls.gameObject.AddComponent<ContentSizeFitter>().horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         ageText = Chip(chips, null);
         foreach (var res in settlement.Database.resources)
@@ -156,34 +164,36 @@ public class FreeModeHUD : MonoBehaviour
         RaidThreatHud.Hook(waveText.transform.parent.gameObject, settlement, f => tooltipSource = f, HideTooltip);   // threat meter: hover for camps and war parties, click to look
         researchText = Chip(chips, art != null ? art.researchIcon : null);
 
-        var zoomOut = UIBuilder.Button("ZoomOut", bar, () => cameraController?.ZoomOut(), out var zoomOutLabel, 40, 26);
-        UIBuilder.Anchor((RectTransform)zoomOut.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-            new Vector2(-250, 0), new Vector2(44, 40));
+        // Left to right: weather, sound, stars (added below), stance, zoom out, zoom in, speed.
+        WeatherIndicator.Create(rightControls, settlement, f => tooltipSource = f, HideTooltip);
+        GameAudio.AddSoundButton(rightControls, 0);
+        var sound = rightControls.Find("Sound");
+        if (sound != null) ControlWidth(sound, 100);
+
+        allStanceButton = UIBuilder.Button("AllStance", rightControls, ToggleAllStances, out allStanceLabel, 40, 18);
+        ControlWidth(allStanceButton.transform, 190);
+        allStanceLabel.alignment = TextAlignmentOptions.Center;
+        UIBuilder.OnHover(allStanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
+
+        var zoomOut = UIBuilder.Button("ZoomOut", rightControls, () => cameraController?.ZoomOut(), out var zoomOutLabel, 40, 26);
+        ControlWidth(zoomOut.transform, 44);
         zoomOutLabel.text = "-";
         zoomOutLabel.alignment = TextAlignmentOptions.Center;
-        var zoomIn = UIBuilder.Button("ZoomIn", bar, () => cameraController?.ZoomIn(), out var zoomInLabel, 40, 26);
-        UIBuilder.Anchor((RectTransform)zoomIn.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-            new Vector2(-200, 0), new Vector2(44, 40));
+        var zoomIn = UIBuilder.Button("ZoomIn", rightControls, () => cameraController?.ZoomIn(), out var zoomInLabel, 40, 26);
+        ControlWidth(zoomIn.transform, 44);
         zoomInLabel.text = "+";
         zoomInLabel.alignment = TextAlignmentOptions.Center;
         UIBuilder.OnHover(zoomIn.gameObject, () => tooltipSource = ZoomHelp, HideTooltip);
         UIBuilder.OnHover(zoomOut.gameObject, () => tooltipSource = ZoomHelp, HideTooltip);
 
-        allStanceButton = UIBuilder.Button("AllStance", bar, ToggleAllStances, out allStanceLabel, 40, 18);
-        UIBuilder.Anchor((RectTransform)allStanceButton.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-            new Vector2(-310, 0), new Vector2(190, 40));
-        allStanceLabel.alignment = TextAlignmentOptions.Center;
-        UIBuilder.OnHover(allStanceButton.gameObject, () => tooltipSource = StanceHelp, HideTooltip);
-
-        var speed = UIBuilder.Button("Speed", bar, CycleSpeed, out speedLabel, 40, 20);
-        UIBuilder.Anchor((RectTransform)speed.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-            new Vector2(-10, 0), new Vector2(130, 40));
+        var speed = UIBuilder.Button("Speed", rightControls, CycleSpeed, out speedLabel, 40, 20);
+        ControlWidth(speed.transform, 130);
         speedLabel.alignment = TextAlignmentOptions.Center;
         speedLabel.text = "Speed x1";
         UIBuilder.OnHover(speed.gameObject, () => tooltipSource = XRecordsPanel.SpeedHelp, HideTooltip);
-        GameAudio.AddSoundButton(bar, -610);
 
         canvasRect = (RectTransform)root;
+        HUDLayout.Canvas = canvasRect;
         WorldSwitcher.Create(root, settlement);   // appears once you have more than one world
         EventPanel.Create(root, settlement);      // random events: a card with choices, and a badge
         CulturePanel.Create(root, settlement);    // a mood badge (top centre) opening culture, faith and great people
@@ -195,20 +205,21 @@ public class FreeModeHUD : MonoBehaviour
             StarMapPanel.Actions.Add(("Build an orbital mine", p => (p.kind == BodyKind.AsteroidBelt || p.kind == BodyKind.GasGiant) && !settlement.HasOrbitalMine(p), p => settlement.BuildOrbitalMine(p)));
             StarMapPanel.Actions.Add(("Send a colony ship", p => p.CanLand && settlement.IsScanned(p.system) && settlement.WorldIndexOf(p) < 0, p => settlement.Launch(Settlement.ColonyShip, p)));
         }
-        starMapButton = UIBuilder.Button("StarMap", bar, () => starMap.Toggle(), out var starLabel, 40, 18);
-        UIBuilder.Anchor((RectTransform)starMapButton.transform, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f),
-            new Vector2(-510, 0), new Vector2(90, 40));
+        starMapButton = UIBuilder.Button("StarMap", rightControls, () => starMap.Toggle(), out var starLabel, 40, 18);
+        ControlWidth(starMapButton.transform, 90);
+        starMapButton.transform.SetSiblingIndex(allStanceButton.transform.GetSiblingIndex());   // just left of the stance button
         starLabel.text = "Stars"; starLabel.alignment = TextAlignmentOptions.Center;
         UIBuilder.OnHover(starMapButton.gameObject, () => tooltipSource = () => "<b>Star map</b>\nThe galaxy round your worlds: scan systems, send ships, and go to your other worlds.", HideTooltip);
-        WeatherIndicator.Create(bar, settlement, f => tooltipSource = f, HideTooltip, -716f);   // left of the sound button (-710 to -610)
         var db = settlement.Database;
 
         // Build menu (left): search, then folding sections by type (or by age), in a scroll list.
         buildPanel = SidePanel("BuildPanel", root, left: true);
         var buildHeader = UIBuilder.Row("Header", buildPanel, 8);
+        // (the fold button goes first: the map overlay button later slots in just before "By type")
+        buildFold = FoldButton(buildHeader, ToggleBuildFold, "<b>Build menu</b>\nFold it away to a small tab, and back. <color=#ccc>(B)</color>");
         UIBuilder.Text("Title", buildHeader, "<b>Build</b>", 24).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
         var groupButton = UIBuilder.Button("Grouping", buildHeader, ToggleGrouping, out groupLabel, 30, 14);
-        groupButton.GetComponent<LayoutElement>().preferredWidth = 120;
+        groupButton.GetComponent<LayoutElement>().preferredWidth = 96;
         groupLabel.alignment = TextAlignmentOptions.Center;
         UIBuilder.OnHover(groupButton.gameObject, () => tooltipSource = () => "<b>Grouping</b>\nBy type: housing, food, industry, military... Older versions you've outgrown are tucked away (search still finds them).\nBy age: everything, age by age.", HideTooltip);
         buildSearch = UIBuilder.SearchField("Search", buildPanel, "Search buildings...", text => { buildFilter = text.Trim(); RefreshBuildButtons(); });
@@ -239,7 +250,11 @@ public class FreeModeHUD : MonoBehaviour
 
         // Ages and research (right): advancing stays on top, research folds by age below.
         researchPanel = SidePanel("ResearchPanel", root, left: false);
-        UIBuilder.Text("AgeTitle", researchPanel, "<b>Age</b>", 24);
+        var researchHeader = UIBuilder.Row("Header", researchPanel, 8);
+        researchTitle = UIBuilder.Text("AgeTitle", researchHeader, "<b>Age</b>", 24);
+        researchTitle.textWrappingMode = TextWrappingModes.NoWrap;
+        researchTitle.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        researchFold = FoldButton(researchHeader, ToggleResearchFold, "<b>Research panel</b>\nFold it away to a small tab, and back. <color=#ccc>(R)</color>");
         // Progress through your age (ages are grown into, not bought: see the tooltip).
         advanceButton = UIBuilder.Button("AgeProgress", researchPanel, () => { }, out advanceLabel, 60);
         UIBuilder.OnHover(advanceButton.gameObject, () => tooltipSource = AgeTooltip, HideTooltip);
@@ -288,7 +303,7 @@ public class FreeModeHUD : MonoBehaviour
         AdvisorPanel.Create(root, settlement, controller, researchContent, f => tooltipSource = f, HideTooltip, FitSidePanels);   // the advisor card: top issues, Show me
         // Dungeon progress (top centre, only while a party is underground)
         dungeonPanel = UIBuilder.VerticalPanel("DungeonPanel", root, 8, 4);
-        UIBuilder.Anchor(dungeonPanel, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -52), new Vector2(380, 0));
+        UIBuilder.Anchor(dungeonPanel, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -104), new Vector2(380, 0));   // under the top bar and the badge row
         dungeonText = UIBuilder.Text("Info", dungeonPanel, "", 18, TMPro.TextAlignmentOptions.Center);
         dungeonButton = UIBuilder.Button("View", dungeonPanel, ToggleDungeonView, out dungeonButtonLabel, 30, 16);
         dungeonPanel.gameObject.SetActive(false);
@@ -329,12 +344,21 @@ public class FreeModeHUD : MonoBehaviour
             22, TextAlignmentOptions.Center);
         UIBuilder.Stretch(bannerText.rectTransform, 8);
 
-        // Messages (bottom centre)
+        // Messages (bottom centre, under the selection panel): the last few, one line each
+        // (the whole history is in the Chronicle's Messages tab).
         var log = UIBuilder.Panel("Messages", root, new Color(0, 0, 0, 0.45f)).rectTransform;
-        UIBuilder.Anchor(log, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 10), new Vector2(900, 130));
+        UIBuilder.Anchor(log, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 10), new Vector2(760, MessageLines * MessageLineHeight + 16));
         log.GetComponent<Image>().raycastTarget = false;
-        messageLog = UIBuilder.Text("Text", log, "", 18, TextAlignmentOptions.BottomLeft);
-        UIBuilder.Stretch(messageLog.rectTransform, 10);
+        for (int i = 0; i < MessageLines; i++)
+        {
+            var line = UIBuilder.Text("Line" + i, log, "", 18, TextAlignmentOptions.MidlineLeft);
+            line.textWrappingMode = TextWrappingModes.NoWrap;
+            line.overflowMode = TextOverflowModes.Ellipsis;
+            // newest at the bottom
+            UIBuilder.Anchor(line.rectTransform, new Vector2(0, 0), new Vector2(1, 0), new Vector2(0.5f, 0),
+                new Vector2(0, 8 + (MessageLines - 1 - i) * MessageLineHeight), new Vector2(-24, MessageLineHeight));
+            messageLines[i] = line;
+        }
         messageGroup = log.gameObject.AddComponent<CanvasGroup>();
         messageGroup.alpha = 0;
         messageGroup.blocksRaycasts = false;
@@ -342,10 +366,112 @@ public class FreeModeHUD : MonoBehaviour
         // Tooltip (follows the mouse)
         tooltip = UIBuilder.VerticalPanel("Tooltip", root, 12);
         tooltip.GetComponent<Image>().raycastTarget = false;
-        tooltip.GetComponent<Image>().color = new Color(0.03f, 0.03f, 0.05f, 0.95f);
+        tooltip.GetComponent<Image>().color = UIBuilder.TooltipColor;
         UIBuilder.Anchor(tooltip, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero, new Vector2(380, 0));
         tooltipText = UIBuilder.Text("Text", tooltip, "", 18);
         tooltip.gameObject.SetActive(false);
+
+        // Where the fixed panels are, for the cards that sit beside them.
+        HUDLayout.BuildPanel = buildPanel;
+        HUDLayout.ResearchPanel = researchPanel;
+        HUDLayout.SelectionPanel = selectionPanel;
+        HUDLayout.UnitPanel = root.Find("UnitPanel") as RectTransform;
+        HUDLayout.UnfoldBuild = () => { if (buildFolded) ToggleBuildFold(); };
+        HUDLayout.UnfoldResearch = () => { if (researchFolded) ToggleResearchFold(); };
+        SetFolded(true, PlayerPrefs.GetInt(BuildFoldedKey, 0) == 1);
+        SetFolded(false, PlayerPrefs.GetInt(ResearchFoldedKey, 0) == 1);
+    }
+
+    // ---------- Folding the side panels ----------
+
+    private const string BuildFoldedKey = "AOS.BuildFolded", ResearchFoldedKey = "AOS.ResearchFolded";
+    private const float FoldedWidth = 132f;
+    private bool buildFolded, researchFolded;
+    private Button buildFold, researchFold;
+    private TextMeshProUGUI researchTitle;
+    // What folding hid, so unfolding shows exactly that again.
+    private readonly List<GameObject> buildHidden = new List<GameObject>(), researchHidden = new List<GameObject>();
+
+    private Button FoldButton(Transform header, UnityEngine.Events.UnityAction onClick, string help)
+    {
+        var b = UIBuilder.Button("Fold", header, onClick, out var label, 30, 16);
+        var element = b.GetComponent<LayoutElement>();
+        element.preferredWidth = element.minWidth = 26;
+        label.alignment = TextAlignmentOptions.Center;
+        label.rectTransform.offsetMin = label.rectTransform.offsetMax = Vector2.zero;
+        UIBuilder.OnHover(b.gameObject, () => tooltipSource = () => help, HideTooltip);
+        return b;
+    }
+
+    private void ToggleBuildFold() { SetFolded(true, !buildFolded); GameAudio.UI(buildFolded ? "panel_close" : "panel_open"); }
+
+    private void ToggleResearchFold() { SetFolded(false, !researchFolded); GameAudio.UI(researchFolded ? "panel_close" : "panel_open"); }
+
+    /// <summary>Fold a side panel down to a slim tab (just its header), or open it out again.</summary>
+    private void SetFolded(bool build, bool folded)
+    {
+        var panel = build ? buildPanel : researchPanel;
+        var hidden = build ? buildHidden : researchHidden;
+        var fold = build ? buildFold : researchFold;
+        if (build) buildFolded = folded; else researchFolded = folded;
+        PlayerPrefs.SetInt(build ? BuildFoldedKey : ResearchFoldedKey, folded ? 1 : 0);
+        var header = fold.transform.parent;
+        if (folded)
+        {
+            hidden.Clear();
+            foreach (Transform child in panel)
+                if (child != header && child.gameObject.activeSelf) { hidden.Add(child.gameObject); child.gameObject.SetActive(false); }
+            foreach (Transform child in header)
+                if (child != fold.transform && child.name != "Title" && child.name != "AgeTitle" && child.gameObject.activeSelf)
+                { hidden.Add(child.gameObject); child.gameObject.SetActive(false); }
+        }
+        else
+        {
+            foreach (var go in hidden) if (go != null) go.SetActive(true);
+            hidden.Clear();
+        }
+        panel.sizeDelta = new Vector2(folded ? FoldedWidth : build ? 310 : 330, panel.sizeDelta.y);
+        // The arrow points the way the panel will go.
+        var label = fold.GetComponentInChildren<TextMeshProUGUI>();
+        label.text = build ? (folded ? ">" : "<") : (folded ? "<" : ">");
+        if (!build) researchTitle.text = folded ? "<b>Research</b>" : "<b>Age</b>";
+        if (!folded) FitSidePanels();
+        HideTooltip();
+    }
+
+    /// <summary>B folds the build menu, R the research panel (not while typing).</summary>
+    private void FoldHotkeys()
+    {
+        if (UIBuilder.Typing) return;
+        if (Input.GetKeyDown(KeyCode.B)) ToggleBuildFold();
+        if (Input.GetKeyDown(KeyCode.R)) ToggleResearchFold();
+    }
+
+    /// <summary>A fixed width for a control in the top bar's right-hand row.</summary>
+    private static void ControlWidth(Transform control, float width)
+    {
+        var element = control.GetComponent<LayoutElement>();
+        if (element == null) element = control.gameObject.AddComponent<LayoutElement>();
+        element.preferredWidth = element.minWidth = width;
+    }
+
+    private RectTransform chipRow, rightControls;
+    private float shownControlsWidth = -1f;
+
+    /// <summary>End the chip row where the controls on the right begin (they change as buttons come and go).</summary>
+    private void FitChipsToControls()
+    {
+        float width = LayoutUtility.GetPreferredWidth(rightControls);
+        if (width <= 0f)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rightControls);   // (the first time, before any layout pass)
+            width = LayoutUtility.GetPreferredWidth(rightControls);
+        }
+        if (Mathf.Approximately(width, shownControlsWidth)) return;
+        shownControlsWidth = width;
+        chipRow.offsetMax = new Vector2(-(10 + width + 16), 0);
+        shownChipKey = 0;   // measure the chips again against the new room
+        chipRefitAt = 0f;
     }
 
     // ---------- Updating ----------
@@ -353,6 +479,8 @@ public class FreeModeHUD : MonoBehaviour
     private void Update()
     {
         TrackRates();
+        HUDWindows.EscapeClosedWindow();   // Escape closes the top window first (the controller checks this too)
+        FoldHotkeys();
 
         // The regular refresh is spread over a few frames, one part per frame, so it never causes a hitch.
         refreshTimer -= Time.unscaledDeltaTime;
@@ -380,6 +508,7 @@ public class FreeModeHUD : MonoBehaviour
         switch (part)
         {
             case 0:
+                FitChipsToControls();
                 RefreshTopBar();
                 RefreshStarMapButton();
                 foundingBanner.gameObject.SetActive(!settlement.IsFounded);
@@ -408,6 +537,7 @@ public class FreeModeHUD : MonoBehaviour
 
     private void RefreshAll()
     {
+        FitChipsToControls();
         RefreshTopBar();
         foundingBanner.gameObject.SetActive(!settlement.IsFounded);
         RefreshAllStanceButton();
@@ -628,13 +758,7 @@ public class FreeModeHUD : MonoBehaviour
     }
 
     /// <summary>A stock in a few characters: 950, 9,870, 23.8k, 1.2M.</summary>
-    private static string Short(float value)
-    {
-        float v = Mathf.Floor(value);
-        if (v < 10000f) return v.ToString("#,0");
-        if (v < 1000000f) return (v / 1000f).ToString(v < 100000f ? "0.0" : "0") + "k";
-        return (v / 1000000f).ToString("0.0") + "M";
-    }
+    private static string Short(float value) => UIBuilder.Short(value);
 
     private string ResourceTooltip(ResourceType res)
     {
@@ -660,7 +784,7 @@ public class FreeModeHUD : MonoBehaviour
 
     private void RefreshTopBar()
     {
-        ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b> <size=75%><color=#aaa>{settlement.CurrentAgeProgress:P0}</color></size>";
+        ageText.text = $"<b>{settlement.CurrentAge?.displayName}</b> <size=75%><color=#aaa>{AgeProgressNow():P0}</color></size>";
 
         visibleWork.Clear();
         foreach (var vr in VisibleResources()) visibleWork.Add(vr);
@@ -955,29 +1079,63 @@ public class FreeModeHUD : MonoBehaviour
         researchButtons.Add((tech, button, label));
     }
 
+    // What the research list was last laid out for: when none of it changes, only the visible
+    // buttons' texts are brought up to date (the rest of the pass was most of the cost late on).
+    private int researchShownCount = -1, researchShownAge = -1;
+    private string researchShownFilter;
+    private readonly Dictionary<string, int> researchLevels = new Dictionary<string, int>();
+    private readonly Dictionary<Transform, Vector3Int> sectionCounts = new Dictionary<Transform, Vector3Int>();
+    private readonly Vector3[] viewCorners = new Vector3[4];
+    private float ageProgressAt = -1f, ageProgress;
+
+    /// <summary>Progress through the current age, worked out at most twice a second (it counts every tech and building).</summary>
+    private float AgeProgressNow()
+    {
+        if (Time.unscaledTime >= ageProgressAt)
+        {
+            ageProgressAt = Time.unscaledTime + 0.5f;
+            ageProgress = settlement.CurrentAgeProgress;
+        }
+        return ageProgress;
+    }
+
     private void RefreshResearchButtons()
     {
-        int levels = 0, maxLevels = 0, masteryShown = 0;
+        var researched = settlement.State.researched;
+        int ageIndex = settlement.State.ageIndex;
+        bool layoutChanged = researched.Count != researchShownCount || ageIndex != researchShownAge || researchFilter != researchShownFilter;
+        if (layoutChanged)
+        {
+            researchShownCount = researched.Count;
+            researchShownAge = ageIndex;
+            researchShownFilter = researchFilter;
+            // Levels from one pass over what's researched (instead of a search per tech).
+            researchLevels.Clear();
+            foreach (var id in researched) researchLevels[id] = researchLevels.TryGetValue(id, out int n) ? n + 1 : 1;
+            RefreshResearchLayout();
+        }
+
+        // Texts only for buttons that can be seen: shown, in an open section and inside the scroll view.
+        var scrollRect = researchScroll != null ? (RectTransform)researchScroll.transform : null;
+        float viewTop = float.MaxValue, viewBottom = float.MinValue;
+        if (scrollRect != null)
+        {
+            scrollRect.GetWorldCorners(viewCorners);
+            float margin = (viewCorners[1].y - viewCorners[0].y) * 0.25f;
+            viewBottom = viewCorners[0].y - margin;
+            viewTop = viewCorners[1].y + margin;
+        }
         foreach (var (tech, button, label) in researchButtons)
         {
-            bool done = settlement.IsFullyResearched(tech);
-            bool locked = tech.age != null && tech.age.order > settlement.State.ageIndex;
-            bool match = researchFilter.Length == 0
-                || tech.displayName.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0
-                || (tech.description != null && tech.description.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0);
-            bool show = !done && !locked && match;
-            if (button.gameObject.activeSelf != show) button.gameObject.SetActive(show);
+            if (!button.gameObject.activeInHierarchy) continue;   // hidden, or in a folded section (refreshed when shown)
+            float y = button.transform.position.y;
+            if (y < viewBottom || y > viewTop) continue;          // scrolled out of view
             string level = "";
             if (tech.IsLevelled)
             {
-                int at = settlement.ResearchLevel(tech);
-                levels += at;
-                maxLevels += settlement.MaxLevel(tech);
-                if (show) masteryShown++;
+                researchLevels.TryGetValue(tech.id, out int at);
                 level = $"  <size=80%><color=#9df>Lv {at}/{settlement.MaxLevel(tech)}</color></size>";
             }
-            // Hidden, or in a folded section: nothing to redraw (it's refreshed again when shown).
-            if (!show || !button.gameObject.activeInHierarchy) continue;
             float doneShare = settlement.ResearchProgressOf(tech);
             bool current = doneShare >= 0f;
             bool can = settlement.CanResearch(tech, out string missing);
@@ -988,28 +1146,51 @@ public class FreeModeHUD : MonoBehaviour
             string text = $"<b>{tech.displayName}</b>{level}\n<size=80%>{sub}</size>";
             if (label.text != text) label.text = text;   // re-laying out text is the costly part
         }
+
+        var next = settlement.NextAge;
+        float progress = AgeProgressNow();
+        int filled = Mathf.RoundToInt(progress * 24);
+        string bar = $"<color=#8f8>{new string('|', filled)}</color><color=#555>{new string('|', 24 - filled)}</color>";
+        string after = next == null ? "the latest age" : $"next: the {next.displayName}";
+        string advance = $"<b>{settlement.CurrentAge?.displayName}</b>  {progress:P0}\n<size=80%>{bar}  <color=#aaa>{after}</color></size>";
+        if (advanceLabel.text != advance) advanceLabel.text = advance;
+    }
+
+    /// <summary>Which research buttons show, and the sections' notes: only when research, the age or the search change.</summary>
+    private void RefreshResearchLayout()
+    {
+        int levels = 0, maxLevels = 0, masteryShown = 0;
+        sectionCounts.Clear();
+        foreach (var (tech, button, _) in researchButtons)
+        {
+            researchLevels.TryGetValue(tech.id, out int at);
+            int max = settlement.MaxLevel(tech);
+            bool done = at >= max;
+            bool locked = tech.age != null && tech.age.order > settlement.State.ageIndex;
+            bool match = researchFilter.Length == 0
+                || tech.displayName.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0
+                || (tech.description != null && tech.description.IndexOf(researchFilter, System.StringComparison.OrdinalIgnoreCase) >= 0);
+            bool show = !done && !locked && match;
+            if (button.gameObject.activeSelf != show) button.gameObject.SetActive(show);
+            if (tech.IsLevelled)
+            {
+                levels += at;
+                maxLevels += max;
+                if (show) masteryShown++;
+            }
+            // total, done, shown per section
+            var parent = button.transform.parent;
+            sectionCounts.TryGetValue(parent, out var c);
+            sectionCounts[parent] = new Vector3Int(c.x + 1, c.y + (at > 0 ? 1 : 0), c.z + (show ? 1 : 0));
+        }
         masterySection.SetVisible(masteryShown > 0 || levels > 0);
         masterySection.SetNote(levels >= maxLevels ? "all done" : $"{levels}/{maxLevels} levels");
         foreach (var pair in researchSections)
         {
-            int total = 0, done = 0, shown = 0;
-            foreach (var (tech, button, _) in researchButtons)
-            {
-                if (button.transform.parent != pair.Value.Body) continue;
-                total++;
-                if (settlement.HasResearched(tech)) done++;
-                if (button.gameObject.activeSelf) shown++;
-            }
-            pair.Value.SetVisible(shown > 0 || (done > 0 && pair.Key.order <= settlement.State.ageIndex));
-            pair.Value.SetNote(shown == 0 ? "all done" : $"{done}/{total} done");
+            sectionCounts.TryGetValue(pair.Value.Body, out var c);
+            pair.Value.SetVisible(c.z > 0 || (c.y > 0 && pair.Key.order <= settlement.State.ageIndex));
+            pair.Value.SetNote(c.z == 0 ? "all done" : $"{c.y}/{c.x} done");
         }
-
-        var next = settlement.NextAge;
-        float progress = settlement.CurrentAgeProgress;
-        int filled = Mathf.RoundToInt(progress * 24);
-        string bar = $"<color=#8f8>{new string('|', filled)}</color><color=#555>{new string('|', 24 - filled)}</color>";
-        string after = next == null ? "the latest age" : $"next: the {next.displayName}";
-        advanceLabel.text = $"<b>{settlement.CurrentAge?.displayName}</b>  {progress:P0}\n<size=80%>{bar}  <color=#aaa>{after}</color></size>";
     }
 
     private void RefreshSelection()
@@ -1506,14 +1687,16 @@ public class FreeModeHUD : MonoBehaviour
 
     private void AddMessage(string message)
     {
-        messages.Add(message);
-        if (messages.Count > 5)
+        // The latest few, one line each (newest at the bottom).
+        messages.Add(message != null ? message.Replace('\n', ' ') : "");
+        while (messages.Count > MessageLines)
         {
             messages.RemoveAt(0);
         }
-        if (messageLog != null)
+        int first = MessageLines - messages.Count;
+        for (int i = 0; i < MessageLines; i++)
         {
-            messageLog.text = string.Join("\n", messages);
+            if (messageLines[i] != null) messageLines[i].text = i >= first ? messages[i - first] : "";
         }
         lastMessageTime = Time.unscaledTime;
     }
@@ -1589,17 +1772,40 @@ public class FreeModeHUD : MonoBehaviour
             return;
         }
         tooltip.gameObject.SetActive(true);
-        tooltipText.text = tooltipSource();
+        // The text is worked out again only when the hover moves to something else, or every 0.2 s
+        // (some tooltips count over every building).
+        if (tooltipSource != shownTooltipSource || Time.unscaledTime >= tooltipTextAt)
+        {
+            shownTooltipSource = tooltipSource;
+            tooltipTextAt = Time.unscaledTime + 0.2f;
+            string text = tooltipSource();
+            if (text != tooltipText.text)
+            {
+                tooltipText.text = text;
+                // its real height, for keeping it on screen (the panel itself only grows at the next layout pass)
+                float inner = tooltip.rect.width > 0 ? tooltip.rect.width - 24 : 356;
+                tooltipHeight = tooltipText.GetPreferredValues(text, inner, 0).y + 24;
+            }
+        }
 
-        // Keep it on screen: open to the left / downwards when near the right / top edge.
+        // Keep it on screen: open to the left / downwards when near the right / top edge,
+        // and push it back inside if it's still too big for that side.
         Vector2 mouse = Input.mousePosition;
         bool right = mouse.x > Screen.width * 0.5f;
         bool top = mouse.y > Screen.height * 0.5f;
         tooltip.pivot = new Vector2(right ? 1 : 0, top ? 1 : 0);
         var canvas = (RectTransform)tooltip.parent;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas, mouse, null, out Vector2 local);
-        tooltip.anchoredPosition = local + canvas.rect.size * 0.5f + new Vector2(right ? -20 : 20, top ? -20 : 20);
+        Vector2 at = local + canvas.rect.size * 0.5f + new Vector2(right ? -20 : 20, top ? -20 : 20);
+        Vector2 size = new Vector2(tooltip.rect.width, tooltipHeight);
+        Vector2 corner = at - Vector2.Scale(tooltip.pivot, size);   // bottom left
+        corner.x = Mathf.Clamp(corner.x, 4, Mathf.Max(4, canvas.rect.width - size.x - 4));
+        corner.y = Mathf.Clamp(corner.y, 4, Mathf.Max(4, canvas.rect.height - size.y - 4));
+        tooltip.anchoredPosition = corner + Vector2.Scale(tooltip.pivot, size);
     }
+
+    private System.Func<string> shownTooltipSource;
+    private float tooltipTextAt, tooltipHeight;
 
     private string BuildingTooltip(BuildingDefinition def)
     {

@@ -102,7 +102,7 @@ public class SeaWorks : MonoBehaviour
                 var go = new GameObject("Shoal");
                 go.transform.SetParent(transform, false);
                 m = new ShoalMark { shoal = sh, sr = go.AddComponent<SpriteRenderer>(), phase = Random.value * 4f };
-                m.sr.sortingOrder = BuildingView.SortingOrder - 2;
+                m.sr.sortingOrder = Sorting.GroundDecal;
                 marks[sh.id] = m;
             }
             m.shoal = sh;
@@ -140,7 +140,7 @@ public class SeaWorks : MonoBehaviour
                 m.sr.transform.localScale = Vector3.one;
                 m.sr.color = new Color(1f, 1f, 1f, 0.3f + 0.7f * full);
             }
-            m.sr.transform.position = new Vector3(sh.pos.x, sh.pos.y, BuildingView.DepthFor(sh.pos.y) + 0.5f);
+            m.sr.transform.position = new Vector3(sh.pos.x, sh.pos.y, Sorting.Depth(sh.pos.y) + 0.5f);
         }
     }
 
@@ -210,7 +210,7 @@ public class SeaWorks : MonoBehaviour
         bt.go.transform.SetParent(transform, false);
         bt.go.transform.position = home;
         bt.sr = bt.go.AddComponent<SpriteRenderer>();
-        bt.sr.sortingOrder = BuildingView.SortingOrder;
+        bt.sr.sortingOrder = Sorting.World;
         bt.look = lib != null && info.boatKind < lib.fishingBoats.Count ? lib.fishingBoats[info.boatKind] : null;
         if (bt.look != null && bt.look.frames.Count > 0)
         {
@@ -348,7 +348,7 @@ public class SeaWorks : MonoBehaviour
             else { t.position = Vector3.MoveTowards(t.position, target, step); step = 0f; }
         }
         var p = t.position;
-        t.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
+        t.position = new Vector3(p.x, p.y, Sorting.Depth(p.y));
         return bt.path == null || bt.path.Count == 0;
     }
 
@@ -442,7 +442,7 @@ public class SeaWorks : MonoBehaviour
                 go.transform.SetParent(transform, false);
                 go.transform.localScale = Vector3.one * Scale;
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sortingOrder = BuildingView.SortingOrder - 1;
+                sr.sortingOrder = Sorting.World;   // Y-sorts with the boats
                 pv.shown.Add(sr);
             }
             for (int i = 0; i < pv.shown.Count; i++)
@@ -460,7 +460,7 @@ public class SeaWorks : MonoBehaviour
                 sr.flipX = Mathf.Sin(t) > 0f;   // swimming round: heading follows the circle
                 int f = 1 + (int)(pv.anim * 3f + i) % 4;
                 sr.sprite = pv.art.frames[Mathf.Clamp(f, 0, pv.art.frames.Count - 1)];
-                sr.transform.position = new Vector3(p.x, p.y, BuildingView.DepthFor(p.y));
+                sr.transform.position = new Vector3(p.x, p.y, Sorting.Depth(p.y));
             }
         }
     }

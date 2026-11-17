@@ -77,8 +77,9 @@ public class GuideHints : MonoBehaviour
     private void BuildCard(RectTransform root)
     {
         // Bottom left, just right of the build menu and clear of the messages and selection panel.
+        // (its spot follows the build menu as it folds: see PlaceCard)
         card = UIBuilder.VerticalPanel("HintCard", root, 10, 6);
-        UIBuilder.Anchor(card, Vector2.zero, Vector2.zero, Vector2.zero, new Vector2(330, 150), new Vector2(340, 0));
+        UIBuilder.Anchor(card, Vector2.zero, Vector2.zero, Vector2.zero, new Vector2(330, 150), new Vector2(CardWidth, 0));
         card.GetComponent<Image>().color = new Color(0.07f, 0.09f, 0.08f, 0.92f);
         cardText = UIBuilder.Text("Text", card, "", 16);
         cardText.textWrappingMode = TextWrappingModes.Normal;
@@ -95,13 +96,8 @@ public class GuideHints : MonoBehaviour
 
     private void BuildHelp(RectTransform root)
     {
-        help = UIBuilder.VerticalPanel("ControlsWindow", root, 14, 6);
-        UIBuilder.Anchor(help, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(620, 0));
-        var head = UIBuilder.Row("Head", help, 6);
-        UIBuilder.Text("Title", head, "<b>Controls</b>", 22).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => ShowHelp(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        help = UIBuilder.Window("ControlsWindow", root, 620, "<b>Controls</b>", () => ShowHelp(false), out _, out _, 14);
+        HUDWindows.Register(help, () => ShowHelp(false));
         var text = UIBuilder.Text("Text", help, ControlsText, 16);
         text.textWrappingMode = TextWrappingModes.Normal;
         help.gameObject.SetActive(false);
@@ -114,17 +110,19 @@ public class GuideHints : MonoBehaviour
         "<color=#fd6><b>Selecting</b></color>\n" +
         "<b>Left click</b> a building or troop. <b>Drag</b> a box round troops.\n" +
         "<b>Shift</b> adds to the selection. <b>Double click</b> selects all of that kind on screen (<b>Ctrl</b>: the whole map).\n" +
-        "<b>Esc</b> clears the selection or closes a window.\n" +
+        "<b>Esc</b> closes a window, or clears the selection.\n" +
         "<color=#fd6><b>Orders</b></color>\n" +
         "<b>Right click</b> with troops selected: move or attack there. Right click a dungeon to send them down.\n" +
         "<color=#fd6><b>Building</b></color>\n" +
         "Click an entry in the Build menu, then click the map to place it. <b>Shift</b> keeps placing.\n" +
         "<b>Right click</b> or <b>Esc</b> cancels.\n" +
+        "<color=#fd6><b>Panels</b></color>\n" +
+        "<b>B</b> folds the Build menu away and back, <b>R</b> the research panel. Every window has an <b>X</b> to close it.\n" +
         "<color=#fd6><b>Game speed</b></color>\n" +
         "Speed button (top right) cycles x1 to x10. <b>]</b> faster, <b>[</b> slower, <b>P</b> pause.\n" +
         "<color=#fd6><b>Saving</b></color>\n" +
         "The game saves by itself every 30 seconds and when you quit.\n" +
-        "<color=#aaa><size=90%>F1 opens this window. Hover almost anything for a tooltip.</size></color>";
+        "<color=#aaa><size=90%>F1 or H opens this window. Hover almost anything for a tooltip.</size></color>";
 
     private void BuildSection(Transform parent)
     {
@@ -148,7 +146,7 @@ public class GuideHints : MonoBehaviour
         {
             UIBuilder.OnHover(dis.gameObject, () => showTip(() => "<b>Natural disasters</b> Floods, wildfire, volcanoes, earthquakes, plague and meteor showers. " +
                 "Turning them off stops new ones; one already under way plays out."), hideTip);
-            UIBuilder.OnHover(controls.gameObject, () => showTip(() => "<b>Controls</b>\nKeys and mouse at a glance. <color=#ccc>(F1)</color>"), hideTip);
+            UIBuilder.OnHover(controls.gameObject, () => showTip(() => "<b>Controls</b>\nKeys and mouse at a glance. <color=#ccc>(F1 or H)</color>"), hideTip);
             UIBuilder.OnHover(toggle.gameObject, () => showTip(() => "<b>Beginner hints</b>\nSmall cards with a tip when it's useful: founding, food, research, raids, heroes...\n" +
                 "Each shows once. Turning them back on shows the ones you haven't seen."), hideTip);
         }
@@ -162,10 +160,8 @@ public class GuideHints : MonoBehaviour
     {
         help.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
-        if (!open) { hideTip?.Invoke(); return; }
-        transform.SetAsLastSibling();
-        var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(help); hideTip?.Invoke(); return; }
+        HUDWindows.Opened(help);   // closes the other centre windows, and draws this one on top
     }
 
     private void SetOn(bool on)
@@ -204,8 +200,9 @@ public class GuideHints : MonoBehaviour
     private void Update()
     {
         if (settlement == null || settlement.State == null) return;
-        if (Input.GetKeyDown(KeyCode.F1) && !UIBuilder.Typing) ShowHelp(!HelpOpen);
-        if (HelpOpen && Input.GetKeyDown(KeyCode.Escape)) ShowHelp(false);
+        // F1, or H (a browser may keep F1 for itself); Escape closes it through HUDWindows.
+        if ((Input.GetKeyDown(KeyCode.F1) || Input.GetKeyDown(KeyCode.H)) && !UIBuilder.Typing) ShowHelp(!HelpOpen);
+        if (card.gameObject.activeSelf) PlaceCard();
 
         if (founded) foundedFor += Time.deltaTime;   // game time: pausing pauses the hints too
         if (Time.unscaledTime < checkAt) return;
@@ -220,6 +217,20 @@ public class GuideHints : MonoBehaviour
         string id = NextHint(out string text);
         if (id == null) return;
         Show(id, text);
+    }
+
+    private const float CardWidth = 340f;
+
+    /// <summary>Bottom left, just right of the build menu (folded or not), and above the selection panel if they'd meet.</summary>
+    private void PlaceCard()
+    {
+        float canvasWidth = HUDLayout.CanvasWidth;
+        float x = Mathf.Clamp(HUDLayout.LeftInset + 10f, 10f, Mathf.Max(10f, canvasWidth - CardWidth - 10f));
+        float y = 150f;
+        float half = HUDLayout.BottomPanelHalfWidth;
+        if (half > 0f && x + CardWidth > canvasWidth * 0.5f - half - 8f) y = HUDLayout.BottomPanelTop + 10f;
+        var at = new Vector2(x, y);
+        if (card.anchoredPosition != at) card.anchoredPosition = at;
     }
 
     private void Show(string id, string text)

@@ -115,7 +115,7 @@ public class DungeonRun : MonoBehaviour
         foreach (var room in Rooms)
         {
             // darkness over rooms the party hasn't reached
-            room.dark = Quad("Dark", new Rect(room.rect.x - 1, room.rect.y - 1, room.rect.width + 2, room.rect.height + 3), new Color(0.02f, 0.01f, 0.03f, 0.88f), 25);
+            room.dark = Quad("Dark", new Rect(room.rect.x - 1, room.rect.y - 1, room.rect.width + 2, room.rect.height + 3), new Color(0.02f, 0.01f, 0.03f, 0.88f), Sorting.DungeonDark);
             if (room.gate.width > 0) room.gateSprite = GateSprite(room.gate);
         }
     }
@@ -459,12 +459,12 @@ public class DungeonRun : MonoBehaviour
         sr.transform.SetParent(transform, false);
         sr.sprite = Sprite.Create(levelTexture, new Rect(0, 0, w, h), Vector2.zero, T, 0, SpriteMeshType.FullRect);
         sr.transform.position = new Vector3(Area.x, Area.y, 50f);   // far back: everything stands on it
-        sr.sortingOrder = -50;
+        sr.sortingOrder = Sorting.DungeonFloor;
 
         chest = new GameObject("Hoard").AddComponent<SpriteRenderer>();
         chest.transform.SetParent(transform, false);
-        chest.transform.position = new Vector3(chestPos.x - 0.5f, chestPos.y - 0.3f, BuildingView.DepthFor(chestPos.y - 0.3f));
-        chest.sortingOrder = BuildingView.SortingOrder;
+        chest.transform.position = new Vector3(chestPos.x - 0.5f, chestPos.y - 0.3f, Sorting.Depth(chestPos.y - 0.3f));
+        chest.sortingOrder = Sorting.World;
         chest.enabled = false;
     }
 
@@ -531,8 +531,8 @@ public class DungeonRun : MonoBehaviour
         var sr = new GameObject("Gate").AddComponent<SpriteRenderer>();
         sr.transform.SetParent(transform, false);
         sr.sprite = Sprite.Create(tex, new Rect(0, 0, w, h), Vector2.zero, 32, 0, SpriteMeshType.FullRect);
-        sr.transform.position = new Vector3(gate.x, gate.y, BuildingView.DepthFor(gate.y));
-        sr.sortingOrder = BuildingView.SortingOrder;
+        sr.transform.position = new Vector3(gate.x, gate.y, Sorting.Depth(gate.y));
+        sr.sortingOrder = Sorting.World;
         return sr;
     }
 

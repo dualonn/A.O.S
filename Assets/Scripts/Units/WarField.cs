@@ -302,7 +302,7 @@ public class WarField : MonoBehaviour
             var go = new GameObject("RankPip");
             go.transform.SetParent(u.transform, false);
             w.pip = go.AddComponent<SpriteRenderer>();
-            w.pip.sortingOrder = 8;
+            w.pip.sortingOrder = Sorting.Labels;
             float bw = look != null ? look.barWidth : 0.5f, bh = look != null ? look.barHeight : 1f;
             go.transform.localPosition = new Vector3(-bw * 0.5f - 4f / ppu, bh + 1f / ppu, 0f);
         }
@@ -368,9 +368,9 @@ public class WarField : MonoBehaviour
             var go = new GameObject("CommandBanner");
             go.transform.SetParent(t.transform, false);
             w.banner = go.AddComponent<SpriteRenderer>();
-            w.banner.sortingOrder = BuildingView.SortingOrder + 1;
+            w.banner.sortingOrder = t.Moves == Movement.Air ? Sorting.Air : Sorting.World;   // with its bearer, just in front
             float bh = look != null ? look.barHeight : 1f;
-            go.transform.localPosition = new Vector3(-5f / ppu, bh - 14f / ppu, 0f);
+            go.transform.localPosition = new Vector3(-5f / ppu, bh - 14f / ppu, Sorting.Front);
             int key = Mathf.RoundToInt(ppu * 10f);
             if (!bannerSprites.TryGetValue(key, out var sprite) || sprite == null)
             {

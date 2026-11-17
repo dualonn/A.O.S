@@ -213,7 +213,7 @@ public class TradeWorks : MonoBehaviour
         tmp.outlineWidth = 0.25f;
         tmp.outlineColor = new Color32(0, 0, 0, 220);
         tmp.rectTransform.sizeDelta = new Vector2(8f, 1.2f);
-        tmp.sortingOrder = 20;
+        tmp.sortingOrder = Sorting.Popup;
         go.AddComponent<TradePopupFloat>();
     }
 

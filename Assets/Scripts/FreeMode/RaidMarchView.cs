@@ -68,7 +68,7 @@ public class RaidMarchView : MonoBehaviour
         var m = new GameObject("WarPartyBanner").AddComponent<SpriteRenderer>();
         m.transform.SetParent(transform, false);
         m.sprite = Banner;
-        m.sortingOrder = 31;
+        m.sortingOrder = Sorting.RaidMarker;
         marks.Add(m);
 
         if (lineMaterial == null) lineMaterial = new Material(Shader.Find("Sprites/Default"));
@@ -79,7 +79,7 @@ public class RaidMarchView : MonoBehaviour
         line.material = lineMaterial;
         line.startColor = new Color(1f, 0.35f, 0.25f, 0.55f);
         line.endColor = new Color(1f, 0.35f, 0.25f, 0.08f);
-        line.sortingOrder = 29;
+        line.sortingOrder = Sorting.RaidLine;
         trails.Add(line);
 
         var label = new GameObject("WarPartyLabel").AddComponent<TextMeshPro>();
@@ -89,7 +89,7 @@ public class RaidMarchView : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 220);
         label.rectTransform.sizeDelta = new Vector2(8, 1.2f);
-        label.sortingOrder = 32;
+        label.sortingOrder = Sorting.RaidLabel;
         labels.Add(label);
         shownCounts.Add(-1);
     }

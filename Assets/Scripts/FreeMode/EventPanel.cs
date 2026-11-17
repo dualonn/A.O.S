@@ -62,8 +62,34 @@ public class EventPanel : MonoBehaviour
 
         history = UIBuilder.VerticalPanel("EventHistory", rt, 10, 4);
         UIBuilder.Anchor(history, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(1, 1), new Vector2(-136, -104), new Vector2(380, 0));
+        var head = UIBuilder.Row("Head", history, 6);
+        var title = UIBuilder.Text("Title", head, "<b>Events</b>", UIBuilder.FontBody);
+        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        UIBuilder.CloseButton(head, () => SetHistory(false));
         historyText = UIBuilder.Text("Lines", history, "", 15);
         history.gameObject.SetActive(false);
+        HUDWindows.Register(history, () => SetHistory(false), modal: false);   // a drop-down: Escape closes it
+    }
+
+    /// <summary>The event card wants the spot under the top bar (the quest card waits for it).</summary>
+    public static bool CardWanted { get; private set; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics() => CardWanted = false;
+
+    private void SetHistory(bool open)
+    {
+        if (history.gameObject.activeSelf == open) return;
+        history.gameObject.SetActive(open);
+        GameAudio.UI(open ? "book_open" : "book_close");
+        if (open) { HUDWindows.Opened(history); RefreshHistory(); }
+        else HUDWindows.Closed(history);
+    }
+
+    private void PutCardAway()
+    {
+        cardOpen = false;
+        card.gameObject.SetActive(false);
     }
 
     private void OnArrived(PendingEvent e)
@@ -83,12 +109,14 @@ public class EventPanel : MonoBehaviour
         var effects = settlement.EffectsHere();
         bool any = pending.Count > 0 || effects.Count > 0 || settlement.EventHistory.Count > 0;
         badge.gameObject.SetActive(any);
-        if (!any) { card.gameObject.SetActive(false); history.gameObject.SetActive(false); return; }
+        if (!any) { CardWanted = false; card.gameObject.SetActive(false); SetHistory(false); return; }
         badgeLabel.text = pending.Count > 0 ? $"<color=#fd6><b>! {pending.Count}</b></color>" : effects.Count > 0 ? "<color=#9cf>*</color>" : "<color=#aaa>...</color>";
 
         var top = pending.Count > 0 ? pending[0] : null;
         if (top == null) cardOpen = false;
-        card.gameObject.SetActive(cardOpen && top != null);
+        CardWanted = cardOpen && top != null;
+        // (it waits while a centre window is open, and comes back when it closes)
+        card.gameObject.SetActive(CardWanted && !HUDWindows.AnyModalOpen);
         if (cardOpen && top != null && top.id != shownId) BuildCard(top);
         if (cardOpen && top != null && timerLabel != null)
         {
@@ -114,8 +142,9 @@ public class EventPanel : MonoBehaviour
         var head = UIBuilder.Row("Head", cardBody, 8);
         var icon = art != null ? art.IconFor(e.kind) : null;
         if (icon != null) UIBuilder.Icon("Icon", head, icon, 40);
-        UIBuilder.Text("Title", head, $"<b>{view.title}</b>", 22);
-        UIBuilder.Text("Text", cardBody, view.text, 16);
+        UIBuilder.Text("Title", head, $"<b>{view.title}</b>", UIBuilder.FontTitle).gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        UIBuilder.CloseButton(head, PutCardAway);   // same as "Later"
+        UIBuilder.Text("Text", cardBody, view.text, UIBuilder.FontBody);
         for (int i = 0; i < view.choices.Count; i++)
         {
             int index = i;
@@ -124,14 +153,22 @@ public class EventPanel : MonoBehaviour
             if (c.cost.Count > 0) sb.Append($"\n<size=80%><color=#fc8>Costs {Settlement.Describe(c.cost)}</color></size>");
             if (!string.IsNullOrEmpty(c.result)) sb.Append($"\n<size=80%><color=#9e9>{c.result}</color></size>");
             if (c.why != null) sb.Append($"\n<size=80%><color=#f88>{c.why}</color></size>");
-            var b = UIBuilder.Button("Choice" + i, cardBody, () => Choose(e.id, index), out var label, 30 + 18 * (sb.ToString().Split('\n').Length - 1), 16);
+            var b = UIBuilder.Button("Choice" + i, cardBody, () => Choose(e.id, index), out var label, 30, 16, null, multiLine: true);
             label.text = sb.ToString();
+            // The button grows to fit its lines (long results wrap instead of spilling out).
+            var fit = b.gameObject.AddComponent<VerticalLayoutGroup>();
+            fit.padding = new RectOffset(8, 8, 6, 6);
+            fit.childControlWidth = fit.childControlHeight = true;
+            fit.childForceExpandWidth = true;
+            fit.childForceExpandHeight = false;
+            b.GetComponent<LayoutElement>().preferredHeight = -1;
             b.interactable = c.why == null && settlement.CanAfford(c.cost);
             choiceButtons.Add((b, c));
         }
         var foot = UIBuilder.Row("Foot", cardBody, 8);
         timerLabel = UIBuilder.Text("Timer", foot, "", 15);
-        var later = UIBuilder.Button("Later", foot, () => { cardOpen = false; card.gameObject.SetActive(false); }, out var laterLabel, 30, 15);
+        timerLabel.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        var later = UIBuilder.Button("Later", foot, PutCardAway, out var laterLabel, 30, 15);
         laterLabel.text = "Later";
         later.GetComponent<LayoutElement>().preferredWidth = 90;
     }
@@ -156,9 +193,7 @@ public class EventPanel : MonoBehaviour
             refreshAt = 0;
             return;
         }
-        history.gameObject.SetActive(!history.gameObject.activeSelf);
-        GameAudio.UI(history.gameObject.activeSelf ? "book_open" : "book_close");
-        if (history.gameObject.activeSelf) RefreshHistory();
+        SetHistory(!history.gameObject.activeSelf);
     }
 
     private void RefreshHistory()

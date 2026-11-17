@@ -119,26 +119,13 @@ public class XRecordsPanel : MonoBehaviour
 
     private void BuildWindow(RectTransform root)
     {
-        panel = UIBuilder.VerticalPanel("ChronicleWindow", root, 12, 6);
-        UIBuilder.Anchor(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(860, 0));
-        var head = UIBuilder.Row("Head", panel, 6);
-        title = UIBuilder.Text("Title", head, "", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        panel = UIBuilder.Window("ChronicleWindow", root, 860, "", () => Show(false), out title, out _);
+        HUDWindows.Register(panel, () => Show(false));
 
-        var tabs = UIBuilder.Row("Tabs", panel, 4);
-        tabs.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
-        foreach (Tab t in Enum.GetValues(typeof(Tab)))
-        {
-            var tt = t;
-            var b = UIBuilder.Button(t.ToString(), tabs, () => { tab = tt; Rebuild(); }, out var label, 30, 15);
-            label.text = t == Tab.Worlds ? "Worlds" : t.ToString();
-            label.alignment = TextAlignmentOptions.Center;
-            b.GetComponent<LayoutElement>().flexibleWidth = 1;
-            tabButtons[t] = (b, label);
-        }
+        var tabs = (Tab[])Enum.GetValues(typeof(Tab));
+        var buttons = UIBuilder.TabRow(panel, Array.ConvertAll(tabs, t => t.ToString()), i => { tab = tabs[i]; Rebuild(); });
+        for (int i = 0; i < tabs.Length; i++)
+            tabButtons[tabs[i]] = (buttons[i], buttons[i].GetComponentInChildren<TextMeshProUGUI>());
         content = UIBuilder.ScrollList("Content", panel, out var element, 4);
         element.preferredHeight = 520;
         scroll = element.GetComponent<ScrollRect>();
@@ -158,10 +145,8 @@ public class XRecordsPanel : MonoBehaviour
     {
         panel.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
-        if (!open) { hideTip?.Invoke(); return; }
-        transform.SetAsLastSibling();
-        var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(panel); hideTip?.Invoke(); return; }
+        HUDWindows.Opened(panel);   // closes the other centre windows, and draws this one on top
         chronicleShown = 150;
         Rebuild();
     }
@@ -176,7 +161,7 @@ public class XRecordsPanel : MonoBehaviour
             RefreshSection();
         }
         if (!IsOpen) return;
-        if (Input.GetKeyDown(KeyCode.Escape)) { Show(false); return; }
+        // (Escape closes it through HUDWindows)
         if (Time.unscaledTime < refreshAt) return;
         refreshAt = Time.unscaledTime + (tab == Tab.Market ? 0.5f : 2f);
         if (tab == Tab.Market) { RefreshMarket(); return; }
@@ -366,12 +351,7 @@ public class XRecordsPanel : MonoBehaviour
         footer.text = "<color=#aaa>Rewards are a little coin (or food, before coin), given on the world you're on. Titles: Chieftain, Elder, Lord, King, High King, Emperor...</color>";
     }
 
-    private static string Short(float v)
-    {
-        if (v >= 1e6f) return $"{v / 1e6f:0.#}M";
-        if (v >= 1e4f) return $"{v / 1e3f:0.#}k";
-        return v >= 100 || Mathf.Approximately(v, Mathf.Round(v)) ? $"{v:0}" : $"{v:0.#}";
-    }
+    private static string Short(float v) => UIBuilder.Short(v, true);
 
     private void BuildStatistics()
     {

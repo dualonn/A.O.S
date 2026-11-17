@@ -41,7 +41,7 @@ public class Troop : Unit
             heroGlow.transform.SetParent(transform, false);
             heroGlow.sprite = SimpleSprites.Ring;
             heroGlow.color = new Color(1f, 0.78f, 0.25f, 0.65f);
-            heroGlow.sortingOrder = BuildingView.SortingOrder - 1;
+            heroGlow.sortingOrder = Sorting.Rings;
             heroGlow.transform.localPosition = new Vector3(0, 0.02f, 0);
             heroGlow.transform.localScale = new Vector3(1.9f, 1.9f, 1f);
         }
@@ -58,7 +58,7 @@ public class Troop : Unit
             nameTag.outlineColor = new Color32(0, 0, 0, 220);
             nameTag.color = new Color(1f, 0.85f, 0.4f);
             nameTag.rectTransform.sizeDelta = new Vector2(6, 0.8f);
-            nameTag.sortingOrder = 8;
+            nameTag.sortingOrder = Sorting.Labels;
         }
         RefreshHeroTag();
     }
@@ -211,7 +211,7 @@ public class Troop : Unit
             selectionRing.transform.SetParent(transform, false);
             selectionRing.sprite = SimpleSprites.Ring;
             selectionRing.color = new Color(1f, 0.92f, 0.3f, 0.9f);
-            selectionRing.sortingOrder = BuildingView.SortingOrder - 1; // always under the body
+            selectionRing.sortingOrder = Sorting.Rings; // always under the body
             selectionRing.transform.localPosition = new Vector3(0, 0.02f, 0f);
             selectionRing.transform.localScale = new Vector3(1.4f, 1.4f, 1f);
         }

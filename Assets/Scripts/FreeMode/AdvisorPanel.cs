@@ -565,10 +565,11 @@ public class AdvisorPanel : MonoBehaviour
     private void Build(RectTransform parent)
     {
         // Bottom right, just left of the research panel and above the messages; the hint card is bottom left.
+        // (the spot follows the research panel as it folds: see Place)
         var corner = new Vector2(1, 0);
         var spot = new Vector2(-350, 150);
         card = UIBuilder.VerticalPanel("AdvisorCard", parent, 8, 4);
-        UIBuilder.Anchor(card, corner, corner, corner, spot, new Vector2(330, 0));
+        UIBuilder.Anchor(card, corner, corner, corner, spot, new Vector2(CardWidth, 0));
         card.GetComponent<Image>().color = new Color(0.07f, 0.08f, 0.1f, 0.88f);
 
         var head = UIBuilder.Row("Head", card, 6);
@@ -659,9 +660,31 @@ public class AdvisorPanel : MonoBehaviour
 
     // ---------- Updating ----------
 
+    private const float CardWidth = 330f;
+
+    /// <summary>
+    /// Just left of the research panel (folded or not), above the messages; raised over the
+    /// selection panel when a narrow screen would make them meet.
+    /// </summary>
+    private void Place()
+    {
+        var target = card.gameObject.activeSelf ? card : pill.gameObject.activeSelf ? pill : null;
+        if (target == null) return;
+        float canvasWidth = HUDLayout.CanvasWidth;
+        float right = HUDLayout.RightInset + 10f;   // from the right edge of the screen
+        float y = 150f;
+        float half = HUDLayout.BottomPanelHalfWidth;
+        float leftEdge = canvasWidth - right - target.rect.width;
+        if (half > 0f && leftEdge < canvasWidth * 0.5f + half + 8f) y = HUDLayout.BottomPanelTop + 10f;
+        var at = new Vector2(-right, y);
+        if (card.anchoredPosition != at) card.anchoredPosition = at;
+        if (pill.anchoredPosition != at) pill.anchoredPosition = at;
+    }
+
     private void Update()
     {
         if (settlement == null || settlement.State == null || settlement.State.worlds.Count == 0) return;
+        Place();
         if (Time.unscaledTime < nextAt) return;
         nextAt = Time.unscaledTime + Every;
         Evaluate();
@@ -833,6 +856,7 @@ public class AdvisorPanel : MonoBehaviour
     private void FilterBuild(string search)
     {
         if (string.IsNullOrEmpty(search)) return;
+        HUDLayout.UnfoldBuild?.Invoke();   // (a folded build menu opens out to show it)
         if (buildSearch == null && root != null)
         {
             var panel = root.Find("BuildPanel");
@@ -848,6 +872,7 @@ public class AdvisorPanel : MonoBehaviour
     private void OpenSection(string name)
     {
         if (researchContent == null || string.IsNullOrEmpty(name)) return;
+        HUDLayout.UnfoldResearch?.Invoke();   // (a folded research panel opens out to show it)
         var section = researchContent.Find(name) as RectTransform;
         if (section == null || !section.gameObject.activeInHierarchy) return;
         var body = section.Find("Body");

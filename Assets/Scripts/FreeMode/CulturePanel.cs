@@ -17,8 +17,11 @@ public class CulturePanel : MonoBehaviour
     private RectTransform panel, list;
     private TextMeshProUGUI title, info, note, badgeLabel;
     private Button badge;
-    private readonly List<(Button button, TextMeshProUGUI label)> tabs = new List<(Button, TextMeshProUGUI)>();
+    private List<Button> tabs;
     private int tab;
+    // The list as last built (rebuilt only when this changes, so the scroll stays put).
+    private string shownList;
+    private readonly List<(string text, string hint, bool enabled, Act act)> entries = new List<(string, string, bool, Act)>();
     private float refreshAt, rebuildAt;
 
     // Founding a religion: the tenets picked so far, and the name on offer.
@@ -58,28 +61,15 @@ public class CulturePanel : MonoBehaviour
         badge = UIBuilder.Button("CultureBadge", root, () => Show(!IsOpen), out badgeLabel, 32, 15);
         UIBuilder.Anchor((RectTransform)badge.transform, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, 1), new Vector2(136, -64), new Vector2(200, 36));
         badgeLabel.alignment = TextAlignmentOptions.Center;
+        badgeLabel.enableAutoSizing = true;   // long mood names shrink a little rather than spill
+        badgeLabel.fontSizeMin = 12;
+        badgeLabel.fontSizeMax = 15;
         badge.gameObject.SetActive(false);
 
-        panel = UIBuilder.VerticalPanel("CulturePanel", root, 12, 6);
-        UIBuilder.Anchor(panel, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -104), new Vector2(560, 0));
-        var head = UIBuilder.Row("Head", panel, 6);
-        title = UIBuilder.Text("Title", head, "<b>Culture and Faith</b>", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        panel = UIBuilder.Window("CulturePanel", root, 560, "<b>Culture and Faith</b>", () => Show(false), out title, out _);
+        HUDWindows.Register(panel, () => Show(false));
 
-        var tabRow = UIBuilder.Row("Tabs", panel, 4);
-        tabRow.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
-        for (int i = 0; i < TabNames.Length; i++)
-        {
-            int index = i;
-            var b = UIBuilder.Button(TabNames[i], tabRow, () => { tab = index; picks.Clear(); note.text = ""; Rebuild(); }, out var label, 32, 15);
-            b.GetComponent<LayoutElement>().flexibleWidth = 1;
-            label.text = TabNames[i];
-            label.alignment = TextAlignmentOptions.Center;
-            tabs.Add((b, label));
-        }
+        tabs = UIBuilder.TabRow(panel, TabNames, index => { tab = index; picks.Clear(); note.text = ""; Rebuild(true); });
 
         info = UIBuilder.Text("Info", panel, "", 15);
         info.textWrappingMode = TextWrappingModes.Normal;
@@ -94,13 +84,11 @@ public class CulturePanel : MonoBehaviour
     {
         panel.gameObject.SetActive(open);
         GameAudio.UI(open ? "book_open" : "book_close");
-        if (!open) return;
-        panel.SetAsLastSibling();
-        var tip = panel.parent.parent != null ? panel.parent.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(panel); return; }
+        HUDWindows.Opened(panel);   // closes the other centre windows, and draws this one on top
         note.text = "";
         picks.Clear();
-        Rebuild();
+        Rebuild(true);
     }
 
     private void Update()
@@ -118,7 +106,7 @@ public class CulturePanel : MonoBehaviour
             badgeLabel.text = $"<color=#{col}>{Settlement.MoodName(m)}</color> {m:0}  <color=#bbb>|</color>  Culture";
         }
         if (!IsOpen) return;
-        if (Time.unscaledTime >= rebuildAt) Rebuild();
+        if (Time.unscaledTime >= rebuildAt) Rebuild(false, true);
         else RefreshInfo();
     }
 
@@ -168,13 +156,37 @@ public class CulturePanel : MonoBehaviour
 
     private static string Sign(float v) => v >= 0 ? "+" : "";
 
-    private void Rebuild()
+    /// <summary>
+    /// Lay out the tab's list. 'force' rebuilds it even if nothing in it changed (after a click);
+    /// 'keepScroll' leaves the list scrolled where it was.
+    /// </summary>
+    private void Rebuild(bool force = false, bool keepScroll = false)
     {
         rebuildAt = Time.unscaledTime + 3f;
-        for (int i = 0; i < tabs.Count; i++)
-            tabs[i].button.image.color = i == tab ? new Color(0.35f, 0.3f, 0.42f) : UIBuilder.ButtonColor;
-        foreach (Transform child in list) Destroy(child.gameObject);
+        UIBuilder.SetTab(tabs, tab);
         RefreshInfo();
+        entries.Clear();
+        Collect();
+        var sig = new System.Text.StringBuilder().Append(tab).Append('|');
+        foreach (var e in entries) sig.Append(e.text).Append('~').Append(e.hint).Append(e.enabled ? '1' : '0').Append('\n');
+        string signature = sig.ToString();
+        if (!force && signature == shownList) return;
+        shownList = signature;
+
+        float scrolled = list.anchoredPosition.y;
+        foreach (Transform child in list) Destroy(child.gameObject);
+        foreach (var e in entries)
+        {
+            if (e.act == null) MakeHeader(e.text);
+            else MakeAction(e.text, e.hint, e.enabled, e.act);
+        }
+        LayoutRebuilder.ForceRebuildLayoutImmediate(list);
+        list.anchoredPosition = new Vector2(list.anchoredPosition.x, keepScroll ? scrolled : 0f);   // (the scroll view clamps it)
+    }
+
+    /// <summary>What the tab's list holds (headers and actions), without building it.</summary>
+    private void Collect()
+    {
         var s = settlement;
         var c = s.Culture;
         switch (tab)
@@ -300,20 +312,24 @@ public class CulturePanel : MonoBehaviour
 
     // ---------- Widgets ----------
 
-    private void Header(string text)
-    {
-        var t = UIBuilder.Text("Header", list, text, 16);
-        t.textWrappingMode = TextWrappingModes.Normal;
-    }
+    private void Header(string text) => entries.Add((text, null, false, null));
 
     private delegate bool Act(out string why);
 
-    private void Action(string text, string hint, bool enabled, Act act)
+    private void Action(string text, string hint, bool enabled, Act act) => entries.Add((text, hint, enabled, act));
+
+    private void MakeHeader(string text)
+    {
+        var t = UIBuilder.Text("Header", list, text, UIBuilder.FontBody);
+        t.textWrappingMode = TextWrappingModes.Normal;
+    }
+
+    private void MakeAction(string text, string hint, bool enabled, Act act)
     {
         var b = UIBuilder.Button("Action", list, () =>
         {
             bool ok = act(out string why);
-            Rebuild();
+            Rebuild(true, true);
             note.text = ok ? "" : $"<color=#f99>{why}</color>";
         }, out var label, 34, 15);
         label.text = $"{text}\n<size=75%><color=#ccc>{hint}</color></size>";

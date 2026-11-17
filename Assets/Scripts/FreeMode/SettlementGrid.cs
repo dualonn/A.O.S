@@ -104,7 +104,7 @@ public class SettlementGrid : MonoBehaviour
         fog.transform.SetParent(transform, false);
         fog.sprite = SimpleSprites.Square;
         fog.color = FogColor;
-        fog.sortingOrder = -28;
+        fog.sortingOrder = Sorting.Fog;
         if (Camera.main != null)
         {
             // Beyond the fog quad (the map has no edge) the view shows the same unexplored colour.
@@ -119,7 +119,7 @@ public class SettlementGrid : MonoBehaviour
         groundObject.transform.SetParent(tileGrid.transform, false);
         groundTilemap = groundObject.AddComponent<Tilemap>();
         groundRenderer = groundObject.AddComponent<TilemapRenderer>();
-        groundRenderer.sortingOrder = -27;
+        groundRenderer.sortingOrder = Sorting.Terrain;
         grassTile = MakeTile(art != null ? art.grassTile : null, new Color(0.42f, 0.6f, 0.31f));
         waterTile = MakeTile(art != null ? art.waterTile : null, new Color(0.25f, 0.48f, 0.75f));
         hillTile = MakeTile(art != null ? art.hillTile : null, new Color(0.55f, 0.5f, 0.42f));
@@ -131,7 +131,7 @@ public class SettlementGrid : MonoBehaviour
         gridLines.sprite = SimpleSprites.GridBlock;
         gridLines.drawMode = SpriteDrawMode.Tiled;
         gridLines.transform.localScale = Vector3.one * cellSize;
-        gridLines.sortingOrder = -19;
+        gridLines.sortingOrder = Sorting.GridLines;
         SetPlacing(false);
 
         var all = new List<RectInt>();
@@ -211,7 +211,7 @@ public class SettlementGrid : MonoBehaviour
         region.depositRenderer = depositObject.AddComponent<TilemapRenderer>();
         // Trees, rocks and ores sort one by one with units and buildings, by where they touch
         // the ground (each tile's depth is set in DepositChange), so a figure can walk behind a tree.
-        region.depositRenderer.sortingOrder = BuildingView.SortingOrder;
+        region.depositRenderer.sortingOrder = Sorting.World;
         region.depositRenderer.mode = TilemapRenderer.Mode.Individual;
 
         int px = OverviewPixelsPerTile;
@@ -231,7 +231,7 @@ public class SettlementGrid : MonoBehaviour
         region.overviewRenderer.transform.localPosition = new Vector3(key.x * RegionTiles, key.y * RegionTiles, 0) * cellSize;
         region.overviewRenderer.sprite = Sprite.Create(region.overview,
             new Rect(0, 0, region.overview.width, region.overview.height), Vector2.zero, px / cellSize);
-        region.overviewRenderer.sortingOrder = -20;
+        region.overviewRenderer.sortingOrder = Sorting.Overview;
         regions[key] = region;
         return region;
     }
@@ -322,7 +322,7 @@ public class SettlementGrid : MonoBehaviour
         sr.transform.SetParent(transform, false);
         sr.transform.localPosition = new Vector3(key.x, key.y, 0) * StrategyPage * Map.ChunkSize * cellSize;
         sr.sprite = Sprite.Create(page, new Rect(0, 0, StrategyPage, StrategyPage), Vector2.zero, 1f / (Map.ChunkSize * cellSize));
-        sr.sortingOrder = -20;
+        sr.sortingOrder = Sorting.Overview;
         sr.enabled = strategyShown;
         strategyRenderers.Add(sr);
         strategyPages[key] = page;
@@ -374,7 +374,7 @@ public class SettlementGrid : MonoBehaviour
         }
         // The sprite's pivot is its foot; tiles sit on the cell centre.
         float footY = transform.position.y + (y + 0.5f + jy + baseY) * cellSize;
-        float depth = BuildingView.DepthFor(footY) - tileGrid.transform.position.z;
+        float depth = Sorting.Depth(footY) - tileGrid.transform.position.z;
         var offset = new Vector3(jx, jy + baseY, depth);
         return new TileChangeData(new Vector3Int(x, y, 0), tile, Color.white,
             Matrix4x4.TRS(offset, Quaternion.identity, new Vector3(scale * flip, scale, 1)));
@@ -493,10 +493,10 @@ public class SettlementGrid : MonoBehaviour
         }
         for (int tier = 0; tier < hillTiers.Count; tier++)
         {
-            hillTilemaps.Add(MakeEdgeLayer("Hills " + (tier + 1), -26 + tier, out var renderer));
+            hillTilemaps.Add(MakeEdgeLayer("Hills " + (tier + 1), Mathf.Min(Sorting.Hills + tier, Sorting.Water - 1), out var renderer));
             hillRenderers.Add(renderer);
         }
-        waterTilemap = MakeEdgeLayer("Water", -23, out waterRenderer);
+        waterTilemap = MakeEdgeLayer("Water", Sorting.Water, out waterRenderer);
         waterTilemap.color = Profile.water;   // other worlds' seas take their own tint
         if (art.waterMaterial != null)
         {

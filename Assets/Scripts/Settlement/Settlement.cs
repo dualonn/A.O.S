@@ -555,6 +555,26 @@ public partial class Settlement : MonoBehaviour
         }
     }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+    // In a browser, closing the tab gives no quit message: save whenever the page loses focus or is
+    // hidden (WebSaveOnHide.jslib calls SaveNow when the tab is hidden or about to close).
+    private void OnApplicationFocus(bool focused)
+    {
+        if (!focused) Save();
+    }
+
+    [System.Runtime.InteropServices.DllImport("__Internal")]
+    private static extern void WebSaveOnHide(string objectName);
+
+    private void Start()
+    {
+        WebSaveOnHide(gameObject.name);
+    }
+#endif
+
+    /// <summary>Called from the web page (tab hidden or closing).</summary>
+    public void SaveNow() => Save();
+
     // ---------- Simulation ----------
 
     private void Update()
@@ -572,39 +592,97 @@ public partial class Settlement : MonoBehaviour
     public void Tick(float dt)
     {
         State.playTime += dt;
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickShips");
         TickShips();
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickRoutes");
         TickRoutes();
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickOrbitalMines");
         TickOrbitalMines(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickOtherWorlds");
         TickOtherWorlds(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.UpdateWallLayer");
         UpdateWallLayer();
+        UnityEngine.Profiling.Profiler.EndSample();
         if (!IsFounded)
         {
             return; // nothing happens until the player picks a spot
         }
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickConstruction");
         TickConstruction(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickUpgrades");
         TickUpgrades(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.RecalculateDerived");
         RecalculateDerived();
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickProduction");
         TickProduction(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickUpkeep");
         TickUpkeep(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickPopulation");
         TickPopulation(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickResearch");
         TickResearch(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickAutomation");
         TickAutomation(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickCamps");
         TickCamps(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickSites");
         TickSites(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickWonders");
         TickWonders(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickWildlife");
         TickWildlife(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickCulture");
         TickCulture(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickHazards");
         TickHazards(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickSeasons");
         TickSeasons(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickEvents");
         TickEvents(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickGoals");
         TickGoals(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickQuests");
         TickQuests(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickAges");
         TickAges();
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.XTickRecords");
         XTickRecords(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.TickTrade");
         TickTrade(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.SeaTick");
         SeaTick(dt);   // the sea: shoals, sea life, sea routes
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.DisTick");
         DisTick(dt);
+        UnityEngine.Profiling.Profiler.EndSample();
+        UnityEngine.Profiling.Profiler.BeginSample("Settlement.UtlTick");
         UtlTick(dt);   // water, power, data, pollution
+        UnityEngine.Profiling.Profiler.EndSample();
     }
 
     // ---------- Building stats and upgrades ----------
@@ -1458,13 +1536,22 @@ public partial class Settlement : MonoBehaviour
 
     public float GetAmount(ResourceType resource)
     {
-        var stock = State.resources.Find(s => s.id == resource.id);
+        var stock = StockOf(resource.id);
         return stock != null ? stock.amount : 0;
+    }
+
+    // A plain loop: asked thousands of times a second, and a lambda here made garbage on every call.
+    private ResourceStock StockOf(string id)
+    {
+        var list = State.resources;
+        for (int i = 0; i < list.Count; i++)
+            if (list[i].id == id) return list[i];
+        return null;
     }
 
     public void AddResource(ResourceType resource, float amount)
     {
-        var stock = State.resources.Find(s => s.id == resource.id);
+        var stock = StockOf(resource.id);
         if (stock == null)
         {
             stock = new ResourceStock { id = resource.id };

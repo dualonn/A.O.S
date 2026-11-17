@@ -15,7 +15,11 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     private Settlement settlement;
     private RectTransform panel, viewport, content, info;
     private TextMeshProUGUI title, infoText;
-    private readonly List<GameObject> marks = new List<GameObject>();
+    // The dots, rings and names on the map, kept and reused between redraws (the map redraws every
+    // second while open, as ships move): each redraw takes what it needs and hides the rest.
+    private readonly List<Image> dots = new List<Image>(), rings = new List<Image>();
+    private readonly List<TextMeshProUGUI> labels = new List<TextMeshProUGUI>();
+    private int dotsUsed, ringsUsed, labelsUsed;
     private Vector2 centre;          // light-years at the middle of the view
     private float zoom = 9f;         // pixels per light-year
     private StarSystem openSystem;
@@ -38,6 +42,12 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         map.settlement = settlement;
         map.Build((RectTransform)go.transform);
         map.panel.gameObject.SetActive(false);
+        // Escape steps back from a system to the galaxy first, then closes the map.
+        HUDWindows.Register(map.panel, () =>
+        {
+            if (map.openSystem != null) { map.openSystem = null; map.picked = null; map.Redraw(); }
+            else map.Toggle();
+        });
         return map;
     }
 
@@ -51,9 +61,8 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         title = UIBuilder.Text("Title", panel, "", 24);
         UIBuilder.Anchor(title.rectTransform, new Vector2(0, 1), new Vector2(1, 1), new Vector2(0.5f, 1), new Vector2(0, -6), new Vector2(-120, 34));
         title.alignment = TextAlignmentOptions.Center;
-        var close = UIBuilder.Button("Close", panel, Toggle, out var closeLabel, 34, 18);
-        UIBuilder.Anchor((RectTransform)close.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-8, -6), new Vector2(40, 34));
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        var close = UIBuilder.CloseButton(panel, Toggle);
+        UIBuilder.Anchor((RectTransform)close.transform, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-8, -6), new Vector2(34, 30));
         var back = UIBuilder.Button("Back", panel, () => { openSystem = null; picked = null; Redraw(); }, out var backLabel, 34, 16);
         UIBuilder.Anchor((RectTransform)back.transform, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(8, -6), new Vector2(110, 34));
         backLabel.text = "< Galaxy"; backLabel.alignment = TextAlignmentOptions.Center;
@@ -79,12 +88,11 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
         bool open = !panel.gameObject.activeSelf;
         panel.gameObject.SetActive(open);
         GameAudio.UI(open ? "panel_open" : "panel_close");
+        if (!open) HUDWindows.Closed(panel);
         if (open)
         {
-            // Over the side panels, but under the tooltip.
-            panel.SetAsLastSibling();
-            var tip = panel.parent.Find("Tooltip");
-            if (tip != null) tip.SetAsLastSibling();
+            // Over the side panels, but under the tooltip (and the other centre windows close).
+            HUDWindows.Opened(panel);
             Galaxy.Init(settlement.State.mapSeed);
             var here = settlement.CurrentPlanet;
             if (here != null) centre = here.system.position;
@@ -104,7 +112,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     private void Update()
     {
         if (!IsOpen) return;
-        if (Input.GetKeyDown(KeyCode.Escape)) { if (openSystem != null) { openSystem = null; picked = null; Redraw(); } else Toggle(); }
+        // (Escape goes through HUDWindows: back to the galaxy, then closed)
         if (Time.unscaledTime >= redrawAt) Redraw();   // ships move, colonies grow
     }
 
@@ -127,9 +135,12 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
     private void Redraw()
     {
         redrawAt = Time.unscaledTime + 1f;
-        foreach (var m in marks) Destroy(m);
-        marks.Clear();
+        dotsUsed = ringsUsed = labelsUsed = 0;
         if (openSystem != null) DrawSystem(openSystem); else DrawGalaxy();
+        // what this redraw didn't use stays hidden until it's needed again
+        for (int i = dotsUsed; i < dots.Count; i++) if (dots[i].gameObject.activeSelf) dots[i].gameObject.SetActive(false);
+        for (int i = ringsUsed; i < rings.Count; i++) if (rings[i].gameObject.activeSelf) rings[i].gameObject.SetActive(false);
+        for (int i = labelsUsed; i < labels.Count; i++) if (labels[i].gameObject.activeSelf) labels[i].gameObject.SetActive(false);
         ShowInfo();
     }
 
@@ -177,11 +188,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
             Vector2 at = new Vector2(-maxR * 0.75f, maxR * 0.75f);
             AddLocal(at, 26, new Color(1f, 0.8f, 0.3f, 0.5f), () => { picked = null; showAnomaly = true; ShowInfo(); });
             AddLocal(at, 12, new Color(1f, 0.95f, 0.7f), () => { picked = null; showAnomaly = true; ShowInfo(); });
-            var label = UIBuilder.Text("Anomaly", content, Galaxy.Describe(anomaly).title, 14, TextAlignmentOptions.Center);
-            label.color = new Color(1f, 0.85f, 0.5f);
-            label.rectTransform.anchoredPosition = at + new Vector2(0, -24);
-            label.rectTransform.sizeDelta = new Vector2(160, 20);
-            marks.Add(label.gameObject);
+            NextLabel(Galaxy.Describe(anomaly).title, 14, new Color(1f, 0.85f, 0.5f), at + new Vector2(0, -24), new Vector2(160, 20));
         }
         foreach (var p in s.bodies)
         {
@@ -195,10 +202,7 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
             float sz = p.kind == BodyKind.GasGiant ? 22 : p.kind == BodyKind.AsteroidBelt ? 8 : p.kind == BodyKind.Moon ? 9 : 14;
             AddLocal(at, sz, c, () => { picked = planet; showAnomaly = false; ShowInfo(); });
             if (settled) AddLocal(at + new Vector2(sz * 0.6f, sz * 0.6f), 7, new Color(0.5f, 1f, 0.6f), null);
-            var label = UIBuilder.Text("Name", content, known || settled ? p.name : "?", 14, TextAlignmentOptions.Center);
-            label.rectTransform.anchoredPosition = at + new Vector2(0, -sz - 8);
-            label.rectTransform.sizeDelta = new Vector2(140, 20);
-            marks.Add(label.gameObject);
+            NextLabel(known || settled ? p.name : "?", 14, Color.white, at + new Vector2(0, -sz - 8), new Vector2(140, 20));
         }
         content.anchoredPosition = Vector2.zero;
     }
@@ -350,29 +354,64 @@ public class StarMapPanel : MonoBehaviour, IDragHandler, IScrollHandler
 
     private void AddLocal(Vector2 at, float size, Color c, UnityEngine.Events.UnityAction click)
     {
-        var img = UIBuilder.Icon("Dot", content, Dot, size);
+        Image img;
+        if (dotsUsed < dots.Count) img = dots[dotsUsed];
+        else
+        {
+            img = UIBuilder.Icon("Dot", content, Dot, size);
+            img.gameObject.AddComponent<Button>().transition = Selectable.Transition.None;
+            dots.Add(img);
+        }
+        dotsUsed++;
+        if (!img.gameObject.activeSelf) img.gameObject.SetActive(true);
+        img.transform.SetAsLastSibling();   // drawn in the order they're asked for, as before
         img.color = c;
         img.rectTransform.anchoredPosition = at;
+        img.rectTransform.sizeDelta = new Vector2(size, size);
         img.raycastTarget = click != null;
-        if (click != null) img.gameObject.AddComponent<Button>().onClick.AddListener(click);
-        marks.Add(img.gameObject);
+        var button = img.GetComponent<Button>();
+        button.onClick.RemoveAllListeners();
+        button.enabled = click != null;
+        if (click != null) button.onClick.AddListener(click);
     }
 
     private void AddRing(float r)
     {
-        var img = UIBuilder.Icon("Orbit", content, Ring, r * 2f);
-        img.color = new Color(0.4f, 0.5f, 0.7f, 0.25f);
-        img.raycastTarget = false;
-        marks.Add(img.gameObject);
+        Image img;
+        if (ringsUsed < rings.Count) img = rings[ringsUsed];
+        else
+        {
+            img = UIBuilder.Icon("Orbit", content, Ring, r * 2f);
+            img.color = new Color(0.4f, 0.5f, 0.7f, 0.25f);
+            img.raycastTarget = false;
+            rings.Add(img);
+        }
+        ringsUsed++;
+        if (!img.gameObject.activeSelf) img.gameObject.SetActive(true);
+        img.transform.SetAsLastSibling();
+        img.rectTransform.anchoredPosition = Vector2.zero;
+        img.rectTransform.sizeDelta = new Vector2(r * 2f, r * 2f);
     }
 
-    private void Label(Vector2 ly, string text, Color c)
+    private void Label(Vector2 ly, string text, Color c) => NextLabel(text, 13, c, (ly - centre) * zoom, new Vector2(150, 18));
+
+    private void NextLabel(string text, float size, Color c, Vector2 at, Vector2 box)
     {
-        var t = UIBuilder.Text("Name", content, text, 13, TextAlignmentOptions.Center);
+        TextMeshProUGUI t;
+        if (labelsUsed < labels.Count) t = labels[labelsUsed];
+        else
+        {
+            t = UIBuilder.Text("Name", content, "", size, TextAlignmentOptions.Center);
+            labels.Add(t);
+        }
+        labelsUsed++;
+        if (!t.gameObject.activeSelf) t.gameObject.SetActive(true);
+        t.transform.SetAsLastSibling();
+        if (t.text != text) t.text = text;
+        t.fontSize = size;
         t.color = c;
-        t.rectTransform.anchoredPosition = (ly - centre) * zoom;
-        t.rectTransform.sizeDelta = new Vector2(150, 18);
-        marks.Add(t.gameObject);
+        t.rectTransform.anchoredPosition = at;
+        t.rectTransform.sizeDelta = box;
     }
 
     private static Sprite Dot => dot ??= Circle(32, false);

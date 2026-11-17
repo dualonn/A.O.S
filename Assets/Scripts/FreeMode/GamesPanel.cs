@@ -94,34 +94,18 @@ public class GamesPanel : MonoBehaviour
 
     private void BuildWindow(RectTransform root)
     {
-        panel = UIBuilder.VerticalPanel("GamesWindow", root, 12, 6);
-        UIBuilder.Anchor(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(720, 0));
-        var head = UIBuilder.Row("Head", panel, 6);
-        var title = UIBuilder.Text("Title", head, "<b>Games</b>", 22);
-        title.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-        var close = UIBuilder.Button("Close", head, () => Show(false), out var closeLabel, 30, 16);
-        close.GetComponent<LayoutElement>().preferredWidth = 34;
-        closeLabel.text = "X"; closeLabel.alignment = TextAlignmentOptions.Center;
+        panel = UIBuilder.Window("GamesWindow", root, 720, "<b>Games</b>", () => Show(false));
+        HUDWindows.Register(panel, () => Show(false));
 
-        var tabs = UIBuilder.Row("Tabs", panel, 4);
-        tabs.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
-        savedTab = TabButton(tabs, "Saved games", Tab.Saved);
-        newTab = TabButton(tabs, "New game", Tab.NewGame);
+        var tabs = UIBuilder.TabRow(panel, new[] { "Saved games", "New game" }, i => { tab = i == 0 ? Tab.Saved : Tab.NewGame; Rebuild(); });
+        savedTab = tabs[0];
+        newTab = tabs[1];
 
         content = UIBuilder.ScrollList("Content", panel, out var element, 5);
         element.preferredHeight = 440;
         footer = UIBuilder.Text("Footer", panel, "", 14);
         footer.textWrappingMode = TextWrappingModes.Normal;
         panel.gameObject.SetActive(false);
-    }
-
-    private Button TabButton(Transform row, string text, Tab t)
-    {
-        var b = UIBuilder.Button(text, row, () => { tab = t; Rebuild(); }, out var label, 30, 15);
-        label.text = text;
-        label.alignment = TextAlignmentOptions.Center;
-        b.GetComponent<LayoutElement>().flexibleWidth = 1;
-        return b;
     }
 
     private void Open(Tab t)
@@ -137,17 +121,15 @@ public class GamesPanel : MonoBehaviour
         GameAudio.UI(open ? "book_open" : "book_close");
         deleteArmed = -1;
         startArmed = false;
-        if (!open) { hideTip?.Invoke(); return; }
-        transform.SetAsLastSibling();
-        var tip = transform.parent != null ? transform.parent.Find("Tooltip") : null;
-        if (tip != null) tip.SetAsLastSibling();
+        if (!open) { HUDWindows.Closed(panel); hideTip?.Invoke(); return; }
+        HUDWindows.Opened(panel);   // closes the other centre windows, and draws this one on top
         Rebuild();
     }
 
     private void Update()
     {
         if (!IsOpen) return;
-        if (Input.GetKeyDown(KeyCode.Escape) && !UIBuilder.Typing) { Show(false); return; }
+        // (Escape closes it through HUDWindows)
         // Disarm a pending delete / start after a few seconds.
         if (deleteArmed >= 0 && Time.unscaledTime > deleteArmedUntil) { deleteArmed = -1; Rebuild(); }
         if (startArmed && Time.unscaledTime > startArmedUntil) { startArmed = false; Rebuild(); }

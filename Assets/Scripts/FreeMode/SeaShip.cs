@@ -53,7 +53,7 @@ public class SeaShip : Unit
         look = lib != null && tier < lib.merchantShips.Count ? lib.merchantShips[tier] : null;
         body = new GameObject("Body").AddComponent<SpriteRenderer>();
         body.transform.SetParent(transform, false);
-        body.sortingOrder = BuildingView.SortingOrder;
+        body.sortingOrder = Sorting.World;
         if (look != null && look.frames.Count > 0)
         {
             body.sprite = look.frames[0];
@@ -69,8 +69,8 @@ public class SeaShip : Unit
         col.isTrigger = true;
         col.radius = 0.9f;
         col.offset = new Vector2(0f, 0.4f);
-        barBack = Bar("BarBack", new Color(0, 0, 0, 0.6f), 6);
-        barFill = Bar("BarFill", new Color(0.4f, 0.9f, 0.4f), 7);
+        barBack = Bar("BarBack", new Color(0, 0, 0, 0.6f), Sorting.Bars);
+        barFill = Bar("BarFill", new Color(0.4f, 0.9f, 0.4f), Sorting.BarFill);
         PlaceAlong(Mathf.Clamp01(route.progress));
     }
 
@@ -111,7 +111,7 @@ public class SeaShip : Unit
 
     private void SetPosition(Vector3 p)
     {
-        p.z = BuildingView.DepthFor(p.y);
+        p.z = Sorting.Depth(p.y);
         transform.position = p;
     }
 

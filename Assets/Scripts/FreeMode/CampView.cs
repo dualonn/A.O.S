@@ -75,20 +75,20 @@ public class CampView : MonoBehaviour
         // Each piece sorts by where it stands (its foot, in tiles up the camp), like units do.
         transform.position = new Vector3(corner.x, corner.y, 0);
         var art = ArtLibrary.Load();
-        body = Piece("Ground", art != null ? art.campGround : null, 3.2f, BuildingView.SortingOrder - 2); // flat: always under
-        backTent = Piece("BackTent", art != null ? art.campBackTent : null, 1.55f, BuildingView.SortingOrder);
-        banner = Piece("Banner", null, 1.6f, BuildingView.SortingOrder);
-        frontTent = Piece("FrontTent", art != null ? art.campFrontTent : null, 0.95f, BuildingView.SortingOrder);
-        fire = Piece("Fire", null, 0.92f, BuildingView.SortingOrder);
-        loot = Piece("Loot", art != null ? art.campLoot : null, 0.25f, BuildingView.SortingOrder);
-        blazeBack = Piece("BlazeBack", null, 1.5f, BuildingView.SortingOrder);
-        blazeFront = Piece("BlazeFront", null, 0.9f, BuildingView.SortingOrder);
+        body = Piece("Ground", art != null ? art.campGround : null, 3.2f, Sorting.GroundDecal); // flat: always under
+        backTent = Piece("BackTent", art != null ? art.campBackTent : null, 1.55f, Sorting.World);
+        banner = Piece("Banner", null, 1.6f, Sorting.World);
+        frontTent = Piece("FrontTent", art != null ? art.campFrontTent : null, 0.95f, Sorting.World);
+        fire = Piece("Fire", null, 0.92f, Sorting.World);
+        loot = Piece("Loot", art != null ? art.campLoot : null, 0.25f, Sorting.World);
+        blazeBack = Piece("BlazeBack", null, 1.5f, Sorting.World);
+        blazeFront = Piece("BlazeFront", null, 0.9f, Sorting.World);
         bannerFrames = art != null ? art.campBanner : null;
         fireFrames = art != null ? art.campFire : null;
 
         float size = CampState.Size * grid.cellSize;
-        barBack = Quad("BarBack", new Vector2(size * 0.2f, size + 0.15f), new Vector2(size * 0.6f, 0.16f), new Color(0, 0, 0, 0.6f), 6);
-        barFill = Quad("BarFill", new Vector2(size * 0.2f, size + 0.15f), new Vector2(size * 0.6f, 0.16f), new Color(0.9f, 0.3f, 0.25f), 7);
+        barBack = Quad("BarBack", new Vector2(size * 0.2f, size + 0.15f), new Vector2(size * 0.6f, 0.16f), new Color(0, 0, 0, 0.6f), Sorting.Bars);
+        barFill = Quad("BarFill", new Vector2(size * 0.2f, size + 0.15f), new Vector2(size * 0.6f, 0.16f), new Color(0.9f, 0.3f, 0.25f), Sorting.BarFill);
 
         var labelObject = new GameObject("Label");
         labelObject.transform.SetParent(transform, false);
@@ -99,7 +99,7 @@ public class CampView : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 220);
         label.rectTransform.sizeDelta = new Vector2(8, 1.5f);
-        label.sortingOrder = 8;
+        label.sortingOrder = Sorting.Labels;
 
         Live.Add(this);
         if (state.cleared) BurnDown(instant: true);
@@ -135,7 +135,7 @@ public class CampView : MonoBehaviour
         sr.transform.SetParent(transform, false);
         sr.transform.localScale = Vector3.one * grid.cellSize;
         float worldFoot = transform.position.y + footTiles * grid.cellSize;
-        sr.transform.localPosition = new Vector3(0, 0, BuildingView.DepthFor(worldFoot));
+        sr.transform.localPosition = new Vector3(0, 0, Sorting.Depth(worldFoot));
         sr.sprite = sprite;
         sr.sortingOrder = order;
         return sr;

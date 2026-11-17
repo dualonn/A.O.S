@@ -45,8 +45,8 @@ public class SiteView : MonoBehaviour
         body.transform.SetParent(transform, false);
         // Sorted by its front edge, like buildings and units.
         float foot = state.kind == SiteKind.Dungeon || state.kind == SiteKind.Lair ? 0.9f : 0.15f;
-        body.transform.localPosition = new Vector3(0, 0, BuildingView.DepthFor(transform.position.y + foot));
-        body.sortingOrder = BuildingView.SortingOrder;
+        body.transform.localPosition = new Vector3(0, 0, Sorting.Depth(transform.position.y + foot));
+        body.sortingOrder = Sorting.World;
         var labelObject = new GameObject("Label");
         labelObject.transform.SetParent(transform, false);
         labelObject.transform.localPosition = new Vector3(state.Size * 0.5f, state.Size + 0.7f, 0);
@@ -56,7 +56,7 @@ public class SiteView : MonoBehaviour
         label.outlineWidth = 0.25f;
         label.outlineColor = new Color32(0, 0, 0, 220);
         label.rectTransform.sizeDelta = new Vector2(9, 1.6f);
-        label.sortingOrder = 8;
+        label.sortingOrder = Sorting.Labels;
         wasDone = state.done;
         UpdateSprite();
         Live.Add(this);

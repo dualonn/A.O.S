@@ -10,6 +10,16 @@ public static class UIBuilder
     public static readonly Color PanelColor = new Color(0.08f, 0.08f, 0.1f, 0.85f);
     public static readonly Color ButtonColor = new Color(0.22f, 0.24f, 0.28f, 1f);
     public static readonly Color ButtonDisabledColor = new Color(0.16f, 0.16f, 0.18f, 1f);
+    /// <summary>Small cards that sit over the map (advisor, hints).</summary>
+    public static readonly Color CardColor = new Color(0.07f, 0.08f, 0.1f, 0.9f);
+    public static readonly Color TooltipColor = new Color(0.03f, 0.03f, 0.05f, 0.95f);
+    /// <summary>The highlight on the tab that's showing.</summary>
+    public static readonly Color TabActiveColor = new Color(0.35f, 0.3f, 0.42f, 1f);
+
+    // Standard sizes, so windows and buttons look alike.
+    public const float ButtonSmall = 28, ButtonNormal = 36, ButtonLarge = 52;
+    public const float FontTitle = 22, FontBody = 16, FontSmall = 14;
+    public const float TabHeight = 30, TabFont = 15;
 
     public static RectTransform Rect(string name, Transform parent)
     {
@@ -109,8 +119,11 @@ public static class UIBuilder
         return tmp;
     }
 
+    /// <summary>
+    /// A button with a label. ('multiLine' is kept for callers that ask for wrapping; labels wrap anyway.)
+    /// </summary>
     public static Button Button(string name, Transform parent, UnityAction onClick, out TextMeshProUGUI label,
-        float height = 52, float fontSize = 18, Sprite icon = null)
+        float height = 52, float fontSize = 18, Sprite icon = null, bool multiLine = false)
     {
         var image = Panel(name, parent, ButtonColor);
         var button = image.gameObject.AddComponent<Button>();
@@ -129,6 +142,9 @@ public static class UIBuilder
         label = Text("Label", image.transform, "", fontSize);
         Stretch(label.rectTransform, 8);
         label.alignment = TextAlignmentOptions.MidlineLeft;
+        // (Labels keep TextMeshPro's usual wrapping. "..." cut-offs are no good here: TextMeshPro also
+        // cuts vertically, and many buttons give their label less height than one line, which then
+        // vanishes altogether.)
 
         if (icon != null)
         {
@@ -175,6 +191,77 @@ public static class UIBuilder
         field.lineType = TMP_InputField.LineType.SingleLine;
         field.onValueChanged.AddListener(onChanged);
         return field;
+    }
+
+    /// <summary>The standard close button: a small "X" (30 high, 34 wide) for a window's header row.</summary>
+    public static Button CloseButton(Transform parent, UnityAction onClose)
+    {
+        var close = Button("Close", parent, onClose, out var label, 30, 16);
+        var element = close.GetComponent<LayoutElement>();
+        element.preferredWidth = element.minWidth = 34;
+        label.text = "X";
+        label.alignment = TextAlignmentOptions.Center;
+        label.rectTransform.offsetMin = label.rectTransform.offsetMax = Vector2.zero;
+        return close;
+    }
+
+    /// <summary>
+    /// A window: a panel that grows with its contents, centred on the screen, with a header row
+    /// (the title, then the X). Add things to the header (e.g. a crest at index 0) through 'header'.
+    /// </summary>
+    public static RectTransform Window(string name, Transform parent, float width, string title, UnityAction onClose,
+        out TextMeshProUGUI titleLabel, out RectTransform header, int padding = 12)
+    {
+        var panel = VerticalPanel(name, parent, padding, 6);
+        Anchor(panel, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 10), new Vector2(width, 0));
+        header = Row("Head", panel, 8);
+        titleLabel = Text("Title", header, title, FontTitle);
+        titleLabel.textWrappingMode = TextWrappingModes.NoWrap;
+        titleLabel.overflowMode = TextOverflowModes.Ellipsis;
+        titleLabel.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+        CloseButton(header, onClose);
+        return panel;
+    }
+
+    public static RectTransform Window(string name, Transform parent, float width, string title, UnityAction onClose) =>
+        Window(name, parent, width, title, onClose, out _, out _);
+
+    /// <summary>A row of equal tabs (30 high, 15 point). 'onPick' gets the tab's index.</summary>
+    public static System.Collections.Generic.List<Button> TabRow(Transform parent, string[] names, UnityAction<int> onPick)
+    {
+        var row = Row("Tabs", parent, 4);
+        row.GetComponent<HorizontalLayoutGroup>().childForceExpandWidth = true;
+        var buttons = new System.Collections.Generic.List<Button>();
+        for (int i = 0; i < names.Length; i++)
+        {
+            int index = i;
+            var b = Button(names[i], row, () => onPick(index), out var label, TabHeight, TabFont);
+            label.text = names[i];
+            label.alignment = TextAlignmentOptions.Center;
+            b.GetComponent<LayoutElement>().flexibleWidth = 1;
+            buttons.Add(b);
+        }
+        return buttons;
+    }
+
+    /// <summary>Light up the tab that's showing.</summary>
+    public static void SetTab(System.Collections.Generic.IList<Button> tabs, int active, Color? activeColor = null)
+    {
+        for (int i = 0; i < tabs.Count; i++)
+            if (tabs[i] != null) tabs[i].image.color = i == active ? activeColor ?? TabActiveColor : ButtonColor;
+    }
+
+    /// <summary>
+    /// A number in a few characters: 950, 9,870, 23.8k, 1.2M. Whole numbers unless 'fraction', which
+    /// keeps one decimal on small numbers (0.5, 12.5).
+    /// </summary>
+    public static string Short(float value, bool fraction = false)
+    {
+        if (fraction && Mathf.Abs(value) < 100f && !Mathf.Approximately(value, Mathf.Round(value))) return value.ToString("0.#");
+        float v = Mathf.Floor(value);
+        if (v < 10000f) return v.ToString("#,0");
+        if (v < 1000000f) return (v / 1000f).ToString(v < 100000f ? "0.0" : "0") + "k";
+        return (v / 1000000f).ToString("0.0") + "M";
     }
 
     /// <summary>True while the player is typing in a text box (so keys don't move the camera).</summary>

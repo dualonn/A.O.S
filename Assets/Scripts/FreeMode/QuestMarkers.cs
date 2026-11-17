@@ -115,8 +115,8 @@ public class QuestMarkers : MonoBehaviour
         m.body.transform.SetParent(m.root.transform, false);
         bool raised = s.kind == QuestStepKind.ClearCamp || s.kind == QuestStepKind.ClearSite;
         float lift = raised ? 3.2f : 0f;
-        m.body.transform.localPosition = new Vector3(0, lift, BuildingView.DepthFor(s.spot.y + (raised ? -2f : 0.2f)));
-        m.body.sortingOrder = BuildingView.SortingOrder + (raised ? 2 : 0);
+        m.body.transform.localPosition = new Vector3(0, lift, Sorting.Depth(s.spot.y + (raised ? -2f : 0.2f)));
+        m.body.sortingOrder = raised ? Sorting.Air : Sorting.World;   // a raised pennant flies over the camp
         Sprite sprite = null;
         if (art != null)
             sprite = s.kind == QuestStepKind.Slay ? art.LairFor(q.theme) : raised ? art.pennant : art.banner;
@@ -131,7 +131,7 @@ public class QuestMarkers : MonoBehaviour
         m.mapIcon = new GameObject("MapIcon").AddComponent<SpriteRenderer>();
         m.mapIcon.transform.SetParent(transform, false);
         m.mapIcon.sprite = art != null && art.icon != null ? art.icon : SimpleSprites.Ring;
-        m.mapIcon.sortingOrder = 31;
+        m.mapIcon.sortingOrder = Sorting.QuestMapIcon;
         m.mapIcon.enabled = false;
 
         var labelObject = new GameObject("Label");
@@ -143,7 +143,7 @@ public class QuestMarkers : MonoBehaviour
         m.label.outlineWidth = 0.25f;
         m.label.outlineColor = new Color32(0, 0, 0, 220);
         m.label.rectTransform.sizeDelta = new Vector2(12, 2f);
-        m.label.sortingOrder = 8;
+        m.label.sortingOrder = Sorting.Labels;
         return m;
     }
 

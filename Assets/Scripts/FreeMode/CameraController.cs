@@ -34,6 +34,13 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         cam = GetComponent<Camera>();
+        if (cam != null && cam.orthographic)
+        {
+            // Sprites Y-sort by z (Sorting.Depth = y * 0.01), so on an endless map z runs far from 0:
+            // clip wide both ways (an orthographic camera takes a negative near plane).
+            cam.nearClipPlane = -100000f;
+            cam.farClipPlane = 100000f;
+        }
     }
 
     private void Start()

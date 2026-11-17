@@ -57,10 +57,10 @@ public class EventVisitors : MonoBehaviour
             if (!pickups.TryGetValue(p.id, out var go) || go == null)
             {
                 go = new GameObject("Pickup " + p.label);
-                go.transform.position = new Vector3(p.position.x, p.position.y, 0);
+                go.transform.position = new Vector3(p.position.x, p.position.y, Sorting.Depth(p.position.y));
                 var sr = go.AddComponent<SpriteRenderer>();
                 sr.sprite = art != null ? (p.look == "meteor" ? art.meteor : art.cart) : null;
-                sr.sortingOrder = BuildingView.SortingOrder;
+                sr.sortingOrder = Sorting.World;
                 pickups[p.id] = go;
             }
             // Any of your troops close enough takes it.
@@ -95,14 +95,19 @@ public class EventVisitors : MonoBehaviour
             caravanFor = merchant.id;
             caravan = new GameObject(ship ? "Star Trader" : "Caravan");
             caravanSprite = caravan.AddComponent<SpriteRenderer>();
-            caravanSprite.sortingOrder = BuildingView.SortingOrder + 1;
+            caravanSprite.sortingOrder = Sorting.World;
             caravanTo = controller.TownCenterPosition + new Vector3(3.5f, -2.5f, 0);
             caravanFrom = caravanTo + (ship ? new Vector3(0, 12f, 0) : new Vector3(12f, -3f, 0));
             caravanT = 0f;
             GameAudio.Play(ship ? "ship_landing" : "wagon", caravanTo);
         }
         caravanT = Mathf.Min(1f, caravanT + Time.deltaTime / 8f);
-        caravan.transform.position = Vector3.Lerp(caravanFrom, caravanTo, Mathf.SmoothStep(0, 1, caravanT));
+        var at = Vector3.Lerp(caravanFrom, caravanTo, Mathf.SmoothStep(0, 1, caravanT));
+        // a wagon Y-sorts with the town; a star trader coming down is in the air until it lands
+        bool flying = ship && caravanT < 1f;
+        caravanSprite.sortingOrder = flying ? Sorting.Air : Sorting.World;
+        at.z = Sorting.Depth(flying ? caravanTo.y : at.y);
+        caravan.transform.position = at;
         if (art == null) return;
         if (ship) caravanSprite.sprite = art.starTrader;
         else if (art.caravanWalk.Count > 0)

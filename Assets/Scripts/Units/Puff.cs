@@ -66,7 +66,7 @@ public class Puff : MonoBehaviour
             b.transform.SetParent(go.transform, false);
             var sr = b.AddComponent<SpriteRenderer>();
             sr.sprite = Blob;
-            sr.sortingOrder = 10;
+            sr.sortingOrder = Sorting.Fx;
             sr.color = color;
             puff.blobs[i] = sr;
             float a = Random.value * Mathf.PI * 2;
