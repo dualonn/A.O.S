@@ -184,32 +184,60 @@ public class TitleScreen : MonoBehaviour
             ageLine.text = ageData != null ? $"<i>The {ageData.displayName}</i>" : "";
             RefreshContinue();
 
-            // Frame the town to the right of the menu, then drift slowly across it.
-            Vector3 middle = grid.CellToWorld(Vector2Int.zero) + new Vector3(core.center.x, core.center.y, 0);
-            float ortho = Mathf.Clamp(Mathf.Max(core.width, core.height) * 0.42f + 3f, 7f, 25f);   // a hamlet close up; a mega-city fills the view (past 26 the map turns to its overview)
-            float shift = ortho * cam.aspect * 0.28f;   // half a menu's width, in world units
-            Vector3 from = middle + new Vector3(-shift - ortho * 0.18f, -ortho * 0.08f, 0);
-            Vector3 to = middle + new Vector3(-shift + ortho * 0.18f, ortho * 0.08f, 0);
-            float t0 = Time.unscaledTime;
-            StartCoroutine(Fade(0f));
-            while (Time.unscaledTime - t0 < AgeSeconds)
+            // Frame the town to the right of the menu. A small town gets one slow drift; a big city
+            // opens wide, then cuts between closer pans across its districts.
+            Vector3 origin = grid.CellToWorld(Vector2Int.zero);
+            Vector3 middle = origin + new Vector3(core.center.x, core.center.y, 0);
+            int size = Mathf.Max(core.width, core.height);
+            float wide = Mathf.Clamp(size * 0.42f + 3f, 7f, 25f);   // (past 26 the map turns to its overview)
+            if (size <= 32)
             {
-                float t = (Time.unscaledTime - t0) / AgeSeconds;
-                float e = t * t * (3f - 2f * t);
-                var p = Vector3.Lerp(from, to, e);
-                cam.transform.position = new Vector3(p.x, p.y, cam.transform.position.z);
-                cam.orthographicSize = Mathf.Lerp(ortho * 1.04f, ortho * 0.94f, e);
-                yield return null;
+                yield return Pan(cam, middle, wide, Random.insideUnitCircle.normalized, wide * 0.36f, AgeSeconds, true);
+            }
+            else
+            {
+                yield return Pan(cam, middle, wide, Random.insideUnitCircle.normalized, wide * 0.3f, ShotSeconds, true);
+                int shots = Mathf.Clamp(Mathf.RoundToInt(size / 24f), 2, 5);
+                for (int i = 0; i < shots; i++)
+                {
+                    yield return Fade(1f, CutSeconds);
+                    float close = Random.Range(10f, 16f);
+                    var spot = origin + new Vector3(
+                        Random.Range(core.xMin + close * 0.4f, core.xMax - close * 0.4f),
+                        Random.Range(core.yMin + close * 0.3f, core.yMax - close * 0.3f), 0);
+                    yield return Pan(cam, spot, close, Random.insideUnitCircle.normalized, close * 0.55f, ShotSeconds, true, CutSeconds);
+                }
             }
         }
     }
 
-    private IEnumerator Fade(float target)
+    private const float ShotSeconds = 6.5f, CutSeconds = 0.3f;
+
+    /// <summary>One camera move: drift through 'at' along 'dir' (kept clear of the menu), easing the zoom a touch.</summary>
+    private IEnumerator Pan(Camera cam, Vector3 at, float ortho, Vector2 dir, float travel, float seconds, bool fadeIn, float fadeTime = -1f)
+    {
+        float shift = ortho * cam.aspect * 0.28f;   // half a menu's width, in world units
+        Vector3 d = new Vector3(dir.x, dir.y, 0) * travel * 0.5f;
+        Vector3 from = at - d + new Vector3(-shift, 0, 0), to = at + d + new Vector3(-shift, 0, 0);
+        float t0 = Time.unscaledTime;
+        if (fadeIn) StartCoroutine(Fade(0f, fadeTime > 0f ? fadeTime : FadeSeconds));
+        while (Time.unscaledTime - t0 < seconds)
+        {
+            float t = (Time.unscaledTime - t0) / seconds;
+            float e = t * t * (3f - 2f * t);
+            var p = Vector3.Lerp(from, to, e);
+            cam.transform.position = new Vector3(p.x, p.y, cam.transform.position.z);
+            cam.orthographicSize = Mathf.Lerp(ortho * 1.04f, ortho * 0.94f, e);
+            yield return null;
+        }
+    }
+
+    private IEnumerator Fade(float target, float seconds = FadeSeconds)
     {
         float start = fade.color.a, t0 = Time.unscaledTime;
-        while (Time.unscaledTime - t0 < FadeSeconds)
+        while (Time.unscaledTime - t0 < seconds)
         {
-            float k = (Time.unscaledTime - t0) / FadeSeconds;
+            float k = (Time.unscaledTime - t0) / seconds;
             fade.color = new Color(0, 0, 0, Mathf.Lerp(start, target, k));
             yield return null;
         }

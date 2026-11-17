@@ -2,43 +2,42 @@
 
 ## How versions work
 
-Versions look like MAJOR.MINOR.PATCH (for example 1.2.0). The version is shown on the title screen.
+Versions look like MAJOR.MINOR.PATCH (for example 0.9.0). The version is shown on the title screen.
 
 - MAJOR goes up for huge milestones that change what the game is.
 - MINOR goes up for each batch of new features.
 - PATCH goes up for releases that only fix things.
 
-Versions before 1.0.0 are early development builds, listed here so the story of the game is complete. Newest version first.
+The game is still in development, so versions are below 1.0.0; 1.0.0 will be the first public release. Newest version first.
 
 ---
 
-## [1.2.0] - 2026-11-17 (in progress)
+## [0.9.0] - 2026-11-17
+
+### Title screen and menus
+- The game opens on a title screen over a living town: a random age each time, laid out fresh, anywhere from a hamlet of a few huts to a sprawling city, with the camera cutting between slow pans across it.
+- A main menu: Continue, New Game, Load Game, Settings, Controls, Credits and Quit (no Quit in the browser).
+- A pause menu (Escape in game): Resume, Save, Settings, Controls, Main menu, Save and quit.
+- Settings: master, music, effects and ambience volume; UI scale; fullscreen, resolution and vsync on PC; autosave interval; hints.
+- Controls lists every key and mouse control; Credits lists the sound and music attributions.
+- The version is shown on the title screen and in the pause menu.
 
 ### Ready for the web
-- The game now runs in the browser: music loads only when needed and waits for your first click, and sound clips are lighter.
-- Everything was tuned to load and run smoothly on the web.
+- The game now runs in the browser: it saves when the tab is hidden or closed, music loads only when needed and waits for your first click, and music and ambience are about half the size.
+- Lighter graphics settings in the browser; PC keeps its full quality.
 
 ### Cleanup pass
-- One consistent way of layering things on the map, so buildings, units and scenery overlap correctly everywhere.
-- A tidier HUD with less clutter.
+- One consistent way of layering things on the map, so buildings, units, fire, flyers and scenery overlap correctly everywhere.
+- A tidier HUD: one window at a time with an X on each, folding side panels (B and R), help on H as well as F1, shorter messages, and nothing overlapping.
 - Units and buildings run faster, especially in big settlements and big armies.
 
-### Upcoming in this version
-- A title screen with a backdrop that drifts through every age of your civilisation.
-- A main menu: Continue, New Game, Load, Settings, Controls and Credits.
-- A pause menu you can open at any time while playing.
-- The game version is shown on the title screen.
-
----
-
-## [1.1.1] - 2026-11-17
-
 ### Fixes
-- The top resource bar now measures its chips as they are at the moment, so late-age resources fold neatly into a "+N" instead of squashing the bar.
+- The top resource bar folds late-age resources neatly into a "+N" instead of squashing the bar.
+- Power cables hang only from poles and pylons (no more wire strung through the air between two power plants).
 
 ---
 
-## [1.1.0] - 2026-11-07
+## [0.8.0] - 2026-11-07
 
 A big batch that deepens how your people live, trade, govern and fight.
 
@@ -78,7 +77,7 @@ A big batch that deepens how your people live, trade, govern and fight.
 
 ---
 
-## [1.0.0] - 2026-11-03
+## [0.7.0] - 2026-11-03
 
 The first full release: a living world with seasons, culture, space travel and a full soundtrack.
 

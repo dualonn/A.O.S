@@ -10,8 +10,14 @@ using UnityEngine;
 public partial class Settlement
 {
     private readonly List<RectInt> titleTaken = new List<RectInt>();
+    private readonly HashSet<Vector2Int> titleCells = new HashSet<Vector2Int>();
+    private readonly Dictionary<int, int> titleCursor = new Dictionary<int, int>();
     private static List<Vector2Int> titleBase;
     private List<Vector2Int> titleSpiral;
+    private const int TitleMaxReach = 88;
+
+    /// <summary>The size tier of the last town built (0 hamlet ... 5 metropolis), for the camera.</summary>
+    public int TitleTier { get; private set; }
 
     private static int TitleOrder(BuildingDefinition b) => b.age ? b.age.order : 0;
     private static bool TitleShore(BuildingDefinition b) => b.id.StartsWith("Sea") || b.id.StartsWith("River");
@@ -85,10 +91,14 @@ public partial class Settlement
         State.secondsUntilWave = 99999f;
 
         titleTaken.Clear();
+        titleCells.Clear();
+        titleCursor.Clear();
         if (titleBase == null)
         {
             titleBase = new List<Vector2Int>();
-            for (int y = -45; y <= 45; y++) for (int x = -45; x <= 45; x++) titleBase.Add(new Vector2Int(x, y));
+            for (int y = -TitleMaxReach; y <= TitleMaxReach; y++)
+                for (int x = -TitleMaxReach; x <= TitleMaxReach; x++)
+                    if (x * x + y * y <= TitleMaxReach * TitleMaxReach) titleBase.Add(new Vector2Int(x, y));
         }
         // This town's shape: round, long or skewed, leaning any way, with ragged edges.
         float stretch = (float)(0.65 + rng.NextDouble() * 0.9), lean = (float)(rng.NextDouble() * Math.PI);
@@ -114,30 +124,36 @@ public partial class Settlement
 
         // How big: anything from a hamlet of a few huts to a sprawling city.
         double roll = rng.NextDouble();
-        int tier = roll < 0.14 ? 0 : roll < 0.36 ? 1 : roll < 0.64 ? 2 : roll < 0.87 ? 3 : 4;   // hamlet, village, town, city, mega-city
-        float reach = new[] { 0.55f, 0.8f, 1f, 1.35f, 1.75f }[tier];
-        int R(int r) => Mathf.Min(44, Mathf.RoundToInt(r * reach));
-        double civic = new[] { 0.2, 0.55, 0.8, 1, 1 }[tier];
+        int tier = roll < 0.1 ? 0 : roll < 0.28 ? 1 : roll < 0.5 ? 2 : roll < 0.7 ? 3 : roll < 0.87 ? 4 : 5;   // hamlet, village, town, city, big city, metropolis
+        TitleTier = tier;
+        float reach = new[] { 0.55f, 0.8f, 1f, 1.35f, 1.9f, 2.9f }[tier];
+        int R(int r) => Mathf.Min(TitleMaxReach, Mathf.RoundToInt(r * reach));
+        double civic = new[] { 0.2, 0.55, 0.8, 1, 1, 1 }[tier];
+        // Big cities spread past the explored land: open up the map round them first.
+        TitleExplore(centre, R(34) + 12);
 
         var tc = B.FirstOrDefault(b => b.isTownCenter && TitleOrder(b) == 0);
         if (tc == null) return clear;
         TitlePlace(tc, centre, 1, 10);
-        int wonders = age < 1 ? 0 : tier switch { 0 => 0, 1 => Chance(0.3) ? 1 : 0, 2 => Chance(0.75) ? 1 : 0, 3 => 1, _ => Range(2, 3) };
+        int wonders = age < 1 ? 0 : tier switch { 0 => 0, 1 => Chance(0.3) ? 1 : 0, 2 => Chance(0.75) ? 1 : 0, 3 => 1, 4 => Range(2, 3), _ => Range(3, 5) };
         foreach (var w in Some(B.Where(b => b.wonder && TitleOrder(b) >= age - 3), wonders)) TitlePlace(w, centre, 1, R(18));
-        int civics = tier >= 4 ? Range(2, 3) : tier == 3 ? Range(1, 2) : 1;
+        int civics = tier switch { 5 => Range(4, 6), 4 => Range(2, 3), 3 => Range(1, 2), _ => 1 };
         for (int i = 0; i < civics; i++)
         {
             if (Chance(civic)) TitlePlace(Pick(b => b.id.StartsWith("Cul") && !b.wonder && b.housing == 0), centre, 1, R(18));
             if (Chance(civic)) TitlePlace(Pick(b => b.id.StartsWith("Fth") && !b.wonder && b.housing == 0), centre, 1, R(18));
         }
-        if (age >= 2 && Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Ppl") && b.production.Count == 0), centre, 1, R(20));
-        if (Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Trade") && !b.IsWall && b.size.x > 1), centre, 1, R(22));
+        for (int i = 0; i < Mathf.Max(1, civics - 1); i++)
+        {
+            if (age >= 2 && Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Ppl") && b.production.Count == 0), centre, 1, R(20));
+            if (Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Trade") && !b.IsWall && b.size.x > 1), centre, 1, R(22));
+        }
         // Homes: mostly this age's, with a few older ones still standing.
         var homes = B.Where(b => b.housing > 0 && !TitleShore(b) && !b.isTownCenter && !b.foundsColonies).OrderByDescending(TitleOrder).Take(2).ToList();
-        int houses = tier switch { 0 => Range(2, 4), 1 => Range(5, 8), 2 => Range(8, 13), 3 => Range(16, 26), _ => Range(32, 50) } + age / 4;
+        int houses = tier switch { 0 => Range(2, 4), 1 => Range(5, 8), 2 => Range(8, 13), 3 => Range(16, 26), 4 => Range(34, 55), _ => Range(70, 120) } + age / 4;
         for (int i = 0; i < houses && homes.Count > 0; i++)
             TitlePlace(homes.Count > 1 && Chance(0.25) ? homes[1] : homes[0], centre, gap, R(26));
-        int utilitySets = tier switch { 0 => Chance(0.5) ? 1 : 0, 1 or 2 => 1, 3 => 2, _ => 3 };
+        int utilitySets = tier switch { 0 => Chance(0.5) ? 1 : 0, 1 or 2 => 1, 3 => 2, 4 => 3, _ => 5 };
         for (int i = 0; i < utilitySets; i++)
         {
             if (age >= 7)
@@ -150,17 +166,17 @@ public partial class Settlement
         }
         if (age >= 1)
         {
-            int works = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(2, 5), 3 => Range(5, 8), _ => Range(8, 14) };
+            int works = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(2, 5), 3 => Range(5, 8), 4 => Range(8, 14), _ => Range(16, 26) };
             var kinds = B.Where(b => b.production.Count > 0 && !b.requiredDeposit && !TitleShore(b) && TitleOrder(b) >= age - 2).ToList();
             for (int i = 0; i < works && kinds.Count > 0; i++) TitlePlace(kinds[rng.Next(kinds.Count)], centre, 1, R(30));
         }
         if (age >= 1 && age <= 6)
         {
             var farm = B.FirstOrDefault(b => b.id == "Farm");
-            int farms = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(0, 4), 3 => Range(3, 6), _ => Range(5, 9) };
+            int farms = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(0, 4), 3 => Range(3, 6), 4 => Range(5, 9), _ => Range(8, 14) };
             for (int i = 0; i < farms && farm; i++) TitlePlace(farm, centre, 1, R(32));
         }
-        int camps = age == 0 ? Range(0, 2) : tier switch { 0 => Range(0, 1), 1 => Range(1, 2), 2 => Range(1, 4), 3 => Range(3, 6), _ => Range(5, 9) };
+        int camps = age == 0 ? Range(0, 2) : tier switch { 0 => Range(0, 1), 1 => Range(1, 2), 2 => Range(1, 4), 3 => Range(3, 6), 4 => Range(5, 9), _ => Range(9, 16) };
         var trainers = B.Where(b => b.trainsUnit && !TitleShore(b) && TitleOrder(b) >= age - 1).ToList();
         for (int i = 0; i < camps && trainers.Count > 0; i++) TitlePlace(trainers[rng.Next(trainers.Count)], centre, 1, R(32));
         var core = TitleBounds(0, titleTaken.Count, centre);
@@ -180,13 +196,15 @@ public partial class Settlement
                 Map.SetDeposit(x, y, null);
 
         // Gatherers and mines on real deposits, outside the walls.
-        int gatherers = tier switch { 0 => Range(1, 2), 1 => Range(2, 3), 2 => Range(2, 5), _ => Range(4, 7) };
-        foreach (var g in Some(B.Where(b => b.requiredDeposit && !TitleShore(b) && (TitleOrder(b) >= age - 4 || TitleOrder(b) == 0 && age <= 3)), gatherers))
-            TitlePlace(g, centre, 1, 44, core);
+        int gatherers = tier switch { 0 => Range(1, 2), 1 => Range(2, 3), 2 => Range(2, 5), 3 or 4 => Range(4, 7), _ => Range(7, 11) };
+        var gatherKinds = B.Where(b => b.requiredDeposit && !TitleShore(b) && (TitleOrder(b) >= age - 4 || TitleOrder(b) == 0 && age <= 3)).ToList();
+        int outReach = Mathf.Min(TitleMaxReach, Mathf.Max(core.width, core.height) / 2 + 14);
+        for (int i = 0; i < gatherers && gatherKinds.Count > 0; i++)
+            TitlePlace(gatherKinds[i < gatherKinds.Count ? i : rng.Next(gatherKinds.Count)], centre, 1, outReach, core);
 
         // Walls round the town, with a gate in each side.
         var wall = Newest(b => b.IsWall && !b.id.Contains("Gate") && !TitleShore(b) && !b.id.StartsWith("Trade") && !b.id.StartsWith("Dis") && !b.id.StartsWith("Utl"));
-        if (wall && Chance(new[] { 0.1, 0.45, 0.7, 0.75, 0.6 }[tier]))
+        if (wall && Chance(new[] { 0.1, 0.45, 0.7, 0.75, 0.6, 0.45 }[tier]))
         {
             var gate = B.FirstOrDefault(b => b.IsWall && b.id.Contains("Gate") && TitleOrder(b) == TitleOrder(wall));
             var r = new RectInt(core.xMin - 1, core.yMin - 1, core.width + 2, core.height + 2);
@@ -229,20 +247,37 @@ public partial class Settlement
     private bool TitlePlace(BuildingDefinition def, Vector2Int near, int pad, int maxR, RectInt? outside = null)
     {
         if (!def) return false;
-        foreach (var o in titleSpiral)
+        // Plots of one size fill outwards: start where the last one of this size was found.
+        int key = ((def.size.x * 31 + def.size.y) * 7 + pad) * 2 + (outside.HasValue ? 1 : 0) + near.x * 1000003 + near.y * 7919;
+        titleCursor.TryGetValue(key, out int from);
+        int maxR2 = maxR * maxR;
+        for (int i = from; i < titleSpiral.Count; i++)
         {
-            if (o.sqrMagnitude > maxR * maxR) continue;
+            var o = titleSpiral[i];
+            if (o.sqrMagnitude > maxR2) continue;
             var cell = near + o - new Vector2Int(def.size.x / 2, def.size.y / 2);
             if (outside is RectInt keepOut && new RectInt(keepOut.xMin - 2, keepOut.yMin - 2, keepOut.width + 4, keepOut.height + 4).Overlaps(new RectInt(cell, def.size))) continue;
-            if (TitleTryAt(def, cell, pad)) return true;
+            if (TitleTryAt(def, cell, pad)) { titleCursor[key] = i; return true; }
         }
         return false;
     }
 
+    /// <summary>Explore every zone within 'radius' tiles of 'centre' (ring by ring: zones open next to explored land).</summary>
+    private void TitleExplore(Vector2Int centre, int radius)
+    {
+        var zones = new HashSet<Vector2Int>();
+        for (int y = centre.y - radius; y <= centre.y + radius; y += 4)
+            for (int x = centre.x - radius; x <= centre.x + radius; x += 4)
+                zones.Add(Map.ZoneOf(x, y));
+        for (int pass = 0; pass < 12; pass++)
+            if (ExploreZones(zones) == 0) break;
+    }
+
     private bool TitleTryAt(BuildingDefinition def, Vector2Int cell, int pad)
     {
-        var padded = new RectInt(cell.x - pad, cell.y - pad, def.size.x + 2 * pad, def.size.y + 2 * pad);
-        foreach (var t in titleTaken) if (t.Overlaps(padded)) return false;
+        for (int y = cell.y - pad; y < cell.y + def.size.y + pad; y++)
+            for (int x = cell.x - pad; x < cell.x + def.size.x + pad; x++)
+                if (titleCells.Contains(new Vector2Int(x, y))) return false;
         if (!CheckSite(def, cell, out float quality, out _)) return false;
         State.buildings.Add(new BuildingState
         {
@@ -250,6 +285,9 @@ public partial class Settlement
             health = def.maxHealth, buildProgress = 1, siteQuality = quality, autoRepair = true
         });
         titleTaken.Add(new RectInt(cell, def.size));
+        for (int y = cell.y; y < cell.y + def.size.y; y++)
+            for (int x = cell.x; x < cell.x + def.size.x; x++)
+                titleCells.Add(new Vector2Int(x, y));
         return true;
     }
 }
