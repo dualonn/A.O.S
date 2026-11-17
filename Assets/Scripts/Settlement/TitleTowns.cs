@@ -112,37 +112,57 @@ public partial class Settlement
             from.OrderBy(_ => rng.Next()).Take(count).ToList();
         int gap = Chance(0.35) ? 0 : 1;   // a tight huddle, or room to walk between
 
+        // How big: anything from a hamlet of a few huts to a sprawling city.
+        double roll = rng.NextDouble();
+        int tier = roll < 0.14 ? 0 : roll < 0.36 ? 1 : roll < 0.64 ? 2 : roll < 0.87 ? 3 : 4;   // hamlet, village, town, city, mega-city
+        float reach = new[] { 0.55f, 0.8f, 1f, 1.35f, 1.75f }[tier];
+        int R(int r) => Mathf.Min(44, Mathf.RoundToInt(r * reach));
+        double civic = new[] { 0.2, 0.55, 0.8, 1, 1 }[tier];
+
         var tc = B.FirstOrDefault(b => b.isTownCenter && TitleOrder(b) == 0);
         if (tc == null) return clear;
         TitlePlace(tc, centre, 1, 10);
-        if (age >= 1 && Chance(0.75)) TitlePlace(Newest(b => b.wonder), centre, 1, 16);
-        if (Chance(0.8)) TitlePlace(Pick(b => b.id.StartsWith("Cul") && !b.wonder && b.housing == 0), centre, 1, 18);
-        if (Chance(0.8)) TitlePlace(Pick(b => b.id.StartsWith("Fth") && !b.wonder && b.housing == 0), centre, 1, 18);
-        if (age >= 2 && Chance(0.6)) TitlePlace(Pick(b => b.id.StartsWith("Ppl") && b.production.Count == 0), centre, 1, 20);
-        if (Chance(0.6)) TitlePlace(Pick(b => b.id.StartsWith("Trade") && !b.IsWall && b.size.x > 1), centre, 1, 22);
+        int wonders = age < 1 ? 0 : tier switch { 0 => 0, 1 => Chance(0.3) ? 1 : 0, 2 => Chance(0.75) ? 1 : 0, 3 => 1, _ => Range(2, 3) };
+        foreach (var w in Some(B.Where(b => b.wonder && TitleOrder(b) >= age - 3), wonders)) TitlePlace(w, centre, 1, R(18));
+        int civics = tier >= 4 ? Range(2, 3) : tier == 3 ? Range(1, 2) : 1;
+        for (int i = 0; i < civics; i++)
+        {
+            if (Chance(civic)) TitlePlace(Pick(b => b.id.StartsWith("Cul") && !b.wonder && b.housing == 0), centre, 1, R(18));
+            if (Chance(civic)) TitlePlace(Pick(b => b.id.StartsWith("Fth") && !b.wonder && b.housing == 0), centre, 1, R(18));
+        }
+        if (age >= 2 && Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Ppl") && b.production.Count == 0), centre, 1, R(20));
+        if (Chance(civic * 0.75)) TitlePlace(Pick(b => b.id.StartsWith("Trade") && !b.IsWall && b.size.x > 1), centre, 1, R(22));
         // Homes: mostly this age's, with a few older ones still standing.
         var homes = B.Where(b => b.housing > 0 && !TitleShore(b) && !b.isTownCenter && !b.foundsColonies).OrderByDescending(TitleOrder).Take(2).ToList();
-        int houses = Range(5, 9) + age / 3;
+        int houses = tier switch { 0 => Range(2, 4), 1 => Range(5, 8), 2 => Range(8, 13), 3 => Range(16, 26), _ => Range(32, 50) } + age / 4;
         for (int i = 0; i < houses && homes.Count > 0; i++)
-            TitlePlace(homes.Count > 1 && Chance(0.25) ? homes[1] : homes[0], centre, gap, 24);
-        if (age >= 7)
+            TitlePlace(homes.Count > 1 && Chance(0.25) ? homes[1] : homes[0], centre, gap, R(26));
+        int utilitySets = tier switch { 0 => Chance(0.5) ? 1 : 0, 1 or 2 => 1, 3 => 2, _ => 3 };
+        for (int i = 0; i < utilitySets; i++)
         {
-            TitlePlace(Pick(b => TitleGenerators.Contains(b.id)), centre, 1, 26);
-            if (Chance(0.8)) TitlePlace(Pick(b => TitleWaterWorks.Contains(b.id)), centre, 1, 26);
-            if (Chance(0.6)) TitlePlace(Pick(b => TitleParks.Contains(b.id)), centre, 1, 26);
+            if (age >= 7)
+            {
+                TitlePlace(Pick(b => TitleGenerators.Contains(b.id)), centre, 1, R(28));
+                if (Chance(0.8)) TitlePlace(Pick(b => TitleWaterWorks.Contains(b.id)), centre, 1, R(28));
+                if (Chance(0.6)) TitlePlace(Pick(b => TitleParks.Contains(b.id)), centre, 1, R(28));
+            }
+            else if (age >= 1 && Chance(0.7)) TitlePlace(Pick(b => TitleOldWater.Contains(b.id)), centre, 1, R(26));
         }
-        else if (age >= 1 && Chance(0.7)) TitlePlace(Pick(b => TitleOldWater.Contains(b.id)), centre, 1, 24);
         if (age >= 1)
-            foreach (var p in Some(B.Where(b => b.production.Count > 0 && !b.requiredDeposit && !TitleShore(b) && TitleOrder(b) >= age - 2), Range(2, 5)))
-                TitlePlace(p, centre, 1, 28);
+        {
+            int works = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(2, 5), 3 => Range(5, 8), _ => Range(8, 14) };
+            var kinds = B.Where(b => b.production.Count > 0 && !b.requiredDeposit && !TitleShore(b) && TitleOrder(b) >= age - 2).ToList();
+            for (int i = 0; i < works && kinds.Count > 0; i++) TitlePlace(kinds[rng.Next(kinds.Count)], centre, 1, R(30));
+        }
         if (age >= 1 && age <= 6)
         {
             var farm = B.FirstOrDefault(b => b.id == "Farm");
-            int farms = Range(0, 4);
-            for (int i = 0; i < farms && farm; i++) TitlePlace(farm, centre, 1, 30);
+            int farms = tier switch { 0 => Range(0, 1), 1 => Range(1, 3), 2 => Range(0, 4), 3 => Range(3, 6), _ => Range(5, 9) };
+            for (int i = 0; i < farms && farm; i++) TitlePlace(farm, centre, 1, R(32));
         }
-        foreach (var t in Some(B.Where(b => b.trainsUnit && !TitleShore(b) && TitleOrder(b) >= age - 1), age == 0 ? Range(1, 2) : Range(1, 4)))
-            TitlePlace(t, centre, 1, 30);
+        int camps = age == 0 ? Range(0, 2) : tier switch { 0 => Range(0, 1), 1 => Range(1, 2), 2 => Range(1, 4), 3 => Range(3, 6), _ => Range(5, 9) };
+        var trainers = B.Where(b => b.trainsUnit && !TitleShore(b) && TitleOrder(b) >= age - 1).ToList();
+        for (int i = 0; i < camps && trainers.Count > 0; i++) TitlePlace(trainers[rng.Next(trainers.Count)], centre, 1, R(32));
         var core = TitleBounds(0, titleTaken.Count, centre);
 
         // Towers just outside the corners of the town.
@@ -160,12 +180,13 @@ public partial class Settlement
                 Map.SetDeposit(x, y, null);
 
         // Gatherers and mines on real deposits, outside the walls.
-        foreach (var g in Some(B.Where(b => b.requiredDeposit && !TitleShore(b) && (TitleOrder(b) >= age - 4 || TitleOrder(b) == 0 && age <= 3)), Range(2, 5)))
-            TitlePlace(g, centre, 1, 40, core);
+        int gatherers = tier switch { 0 => Range(1, 2), 1 => Range(2, 3), 2 => Range(2, 5), _ => Range(4, 7) };
+        foreach (var g in Some(B.Where(b => b.requiredDeposit && !TitleShore(b) && (TitleOrder(b) >= age - 4 || TitleOrder(b) == 0 && age <= 3)), gatherers))
+            TitlePlace(g, centre, 1, 44, core);
 
         // Walls round the town, with a gate in each side.
         var wall = Newest(b => b.IsWall && !b.id.Contains("Gate") && !TitleShore(b) && !b.id.StartsWith("Trade") && !b.id.StartsWith("Dis") && !b.id.StartsWith("Utl"));
-        if (wall && Chance(0.65))
+        if (wall && Chance(new[] { 0.1, 0.45, 0.7, 0.75, 0.6 }[tier]))
         {
             var gate = B.FirstOrDefault(b => b.IsWall && b.id.Contains("Gate") && TitleOrder(b) == TitleOrder(wall));
             var r = new RectInt(core.xMin - 1, core.yMin - 1, core.width + 2, core.height + 2);
@@ -210,7 +231,7 @@ public partial class Settlement
         if (!def) return false;
         foreach (var o in titleSpiral)
         {
-            if (o.sqrMagnitude > maxR * maxR) break;
+            if (o.sqrMagnitude > maxR * maxR) continue;
             var cell = near + o - new Vector2Int(def.size.x / 2, def.size.y / 2);
             if (outside is RectInt keepOut && new RectInt(keepOut.xMin - 2, keepOut.yMin - 2, keepOut.width + 4, keepOut.height + 4).Overlaps(new RectInt(cell, def.size))) continue;
             if (TitleTryAt(def, cell, pad)) return true;

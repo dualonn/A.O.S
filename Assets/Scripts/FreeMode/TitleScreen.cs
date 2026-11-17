@@ -186,7 +186,7 @@ public class TitleScreen : MonoBehaviour
 
             // Frame the town to the right of the menu, then drift slowly across it.
             Vector3 middle = grid.CellToWorld(Vector2Int.zero) + new Vector3(core.center.x, core.center.y, 0);
-            float ortho = Mathf.Clamp(Mathf.Max(core.width, core.height) * 0.42f + 3f, 9f, 20f);
+            float ortho = Mathf.Clamp(Mathf.Max(core.width, core.height) * 0.42f + 3f, 7f, 25f);   // a hamlet close up; a mega-city fills the view (past 26 the map turns to its overview)
             float shift = ortho * cam.aspect * 0.28f;   // half a menu's width, in world units
             Vector3 from = middle + new Vector3(-shift - ortho * 0.18f, -ortho * 0.08f, 0);
             Vector3 to = middle + new Vector3(-shift + ortho * 0.18f, ortho * 0.08f, 0);
