@@ -568,9 +568,9 @@ public class FreeModeHUD : MonoBehaviour
         var row = (RectTransform)moreText.transform.parent.parent;
         var layout = row.GetComponent<HorizontalLayoutGroup>();
         float available = row.rect.width, spacing = layout != null ? layout.spacing : 0;
-        float Width(TextMeshProUGUI t) => LayoutUtility.GetPreferredWidth((RectTransform)t.transform.parent) + spacing;
+        float Width(TextMeshProUGUI t) => ChipWidth(t) + spacing;
 
-        float used = 70f;   // room for the "+N" chip
+        float used = 70f + 12f;   // room for the "+N" chip, and a little slack
         foreach (var t in new[] { ageText, peopleText, waveText, researchText })
             if (t != null && t.transform.parent.gameObject.activeSelf) used += Width(t);
 
@@ -592,6 +592,27 @@ public class FreeModeHUD : MonoBehaviour
         overflowResources.Sort((a, b) => settlement.Database.resources.IndexOf(a).CompareTo(settlement.Database.resources.IndexOf(b)));
         moreText.transform.parent.gameObject.SetActive(overflowResources.Count > 0);
         moreText.text = $"<b>+{overflowResources.Count}</b>";
+    }
+
+    /// <summary>
+    /// A chip's width from its parts as they are now. (The chip row's own preferred width is only
+    /// updated at the next layout pass, so right after a chip appears or its number grows it reads
+    /// short, and the bar then squeezed the chips into each other.)
+    /// </summary>
+    private static float ChipWidth(TextMeshProUGUI text)
+    {
+        var chip = (RectTransform)text.transform.parent;
+        var layout = chip.GetComponent<HorizontalLayoutGroup>();
+        float width = 0f;
+        int parts = 0;
+        foreach (RectTransform child in chip)
+        {
+            if (!child.gameObject.activeSelf) continue;
+            width += child == text.transform ? text.GetPreferredValues(text.text).x : LayoutUtility.GetPreferredWidth(child);
+            parts++;
+        }
+        if (layout != null) width += layout.padding.horizontal + layout.spacing * Mathf.Max(0, parts - 1);
+        return width;
     }
 
     private string OverflowTooltip()
