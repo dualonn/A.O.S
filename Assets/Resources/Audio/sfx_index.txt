@@ -352,7 +352,6 @@ Audio/SFX/UI/click_2
 Audio/SFX/UI/click_3
 Audio/SFX/UI/confirm_1
 Audio/SFX/UI/confirm_2
-Audio/SFX/UI/defeat
 Audio/SFX/UI/error_1
 Audio/SFX/UI/error_2
 Audio/SFX/UI/error_3
@@ -372,7 +371,6 @@ Audio/SFX/UI/raid_warning
 Audio/SFX/UI/research_complete
 Audio/SFX/UI/tab_1
 Audio/SFX/UI/tab_2
-Audio/SFX/UI/victory
 Audio/SFX/Weapons/fire_cast_1
 Audio/SFX/Weapons/fire_cast_2
 Audio/SFX/Weapons/fire_cast_3

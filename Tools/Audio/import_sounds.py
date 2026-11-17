@@ -189,6 +189,11 @@ def write_index():
                    for p in glob.glob(os.path.join(ROOT, 'SFX', '**', '*.wav'), recursive=True))
     with open(os.path.join(ROOT, 'sfx_index.txt'), 'w', encoding='utf-8', newline='\n') as f:
         f.write('\n'.join('Audio/' + p for p in paths) + '\n')
+    # music_index.txt: every music track, so the game never has to load a track just to see that it exists
+    tracks = sorted(os.path.relpath(p, ROOT).replace(os.sep, '/').rsplit('.', 1)[0]
+                    for p in glob.glob(os.path.join(ROOT, 'Music', '*.ogg')))
+    with open(os.path.join(ROOT, 'music_index.txt'), 'w', encoding='utf-8', newline='\n') as f:
+        f.write('\n'.join('Audio/' + p for p in tracks) + '\n')
     return len(paths)
 
 
@@ -283,8 +288,7 @@ SFX = {
         'notify': V('interface-sounds/**/bong_001.ogg'),
         'age_up': V('Production_Intro_Theme.wav'),
         'raid_warning': [S('their-coming-generic-horn-sound/theircoming.ogg', dur=6.6)],   # first two blasts only
-        'victory': V('medieval-victory-theme/victory.wav'),
-        'defeat': V('medieval-defeat-theme/defeat.wav'),
+        # (no victory/defeat stings: the game never ends, and 30-45 s fanfares cost ~20 MB loaded on WebGL)
     },
     'Items': {
         'pickup': V('oga-80-CC0-RPG-SFX_0/**/item_misc_0[1-3].ogg'),

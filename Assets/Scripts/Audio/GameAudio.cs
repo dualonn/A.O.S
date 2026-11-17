@@ -547,30 +547,53 @@ public class AudioHost : MonoBehaviour
         free.Play();
     }
 
+    // Browsers keep audio muted until the player first clicks or presses a key; until then a track
+    // would look "finished" straight away and the playlist would skip through, so wait for it.
+#if UNITY_WEBGL && !UNITY_EDITOR
+    static bool unlocked;
+#else
+    const bool unlocked = true;
+#endif
+
     void Update()
     {
         float now = Time.unscaledTime;
         float dt = Time.unscaledDeltaTime;
-        if (now >= nextCheck)
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (!unlocked)
+        {
+            if (!Input.anyKeyDown && !Input.GetMouseButtonDown(0) && !Input.GetMouseButtonDown(1) && Input.touchCount == 0) return;
+            unlocked = true;
+            nextCheck = 0f;
+        }
+#endif
+        if (unlocked && now >= nextCheck)
         {
             nextCheck = now + 0.5f;
             UpdateMusic(now);
             UpdateAmbience();
             UpdateWeather();
         }
-        Fade(musicA, musicB, GameAudio.MusicLevel, dt, 0.8f);   // ~0.5 s cross-fades
+        Fade(musicA, musicB, GameAudio.MusicLevel, dt, 0.8f, true);   // ~0.5 s cross-fades
         Fade(ambA, ambB, GameAudio.AmbienceLevel, dt, 0.5f);
         Fade(wxA, wxB, weatherLoop != null ? GameAudio.AmbienceLevel * 1.1f : 0f, dt, 0.25f);
     }
 
-    // Source A is the one fading in (or holding); B fades out and stops.
-    static void Fade(AudioSource a, AudioSource b, float level, float dt, float speed)
+    // Source A is the one fading in (or holding); B fades out and stops. A music track that has
+    // finished is let go, so only the tracks playing stay in memory (on WebGL a clip is held decoded).
+    static void Fade(AudioSource a, AudioSource b, float level, float dt, float speed, bool release = false)
     {
         if (a.clip != null) a.volume = Mathf.MoveTowards(a.volume, level, dt * speed * Mathf.Max(level, 0.05f) * 2f);
         if (b.isPlaying)
         {
             b.volume = Mathf.MoveTowards(b.volume, 0f, dt * speed);
             if (b.volume <= 0.001f) b.Stop();
+        }
+        if (release && b.clip != null && !b.isPlaying && b.clip != a.clip)
+        {
+            var done = b.clip;
+            b.clip = null;
+            Resources.UnloadAsset(done);
         }
     }
 
@@ -613,13 +636,12 @@ public class AudioHost : MonoBehaviour
     {
         if (!playlists.TryGetValue(playlist, out var names))
         {
+            // the track list comes from Resources/Audio/music_index.txt: no track is loaded until it plays
             names = new List<string>();
-            for (int i = 1; i < 50; i++)
-            {
-                string path = $"Audio/Music/{playlist}_{i}";
-                if (Resources.Load<AudioClip>(path) == null) break;
-                names.Add(path);
-            }
+            musicIndex ??= LoadMusicIndex();
+            string prefix = $"Audio/Music/{playlist}_";
+            foreach (var path in musicIndex)
+                if (path.StartsWith(prefix) && int.TryParse(path.Substring(prefix.Length), out _)) names.Add(path);
             // shuffle once; then play through in order so tracks don't repeat back to back
             for (int i = names.Count - 1; i > 0; i--) { int j = Random.Range(0, i + 1); (names[i], names[j]) = (names[j], names[i]); }
             playlists[playlist] = names;
@@ -628,6 +650,19 @@ public class AudioHost : MonoBehaviour
         playlistPos.TryGetValue(playlist, out int pos);
         playlistPos[playlist] = pos + 1;
         return Resources.Load<AudioClip>(names[pos % names.Count]);
+    }
+
+    List<string> musicIndex;
+
+    static List<string> LoadMusicIndex()
+    {
+        var list = new List<string>();
+        var index = Resources.Load<TextAsset>("Audio/music_index");
+        if (index == null) return list;
+        foreach (var line in index.text.Split('\n'))
+            if (line.Trim().Length > 0) list.Add(line.Trim());
+        Resources.UnloadAsset(index);
+        return list;
     }
 
     void UpdateAmbience()
