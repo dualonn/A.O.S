@@ -648,8 +648,9 @@ public class AudioHost : MonoBehaviour
         if (want == "battle") battleHoldUntil = now + 3f;
         else if (era == "battle" && now < battleHoldUntil) want = "battle";   // don't flicker between short raids
 
-        bool ended = musicA.clip != null && !musicA.isPlaying;
-        bool nearEnd = musicA.isPlaying && musicA.clip != null && musicA.time > musicA.clip.length - 1f;
+        // a track still loading (WebGL loads clips asynchronously) isn't playing yet, but hasn't ended either
+        bool ended = Loaded(musicA.clip) && !musicA.isPlaying;
+        bool nearEnd = musicA.isPlaying && Loaded(musicA.clip) && musicA.time > musicA.clip.length - 1f;
         if (want != era)
         {
             era = want;
@@ -720,8 +721,22 @@ public class AudioHost : MonoBehaviour
         Swap(ref ambA, ref ambB);
         ambA.clip = clip;
         ambA.volume = 0f;
-        ambA.time = Random.Range(0f, clip.length * 0.8f);   // don't always start at the same spot
+        RandomStart(ambA);   // don't always start at the same spot
         ambA.Play();
+    }
+
+    /// <summary>Is the clip's audio loaded, so its length can be read? (On WebGL clips load asynchronously.)</summary>
+    static bool Loaded(AudioClip clip)
+    {
+        if (clip == null) return false;
+        if (clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
+        return clip.loadState == AudioDataLoadState.Loaded;
+    }
+
+    /// <summary>Start a loop somewhere in its first 80%, once its length is known (else from the top).</summary>
+    static void RandomStart(AudioSource source)
+    {
+        if (Loaded(source.clip)) source.time = Random.Range(0f, source.clip.length * 0.8f);
     }
 
     void UpdateWeather()
@@ -735,7 +750,7 @@ public class AudioHost : MonoBehaviour
         wxA.volume = 0f;
         if (wxA.clip != null)
         {
-            wxA.time = Random.Range(0f, wxA.clip.length * 0.8f);
+            RandomStart(wxA);
             wxA.Play();
         }
     }
