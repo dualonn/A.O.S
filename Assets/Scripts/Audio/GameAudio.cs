@@ -49,6 +49,8 @@ public static class GameAudio
         if (host != null) return true;
         if (!Application.isPlaying) return false;
         mode = (Mode)PlayerPrefs.GetInt("AOS.SoundMode", 0);
+        for (int i = 0; i < Channels.Length; i++) channelVolume[i] = Mathf.Clamp01(PlayerPrefs.GetFloat("AOS.Vol." + Channels[i], 1f));
+        AudioListener.volume = channelVolume[0];
         var go = new GameObject("GameAudio");
         Object.DontDestroyOnLoad(go);
         host = go.AddComponent<AudioHost>();
@@ -427,12 +429,55 @@ public static class GameAudio
 
     // ------------------------------------------------------------------ music & ambience choice
 
-    internal static float MusicLevel => mode == Mode.All ? MusicVolume : 0f;
-    internal static float AmbienceLevel => mode == Mode.Muted ? 0f : AmbienceVolume;
+    // ------------------------------------------------------------------ volume sliders
+
+    /// <summary>The Settings window's channels; each is saved as PlayerPrefs "AOS.Vol.(channel)", 0..1, default 1.</summary>
+    public static readonly string[] Channels = { "Master", "Music", "Effects", "Ambience" };
+    static readonly float[] channelVolume = { 1f, 1f, 1f, 1f };
+
+    /// <summary>A volume channel's level, 0..1: "Master", "Music", "Effects" (incl. UI clicks) or "Ambience" (incl. weather).</summary>
+    public static float GetVolume(string channel)
+    {
+        int i = System.Array.IndexOf(Channels, channel);
+        return i >= 0 ? channelVolume[i] : 1f;
+    }
+
+    /// <summary>Set a volume channel (applies at once, music and ambience fade to it) and save it.</summary>
+    public static void SetVolume(string channel, float value)
+    {
+        int i = System.Array.IndexOf(Channels, channel);
+        if (i < 0) return;
+        channelVolume[i] = Mathf.Clamp01(value);
+        if (i == 0) AudioListener.volume = channelVolume[0];
+        PlayerPrefs.SetFloat("AOS.Vol." + channel, channelVolume[i]);
+        PlayerPrefs.Save();
+    }
+
+    internal static float EffectsScale => channelVolume[2];
+    internal static float MusicLevel => mode == Mode.All ? MusicVolume * channelVolume[1] : 0f;
+    internal static float AmbienceLevel => mode == Mode.Muted ? 0f : AmbienceVolume * channelVolume[3];
+
+    // The title screen: Settlement.MenuMode (read by reflection, so this compiles before and after it exists).
+    static System.Func<bool> menuMode;
+    static bool InMenu()
+    {
+        if (menuMode == null)
+        {
+            var t = typeof(Settlement);
+            const System.Reflection.BindingFlags flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static;
+            var field = t.GetField("MenuMode", flags);
+            var prop = field == null ? t.GetProperty("MenuMode", flags) : null;
+            menuMode = field != null && field.FieldType == typeof(bool) ? () => (bool)field.GetValue(null)
+                     : prop != null && prop.PropertyType == typeof(bool) ? () => (bool)prop.GetValue(null)
+                     : () => false;
+        }
+        return menuMode();
+    }
 
     /// <summary>Which music playlist fits right now.</summary>
     internal static string MusicEra()
     {
+        if (InMenu()) return "title";   // one theme on the title screen, while the backdrop cycles through the ages
         var controller = FreeModeController.Instance;
         if (controller != null && controller.WaveInProgress) return "battle";
         var settlement = Settlement.Instance;
@@ -541,7 +586,7 @@ public class AudioHost : MonoBehaviour
         foreach (var v in voices) if (!v.isPlaying) { free = v; break; }
         if (free == null) return;   // everything busy: drop it rather than cut another sound
         free.clip = clip;
-        free.volume = volume;
+        free.volume = volume * GameAudio.EffectsScale;
         free.panStereo = pan;
         free.pitch = pitch;
         free.Play();
